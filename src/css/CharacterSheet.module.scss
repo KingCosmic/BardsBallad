@@ -1,0 +1,25 @@
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  background-color: rgb(69, 69, 69);
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+
+  background-color: rgb(250, 250, 250); 
+  width: 800px;
+
+  padding: 20px;
+}
+
+.bottomHalf {
+  display: flex;
+  flex-direction: row;
+}
