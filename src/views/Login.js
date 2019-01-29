@@ -1,21 +1,45 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { withRouter, Redirect } from 'react-router-dom';
+
+import Container from '../atoms/Container';
+import Form from '../atoms/Form';
+import Input from '../atoms/Input';
+import Title from '../atoms/Title';
 
 import styles from '../css/Login.module.scss';
 
 import firebase from '../firebase';
+
+const Background = styled(Container)`
+  background-color: ${props => props.theme.almostblack};
+`
 
 class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      loggedIn: false
+      loggedIn: false,
+      email: '',
+      password: ''
     }
+
+    this.handleEmail = this.handleEmail.bind(this);
+    this.handlePass = this.handlePass.bind(this);
+  }
+
+  handleEmail(event) {
+    this.setState({ email: event.target.value });
+  }
+
+  handlePass(event) {
+    this.setState({ password: event.target.value });
   }
 
   componentDidMount() {
-    this.handleLogin()
+    //this.handleLogin()
 
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -26,10 +50,12 @@ class Login extends Component {
     })
   }
 
-  handleLogin() {
+  handleLogin(event) {
+    const { email, password } = this.state;
+
     firebase.auth().signInWithEmailAndPassword(
-      'KingCosmicDev@gmail.com',
-      'Abstuddard9311'
+      email,
+      password
     ).catch((error) => {
       // Handle errors
       const errorCode = error.code;
@@ -43,6 +69,8 @@ class Login extends Component {
       
       console.log(error);
     })
+
+    event.preventDefault();
   }
 
   render() {
@@ -53,16 +81,35 @@ class Login extends Component {
     )
       :
     (
-      <div className={styles.container}>
-        <div className={styles.box}>
-          <p>Login</p>
-          <input className={styles.input} type='text' placeholder='email'/>
-          <input className={styles.input} type='password' placeholder='password'/>
+      <Background width='100%' height='100%' justifyContent='center' alignItems='center'>
+        <Form width='400px' height='auto' alignItems='center' onSubmit={this.handleLogin}>
+          <Title>Login</Title>
+          <Input margin='5px'
+            type='text' value={this.state.email} placeholder='email'
+            onChange={this.handleEmail}
+          />
+
+          <Input margin='5px'
+            type='password' value={this.state.password} placeholder='password'
+            onChange={this.handlePass}
+          />
           <button className={styles.button}>Login</button>
-        </div>
-      </div>
+        </Form>
+      </Background>
     )
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

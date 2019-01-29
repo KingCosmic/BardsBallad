@@ -1,0 +1,21 @@
+@import 'colors.scss';
+
+.container {
+  width: 10em;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  background-color: $dark;
+  border-right: 1px solid $almostblack;
+}
+
+.open {
+  width: 10em;
+}
+
+.title {
+  color: white;
+  font-size: 1.25em;
+}

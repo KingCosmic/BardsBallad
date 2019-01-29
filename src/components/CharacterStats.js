@@ -1,53 +1,61 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-import styles from '../css/CharacterStats.module.scss'
+import Grid from '../atoms/Grid';
+import GridItem from '../atoms/GridItem';
 
-class CharacterStats extends Component {
-  render() {
-    const { str, dex, con, int, wis, cha } = this.props.stats;
+import Name from './CharacterName';
+import HP from './HP';
+import EXP from './EXP';
+import AC from './AC';
+import Gold from './Gold';
+import PassivePerception from './PassivePerception';
+import Speed from './Speed';
+import Initiatve from './Initiative'
+import Proficiency from './Proficiency';
+import HitDice from './HitDice';
+import DeathSaves from './DeathSaves';
+import CharacterStat from './CharacterStat';
 
-    return (
-      <div className={styles.container}>
+import styles from '../css/CharacterStats.module.scss';
 
-        <section className={styles.statContainer}>
-          <p className={styles.title}>STRENGTH</p>
-          <p className={styles.bonus}>{str.bonus}</p>
-          <p className={styles.stat}>{str.stat}</p>
-        </section>
+const CharacterStats = (props) => {
+  return (
+    <div className={styles.container}>
+      <div className='needed_this_to_push_the_other_stuff_to_the_bottom_xD' />
+      <Grid width='450px' columns='repeat(12, 1fr)' rows='auto' gap='10px'>
 
-        <section className={styles.statContainer}>
-          <p className={styles.title}>DEXTERITY</p>
-          <p className={styles.bonus}>{dex.bonus}</p>
-          <p className={styles.stat}>{dex.stat}</p>
-        </section>
+        <Name />
 
-        <section className={styles.statContainer}>
-          <p className={styles.title}>CONSTITUTION</p>
-          <p className={styles.bonus}>{con.bonus}</p>
-          <p className={styles.stat}>{con.stat}</p>
-        </section>
+        <GridItem column='auto / span 10'>
+          <HP />
+          <EXP />
+        </GridItem>
 
-        <section className={styles.statContainer}>
-          <p className={styles.title}>INTELLIGENCE</p>
-          <p className={styles.bonus}>{int.bonus}</p>
-          <p className={styles.stat}>{int.stat}</p>
-        </section>
+        <AC />
 
-        <section className={styles.statContainer}>
-          <p className={styles.title}>WISDOM</p>
-          <p className={styles.bonus}>{wis.bonus}</p>
-          <p className={styles.stat}>{wis.stat}</p>
-        </section>
+        <Gold type='CP' amount={0} />
+        <Gold type='SP' amount={0} />
+        <Gold type='EP' amount={0} />
+        <Gold type='GP' amount={10} />
+        <Gold type='PP' amount={0} />
 
-        <section className={styles.statContainer}>
-          <p className={styles.title}>CHARISMA</p>
-          <p className={styles.bonus}>{cha.bonus}</p>
-          <p className={styles.stat}>{cha.stat}</p>
-        </section>
-        
-      </div>
-    )
-  }
+        <HitDice />
+        <DeathSaves />
+
+        <PassivePerception />
+        <Speed />
+        <Initiatve />
+        <Proficiency />
+
+        <CharacterStat name='STR' val={20} />
+        <CharacterStat name='DEX' val={13} />
+        <CharacterStat name='CON' val={16} />
+        <CharacterStat name='INT' val={14} />
+        <CharacterStat name='WIS' val={16} />
+        <CharacterStat name='CHA' val={15} />
+      </Grid>
+    </div>
+  )
 }
 
 export default CharacterStats;

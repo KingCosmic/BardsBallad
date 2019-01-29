@@ -1,30 +1,33 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import CharacterInfo from '../components/CharacterInfo';
+import Container from '../atoms/Container';
 
-import styles from '../css/Characters.module.scss';
+import Character from '../components/Character';
 
-class Characters extends Component {
-  render() {
-    return (
-      <div className={styles.container}>
-        <div className={styles.characters}>
-          <div className={styles.character}>
+const Characters = ({ characters }) => {
+  return (
+    <Container>
+      {
+        characters.map(({ name, job, lvl, id }) =>
+          <Character key={id} name={name} job={job} lvl={lvl} id={id} />)
+      }
+    </Container>
+  )
+}
 
-            <img className={styles.icon} alt='class' src='http://media.wizards.com/2015/images/dnd/ClassSymb_Fighter.png' />
-
-            <div className={styles.info}>
-              <p className={styles.characterName}>Goblin Slayer</p>
-              <p className={styles.level}>Fighter: 5</p>
-            </div>
-          </div>
-        </div>
-
-
-        <CharacterInfo />
-      </div>
-    )
+const mapStateToProps = (state) => {
+  return {
+    characters: state.characters.characters
   }
 }
 
-export default Characters;
+const mapDispatchToProps = (dispatch) => {
+  return {
+
+  }
+}
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Characters));

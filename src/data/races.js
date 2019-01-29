@@ -1,4 +1,6 @@
 
-module.exports = {
-  
+const races = {
+
 }
+
+export default races;

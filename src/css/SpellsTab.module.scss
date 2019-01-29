@@ -1,8 +1,26 @@
+@import 'colors.scss';
 
 .container {
-
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
 }
 
-.statContainer {
+.spellsContainer {
+  display: flex;
 
+  flex-grow: 1;
+  margin: 20px 0;
+
+  border-bottom: solid 1px $grey;
+}
+
+.sectionContainer {
+  display: flex;
+  width: 14.8em;
+
+  padding: 5px;
+
+  color: white;
 }
