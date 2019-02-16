@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Text from './Text';
 
-const determinMod = (val) => Math.round((val - 10.1) / 2);
+import { determinMod } from '../helpers';
 
 const Bonus = styled(Text)`
   color: ${(props) => (props.value < 10) ? props.theme.red : props.theme.green};

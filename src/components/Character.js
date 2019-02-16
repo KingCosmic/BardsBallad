@@ -34,7 +34,7 @@ const Character = (props) => {
   const { name, job, lvl, id } = props;
 
   return (
-    <Container to={`/characters/${id}`} width='calc(32% - 20px)' padding='10px' bg>
+    <Container to={`/characters/${id}`} width='calc(32% - 20px)' padding='10px' bg='true'>
       <Text>{name}</Text><Text>{job}: {lvl}</Text>
     </Container>
   )

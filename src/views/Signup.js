@@ -14,7 +14,7 @@ const Background = styled(Container)`
   background-color: ${props => props.theme.almostblack};
 `
 
-class Login extends Component {
+class Signup extends Component {
   constructor(props) {
     super(props);
 
@@ -25,7 +25,7 @@ class Login extends Component {
 
     this.handleEmail = this.handleEmail.bind(this);
     this.handlePass = this.handlePass.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
   }
 
   // redirect if we're already logged in
@@ -42,24 +42,27 @@ class Login extends Component {
     this.setState({ password: event.target.value });
   }
 
-  handleLogin(event) {
+  handleSignup(event) {
     const { email, password } = this.state;
 
-    api.login(
+    api.signup(
       email,
       password
     ).then(resp => {
-      this.props.history.replace('/')
+
+      this.props.history.replace('/');
+
     }).catch(alert)
 
     event.preventDefault();
   }
 
   render() {
+
     return (
       <Background width='100%' height='100%' justifyContent='center' alignItems='center'>
-        <Form width='400px' height='auto' alignItems='center' onSubmit={this.handleLogin}>
-          <Title>Login</Title>
+        <Form width='400px' height='auto' alignItems='center' onSubmit={this.handleSignup}>
+          <Title>Signup</Title>
           <Input margin='5px'
             type='text' value={this.state.email} placeholder='email'
             onChange={this.handleEmail}
@@ -69,11 +72,11 @@ class Login extends Component {
             type='password' value={this.state.password} placeholder='password'
             onChange={this.handlePass}
           />
-          <button className={styles.button}>Login</button>
+          <button className={styles.button}>Signup</button>
         </Form>
       </Background>
     )
   }
 }
 
-export default Login;
+export default Signup;

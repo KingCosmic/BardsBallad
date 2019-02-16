@@ -29,11 +29,13 @@ const Container = styled.div`
       border-radius: 10px;
     }
 
-    /* Handle on hover */
-    &::-webkit-scrollbar-thumb:hover {
-      background: #b30000; 
-    }
   `}
+
+  ${props => props.pos && css` position: ${props => props.pos}; `}
+  ${props => props.top && css` top: ${props => props.top}; `}
+  ${props => props.right && css` right: ${props => props.right}; `}
+  ${props => props.left && css` left: ${props => props.left}; `}
+  ${props => props.bottom && css` bottom: ${props => props.bottom}; `}
     
   display: ${props => props.noFlex ? 'block' : 'flex'};
   flex-direction: ${props => props.direction || 'column'};
@@ -48,8 +50,11 @@ const Container = styled.div`
   ${props => props.grow && css` flex-grow: ${props.grow}; `}
 
   ${props => props.bg && css`
-    background-color: ${(props) => props.theme.dark};
-    outline: 1px solid ${(props) => props.theme.almostblack};
+    background-color: ${props => props.theme[props.bg] || props.theme.dark};
+  `}
+
+  ${props => props.ol && css`
+    outline: 1px solid ${props => props.theme[props.ol] || props.theme.almostblack};
   `}
 
 `

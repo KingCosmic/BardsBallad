@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Container from '../atoms/Container';
 import Grid from '../atoms/Grid';
 import GridItem from '../atoms/GridItem';
 
@@ -16,45 +17,57 @@ import HitDice from './HitDice';
 import DeathSaves from './DeathSaves';
 import CharacterStat from './CharacterStat';
 
-import styles from '../css/CharacterStats.module.scss';
+import levels from '../data/levels';
 
 const CharacterStats = (props) => {
+  const {
+    name, job, level, hp, exp, ac,
+    hitdice, deathsaves,
+    speed, skills, pieces, stats
+  } = props.char;
+
+  const prof = levels[level].prof;
+
+  const { copper, silver, etherium, gold, platinum } = pieces;
+
+  const { strength, dexterity, constitution, intelligence, wisdom, charisma } = stats;
+
   return (
-    <div className={styles.container}>
+    <Container justifyContent='space-between'>
       <div className='needed_this_to_push_the_other_stuff_to_the_bottom_xD' />
       <Grid width='450px' columns='repeat(12, 1fr)' rows='auto' gap='10px'>
 
-        <Name />
+        <Name name={name} job={job} level={level} />
 
         <GridItem column='auto / span 10'>
-          <HP />
-          <EXP />
+          <HP hp={hp} />
+          <EXP exp={exp} />
         </GridItem>
 
-        <AC />
+        <AC ac={ac} />
 
-        <Gold type='CP' amount={0} />
-        <Gold type='SP' amount={0} />
-        <Gold type='EP' amount={0} />
-        <Gold type='GP' amount={10} />
-        <Gold type='PP' amount={0} />
+        <Gold type='CP' amount={copper} />
+        <Gold type='SP' amount={silver} />
+        <Gold type='EP' amount={etherium} />
+        <Gold type='GP' amount={gold} />
+        <Gold type='PP' amount={platinum} />
 
-        <HitDice />
-        <DeathSaves />
+        <HitDice hd={hitdice} />
+        <DeathSaves ds={deathsaves} />
 
-        <PassivePerception />
-        <Speed />
-        <Initiatve />
-        <Proficiency />
+        <PassivePerception wis={wisdom} skills={skills} prof={prof} />
+        <Speed speed={speed} />
+        <Initiatve dex={dexterity} />
+        <Proficiency value={prof} />
 
-        <CharacterStat name='STR' val={20} />
-        <CharacterStat name='DEX' val={13} />
-        <CharacterStat name='CON' val={16} />
-        <CharacterStat name='INT' val={14} />
-        <CharacterStat name='WIS' val={16} />
-        <CharacterStat name='CHA' val={15} />
+        <CharacterStat name='STR' val={strength} />
+        <CharacterStat name='DEX' val={dexterity} />
+        <CharacterStat name='CON' val={constitution} />
+        <CharacterStat name='INT' val={intelligence} />
+        <CharacterStat name='WIS' val={wisdom} />
+        <CharacterStat name='CHA' val={charisma} />
       </Grid>
-    </div>
+    </Container>
   )
 }
 

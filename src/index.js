@@ -3,16 +3,23 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
 import './index.css';
-import Routes from './Routes';
-import { ThemeProvider } from 'styled-components';
 
+import { ThemeProvider } from 'styled-components';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware  } from 'redux';
+import reduxThunk from "redux-thunk";
+import App from './App';
+
+import reducers from './reducers/index';
 import theme from './theme';
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
-    <Routes />
+    <Provider store={createStore(reducers, {}, applyMiddleware(reduxThunk))}>
+      <App />
+    </Provider>
   </ThemeProvider>
-  
+
   , document.getElementById('root')
 );
 

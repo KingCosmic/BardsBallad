@@ -9,7 +9,7 @@ const CharacterStat = (props) => {
   const { name, val } = props;
 
   return (
-    <GridItem column='auto / span 2' alignItems='center' bg>
+    <GridItem column='auto / span 2' alignItems='center' bg ol>
       <Title>{name}</Title>
 
       <Bonus value={val} />

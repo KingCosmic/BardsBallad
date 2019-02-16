@@ -3,14 +3,21 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import Container from '../atoms/Container';
 import Text from '../atoms/Text';
+
+// import EditOverlay from '../components/EditOverlay';
 
 import InfoTab from '../components/InfoTab';
 import SkillsTab from '../components/SkillsTab';
 import SpellsTab from '../components/SpellsTab';
 import InventoryTab from '../components/InventoryTab';
 
+import DataOptions from '../components/DataOptions';
+
 import CharacterStats from '../components/CharacterStats';
+
+import { loadOne, changeCharacter } from '../reducers/characters';
 
 import styles from '../css/CharacterOverlay.module.scss';
 
@@ -54,10 +61,22 @@ class CharacterOverlay extends Component {
     super(props);
 
     this.state = {
-      currentTab: 3
+      currentTab: 0
     }
 
     this.changeTab = this.changeTab.bind(this);
+  }
+
+  componentWillMount() {
+    const id = this.props.match.params.characterID;
+
+    if (this.props.characters.length === 0) return this.props.loadOne(id);
+
+    const newChar = this.props.characters.filter(char => char._id === id);
+
+    if (newChar.length === 0) return this.props.loadOne(id);
+
+    this.props.changeCharacter(newChar[0]._id)
   }
 
   changeTab(tab) {
@@ -69,32 +88,45 @@ class CharacterOverlay extends Component {
   render() {
     const { currentTab } = this.state;
 
+    if (!this.props.character) return null
+
+    const char = this.props.character;
+
     return (
       <div className={styles.container}>
-        <div className={styles.tabs}>
-          <Tab active={currentTab === 0 } onClick={() => this.changeTab(0)}>info</Tab>
+        { /* <EditOverlay /> */ }
 
-          <Tab active={currentTab === 1 } onClick={() => this.changeTab(1)}>skills</Tab>
+        <Container padding='0 15px'>
 
-          <Tab active={currentTab === 2 } onClick={() => this.changeTab(2)}>spells</Tab>
+          <div className={styles.tabs}>
+            <Tab active={currentTab === 0 } onClick={() => this.changeTab(0)}>info</Tab>
 
-          <Tab active={currentTab === 3 } onClick={() => this.changeTab(3)}>inventory</Tab>
-        </div>
+            <Tab active={currentTab === 1 } onClick={() => this.changeTab(1)}>skills</Tab>
+
+            <Tab active={currentTab === 2 } onClick={() => this.changeTab(2)}>spells</Tab>
+
+            <Tab active={currentTab === 3 } onClick={() => this.changeTab(3)}>inventory</Tab>
+          </div>
+
+          <DataOptions />
+
+        </Container>
+
 
         <div className={styles.bottomContainer}>
           <div className={styles.tabContainer}>
             {
-              (currentTab === 0) ? <InfoTab /> :
+              (currentTab === 0) ? <InfoTab char={char} /> :
               
-              (currentTab === 1) ? <SkillsTab /> :
+              (currentTab === 1) ? <SkillsTab char={char} /> :
               
-              (currentTab === 2) ? <SpellsTab /> :
+              (currentTab === 2) ? <SpellsTab char={char} /> :
 
-              (currentTab === 3) ? <InventoryTab /> : ''
+              (currentTab === 3) ? <InventoryTab char={char} /> : ''
             }
           </div>
 
-          <CharacterStats />
+          <CharacterStats char={char} />
         </div>
       </div>
     )
@@ -103,15 +135,9 @@ class CharacterOverlay extends Component {
 
 const mapStateToProps = (state) => {
   return {
-
+    characters: state.characters.characters,
+    character: state.characters.character
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-
-  }
-}
-
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CharacterOverlay));
+export default withRouter(connect(mapStateToProps, { loadOne, changeCharacter })(CharacterOverlay));

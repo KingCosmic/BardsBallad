@@ -4,9 +4,19 @@ import List from '../atoms/List';
 import ListItem from '../atoms/ListItem';
 import Container from '../atoms/Container';
 import Title from '../atoms/Title';
-import Text from '../atoms/Text';
+
+import InlineEdit from '../atoms/InlineEdit';
 
 const InfoTab = (props) => {
+
+  const { 
+    personality, alignment, race, background, languages,
+    backstory, allies, organization
+  } = props.char;
+
+  const { traits, ideals, bonds, flaws } = personality;
+  const { img, name } = organization;
+
   return (
     <Container flowY='scroll' width='calc(100% - 20px)' height='calc(100% - 20px)' padding='10px'>
       <List>
@@ -23,33 +33,25 @@ const InfoTab = (props) => {
             <Container grow='1' padding='10px'>
               <Title margin='0 0 10px 0' >Personality Traits</Title>
 
-              <Text size='0.8em'>
-                I don't run from evil; Evil runs from me.
-              </Text>
+              <InlineEdit placeholder='here are some of my traits' path='personality.traits' value={traits} />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0' padding='10px'>
               <Title margin='0 0 10px 0' >Ideals</Title>
 
-              <Text size='0.8em'>
-                Our lot is to lay down our lives in defense of others.
-              </Text>
+              <InlineEdit placeholder='Here are my ideals' path='personality.ideals' value={ideals} />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0' padding='10px'>
               <Title margin='0 0 10px 0' >Bonds</Title>
 
-              <Text size='0.8em'>
-                Someone saved my life on the battlefield. To this day, I will never leave a friend behind.
-              </Text>
+              <InlineEdit placeholder='These are my bonds' path='personality.bonds' value={bonds} />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0' padding='10px'>
               <Title margin='0 0 10px 0' >Flaws</Title>
 
-              <Text size='0.8em'>
-                Years of seeing innocent people suffer have left me despondent and pessimistic for the future.
-              </Text>
+              <InlineEdit placeholder='I have no flaws :angry:' path='personality.flaws' value={flaws} />
             </Container>
           </Container>
         </ListItem>
@@ -58,32 +60,32 @@ const InfoTab = (props) => {
           <Container>
             <Title>Alignment</Title>
 
-            <Text>Lawful/Neutral</Text>
+            <InlineEdit placeholder='Chaotic/Stupid' path='alignment' value={alignment} />
           </Container>
 
           <Container>
             <Title>Race</Title>
 
-            <Text>Human Variant</Text>
+            <InlineEdit placeholder='Human' path='race' value={race} />
           </Container>
 
           <Container>
-            <Title>background</Title>
+            <Title>Background</Title>
 
-            <Text>Solider</Text>
+            <InlineEdit placeholder='Solider' path='background' value={background} />
           </Container>
 
           <Container>
             <Title>Languages</Title>
 
-            <Text>Common, Celestial</Text>
+            <InlineEdit placeholder='common' path='languages' value={languages} />
           </Container>
         </ListItem>
 
         <ListItem maxHeight='150px' direction='column' margin='10px 0 0 0' padding='10px'>
           <Title margin='0 0 10px 0'>Backstory</Title>
 
-          <Text size='0.8em'>Goblin Slayer was once an ordinary boy in a village, who wanted to be an adventurer when he grew up. One day, his best friend left to work on a farm for a few days, and the two fought because he couldn't go with her. Later that night, his village was attacked by goblins and everyone he knew was killed.</Text>
+          <InlineEdit placeholder='Heres my backstory :D' path='backstory' value={backstory} />
         </ListItem>
 
         <ListItem maxHeight='400px' margin='10px 0 0 0' padding='10px'>
@@ -91,18 +93,16 @@ const InfoTab = (props) => {
           <Container width='100%' margin='0 10px 0 0'>
             <Title margin='0 0 10px 0'>Allies</Title>
 
-            <Text size='0.8em'>
-              Ace the Human (Captain), Mako the Half-Elf (Deceased, former First Mate), Jan Hagel the Tiefling (deckhand), Muldan the Dwarf (First Mate), Trost the Dwarf (Shipwright), Keleseth The Elf, Hooktusk the Troll, Patches the Human, (Boarding Party)
-            </Text>
+            <InlineEdit placeholder='Its just me, myself, and I' path='allies' value={allies} />
           </Container>
 
           <Container noFlex>
             <Container width='200px' height='200px'>
               <Title align='center'>Organization</Title>
               <Container>
-                <img style={{ width: '100%'}} src='https://cdn.discordapp.com/emojis/536669809715445770.png?v=1' alt='thing' />
+                <img style={{ width: '100%'}} src={img} alt='thing' />
               </Container>
-              <Text align='center'>Sleeping Knights</Text>
+              <InlineEdit placeholder='Organization Name' path='organization.name' value={name} />
             </Container>
           </Container>
         </ListItem>

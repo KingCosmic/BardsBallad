@@ -1,28 +1,61 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import ListItem from '../atoms/ListItem';
 import CheckBox from '../atoms/CheckBox';
 import Text from '../atoms/Text';
 
+import { connect } from 'react-redux';
+import { updateData, revertData } from '../reducers/characters';
+
+import { determinMod } from '../helpers'
+
 const Value = styled(Text)`
   text-decoration: underline ${props => props.theme.grey};
 `
 
-const Skill = (props) => {
-  return (
-    <ListItem alignItems='center'>
-      <CheckBox margin='0 5px 0 0' checked={props.efficient}/>
+class Skill extends Component {
+  constructor(props) {
+    super(props);
 
-      <Value size='0.8em' margin='0 5px 0 0'>{props.value}</Value>
+    this.state = {
+      efficient: this.props.efficient
+    }
 
-      <Text size='0.8em'>{props.skill}</Text>
+    this.handleClick = this.handleClick.bind(this);
+  }
 
-      {
-        (props.stat) ? <Text size='0.8em' margin='0 0 0 5px'>({props.stat})</Text> : null
-      }
-    </ListItem>
-  )
+  handleClick() {
+    const { path, efficient } = this.props;
+
+    if (efficient !== this.state.efficient) {
+      return this.props.revertData(path);
+    } 
+
+    this.props.updateData(path, !efficient);
+  }
+  
+  render() {
+    const { efficient, value, skill, stat, prof } = this.props;
+
+    const mod = determinMod(value);
+
+    return (
+      <ListItem alignItems='center'>
+        <CheckBox onClick={this.handleClick} margin='0 5px 0 0' checked={efficient}/>
+
+        <Value size='0.8em' margin='0 5px 0 0'>{efficient ? mod + prof : mod}</Value>
+
+        <Text size='0.8em'>{skill}</Text>
+
+        {
+          (stat) ? <Text size='0.8em' margin='0 0 0 5px'>({stat})</Text> : null
+        }
+      </ListItem>
+    )
+  }
 }
 
-export default Skill;
+const mapStateToProps = (state) => ({})
+
+export default connect(mapStateToProps, { updateData, revertData })(Skill);
