@@ -1,6 +1,9 @@
 import cloneDeep from 'lodash.clonedeep'
 import merge from 'lodash.merge';
 
+import nanoid from 'nanoid/generate';
+import lowercased from 'nanoid-dictionary/lowercase';
+
 import api from '../api';
 
 /**
@@ -8,15 +11,18 @@ import api from '../api';
  * 
  * These here are our action types defined for later use
  */
-const LOAD_ALL = 'LOAD_ALL_CHARACTERS'
-const LOAD_ONE = 'LOAD_ONE_CHARACTER'
-const ADD_FEAT = 'ADD_FEAT'
-const UPDATE_FEAT = 'UPDATE_FEAT'
-const CHANGE_CHARACTER = 'CHANGE_CHARACTER'
-const CREATE_CHARACTER = 'CREATE_CHARACTER'
-const UPDATE_CHARACTER = 'UPDATE_CHARACTER'
-const REVERT_CHARACTER = 'REVERT_CHARACTER'
-const SYNC_CHARACTER = 'SYNC_CHARACTER'
+export const LOAD_ALL = 'LOAD_ALL_CHARACTERS'
+export const LOAD_ONE = 'LOAD_ONE_CHARACTER'
+export const ADD_FEAT = 'ADD_FEAT'
+export const UPDATE_FEAT = 'UPDATE_FEAT'
+export const ADD_SPELL = 'ADD_SPELL'
+export const UPDATE_SPELL = 'UPDATE_SPELL'
+export const CHANGE_CHARACTER = 'CHANGE_CHARACTER'
+export const CREATE_CHARACTER = 'CREATE_CHARACTER'
+export const UPDATE_CHARACTER = 'UPDATE_CHARACTER'
+export const LEVEL_UP = 'LEVEL_UP'
+export const REVERT_CHARACTER = 'REVERT_CHARACTER'
+export const SYNC_CHARACTER = 'SYNC_CHARACTER'
 
 /**
  * ACTIONS
@@ -72,6 +78,11 @@ export const updateData = (path, data) => (dispatch) => dispatch({
   }
 })
 
+export const levelUp = () => (dispatch) => dispatch({
+  type: LEVEL_UP,
+  payload: {}
+})
+
 export const addFeat = () => (dispatch) => dispatch({
   type: ADD_FEAT,
   payload: {}
@@ -79,7 +90,17 @@ export const addFeat = () => (dispatch) => dispatch({
 
 export const updateFeat = (id, data) => (dispatch) => dispatch({
   type: UPDATE_FEAT,
+  payload: { id, data }
+})
 
+export const addSpell = (level) => (dispatch) => dispatch({
+  type: ADD_SPELL,
+  payload: { level }
+})
+
+export const updateSpell = (id, data) => (dispatch) => dispatch({
+  type: UPDATE_SPELL,
+  payload: { id, data }
 })
 
 export const revertData = (path) => (dispatch) => dispatch({
@@ -130,8 +151,84 @@ actions[UPDATE_CHARACTER] = (state, { payload: { path, data } }) => {
   return Object.assign({}, state, newstate);
 }
 
-actions[ADD_FEAT] = (state, { payload: { feat } }) => 
-  merge({}, state, { character: { feats: [...state.character.feats, feat ] } })
+const regex = /([{](\w+)[}])/g
+
+actions[LEVEL_UP] = (state) => {
+  // TODO: get this setup to work right.
+}
+
+actions[ADD_FEAT] = (state) =>  {
+  let id = nanoid(lowercased, 24)
+
+  return merge({}, state, { update: { empty: false, data: { feats: [...state.update.data.feats || [], { name: 'new feat', uses: 0, description: 'click to edit me', id, new: true } ] } } })
+}
+
+actions[UPDATE_FEAT] = (state, { payload: { id, data } }) => {
+  let feats = cloneDeep(state.update.data.feats || []);
+  
+  let update = { ...data, id }
+
+  let isUpdated = false;
+
+  for (let f = 0; f < feats.length; f++) {
+    let feat = feats[f];
+
+    if (feat.id === id) {
+      feats[f] = merge(feats[f], update);
+      isUpdated = true
+    }
+
+  }
+
+  if (!isUpdated) feats.push(update);
+
+  return merge(state, { update: { data: { feats }, empty: false } });
+}
+
+actions[ADD_SPELL] = (state, { payload: { level } }) =>  {
+  let id = nanoid(lowercased, 24)
+
+  return merge({}, state, { update: { empty: false, data: { spells: [...state.update.data.spells || [],
+    {
+      id,
+      level,
+      name: 'New Spell',
+      school: 'divination',
+      castingTime: '1 action',
+      range: '15 feet',
+      verbal: false,
+      somatic: false,
+      material: [],
+      concentration: false,
+      ritual: false,
+      duration: '1 minute',
+      description: 'Here\'s your new spell edit it to your hearts content bud.',
+      new: true
+    }
+  ] } } })
+}
+
+actions[UPDATE_SPELL] = (state, { payload: { id, data } }) => {
+  let spells = cloneDeep(state.update.data.spells || []);
+  
+  let update = { ...data, id }
+
+  let isUpdated = false;
+
+  for (let s = 0; s < spells.length; s++) {
+    let spell = spells[s];
+
+    if (spell.id === id) {
+      spells[s] = merge(spells[s], update);
+      isUpdated = true
+    }
+
+  }
+
+  if (!isUpdated) spells.push(update);
+
+  return merge(state, { update: { data: { spells }, empty: false } });
+}
 
 actions[REVERT_CHARACTER] = (state, { payload: { path } }) => {
   let newstate = cloneDeep(state);

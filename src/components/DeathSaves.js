@@ -12,21 +12,21 @@ const DeathSaves = (props) => {
   return (
     <GridItem column='auto / span 6' alignItems='center' bg ol>
 
-      <Text color='green' size='0.9em' weight='500'>SUCCESSES</Text>
+      <Text color='green' size='0.9em' header>SUCCESSES</Text>
       <Container direction='row' width='calc(2.4em + 10px)' justifyContent='space-between'>
         <CheckBox checked={ds.success.first} />
         <CheckBox checked={ds.success.second} />
         <CheckBox checked={ds.success.third} />
       </Container>
 
-      <Text color='red' size='0.9em' weight='500'>FAILURES</Text>
+      <Text color='red' size='0.9em' header>FAILURES</Text>
       <Container direction='row' width='calc(2.4em + 10px)' justifyContent='space-between'>
         <CheckBox checked={ds.fails.first} failed/>
         <CheckBox checked={ds.fails.second} failed/>
         <CheckBox checked={ds.fails.third} failed/>
       </Container>
 
-      <Title>DEATH SAVES</Title>
+      <Title header>DEATH SAVES</Title>
     </GridItem>
   )
 }

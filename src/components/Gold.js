@@ -9,8 +9,8 @@ const Gold = (props) => {
     <GridItem column='auto / span 2' height='30px' direction='row'
       justifyContent='space-around' alignItems='center' bg ol
     >
-      <Title>{props.type}</Title>
-      <Text >{props.amount}</Text>
+      <Title header>{props.type}</Title>
+      <Text header>{props.amount}</Text>
     </GridItem>
   )
 }

@@ -1,68 +1,78 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { Component } from 'react';
 
 import Container from '../atoms/Container';
-import List from '../atoms/List';
 import Text from '../atoms/Text';
 
-import SpellTab from './SpellTab';
-import Spell from './Spell';
+import SpellInfo from './SpellInfo';
+import SpellList from './SpellList';
 
-const SpellsContainer = styled(Container)`
-  border-bottom: 1px solid ${props => props.theme.almostblack};
-`
+import { mergeUpdates } from '../helpers';
+import InlineEdit from '../atoms/InlineEdit';
 
-const renderSpells = (spells) => {
-  return spells.map(spell => <Spell spell={spell} /> )
-}
+class SpellsTab extends Component {
+  constructor(props) {
+    super(props);
 
-const SpellsTab = (props) => {
-  return (
-    <Container height='100%' width='100%' justifyContent='space-between'>
-      <Container direction='row' height='95%' margin='0 20px 10px 0' padding='20px'>
-        <Container justifyContent='space-between'>
-          <SpellTab section={0} usesLeft={0} maxUses={0} />
-          <SpellTab section={1} usesLeft={4} maxUses={4} />
-          <SpellTab section={2} usesLeft={3} maxUses={3} />
-          <SpellTab section={3} usesLeft={2} maxUses={2} />
-          <SpellTab section={4} usesLeft={0} maxUses={0} />
-          <SpellTab section={5} usesLeft={0} maxUses={0} />
-          <SpellTab section={6} usesLeft={0} maxUses={0} />
-          <SpellTab section={7} usesLeft={0} maxUses={0} />
-          <SpellTab section={8} usesLeft={0} maxUses={0} />
-          <SpellTab section={9} usesLeft={0} maxUses={0} />
+    this.state = {
+      currentSpell: '',
+      editing: false
+    }
+
+    this.changeSpell = this.changeSpell.bind(this);
+    this.editSpell = this.editSpell.bind(this);
+  }
+
+  changeSpell(id) {
+    this.setState({
+      currentSpell: id,
+      editing: false
+    })
+  }
+
+  editSpell() {
+    this.setState({
+      editing: true
+    })
+  }
+
+  render() {
+    const { char: { spells, spellSlots }, addSpell, data } = this.props;
+    const { currentSpell, editing } = this.state;
+
+    const spellData = mergeUpdates(spells, data.spells || []);
+
+    const spell = currentSpell === '' ? spellData[0] : spellData.find(spell => spell.id === currentSpell);
+
+    return (
+      <Container height='calc(100% - 30px)' width='100%' padding='15px' justifyContent='space-between'>
+        <Container height='90%' width='100%' direction='row' bg>
+
+          <SpellList changeSpell={this.changeSpell} spells={spellData} spell={spell} slots={spellSlots} addSpell={addSpell} />
+
+          <SpellInfo spell={spell || {}} editing={editing} editSpell={this.editSpell} />
         </Container>
 
-        <Container height='100%' width='80%' margin='0 0 0 20px' bg>
-          <SpellsContainer direction='row' height='20px' padding='10px'>
-            <Container width='4em'><Text>PREP</Text></Container>
-
-            <Container width='30%'><Text>NAME</Text></Container>
-
-            <Container width='30%'><Text>TAGS</Text></Container>
-          </SpellsContainer>
-          <List height='calc(100% - 20px)' flowY='scroll'>
-            {renderSpells([
-              {
-                name: 'Guidance',
-                prepared: false,
-                type: 'normal',
-                level: 0,
-                tags: ['buff', 'ability check']
-              },
-            ])}
-          </List>
+        <Container direction='row' justifyContent='space-evenly' alignItems='center'>
+          <Container>
+            <InlineEdit placeholder='wizard' path='castingClass' value={'WIZARD'} noGrow/>
+            <Text>CLASS</Text>
+          </Container>
+          <Container>
+            <InlineEdit placeholder='INT' path='castingAbility' value={'INT'} noGrow/>
+            <Text>ABILITY</Text>
+          </Container>
+          <Container>
+            <InlineEdit placeholder='15' path='castingDC' value={15} noGrow/>
+            <Text>DC</Text>
+          </Container>
+          <Container>
+            <InlineEdit placeholder='7' path='castingBonus' value={7} align='center' noGrow/>
+            <Text align='center'>BONUS</Text>
+          </Container>
         </Container>
       </Container>
-
-      <Container direction='row' height='5%' justifyContent='space-evenly'>
-        <Text>CLASS: WIZARD</Text>
-        <Text>ABILITY: INT</Text>
-        <Text>DC: 15</Text>
-        <Text>BONUS +7</Text>
-      </Container>
-    </Container>
-  )
+    )
+  }
 }
 
 export default SpellsTab;

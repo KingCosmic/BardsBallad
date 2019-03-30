@@ -6,7 +6,7 @@ const List = styled.ul`
 
   ${props => props.flowX && css` overflow-x: ${props => props.flowX}; `}
   ${props => props.flowY && css`
-    overflow-y: ${props => props.flowY}; 
+    overflow-y: 'auto'; 
     
     /* width */
     &::-webkit-scrollbar {

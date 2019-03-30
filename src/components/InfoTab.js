@@ -20,9 +20,9 @@ const InfoTab = (props) => {
   return (
     <Container flowY='scroll' width='calc(100% - 20px)' height='calc(100% - 20px)' padding='10px'>
       <List>
-        <ListItem height='auto'>
+        <ListItem>
           <Container height='450px' width='300px' alignItems='center'>
-            <Title>Appearance</Title>
+            <Title header>Appearance</Title>
 
             <Container noFlex width='100%' height='100%'>
               <img style={{ display: 'block', height: '100%', margin: '0 auto' }} src='https://cdn.discordapp.com/attachments/493961153995735060/536486332663332874/GoblinSlayer.png' alt='appearance' />
@@ -31,25 +31,25 @@ const InfoTab = (props) => {
 
           <Container grow='1' margin='0 0 0 10px'>
             <Container grow='1' padding='10px'>
-              <Title margin='0 0 10px 0' >Personality Traits</Title>
+              <Title margin='0 0 10px 0' header>Personality Traits</Title>
 
               <InlineEdit placeholder='here are some of my traits' path='personality.traits' value={traits} />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0' padding='10px'>
-              <Title margin='0 0 10px 0' >Ideals</Title>
+              <Title margin='0 0 10px 0' header>Ideals</Title>
 
               <InlineEdit placeholder='Here are my ideals' path='personality.ideals' value={ideals} />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0' padding='10px'>
-              <Title margin='0 0 10px 0' >Bonds</Title>
+              <Title margin='0 0 10px 0' header>Bonds</Title>
 
               <InlineEdit placeholder='These are my bonds' path='personality.bonds' value={bonds} />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0' padding='10px'>
-              <Title margin='0 0 10px 0' >Flaws</Title>
+              <Title margin='0 0 10px 0' header>Flaws</Title>
 
               <InlineEdit placeholder='I have no flaws :angry:' path='personality.flaws' value={flaws} />
             </Container>
@@ -58,32 +58,32 @@ const InfoTab = (props) => {
 
         <ListItem margin='10px 0 0 0' padding='10px' justifyContent='space-around'>
           <Container>
-            <Title>Alignment</Title>
+            <Title header>Alignment</Title>
 
             <InlineEdit placeholder='Chaotic/Stupid' path='alignment' value={alignment} />
           </Container>
 
           <Container>
-            <Title>Race</Title>
+            <Title header>Race</Title>
 
             <InlineEdit placeholder='Human' path='race' value={race} />
           </Container>
 
           <Container>
-            <Title>Background</Title>
+            <Title header>Background</Title>
 
             <InlineEdit placeholder='Solider' path='background' value={background} />
           </Container>
 
           <Container>
-            <Title>Languages</Title>
+            <Title header>Languages</Title>
 
             <InlineEdit placeholder='common' path='languages' value={languages} />
           </Container>
         </ListItem>
 
         <ListItem maxHeight='150px' direction='column' margin='10px 0 0 0' padding='10px'>
-          <Title margin='0 0 10px 0'>Backstory</Title>
+          <Title margin='0 0 10px 0' header>Backstory</Title>
 
           <InlineEdit placeholder='Heres my backstory :D' path='backstory' value={backstory} />
         </ListItem>
@@ -91,14 +91,14 @@ const InfoTab = (props) => {
         <ListItem maxHeight='400px' margin='10px 0 0 0' padding='10px'>
 
           <Container width='100%' margin='0 10px 0 0'>
-            <Title margin='0 0 10px 0'>Allies</Title>
+            <Title margin='0 0 10px 0' header>Allies</Title>
 
             <InlineEdit placeholder='Its just me, myself, and I' path='allies' value={allies} />
           </Container>
 
           <Container noFlex>
             <Container width='200px' height='200px'>
-              <Title align='center'>Organization</Title>
+              <Title align='center' header>Organization</Title>
               <Container>
                 <img style={{ width: '100%'}} src={img} alt='thing' />
               </Container>

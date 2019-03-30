@@ -21,6 +21,8 @@ const ListItem = styled.li`
     }
   `}
 
+  ${props => props.cursor && css` cursor: pointer; `}
+
   ${props => props.bg && css`
     background-color: ${(props) => props.theme.dark};
     outline: 1px solid ${(props) => props.theme.almostblack};

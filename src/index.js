@@ -1,7 +1,9 @@
 import React from 'react';
+import { Grommet } from 'grommet';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
+import './css/fonts.scss';
 import './index.css';
 
 import { ThemeProvider } from 'styled-components';

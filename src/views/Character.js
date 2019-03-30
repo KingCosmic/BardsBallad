@@ -1,30 +1,31 @@
 import React, { Component } from 'react';
 import styled, { css } from 'styled-components';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 
 import Container from '../atoms/Container';
 import Text from '../atoms/Text';
 
-// import EditOverlay from '../components/EditOverlay';
-
 import InfoTab from '../components/InfoTab';
 import SkillsTab from '../components/SkillsTab';
 import SpellsTab from '../components/SpellsTab';
-import InventoryTab from '../components/InventoryTab';
+import EquipmentTab from '../components/EquipmentTab';
+
+import FeaturesAndTraits from '../components/FeaturesAndTraits';
 
 import DataOptions from '../components/DataOptions';
 
 import CharacterStats from '../components/CharacterStats';
 
-import { loadOne, changeCharacter } from '../reducers/characters';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { loadOne, changeCharacter, addSpell } from '../reducers/characters';
 
 import styles from '../css/CharacterOverlay.module.scss';
 
 const Tab = styled(Text)`
   color: ${props => props.theme.text};
+  font-family: OpenSans;
   margin: 0;
-  padding: 0 5px 10px;
+  padding: 0 10px 10px;
 
   float: left;
 
@@ -87,25 +88,26 @@ class CharacterOverlay extends Component {
 
   render() {
     const { currentTab } = this.state;
+    const { character, addSpell, data } = this.props;
 
-    if (!this.props.character) return null
-
-    const char = this.props.character;
+    if (!character) return null
 
     return (
       <div className={styles.container}>
-        { /* <EditOverlay /> */ }
-
         <Container padding='0 15px'>
 
           <div className={styles.tabs}>
-            <Tab active={currentTab === 0 } onClick={() => this.changeTab(0)}>info</Tab>
+            <Tab active={currentTab === 0} onClick={() => this.changeTab(0)}>info</Tab>
 
-            <Tab active={currentTab === 1 } onClick={() => this.changeTab(1)}>skills</Tab>
+            <Tab active={currentTab === 1} onClick={() => this.changeTab(1)}>skills</Tab>
 
-            <Tab active={currentTab === 2 } onClick={() => this.changeTab(2)}>spells</Tab>
+            <Tab active={currentTab === 2} onClick={() => this.changeTab(2)}>spells</Tab>
 
-            <Tab active={currentTab === 3 } onClick={() => this.changeTab(3)}>inventory</Tab>
+            <Tab active={currentTab === 3} onClick={() => this.changeTab(3)}>equipment</Tab>
+
+            <Tab active={currentTab === 4} onClick={() => this.changeTab(4)}>combat</Tab>
+
+            <Tab active={currentTab === 5} onClick={() => this.changeTab(5)}>features & traits</Tab>
           </div>
 
           <DataOptions />
@@ -113,21 +115,23 @@ class CharacterOverlay extends Component {
         </Container>
 
 
-        <div className={styles.bottomContainer}>
+        <Container direction='row' width='100%' height='calc(100% - 43px)'>
           <div className={styles.tabContainer}>
             {
-              (currentTab === 0) ? <InfoTab char={char} /> :
+              (currentTab === 0) ? <InfoTab char={character} /> :
               
-              (currentTab === 1) ? <SkillsTab char={char} /> :
+              (currentTab === 1) ? <SkillsTab char={character} /> :
               
-              (currentTab === 2) ? <SpellsTab char={char} /> :
+              (currentTab === 2) ? <SpellsTab char={character} data={data} addSpell={addSpell} /> :
 
-              (currentTab === 3) ? <InventoryTab char={char} /> : ''
+              (currentTab === 3) ? <EquipmentTab char={character} /> :
+
+              (currentTab === 5) ? <FeaturesAndTraits char={character} /> : ''
             }
           </div>
 
-          <CharacterStats char={char} />
-        </div>
+          <CharacterStats char={character} />
+        </Container>
       </div>
     )
   }
@@ -136,8 +140,10 @@ class CharacterOverlay extends Component {
 const mapStateToProps = (state) => {
   return {
     characters: state.characters.characters,
-    character: state.characters.character
+    character: state.characters.character,
+    data: state.characters.update.data,
+    empty: state.characters.update.empty
   }
 }
 
-export default withRouter(connect(mapStateToProps, { loadOne, changeCharacter })(CharacterOverlay));
+export default withRouter(connect(mapStateToProps, { loadOne, changeCharacter, addSpell })(CharacterOverlay));

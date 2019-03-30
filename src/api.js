@@ -1,7 +1,5 @@
 import decode from 'jwt-decode';
 
-import { createObjectFromData } from './helpers';
-
 class ApiService {
   // Initializing important variables
   constructor() {
@@ -20,7 +18,7 @@ class ApiService {
     return this.fetch(`${this.domain}/characters/${id}`, {
       method: 'POST',
       body: JSON.stringify({
-        data: createObjectFromData(data)
+        data
       })
     }).then(res => {
       return Promise.resolve(res)

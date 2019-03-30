@@ -12,7 +12,7 @@ const EXP = (props) => {
 
   return (
     <Container grow='1'>
-      <Text size='0.9em'>EXP: {current}/{needed}</Text>
+      <Text size='0.9em' header>EXP: {current}/{needed}</Text>
       <BarContainer width='100%' height='10px' bg ol>
         <BarFiller width={determinPercent(current, needed)} color='gold' />
       </BarContainer>

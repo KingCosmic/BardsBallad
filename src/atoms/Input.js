@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Input = styled.input`
   width: ${props => props.width || '250px'};
@@ -7,7 +7,7 @@ const Input = styled.input`
   margin: ${props => props.margin || 0};
   padding: ${props => props.padding || 0};
 
-  text-align: ${props => props.align || 'left'};
+  ${props => !props.noAlign && css` text-align: ${props => props.align || 'left'}; `}
 `
 
 export default Input;

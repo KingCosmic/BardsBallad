@@ -17,16 +17,22 @@ import HitDice from './HitDice';
 import DeathSaves from './DeathSaves';
 import CharacterStat from './CharacterStat';
 
-import levels from '../data/levels';
+import { connect } from 'react-redux';
+import { editItem } from '../reducers/ui';
+import { updateData, revertData } from '../reducers/characters';
 
 const CharacterStats = (props) => {
+  const { char, data, editItem, updateData, editing, revertData } = props;
+
+  const propData = { data, editItem, updateData, editing, revertData };
+
   const {
     name, job, level, hp, exp, ac,
+    passivePerception, proficiency,
+    initiative,
     hitdice, deathsaves,
-    speed, skills, pieces, stats
-  } = props.char;
-
-  const prof = levels[level].prof;
+    speed, pieces, stats
+  } = char;
 
   const { copper, silver, etherium, gold, platinum } = pieces;
 
@@ -40,11 +46,11 @@ const CharacterStats = (props) => {
         <Name name={name} job={job} level={level} />
 
         <GridItem column='auto / span 10'>
-          <HP hp={hp} />
+          <HP hp={hp} path='hp' {...propData} />
           <EXP exp={exp} />
         </GridItem>
 
-        <AC ac={ac} />
+        <AC ac={ac} path='ac' {...propData} />
 
         <Gold type='CP' amount={copper} />
         <Gold type='SP' amount={silver} />
@@ -52,23 +58,31 @@ const CharacterStats = (props) => {
         <Gold type='GP' amount={gold} />
         <Gold type='PP' amount={platinum} />
 
-        <HitDice hd={hitdice} />
+        <HitDice hd={hitdice} {...propData} />
         <DeathSaves ds={deathsaves} />
 
-        <PassivePerception wis={wisdom} skills={skills} prof={prof} />
-        <Speed speed={speed} />
-        <Initiatve dex={dexterity} />
-        <Proficiency value={prof} />
+        <PassivePerception value={passivePerception} path='passivePerception' {...propData} />
+        <Speed speed={speed} path='speed' {...propData} />
+        <Initiatve value={initiative} path='initiative' {...propData} />
+        <Proficiency value={proficiency} path='proficiency' {...propData} />
 
-        <CharacterStat name='STR' val={strength} />
-        <CharacterStat name='DEX' val={dexterity} />
-        <CharacterStat name='CON' val={constitution} />
-        <CharacterStat name='INT' val={intelligence} />
-        <CharacterStat name='WIS' val={wisdom} />
-        <CharacterStat name='CHA' val={charisma} />
+        <CharacterStat name='STR' val={strength} path='stats.strength' {...propData} />
+        <CharacterStat name='DEX' val={dexterity} path='stats.dexterity' {...propData} />
+        <CharacterStat name='CON' val={constitution} path='stats.constitution' {...propData} />
+        <CharacterStat name='INT' val={intelligence} path='stats.intelligence' {...propData} />
+        <CharacterStat name='WIS' val={wisdom} path='stats.wisdom' {...propData} />
+        <CharacterStat name='CHA' val={charisma} path='stats.charisma' {...propData}/>
       </Grid>
     </Container>
   )
 }
 
-export default CharacterStats;
+const mapStateToProps = (state) => {
+  return {
+    editing: state.ui.editing,
+    data: state.characters.update.data,
+    empty: state.characters.update.empty
+  }
+}
+
+export default connect(mapStateToProps, { editItem, updateData, revertData })(CharacterStats);

@@ -6,20 +6,24 @@ import { updateData, revertData } from '../reducers/characters';
 
 const TextArea = styled.textarea`
   color: ${props => props.theme[props.color] || props.theme.text};
+  width: ${props => props.width || 'auto' };
+  height: ${props => props.height || 'auto' };
   ${props => props.align && css` text-align: ${props => props.align}; `} 
-  font-size: 0.8em;
-  font-weight: 500;
+  font-size: 0.9em;
+  font-weight: 100;
 
   margin: ${props => props.margin || 0};
 
-  display: flex;
-  flex-grow: 1;
+  ${props => !props.noGrow && css`
+    display: flex;
+    flex-grow: 1;
+  `}
   border-style: none;
   outline: none;
   resize: none;
   cursor: pointer;
 
-  background-color: ${props => props.changed ? props.theme.green : 'transparent'};
+  background-color: transparent;
 
   &:hover {
     background-color: ${props => props.theme.dark}
