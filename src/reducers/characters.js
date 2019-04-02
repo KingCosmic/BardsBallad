@@ -8,7 +8,7 @@ import api from '../api';
 
 /**
  * ACTIONS TYPES
- * 
+ *
  * These here are our action types defined for later use
  */
 export const LOAD_ALL = 'LOAD_ALL_CHARACTERS'
@@ -23,10 +23,12 @@ export const UPDATE_CHARACTER = 'UPDATE_CHARACTER'
 export const LEVEL_UP = 'LEVEL_UP'
 export const REVERT_CHARACTER = 'REVERT_CHARACTER'
 export const SYNC_CHARACTER = 'SYNC_CHARACTER'
+export const UPDATE_DEATH_SAVES_SUCCESSES = 'UPDATE_DEATH_SAVES_SUCCESSES'
+export const UPDATE_DEATH_SAVES_FAILS = 'UPDATE_DEATH_SAVES_FAILS'
 
 /**
  * ACTIONS
- * 
+ *
  * Here we define our actions
  */
 export const loadAll = () => (dispatch) => {
@@ -110,24 +112,40 @@ export const revertData = (path) => (dispatch) => dispatch({
   }
 })
 
+export const updateDeathSaveSuccesses = (count) => (dispatch) => {
+  dispatch({
+    type: UPDATE_DEATH_SAVES_SUCCESSES,
+    payload: {
+      count,
+    }
+  });
+};
+
+export const updateDeathSaveFails = (count) => (dispatch) => dispatch({
+  type: UPDATE_DEATH_SAVES_FAILS,
+  payload: {
+    count,
+  }
+});
+
 export const syncData = (id, data) => (dispatch) => {
   api.updateCharacter(id, data)
-  .then(({ character }) => {
-    dispatch({
-      type: SYNC_CHARACTER,
-      payload: { character }
-    })
-  })
-}
+    .then(({ character }) => {
+      dispatch({
+        type: SYNC_CHARACTER,
+        payload: { character }
+      });
+    });
+};
 
 /**
  * HANDLERS
- * 
+ *
  * Here we define handlers for our actions
  */
 const actions = {}
 
-actions[LOAD_ALL] = (state, { payload: { characters } }) => 
+actions[LOAD_ALL] = (state, { payload: { characters } }) =>
   Object.assign({}, state, { characters, loaded: true });
 
 actions[LOAD_ONE] = (state, { payload: { characters } }) =>
@@ -139,7 +157,7 @@ actions[CHANGE_CHARACTER] = (state, { payload: { id } }) => {
   return Object.assign({}, state, { character })
 }
 
-actions[CREATE_CHARACTER] = (state, { payload: { character } }) => 
+actions[CREATE_CHARACTER] = (state, { payload: { character } }) =>
   Object.assign({}, state, { characters: [...state.characters, character]})
 
 
@@ -165,7 +183,7 @@ actions[ADD_FEAT] = (state) =>  {
 
 actions[UPDATE_FEAT] = (state, { payload: { id, data } }) => {
   let feats = cloneDeep(state.update.data.feats || []);
-  
+
   let update = { ...data, id }
 
   let isUpdated = false;
@@ -210,7 +228,7 @@ actions[ADD_SPELL] = (state, { payload: { level } }) =>  {
 
 actions[UPDATE_SPELL] = (state, { payload: { id, data } }) => {
   let spells = cloneDeep(state.update.data.spells || []);
-  
+
   let update = { ...data, id }
 
   let isUpdated = false;
@@ -241,6 +259,28 @@ actions[REVERT_CHARACTER] = (state, { payload: { path } }) => {
 
 actions[SYNC_CHARACTER] = (state, { payload: { character } }) =>
   Object.assign({}, state, { character, update: { empty: true, data: {} } })
+
+actions[UPDATE_DEATH_SAVES_SUCCESSES] = (state, { payload: { count } }) => {
+  const successesSaves = {
+    first: count > 0 ? true : false,
+    second: count > 1 ? true : false,
+    third: count > 2 ? true : false
+  };
+  return merge({}, state, { character: {deathsaves: {success: successesSaves}}});
+};
+
+actions[UPDATE_DEATH_SAVES_FAILS] = (state, { payload: { count } }) => {
+  const deathSaves = {
+    first: count > 0 ? true : false,
+    second: count > 1 ? true : false,
+    third: count > 2 ? true : false
+  };
+  let newState = Object.assign ({}, state)
+
+  newState.character.deathsaves.fails = deathSaves;
+
+  return merge({}, newState);
+};
 
 // REDUCER
 
