@@ -18,17 +18,13 @@ class Skill extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      efficient: this.props.efficient
-    }
-
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
-    const { path, efficient } = this.props;
+    const { path, efficient, wasEfficient } = this.props;
 
-    if (efficient !== this.state.efficient) {
+    if (efficient !== wasEfficient) {
       return this.props.revertData(path);
     } 
 

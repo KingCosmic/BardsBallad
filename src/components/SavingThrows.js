@@ -15,7 +15,9 @@ const renderThrows = (throws, stats, data, prof) => {
     const value = data[`stats.${thr}`] || stats[thr];
 
     list.push(
-      <Skill key={skill} value={value} skill={skill} efficient={efficient} path={path} prof={prof} />
+      <Skill key={skill} value={value} skill={skill} efficient={efficient} path={path} prof={prof}
+        wasEfficient={throws[thr]}
+      />
     )
   })
 

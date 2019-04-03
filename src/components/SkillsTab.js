@@ -5,12 +5,14 @@ import Container from '../atoms/Container';
 import SavingThrows from './SavingThrows';
 import Title from '../atoms/Title';
 import List from '../atoms/List';
+import ListItem from '../atoms/ListItem';
 import Skills from './Skills';
 import Feats from './Feats';
 
 import { connect } from 'react-redux';
 
 import levels from '../data/levels'
+import Senses from './Senses';
 
 const SkillsTab = (props) => {
   const { char: { savingThrows, skills, stats, proficiency }, data } = props;
@@ -31,15 +33,15 @@ const SkillsTab = (props) => {
       </Container>
 
       <Container height='100%'>
-        <Container height='calc(30% - 20px)' margin='0 0 20px 0' padding='10px'>
-          <Title margin='0 0 5px 0' header>Senses</Title>
+        <Senses stats={stats} data={data} skills={skills} prof={prof} />
 
-          <List width='100%'>
-            
+        <Container height='calc(70% - 20px)' padding='10px'>
+          <Title margin='0 0 5px 0' header>Proficiencies</Title>
+
+          <List flowY='scroll' width='100%' barWidth='0px'>
+
           </List>
         </Container>
-
-        <Skills skills={skills} stats={stats} data={data} prof={prof} />
       </Container>
 
       

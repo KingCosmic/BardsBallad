@@ -4,8 +4,11 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { loadAll, createCharacter } from '../reducers/characters';
+import { startCharacterCreation, changeCharacterCreationStage } from '../reducers/ui';
 
 import Container from '../atoms/Container';
+
+import { ChooseName } from '../components/CharacterCreationStages';
 
 import Character from '../components/Character';
 
@@ -40,10 +43,24 @@ class Characters extends Component {
 
   render() {
 
-    const { characters, createCharacter } = this.props;
+    const { characters, createCharacter, creatingCharacter, creationStage,
+      startCharacterCreation, changeCharacterCreationStage
+    } = this.props;
+
+    console.log(creatingCharacter)
+
+    if (creatingCharacter) {
+      return (
+        <Container width='100%' height='100%' >
+          {
+            (creationStage === 1) ? <ChooseName /> : ''
+          }
+        </Container>
+      )
+    }
 
     return (
-      <Container>
+      <Container width='100%' height='100%'>
         {
 
           (characters.length === 0) ?
@@ -57,7 +74,7 @@ class Characters extends Component {
           })
         }
 
-        <AddCharacter onClick={createCharacter}>Add Character</AddCharacter>
+        <AddCharacter onClick={startCharacterCreation}>Add Character</AddCharacter>
       </Container>
     )
   }
@@ -66,9 +83,11 @@ class Characters extends Component {
 const mapStateToProps = (state) => {
   return {
     characters: state.characters.characters,
-    loaded: state.characters.loaded
+    loaded: state.characters.loaded,
+    creatingCharacter: state.ui.creatingCharacter,
+    creationStage: state.ui.creationStage
   }
 }
 
 
-export default withRouter(connect(mapStateToProps, { loadAll, createCharacter })(Characters));
+export default withRouter(connect(mapStateToProps, { loadAll, createCharacter, startCharacterCreation, changeCharacterCreationStage })(Characters));

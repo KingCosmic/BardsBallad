@@ -27,7 +27,7 @@ const renderSkills = (skills, stats, data, prof) => {
     list.push(
       <Skill
         key={skill} value={value} skill={skill} stat={stat} efficient={efficient}
-        path={path} prof={prof}
+        path={path} prof={prof} wasEfficient={skills[skill]}
       />
     )
   })
