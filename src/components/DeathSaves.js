@@ -24,16 +24,16 @@ const DeathSaves = (props) => {
 
       <Text color='green' size='0.9em' header>SUCCESSES</Text>
       <Container direction='row' width='calc(2.4em + 10px)' justifyContent='space-between'>
-        <CheckBox checked={ds.success.first} onClick={() => {props.updateDeathSaveSuccesses(figureOutDeathSaves(1, ds.success));}}/>
-        <CheckBox checked={ds.success.second} onClick={() => {props.updateDeathSaveSuccesses(figureOutDeathSaves(2, ds.success));}}/>
-        <CheckBox checked={ds.success.third} onClick={() => {props.updateDeathSaveSuccesses(figureOutDeathSaves(3, ds.success));}}/>
+        <CheckBox checked={ds && ds.success && ds.success.first} onClick={() => {props.updateDeathSaveSuccesses(figureOutDeathSaves(1, ds.success));}}/>
+        <CheckBox checked={ds && ds.success && ds.success.second} onClick={() => {props.updateDeathSaveSuccesses(figureOutDeathSaves(2, ds.success));}}/>
+        <CheckBox checked={ds && ds.success && ds.success.third} onClick={() => {props.updateDeathSaveSuccesses(figureOutDeathSaves(3, ds.success));}}/>
       </Container>
 
       <Text color='red' size='0.9em' header>FAILURES</Text>
       <Container direction='row' width='calc(2.4em + 10px)' justifyContent='space-between'>
-        <CheckBox checked={ds.fails.first} failed onClick={() => {props.updateDeathSaveFails(figureOutDeathSaves(1, ds.fails));}}/>
-        <CheckBox checked={ds.fails.second} failed onClick={() => {props.updateDeathSaveFails(figureOutDeathSaves(2, ds.fails));}}/>
-        <CheckBox checked={ds.fails.third} failed onClick={() => {props.updateDeathSaveFails(figureOutDeathSaves(3, ds.fails));}}/>
+        <CheckBox checked={ds && ds.fails && ds.fails.first} failed onClick={() => {props.updateDeathSaveFails(figureOutDeathSaves(1, ds.fails));}}/>
+        <CheckBox checked={ds && ds.fails && ds.fails.second} failed onClick={() => {props.updateDeathSaveFails(figureOutDeathSaves(2, ds.fails));}}/>
+        <CheckBox checked={ds && ds.fails && ds.fails.third} failed onClick={() => {props.updateDeathSaveFails(figureOutDeathSaves(3, ds.fails));}}/>
       </Container>
 
       <Title header>DEATH SAVES</Title>
