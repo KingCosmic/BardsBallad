@@ -7,6 +7,10 @@ const Input = styled.input`
   margin: ${props => props.margin || 0};
   padding: ${props => props.padding || 0};
 
+  background: rgba(230, 230, 230, 0.8);
+  border: none;
+  outline: 1px solid ${props => props.theme.almostblack};
+
   ${props => !props.noAlign && css` text-align: ${props => props.align || 'left'}; `}
 `
 

@@ -3,10 +3,10 @@ import styled from 'styled-components';
 const getColor = (props) => props.failed ? props.theme.red : props.theme.green;
 
 const CheckBox = styled.div`
-  width: 0.8em;
-  height: 0.8em;
+  width: 12px;
+  height: 12px;
 
-  border-radius: 0.4em;
+  border-radius: 2px;
 
   margin: ${props => props.margin || 0};
   padding: ${props => props.padding || 0};

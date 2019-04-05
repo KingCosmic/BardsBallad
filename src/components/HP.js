@@ -71,7 +71,7 @@ class HP extends Component {
     const { name, hp, editing, path, editItem, data } = this.props;
 
     const { max, current, temp } = data[path] ? Object.assign(hp, data[path]) : hp;
-    
+
     // check if we're editing this component :D
     if (editing === path) {
       return (
@@ -83,10 +83,10 @@ class HP extends Component {
     } else {
       return (
         <Container grow='1' onClick={() => editItem(path)}>
-          <Text size='0.9em' header>HP: {current}/{max}</Text>
+          <Text size='0.9em' header>HP: {current + temp}/{max}</Text>
 
           <BarContainer width='100%' height='10px' bg ol>
-            <BarFiller width={determinPercent(temp, max)} color='green' />
+            <BarFiller width={determinPercent(current + temp, max)} color='green' />
             <BarFiller width={determinPercent(current, max)} color='red' />
           </BarContainer>
         </Container>

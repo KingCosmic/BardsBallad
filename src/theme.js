@@ -1,5 +1,4 @@
 
-
 export default {
   light: '#36393F',
   dark: '#2C2F33',
@@ -15,6 +14,23 @@ export default {
   green: '#43B581',
   red: '#F04747',
 }
+
+/*
+export default {
+  dark: '#192227',
+  light: '#263238',
+
+  middleblack: '',
+  almostblack: '#0F1518',
+
+  grey: '#cccccc',
+
+  text: 'white',
+
+  gold: '#FFBF51',
+  green: '#c3e88d',
+  red: '#f07178'
+}*/
 
 /*
 const solarized = {
