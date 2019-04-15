@@ -6,6 +6,8 @@ const Container = styled.div`
   ${props => props.maxHeight && css` max-height: ${props => props.maxHeight}; `}
   ${props => props.maxWidth && css` max-width: ${props => props.maxWidth}; `}
 
+  ${props => props.flowWrap && css` overflow-wrap: break-word; `}
+
   ${props => props.float && css` float: left; `};
 
   ${props => props.flowX && css` overflow-x: ${props => props.flowX}; `}
@@ -22,7 +24,7 @@ const Container = styled.div`
       background-color: rgba(32, 34, 37, .6);
       border-radius: 10px;
     }
- 
+
     /* Handle */
     &::-webkit-scrollbar-thumb {
       background: ${props => props.theme.almostblack};
@@ -30,6 +32,8 @@ const Container = styled.div`
     }
 
   `}
+
+  ${props => props.underline && css` border-bottom: 1px solid ${props => props.theme.grey}; `}
 
   ${props => props.pos && css` position: ${props => props.pos}; `}
   ${props => props.top && css` top: ${props => props.top}; `}

@@ -6,7 +6,7 @@ import Input from '../../atoms/Input';
 
 const Name = () => {
   return (
-    <Container justifyContent='center' alignItems='center' height='100%'>
+    <Container justifyContent='center' alignItems='center' height='calc(100% - 80px)'>
       <Title>Choose your name.</Title>
       <Input defaultValue='Cosmic' padding='5px' margin='5px' />
     </Container>

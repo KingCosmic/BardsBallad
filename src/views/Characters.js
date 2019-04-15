@@ -8,8 +8,7 @@ import { startCharacterCreation, changeCharacterCreationStage } from '../reducer
 
 import Container from '../atoms/Container';
 
-import { ChooseName } from '../components/CharacterCreationStages';
-
+import CharacterCreation from '../components/CharacterCreation';
 import Character from '../components/Character';
 
 const AddCharacter = styled.div`
@@ -51,11 +50,7 @@ class Characters extends Component {
 
     if (creatingCharacter) {
       return (
-        <Container width='100%' height='100%' >
-          {
-            (creationStage === 1) ? <ChooseName /> : ''
-          }
-        </Container>
+        <CharacterCreation stage={creationStage} changeStage={changeCharacterCreationStage} />
       )
     }
 

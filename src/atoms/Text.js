@@ -11,6 +11,12 @@ const Text = styled.p`
 
   margin: ${props => props.margin || 0};
   ${props => props.float && css` float: ${props => props.float}; `}
+
+  ${props => props.hover && css`
+    &:hover {
+      color: ${props => props.theme[props.hover]};
+    }
+  `}
 `
 
 export default Text;

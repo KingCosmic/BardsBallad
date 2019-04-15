@@ -36,12 +36,6 @@ const Senses = (props) => {
 
   const wisdom = checkStat('wisdom', data, stats);
   const intelligence = checkStat('intelligence', data, stats);
-
-  console.log('re rendered')
-
-  console.log(data || {});
-  console.log(skills.perception)
-
   const perception = checkProficient('perception', data, skills);
   const investigation = checkProficient('investigation', data, skills);
   const insight = checkProficient('insight', data, skills);

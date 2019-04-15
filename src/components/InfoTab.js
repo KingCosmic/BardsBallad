@@ -20,35 +20,35 @@ const InfoTab = (props) => {
   return (
     <Container flowY='scroll' width='calc(100% - 20px)' height='calc(100% - 20px)' padding='10px'>
       <List>
-        <ListItem>
+        <ListItem margin='0 0 20px 0'>
           <Container height='450px' width='300px' alignItems='center'>
             <Title header>Appearance</Title>
 
-            <Container noFlex width='100%' height='100%'>
-              <img style={{ display: 'block', height: '100%', margin: '0 auto' }} src='https://cdn.discordapp.com/attachments/493961153995735060/536486332663332874/GoblinSlayer.png' alt='appearance' />
+            <Container noFlex width='100%' height='calc(100% - 22px)'>
+              <img style={{ display: 'block', height: '100%', margin: '0 auto' }} src='https://cdn.discordapp.com/attachments/391809595473002496/565996486874234890/adventurer.png' alt='appearance' />
             </Container>
           </Container>
 
-          <Container grow='1' margin='0 0 0 10px'>
-            <Container grow='1' padding='10px'>
+          <Container grow='1'>
+            <Container grow='1'>
               <Title margin='0 0 10px 0' header>Personality Traits</Title>
 
               <InlineEdit placeholder='here are some of my traits' path='personality.traits' value={traits} />
             </Container>
 
-            <Container grow='1' margin='10px 0 0 0' padding='10px'>
+            <Container grow='1' margin='10px 0 0 0'>
               <Title margin='0 0 10px 0' header>Ideals</Title>
 
               <InlineEdit placeholder='Here are my ideals' path='personality.ideals' value={ideals} />
             </Container>
 
-            <Container grow='1' margin='10px 0 0 0' padding='10px'>
+            <Container grow='1' margin='10px 0 0 0'>
               <Title margin='0 0 10px 0' header>Bonds</Title>
 
               <InlineEdit placeholder='These are my bonds' path='personality.bonds' value={bonds} />
             </Container>
 
-            <Container grow='1' margin='10px 0 0 0' padding='10px'>
+            <Container grow='1' margin='10px 0 0 0'>
               <Title margin='0 0 10px 0' header>Flaws</Title>
 
               <InlineEdit placeholder='I have no flaws :angry:' path='personality.flaws' value={flaws} />
@@ -72,7 +72,7 @@ const InfoTab = (props) => {
           <Container>
             <Title header>Background</Title>
 
-            <InlineEdit placeholder='Solider' path='background' value={background} />
+            <InlineEdit placeholder='Soldier' path='background' value={background} />
           </Container>
 
           <Container>
@@ -82,13 +82,13 @@ const InfoTab = (props) => {
           </Container>
         </ListItem>
 
-        <ListItem maxHeight='150px' direction='column' margin='10px 0 0 0' padding='10px'>
+        <ListItem direction='column' margin='10px 0 0 0' padding='10px'>
           <Title margin='0 0 10px 0' header>Backstory</Title>
 
-          <InlineEdit placeholder='Heres my backstory :D' path='backstory' value={backstory} />
+          <InlineEdit height='200px' placeholder='Heres my backstory :D' path='backstory' value={backstory} />
         </ListItem>
 
-        <ListItem maxHeight='400px' margin='10px 0 0 0' padding='10px'>
+        <ListItem margin='10px 0 0 0' padding='10px'>
 
           <Container width='100%' margin='0 10px 0 0'>
             <Title margin='0 0 10px 0' header>Allies</Title>

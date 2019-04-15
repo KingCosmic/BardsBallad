@@ -9,6 +9,8 @@ const races = [
   {
     id: 'vllpcwelpmspanzhztkcsdvw',
     name: 'Dragonborn',
+    source: 'PHB',
+    page: 32,
     size: medium,
     speed: 30,
     languages: ['common', 'draconic'],
@@ -16,6 +18,14 @@ const races = [
       { ability: 'strength', amount: 2 },
       { ability: 'charisma', amount: 1 }
     ],
+    combat: [
+      {
+        type: 'choice',
+        choices: {
+          '': ''
+        }
+      }
+    ]
   },
   {
     id: 'esfkmeagmajtxnqetxmpugaz',

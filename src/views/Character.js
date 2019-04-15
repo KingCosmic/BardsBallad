@@ -8,6 +8,7 @@ import InfoTab from '../components/InfoTab';
 import SkillsTab from '../components/SkillsTab';
 import SpellsTab from '../components/SpellsTab';
 import EquipmentTab from '../components/EquipmentTab';
+import CombatTab from '../components/CombatTab';
 
 import FeaturesAndTraits from '../components/FeaturesAndTraits';
 
@@ -125,6 +126,8 @@ class CharacterOverlay extends Component {
               (currentTab === 2) ? <SpellsTab char={character} data={data} addSpell={addSpell} /> :
 
               (currentTab === 3) ? <EquipmentTab char={character} /> :
+
+              (currentTab === 4) ? <CombatTab char={character} /> :
 
               (currentTab === 5) ? <FeaturesAndTraits char={character} /> : ''
             }

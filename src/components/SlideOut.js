@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 
+import Title from '../atoms/Title';
+
 import styles from '../css/SlideOut.module.scss';
 
 class SlideOut extends Component {
@@ -17,7 +19,7 @@ class SlideOut extends Component {
 
     return (
       <div className={classnames(styles.container, { [styles.open]: open })}>
-        <p className={styles.title}>Characters</p>
+        <Title>Bards Ballad</Title>
       </div>
     )
   }
