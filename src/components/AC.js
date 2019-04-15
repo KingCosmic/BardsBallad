@@ -72,15 +72,15 @@ class AC extends Component {
     // check if we're editing this component :D
     if (editing === path) {
       return (
-        <GridItem column='auto / span 2' justifyContent='space-between' alignItems='center' bg ol>
+        <GridItem column='auto / span 3'  row='auto / span 3' justifyContent='space-between' alignItems='center' bg ol>
           <Input type='number' ref='number' defaultValue={currentVal} />
           <Save onClick={this.handleSave}>Save</Save>
         </GridItem>
       )
     } else {
       return (
-        <Container flex column='auto / span 2' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
-          <Title header>AC</Title>
+        <Container flex column='auto / span 3'  row='auto / span 3' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
+          <Title header>Armor Class</Title>
           <Text>{currentVal}</Text>
         </Container>
       )

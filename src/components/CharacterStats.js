@@ -50,7 +50,8 @@ const CharacterStats = (props) => {
           <EXP exp={exp} />
         </GridItem>
 
-        <AC ac={ac} path='ac' {...propData} />
+        <HitDice hd={hitdice} {...propData} />
+        
 
         <Gold type='CP' amount={copper} />
         <Gold type='SP' amount={silver} />
@@ -58,10 +59,11 @@ const CharacterStats = (props) => {
         <Gold type='GP' amount={gold} />
         <Gold type='PP' amount={platinum} />
 
-        <HitDice hd={hitdice} {...propData} />
+        <AC ac={ac} path='ac' {...propData} />
         <DeathSaves ds={deathsaves} />
-
         <PassivePerception value={passivePerception} path='passivePerception' {...propData} />
+        
+
         <Speed speed={speed} path='speed' {...propData} />
         <Initiatve value={initiative} path='initiative' {...propData} />
         <Proficiency value={proficiency} path='proficiency' {...propData} />

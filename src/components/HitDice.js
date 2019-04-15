@@ -73,14 +73,14 @@ class HitDice extends Component {
     // check if we're editing this component :D
     if (editing === path) {
       return (
-        <GridItem column='auto / span 6' justifyContent='space-between' alignItems='center' bg ol>
+        <GridItem column='auto / span 2' row='auto / span 2' justifyContent='space-between' alignItems='center' bg ol>
           <Input ref='hitdie' defaultValue={currentVal} />
           <Save onClick={this.handleSave}>Save</Save>
         </GridItem>
       )
     } else {
       return (
-        <Container column='auto / span 6' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
+        <Container column='auto / span 2' row='auto / span 2'  justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
           <Title header>Hit Dice</Title>
           <Text header>{currentVal}</Text>
         </Container>
