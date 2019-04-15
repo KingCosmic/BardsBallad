@@ -73,14 +73,14 @@ class PassivePerception extends Component {
     // check if we're editing this component :D
     if (editing === path) {
       return (
-        <GridItem column='auto / span 3' justifyContent='space-between' alignItems='center' bg ol>
+        <GridItem column='auto / span 3'  row='auto / span 3' justifyContent='space-between' alignItems='center' bg ol>
           <Input type='number' ref='number' defaultValue={currentValue} />
           <Save onClick={this.handleSave}>Save</Save>
         </GridItem>
       )
     } else {
       return (
-        <Container column='auto / span 3' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
+        <Container column='auto / span 3' row='auto / span 3' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
           <Title header>Passive</Title>
           <Title header>Perception</Title>
           <Text margin='5px 0' header>{currentValue}</Text>

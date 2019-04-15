@@ -72,14 +72,14 @@ class Speed extends Component {
     // check if we're editing this component :D
     if (editing === path) {
       return (
-        <GridItem column='auto / span 3' justifyContent='space-between' alignItems='center' bg ol>
+        <GridItem column='auto / span 4' justifyContent='space-between' alignItems='center' bg ol>
           <Input type='number' ref='number' defaultValue={currentSpeed} />
           <Save onClick={this.handleSave}>Save</Save>
         </GridItem>
       )
     } else {
       return (
-        <Container column='auto / span 3' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
+        <Container column='auto / span 4' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
           <Title header>Speed</Title>
           <Text margin='5px 0' header>{currentSpeed}</Text>
         </Container>
