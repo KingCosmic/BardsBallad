@@ -17,6 +17,6 @@ export const mergeUpdates = (array, updates = []) => {
     return false;
   })
 
- return array.map(value => modUpdates.has(value.id) ? merge(value, modUpdates.get(value.id)) : value)
- .concat(newUpdates);
+  return array.map(value => modUpdates.has(value.id) ? merge(value, modUpdates.get(value.id)) : value)
+  .concat(newUpdates);
 }

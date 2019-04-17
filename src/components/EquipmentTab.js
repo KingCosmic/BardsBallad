@@ -70,9 +70,7 @@ const DropDown = styled(Container)`
 `
 
 const AddItem = styled(Button)`
-  position: absolute;
-  bottom: 20px;
-  right: 40px;
+  text-align: center;
 `
 
 const items = [
@@ -116,7 +114,7 @@ class EquipmentTab extends Component {
   }
 
   render() {
-    const { char } = this.props;
+    const { char, showAddItem } = this.props;
     const { filter } = this.state;
 
     return (
@@ -146,9 +144,8 @@ class EquipmentTab extends Component {
               }
             </List>
           </Container>
+          <AddItem onClick={showAddItem}>Add Item</AddItem>
         </Container>
-
-        <AddItem>Add Item</AddItem>
 
       </Container>
     )

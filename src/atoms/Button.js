@@ -5,19 +5,14 @@ import Text from './Text';
 
 const Button = styled.div`
   padding: 5px;
-  border: 1px solid white;
   border-radius: 4px;
   font-weight: 200;
   font-family: OpenSans;
 
+  background-color: ${props => props.theme.green};
+  color: ${props => props.theme.text};
 
   cursor: pointer;
-  color: white;
-
-  &:hover {
-    background-color: white;
-    color: ${props => props.theme.almostblack};
-  }
 `
 
 export default Button;

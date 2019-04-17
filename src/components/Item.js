@@ -6,6 +6,14 @@ import Container from '../atoms/Container';
 import Text from '../atoms/Text';
 
 const ListItem = styled(LI)`
+  width: calc(100% - 10px);
+  padding: 5px;
+
+  justify-content: space-between;
+  align-items: center;
+
+  flex-direction: row;
+
   cursor: pointer;
   border-radius: 4px;
 
@@ -21,8 +29,7 @@ const Description = styled(Text)`
 
 const Item = ({ item }) => {
   return (
-    <ListItem key={item.id} direction='row' padding='5px' width='calc(100% - 10px)'
-      justifyContent='space-between' alignItems='center' hover>
+    <ListItem key={item.id}>
       <Container maxWidth='50%' flowY='hidden' flowWrap>
         <Text>{item.name}</Text>
         <Description size='0.8em'>{item.type}</Description>

@@ -9,11 +9,13 @@ import Characters from '../views/Characters';
 import Character from '../views/Character';
 
 import styles from '../css/LoggedIn.module.scss'
+import Modal from '../components/Modal';
 
 class Home extends Component {
   render() {
     return (
       <div className={styles.container}>
+        <Modal />
         <SlideOut />
         <div className={styles.contentContainer}>
           <Switch>

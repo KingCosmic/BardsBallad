@@ -6,9 +6,13 @@
  */
 
 import { UPDATE_FEAT, UPDATE_CHARACTER, REVERT_CHARACTER } from './characters';
+// this type was ment for everything that when you click becomes editable (character stat, etc etc)
+// now that I'm making item events I realize I need this and am unsure what to change it to.
 export const EDIT_ITEM = 'EDIT_ITEM';
 export const START_CHARACTER_CREATION = 'START_CHARACTER_CREATION';
 export const CHANGE_CHARACTER_CREATION_STAGE = 'CHANGE_CHARACTER_CREATION_STAGE';
+
+export const SHOW_ADD_ITEM = 'SHOW_ADD_ITEM';
 
 /**
  * ACTIONS
@@ -39,6 +43,13 @@ export const changeCharacterCreationStage = (stage) => (dispatch) => {
   })
 }
 
+export const showAddItem = () => (dispatch) => {
+  dispatch({
+    type: SHOW_ADD_ITEM,
+    payload: {}
+  })
+}
+
 /**
  * HANDLERS
  * 
@@ -64,11 +75,15 @@ actions[UPDATE_CHARACTER] = (state) =>
 actions[REVERT_CHARACTER] = (state) =>
   Object.assign({}, state, { editing: '' });
 
+actions[SHOW_ADD_ITEM] = (state) =>
+  Object.assign({}, state, { overlay: 'AddItem' })
+
 /**
  * Reducer
  */
 
 const initialState = {
+  overlay: '',
   editing: '',
   creatingCharacter: false,
   creationStage: 1

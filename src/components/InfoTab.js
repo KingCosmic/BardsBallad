@@ -97,13 +97,13 @@ const InfoTab = (props) => {
           </Container>
 
           <Container noFlex>
-            <Container width='200px' height='200px'>
+            <Container width='170px' height='170px' padding='10px'>
               <Title align='center' header>Organization</Title>
               <Container>
-                <img style={{ width: '100%'}} src={img} alt='thing' />
+                <img style={{ display: 'block', height: 'calc(100% - 20px)', margin: '0 auto' }} src={img} alt='thing' />
               </Container>
-              <InlineEdit placeholder='Organization Name' path='organization.name' value={name} />
             </Container>
+            <InlineEdit placeholder='Organization Name' path='organization.name' value={name} />
           </Container>
         </ListItem>
       </List>

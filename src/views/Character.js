@@ -19,6 +19,7 @@ import CharacterStats from '../components/CharacterStats';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { loadOne, changeCharacter, addSpell } from '../reducers/characters';
+import { showAddItem } from '../reducers/ui';
 
 import styles from '../css/CharacterOverlay.module.scss';
 
@@ -89,7 +90,7 @@ class CharacterOverlay extends Component {
 
   render() {
     const { currentTab } = this.state;
-    const { character, addSpell, data } = this.props;
+    const { character, addSpell, showAddItem, data } = this.props;
 
     if (!character) return null
 
@@ -125,7 +126,7 @@ class CharacterOverlay extends Component {
               
               (currentTab === 2) ? <SpellsTab char={character} data={data} addSpell={addSpell} /> :
 
-              (currentTab === 3) ? <EquipmentTab char={character} /> :
+              (currentTab === 3) ? <EquipmentTab char={character} showAddItem={showAddItem} /> :
 
               (currentTab === 4) ? <CombatTab char={character} /> :
 
@@ -149,4 +150,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, { loadOne, changeCharacter, addSpell })(CharacterOverlay));
+export default withRouter(connect(mapStateToProps, {
+  loadOne, changeCharacter, addSpell,
+  showAddItem, 
+})(CharacterOverlay));
