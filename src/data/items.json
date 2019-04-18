@@ -1,0 +1,55 @@
+[
+  {
+    "name": "Backpack",
+    "type": "G",
+    "rarity": "None",
+    "value": "2 gp",
+    "weight": "5",
+    "source": "PHB",
+    "desc": "A backpack can hold one cubic foot or 30 pounds of gear. You can also strap items, such as a bedroll or a coil of rope, to the outside of a backpack."
+  },
+  {
+    "name": "Chain Mail",
+    "type": "HA",
+    "armor": true,
+    "rarity": "None",
+    "value": "75 gp",
+    "weight": "55",
+    "ac": 16,
+    "strength": "13",
+    "stealth": true,
+    "source": "PHB",
+    "page": 145,
+    "desc": "Made of interlocking metal rings, chain mail includes a layer of quilted fabric worn underneath the mail to prevent chafing and to cushion the impact of blows. The suit includes gauntlets."
+  },
+  {
+    "name": "Shield",
+    "type": "S",
+    "rarity": "None",
+    "value": "10 gp",
+    "weight": "6",
+    "ac": 2,
+    "source": "PHB",
+    "page": 144,
+    "srd": true,
+    "desc": "A shield is made from wood or metal and is carried in one hand. Wielding a shield increases your Armor Class by 2. You can benefit from only one shield at a time."
+  },
+  {
+    "name": "Rapier",
+    "type": "M",
+    "weapon": true,
+    "sword": true,
+    "weaponCategory": "Martial",
+    "rarity": "None",
+    "value": "25 gp",
+    "weight": "2",
+    "dmg1": "1d8",
+    "dmgType": "P",
+    "property": [
+      "F"
+    ],
+    "source": "PHB",
+    "page": 149,
+    "desc": ""
+  }
+]

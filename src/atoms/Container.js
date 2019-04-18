@@ -16,19 +16,19 @@ const Container = styled.div`
     
     /* width */
     &::-webkit-scrollbar {
-      width: ${props => props.barWidth || '10px'};
+      width: ${props => props.barWidth || '8px'};
     }
 
     /* Track */
     &::-webkit-scrollbar-track {
       background-color: rgba(32, 34, 37, .6);
-      border-radius: 10px;
+      border-radius: 4px;
     }
 
     /* Handle */
     &::-webkit-scrollbar-thumb {
       background: ${props => props.theme.almostblack};
-      border-radius: 10px;
+      border-radius: 4px;
     }
 
   `}

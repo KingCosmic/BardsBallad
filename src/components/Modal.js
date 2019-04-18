@@ -6,6 +6,7 @@ import C from '../atoms/Container';
 import AddItem from './AddItem';
 
 import { connect } from 'react-redux';
+import { hideModal } from '../reducers/ui';
 
 const Container = styled(C)`
   width: 100%;
@@ -19,9 +20,9 @@ const Container = styled(C)`
   display: ${props => props.visible ? 'flex' : 'none'};
 `
 
-const Modal = ({ overlay }) => {
+const Modal = ({ overlay, hideModal }) => {
   return (
-    <Container visible={overlay !== ''}>
+    <Container visible={overlay !== ''} onClick={hideModal}>
       {
         (overlay === 'AddItem') ? <AddItem /> : ''
       }
@@ -35,4 +36,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {})(Modal);
+export default connect(mapStateToProps, { hideModal })(Modal);

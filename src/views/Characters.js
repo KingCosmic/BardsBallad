@@ -7,29 +7,15 @@ import { loadAll, createCharacter } from '../reducers/characters';
 import { startCharacterCreation, changeCharacterCreationStage } from '../reducers/ui';
 
 import Container from '../atoms/Container';
+import Button from '../atoms/Button';
 
 import CharacterCreation from '../components/CharacterCreation';
 import Character from '../components/Character';
 
-const AddCharacter = styled.div`
+const AddCharacter = styled(Button)`
   position: absolute;
   bottom: 15px;
   right: 15px;
-
-  background-color: ${props => props.theme.green};
-  border-radius: 3px;
-  outline: none;
-  border: none;
-  color: ${props => props.theme.text};
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 16px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
-  &:active {
-    box-shadow: none;
-  }
 `
 
 class Characters extends Component {
@@ -69,7 +55,7 @@ class Characters extends Component {
           })
         }
 
-        <AddCharacter onClick={createCharacter}>Add Character</AddCharacter>
+        <AddCharacter onClick={createCharacter} width='150px'>Add Character</AddCharacter>
       </Container>
     )
   }

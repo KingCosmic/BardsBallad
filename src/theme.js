@@ -10,6 +10,8 @@ export default {
 
   text: 'white',
 
+  extra: '#dcddde',
+
   gold: '#FFD569',
   green: '#43B581',
   red: '#F04747',

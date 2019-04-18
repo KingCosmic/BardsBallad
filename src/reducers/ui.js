@@ -13,6 +13,7 @@ export const START_CHARACTER_CREATION = 'START_CHARACTER_CREATION';
 export const CHANGE_CHARACTER_CREATION_STAGE = 'CHANGE_CHARACTER_CREATION_STAGE';
 
 export const SHOW_ADD_ITEM = 'SHOW_ADD_ITEM';
+export const HIDE_MODAL = 'HIDE_MODAL';
 
 /**
  * ACTIONS
@@ -50,6 +51,13 @@ export const showAddItem = () => (dispatch) => {
   })
 }
 
+export const hideModal = () => (dispatch) => {
+  dispatch({
+    type: HIDE_MODAL,
+    payload: {}
+  })
+}
+
 /**
  * HANDLERS
  * 
@@ -77,6 +85,9 @@ actions[REVERT_CHARACTER] = (state) =>
 
 actions[SHOW_ADD_ITEM] = (state) =>
   Object.assign({}, state, { overlay: 'AddItem' })
+
+actions[HIDE_MODAL] = (state) =>
+  Object.assign({}, state, { overlay: '' })
 
 /**
  * Reducer
