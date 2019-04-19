@@ -44,9 +44,7 @@ class Characters extends Component {
       <Container width='100%' height='100%'>
         {
 
-          (characters.length === 0) ?
-
-          null :
+          (characters.length === 0) ? null :
 
           characters.map(character => {
             const { name, job, lvl } = character
@@ -55,7 +53,7 @@ class Characters extends Component {
           })
         }
 
-        <AddCharacter onClick={createCharacter} width='150px'>Add Character</AddCharacter>
+        <AddCharacter onClick={startCharacterCreation} width='150px'>Add Character</AddCharacter>
       </Container>
     )
   }

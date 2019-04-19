@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 
 import levels from '../data/levels'
 import Senses from './Senses';
+import Text from '../atoms/Text';
 
 const SkillsTab = (props) => {
   const { char: { savingThrows, skills, stats, proficiency }, data } = props;
@@ -36,7 +37,10 @@ const SkillsTab = (props) => {
         <Senses stats={stats} data={data} skills={skills} prof={prof} />
 
         <Container height='calc(70% - 20px)' padding='10px'>
-          <Title margin='0 0 5px 0' header>Proficiencies</Title>
+          <Container direction='row' margin='0 0 5px 0' bg>
+            <Title header>Proficiencies</Title>
+            <Text size='0.8em'>Add Proficiency</Text>
+          </Container>
 
           <List flowY='scroll' width='100%' barWidth='0px'>
 

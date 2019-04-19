@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import LI from '../atoms/ListItem';
 import Container from '../atoms/Container';
@@ -9,8 +9,7 @@ import { itemTypes } from '../data/constants';
 
 const ListItem = styled(LI)`
   width: calc(100% - 12px);
-  padding: 2px
-  margin: 5px
+  padding: 5px;
 
   justify-content: space-between;
   align-items: center;
@@ -19,11 +18,13 @@ const ListItem = styled(LI)`
 
   cursor: pointer;
 
-  border-bottom: 1px solid ${props => props.theme.grey};
-
   &:hover {
-    background-color: ${props => props.theme.dark};
+    background-color: rgba(222, 223, 224, .1);
   }
+
+  ${props => (Math.abs(props.index % 2) == 1) && css`
+    background-color: rgba(0, 0, 0, .17);
+  `}
 `
 
 const Description = styled(Text)`
@@ -31,9 +32,9 @@ const Description = styled(Text)`
   text-overflow: ellipsis; 
 `
 
-const Item = ({ item: { id, name, type, weight, value} }) => {
+const Item = ({ index, item: { id, name, type, weight, value} }) => {
   return (
-    <ListItem key={id}>
+    <ListItem key={id} index={index}>
       <Container maxWidth='50%' flowY='hidden' flowWrap>
         <Text>{name}</Text>
         <Description size='0.8em'>{itemTypes[type]}</Description>

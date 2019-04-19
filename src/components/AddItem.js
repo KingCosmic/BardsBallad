@@ -47,8 +47,8 @@ class AddItem extends Component {
           <List>
             {
               SrdItems.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
-              .map(item => (
-                <Item item={item} />
+              .map((item, i) => (
+                <Item item={item} index={i} />
               ))
             }
           </List>

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Container from '../../atoms/Container';
-import Input from '../../atoms/Input';
+import Search from '../Search';
 import List from '../../atoms/List';
 import ListItem from '../../atoms/ListItem';
 import Title from '../../atoms/Title';
@@ -23,7 +23,7 @@ const renderRaces = (races) => {
 const Race = () => {
   return (
     <Container alignItems='center' height='calc(100% - 80px)'>
-      <Input placeholder='search races' padding='5px' margin='90px 0 20px 0' />
+      <Search placeholder='search races' margin='90px 0 20px 0' />
 
       <List width='30%' height='calc(100% - 140px)'>
         {
