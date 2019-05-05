@@ -1,7 +1,7 @@
 {
   "name": "dndcs",
   "version": "0.1.0",
-  "private": true,
+  "homepage": "https://kingcosmic.github.io/BardsBallad",
   "dependencies": {
     "@types/jest": "^23.3.13",
     "@types/node": "^10.12.18",
@@ -9,6 +9,7 @@
     "@types/react-dom": "^16.0.11",
     "classnames": "^2.2.6",
     "firebase": "^5.7.0",
+    "gh-pages": "^2.0.1",
     "grommet": "^2.5.5",
     "grommet-icons": "^4.2.0",
     "immutable": "^4.0.0-rc.12",
@@ -32,6 +33,8 @@
     "typescript": "^3.2.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
