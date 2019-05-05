@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/BardsBallad/static/media/Nunito-Light.889c5cf0.ttf"
   },
   {
-    "revision": "b5129e22ac6ba7e88383",
+    "revision": "95fc0c5e096f170f7ee3",
     "url": "/BardsBallad/static/css/main.643a200e.chunk.css"
   },
   {
@@ -16,39 +16,39 @@ self.__precacheManifest = [
     "url": "/BardsBallad/static/js/runtime~main.d3145e3c.js"
   },
   {
-    "revision": "507906229d794aee1c5be34e1b0fd054",
-    "url": "/BardsBallad/static/media/Nunito-Bold.50790622.ttf"
-  },
-  {
     "revision": "11781884e3a96b39d8c6cd0e2bdaa40a",
     "url": "/BardsBallad/static/media/Nunito-Regular.11781884.ttf"
   },
   {
-    "revision": "b5129e22ac6ba7e88383",
-    "url": "/BardsBallad/static/js/main.b5129e22.chunk.js"
+    "revision": "507906229d794aee1c5be34e1b0fd054",
+    "url": "/BardsBallad/static/media/Nunito-Bold.50790622.ttf"
   },
   {
-    "revision": "629a55a7e793da068dc580d184cc0e31",
-    "url": "/BardsBallad/static/media/OpenSans-Regular.629a55a7.ttf"
-  },
-  {
-    "revision": "50145685042b4df07a1fd19957275b81",
-    "url": "/BardsBallad/static/media/OpenSans-Bold.50145685.ttf"
-  },
-  {
-    "revision": "1bf71be111189e76987a4bb9b3115cb7",
-    "url": "/BardsBallad/static/media/OpenSans-Light.1bf71be1.ttf"
+    "revision": "95fc0c5e096f170f7ee3",
+    "url": "/BardsBallad/static/js/main.95fc0c5e.chunk.js"
   },
   {
     "revision": "33f225b8f5f7d6b34a0926f58f96c1e9",
     "url": "/BardsBallad/static/media/OpenSans-Semibold.33f225b8.ttf"
   },
   {
+    "revision": "629a55a7e793da068dc580d184cc0e31",
+    "url": "/BardsBallad/static/media/OpenSans-Regular.629a55a7.ttf"
+  },
+  {
     "revision": "8bac22ed4fd7c8a30536be18e2984f84",
     "url": "/BardsBallad/static/media/OpenSans-ExtraBold.8bac22ed.ttf"
   },
   {
-    "revision": "d54cec71eb6f8a7ec86939c3f01cab8a",
+    "revision": "1bf71be111189e76987a4bb9b3115cb7",
+    "url": "/BardsBallad/static/media/OpenSans-Light.1bf71be1.ttf"
+  },
+  {
+    "revision": "50145685042b4df07a1fd19957275b81",
+    "url": "/BardsBallad/static/media/OpenSans-Bold.50145685.ttf"
+  },
+  {
+    "revision": "0c45ef3c23f0d821e4aaaffd3144dca1",
     "url": "/BardsBallad/index.html"
   }
 ];

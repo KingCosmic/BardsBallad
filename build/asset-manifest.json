@@ -1,14 +1,14 @@
 {
   "main.css": "/BardsBallad/static/css/main.643a200e.chunk.css",
-  "main.js": "/BardsBallad/static/js/main.b5129e22.chunk.js",
-  "main.js.map": "/BardsBallad/static/js/main.b5129e22.chunk.js.map",
+  "main.js": "/BardsBallad/static/js/main.95fc0c5e.chunk.js",
+  "main.js.map": "/BardsBallad/static/js/main.95fc0c5e.chunk.js.map",
   "static/js/1.ae736254.chunk.js": "/BardsBallad/static/js/1.ae736254.chunk.js",
   "static/js/1.ae736254.chunk.js.map": "/BardsBallad/static/js/1.ae736254.chunk.js.map",
   "runtime~main.js": "/BardsBallad/static/js/runtime~main.d3145e3c.js",
   "runtime~main.js.map": "/BardsBallad/static/js/runtime~main.d3145e3c.js.map",
-  "static/media/fonts.scss": "/BardsBallad/static/media/Nunito-Regular.11781884.ttf",
+  "static/media/fonts.scss": "/BardsBallad/static/media/Nunito-Bold.50790622.ttf",
   "static/css/main.643a200e.chunk.css.map": "/BardsBallad/static/css/main.643a200e.chunk.css.map",
   "index.html": "/BardsBallad/index.html",
-  "precache-manifest.23d08bd9a639f432757a436fbeba38c6.js": "/BardsBallad/precache-manifest.23d08bd9a639f432757a436fbeba38c6.js",
+  "precache-manifest.6d67d97e3d196a6a04b80fde653d6a5c.js": "/BardsBallad/precache-manifest.6d67d97e3d196a6a04b80fde653d6a5c.js",
   "service-worker.js": "/BardsBallad/service-worker.js"
 }
