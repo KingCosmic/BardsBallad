@@ -5,8 +5,6 @@ import styled from 'styled-components';
 
 import I from '../atoms/Input';
 import C from '../atoms/Container';
-import Title from '../atoms/Title';
-import Bonus from '../atoms/Bonus';
 import Text from '../atoms/Text';
 import BarContainer from '../atoms/BarContainer';
 import BarFiller from '../atoms/BarFiller';
@@ -45,13 +43,9 @@ const Save = styled(C)`
   padding: 5px;
 `
 
-const determinPercent = (current, max) => `${(current / max) * 100}%`;
+const determinPercent = (current, max, temp = 0) => `${(current / max) * 100}%`;
 
 class HP extends Component { 
-  constructor(props) {
-    super(props);
-  }
-
   handleSave() {
     const { data, path, val, updateData, revertData, editItem } = this.props;
 
@@ -68,7 +62,7 @@ class HP extends Component {
   }
 
   render() {
-    const { name, hp, editing, path, editItem, data } = this.props;
+    const { hp, editing, path, editItem, data } = this.props;
 
     const { max, current, temp } = data[path] ? Object.assign(hp, data[path]) : hp;
 

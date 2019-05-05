@@ -1,7 +1,4 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
-
-import Text from './Text';
 
 const Button = styled.div`
   padding: 5px;
@@ -14,7 +11,7 @@ const Button = styled.div`
   opacity: .7;
   line-height: 27px;
   background-color: ${props => props.theme.green};
-  color: ${props => props.theme.text};
+  color: rgb(200, 200, 200);
   cursor: pointer;
 
   ${props => props.disabled && css`

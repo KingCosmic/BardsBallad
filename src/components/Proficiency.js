@@ -3,13 +3,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import GridItem from '../atoms/GridItem';
 import I from '../atoms/Input';
 import C from '../atoms/Container';
 import Title from '../atoms/Title';
 import Text from '../atoms/Text';
 
-const Container = styled(GridItem)`
+const Container = styled(C)`
   cursor: pointer;
 
   &:hover {
@@ -72,14 +71,14 @@ class Proficiency extends Component {
     // check if we're editing this component :D
     if (editing === path) {
       return (
-        <GridItem column='auto / span 4' justifyContent='space-between' alignItems='center' bg ol>
+        <Container width='calc(32% - 10px)' padding='5px' margin='10px 5px 0' justifyContent='space-between' alignItems='center' bg ol>
           <Input type='number' ref='number' defaultValue={currentVal} />
           <Save onClick={this.handleSave}>Save</Save>
-        </GridItem>
+        </Container>
       )
     } else {
       return (
-        <Container column='auto / span 4' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
+        <Container width='calc(32% - 10px)' padding='5px' margin='10px 5px 0' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
           <Title header>Proficiency</Title>
           <Text margin='5px 0' header>+{currentVal}</Text>
         </Container>

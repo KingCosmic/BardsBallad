@@ -32,12 +32,12 @@ const Description = styled(Text)`
   text-overflow: ellipsis; 
 `
 
-const Item = ({ index, item: { id, name, type, weight, value} }) => {
+const Item = ({ index, id, name, category, weight, value }) => {
   return (
     <ListItem key={id} index={index}>
-      <Container maxWidth='50%' flowY='hidden' flowWrap>
-        <Text>{name}</Text>
-        <Description size='0.8em'>{itemTypes[type]}</Description>
+      <Container flowY='hidden' flowWrap>
+        <Text size='0.9em'>{name}</Text>
+        <Description size='0.8em'>{itemTypes[category]}</Description>
       </Container>
 
       <Container direction='row'>

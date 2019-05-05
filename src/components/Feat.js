@@ -10,7 +10,7 @@ const ListItem = styled(LI)`
   cursor: pointer;
 
   &:hover {
-    background-color: ${props => props.theme.almostblack};
+    background-color: ${props => props.theme.dark};
   }
 `
 
@@ -18,10 +18,10 @@ const Feat = (props) => {
   const { name, uses, description, onClick } = props;
 
   return (
-    <ListItem direction='column' padding='10px 5px' onClick={onClick}>
-      <Title>{name} {uses > 0 ? `(x${uses})` : ''}</Title>
+    <ListItem direction='column' onClick={onClick}>
+      <Title size='1em' margin='10px 5px 5px'>{name} {uses > 0 ? `(x${uses})` : ''}</Title>
 
-      <Text size='0.8em'>{description}</Text>
+      <Text size='0.8em' margin='5px 5px 10px'>{description}</Text>
     </ListItem>
   )
 }

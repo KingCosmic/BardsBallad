@@ -5,6 +5,13 @@ const ListItem = styled.li`
   ${props => props.height && css` height: ${props => props.height}; `}
   ${props => props.maxHeight && css` max-height: ${props => props.maxHeight}; `}
   ${props => props.maxWidth && css` max-width: ${props => props.maxWidth}; `}
+  ${props => props.minHeight && css` min-height: ${props => props.minHeight}; `}
+
+  ${props => props.flowWrap && css`
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+  `}
 
   display: ${props => props.noFlex ? 'block' : 'flex'};
   ${props => props.direction && css` flex-direction: ${props => props.direction}; `}

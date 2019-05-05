@@ -8,7 +8,7 @@ const Name = (props) => {
 
   return (
     <GridItem column='1 / span 12'>
-      <Title size='1.5em' header>{name}, {job} level {level}</Title>
+      <Title size='1.5em'>{name}, {job} level {level}</Title>
     </GridItem>
   )
 }

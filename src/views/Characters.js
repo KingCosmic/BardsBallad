@@ -53,7 +53,7 @@ class Characters extends Component {
           })
         }
 
-        <AddCharacter onClick={startCharacterCreation} width='150px'>Add Character</AddCharacter>
+        <AddCharacter onClick={createCharacter} width='150px'>Add Character</AddCharacter>
       </Container>
     )
   }

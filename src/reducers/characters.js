@@ -169,7 +169,7 @@ actions[UPDATE_CHARACTER] = (state, { payload: { path, data } }) => {
   return Object.assign({}, state, newstate);
 }
 
-const regex = /([{](\w+)[}])/g
+//const regex = /([{](\w+)[}])/g
 
 actions[LEVEL_UP] = (state) => {
   // TODO: get this setup to work right.
@@ -266,7 +266,7 @@ actions[UPDATE_DEATH_SAVES_SUCCESSES] = (state, { payload: { count } }) => {
     second: count > 1 ? true : false,
     third: count > 2 ? true : false
   };
-  return merge({}, state, { character: {deathsaves: {success: successesSaves}}});
+  return merge({}, state, { character: { deathsaves: { success: successesSaves } } });
 };
 
 actions[UPDATE_DEATH_SAVES_FAILS] = (state, { payload: { count } }) => {

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 
 import Container from '../atoms/Container';
-import Filter from '../atoms/Filter';
-import Text from '../atoms/Text';
+import Search from './Search';
+
 
 class CombatTab extends Component { 
   constructor(props) {
     super(props);
 
     this.state = {
-      filter: 'all'
+      filter: 'all',
+      weapons: [],
+      spells: []
     }
 
     this.changeFilter = this.changeFilter.bind(this);
@@ -20,18 +22,20 @@ class CombatTab extends Component {
   }
   
   render() {
+    const {
+      char: { items },
+      data, editItem, updateData, editing, revertData
+    } = this.props;
     const { filter } = this.state;
+
+    const propData = { data, editItem, updateData, editing, revertData };
 
     return (
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px'>
-        <Container direction='row' width='31em' underline>
-          <Filter active={filter === 'all'}>all</Filter>
-          <Filter active={filter === 'attack'}>attack</Filter>
-          <Filter active={filter === 'action'}>action</Filter>
-          <Filter active={filter === 'bonus action'}>bonus action</Filter>
-          <Filter active={filter === 'reaction'}>reaction</Filter>
-          <Filter active={filter === 'other'}>other</Filter>
-          <Filter active={filter === 'limited use'}>limited use</Filter>
+        <Container width='58.5%'>
+        
+          <Search />
+        
         </Container>
       </Container>
     )

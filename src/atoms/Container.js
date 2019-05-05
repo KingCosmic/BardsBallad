@@ -6,7 +6,12 @@ const Container = styled.div`
   ${props => props.maxHeight && css` max-height: ${props => props.maxHeight}; `}
   ${props => props.maxWidth && css` max-width: ${props => props.maxWidth}; `}
 
-  ${props => props.flowWrap && css` overflow-wrap: break-word; `}
+  ${props => props.flowWrap && css`
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+  `}
+  ${props => props.flexWrap && css` flex-wrap: wrap; `}
 
   ${props => props.float && css` float: left; `};
 

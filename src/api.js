@@ -3,7 +3,7 @@ import decode from 'jwt-decode';
 class ApiService {
   // Initializing important variables
   constructor() {
-    this.domain = 'http://localhost:8000' // API server domain
+    this.domain = 'http://api.bardsballad.com' // API server domain
 
 
     this.fetch = this.fetch.bind(this)

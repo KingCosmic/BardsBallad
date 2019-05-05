@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import ListItem from '../atoms/ListItem';
 import Container from '../atoms/Container';
-import CheckBox from '../atoms/CheckBox';
 import Title from '../atoms/Title';
 import Text from '../atoms/Text';
 

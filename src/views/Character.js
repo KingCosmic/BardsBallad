@@ -18,8 +18,11 @@ import CharacterStats from '../components/CharacterStats';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { loadOne, changeCharacter, addSpell } from '../reducers/characters';
-import { showAddItem } from '../reducers/ui';
+import { showAddItem, editItem } from '../reducers/ui';
+import {
+  loadOne, changeCharacter, addSpell,
+  updateData, revertData
+} from '../reducers/characters';
 
 import styles from '../css/CharacterOverlay.module.scss';
 
@@ -64,7 +67,7 @@ class CharacterOverlay extends Component {
     super(props);
 
     this.state = {
-      currentTab: 0
+      currentTab: 3
     }
 
     this.changeTab = this.changeTab.bind(this);
@@ -90,7 +93,10 @@ class CharacterOverlay extends Component {
 
   render() {
     const { currentTab } = this.state;
-    const { character, addSpell, showAddItem, data } = this.props;
+    const {
+      character, addSpell, showAddItem, data,
+      editItem, updateData, editing, revertData
+    } = this.props;
 
     if (!character) return null
 
@@ -128,13 +134,16 @@ class CharacterOverlay extends Component {
 
               (currentTab === 3) ? <EquipmentTab char={character} showAddItem={showAddItem} /> :
 
-              (currentTab === 4) ? <CombatTab char={character} /> :
+              (currentTab === 4) ? <CombatTab char={character} data={data} editItem={editItem}
+                updateData={updateData} editing={editing} revertData={revertData} /> :
 
               (currentTab === 5) ? <FeaturesAndTraits char={character} /> : ''
             }
           </div>
 
-          <CharacterStats char={character} />
+          <CharacterStats char={character} data={data} editItem={editItem}
+            updateData={updateData} editing={editing} revertData={revertData} 
+          />
         </Container>
       </div>
     )
@@ -144,6 +153,7 @@ class CharacterOverlay extends Component {
 const mapStateToProps = (state) => {
   return {
     characters: state.characters.characters,
+    editing: state.ui.editing,
     character: state.characters.character,
     data: state.characters.update.data,
     empty: state.characters.update.empty
@@ -152,5 +162,5 @@ const mapStateToProps = (state) => {
 
 export default withRouter(connect(mapStateToProps, {
   loadOne, changeCharacter, addSpell,
-  showAddItem, 
+  showAddItem, editItem, updateData, revertData
 })(CharacterOverlay));
