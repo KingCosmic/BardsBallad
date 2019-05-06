@@ -9,7 +9,7 @@ import Signup from './views/Signup';
 class App extends Component {
   render() {
     return (
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Switch>
           <Route path='/login' component={Login} exact/>
           <Route path='/signup' component={Signup} exact/>
