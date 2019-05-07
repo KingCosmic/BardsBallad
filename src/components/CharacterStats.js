@@ -5,6 +5,7 @@ import Title from '../atoms/Title';
 import Text from '../atoms/Text';
 
 import Name from './CharacterName';
+import Class from './CharacterClass';
 import HP from './HP';
 import EXP from './EXP';
 import PassivePerception from './PassivePerception';
@@ -35,15 +36,13 @@ const CharacterStats = (props) => {
       <div className='needed_this_to_push_the_other_stuff_to_the_bottom_xD' />
       <Container>
 
-        <Title size='1.2em'>{name}</Title>
-        <Text size='1em'>{job}, {level}</Text>
+        <Name name={name} {...propData} />
+        <Class job={job} {...propData} />
 
         <Container padding='5px'>
           <HP hp={hp} path='hp' {...propData} />
-          <EXP exp={exp} />
+          <EXP exp={exp} path='exp' {...propData} />
         </Container>
-        
-        
 
         <Container direction='row'>
           <AC ac={ac} path='ac' {...propData} />

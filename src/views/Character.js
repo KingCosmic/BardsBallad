@@ -124,7 +124,7 @@ class CharacterOverlay extends Component {
 
 
         <Container direction='row' width='100%' height='calc(100% - 43px)'>
-          <div className={styles.tabContainer}>
+          <Container width='75%' margin='0 10px 0 0'>
             {
               (currentTab === 0) ? <InfoTab char={character} /> :
               
@@ -139,7 +139,7 @@ class CharacterOverlay extends Component {
 
               (currentTab === 5) ? <FeaturesAndTraits char={character} /> : ''
             }
-          </div>
+          </Container>
 
           <CharacterStats char={character} data={data} editItem={editItem}
             updateData={updateData} editing={editing} revertData={revertData} 

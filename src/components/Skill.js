@@ -2,13 +2,35 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import ListItem from '../atoms/ListItem';
-import CheckBox from '../atoms/CheckBox';
+import CB from '../atoms/CheckBox';
 import Text from '../atoms/Text';
 
 import { connect } from 'react-redux';
 import { updateData, revertData } from '../reducers/characters';
 
 import { determinMod } from '../helpers'
+
+const modForStage = {
+  0: (mod) => mod,
+  1: (mod, prof) => mod + Math.floor((prof / 2)),
+  2: (mod, prof) => mod + prof,
+  3: (mod, prof) => mod + (prof * 2)
+}
+
+const stageMap = {
+  0: 'grey',
+  1: 'blue',
+  2: 'green',
+  3: 'gold'
+}
+
+const CheckBox = styled(CB)`
+  background-color: ${props => props.theme[stageMap[props.stage]]};
+
+  &:hover {
+    background-color: ${props => props.theme[stageMap[props.stage + 1]] || 'none'};
+  }
+`
 
 const Value = styled(Text)`
   text-decoration: underline ${props => props.theme.grey};
@@ -24,11 +46,15 @@ class Skill extends Component {
   handleClick() {
     const { path, efficient, wasEfficient } = this.props;
 
-    if (efficient !== wasEfficient) {
+    const newStage = (efficient === 3) ? 0 : efficient + 1
+
+    console.log(newStage, wasEfficient)
+
+    if (newStage === wasEfficient) {
       return this.props.revertData(path);
     } 
 
-    this.props.updateData(path, !efficient);
+    this.props.updateData(path, newStage);
   }
   
   render() {
@@ -36,17 +62,17 @@ class Skill extends Component {
 
     const mod = determinMod(value);
 
+    console.log(efficient)
+
     return (
       <ListItem alignItems='center'>
-        <CheckBox onClick={this.handleClick} margin='0 5px 0 0' checked={efficient}/>
+        <CheckBox onClick={this.handleClick} margin='0 5px 0 0' stage={efficient}/>
 
-        <Value size='0.8em' margin='0 5px 0 0'>{efficient ? mod + prof : mod}</Value>
+        <Value size='0.8em' margin='0 5px 0 0'>{modForStage[efficient](mod, prof)}</Value>
 
         <Text size='0.8em'>{skill}</Text>
 
-        {
-          (stat) ? <Text size='0.8em' margin='0 0 0 5px'>({stat})</Text> : null
-        }
+        <Text size='0.8em' margin='0 0 0 5px'>({stat})</Text>
       </ListItem>
     )
   }

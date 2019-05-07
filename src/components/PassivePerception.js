@@ -80,8 +80,8 @@ class PassivePerception extends Component {
     } else {
       return (
         <Container width='calc(32% - 10px)' padding='5px' margin='10px 5px 0' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
-          <Title header>Passive</Title>
-          <Title header>Perception</Title>
+          <Title size='0.9em'>Passive</Title>
+          <Title size='0.9em'>Perception</Title>
           <Text margin='5px 0' header>{currentValue}</Text>
         </Container>
       )

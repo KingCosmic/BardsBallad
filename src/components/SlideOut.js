@@ -19,7 +19,7 @@ class SlideOut extends Component {
 
     return (
       <div className={classnames(styles.container, { [styles.open]: open })}>
-        <Title>Bards Ballad</Title>
+        <Title padding='5px'>Bards Ballad</Title>
       </div>
     )
   }

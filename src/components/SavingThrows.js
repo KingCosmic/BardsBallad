@@ -3,7 +3,7 @@ import React from 'react';
 import Container from '../atoms/Container';
 import Title from '../atoms/Title';
 import List from '../atoms/List';
-import Skill from './Skill';
+import SavingThrow from './SavingThrow';
 
 const renderThrows = (throws, stats, data, prof) => {
   let list = [];
@@ -15,7 +15,7 @@ const renderThrows = (throws, stats, data, prof) => {
     const value = data[`stats.${thr}`] || stats[thr];
 
     list.push(
-      <Skill key={skill} value={value} skill={skill} efficient={efficient} path={path} prof={prof}
+      <SavingThrow key={skill} value={value} skill={skill} efficient={efficient} path={path} prof={prof}
         wasEfficient={throws[thr]}
       />
     )

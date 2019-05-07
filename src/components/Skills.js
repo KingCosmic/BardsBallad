@@ -15,7 +15,7 @@ const renderSkills = (skills, stats, data, prof) => {
     const path = `skills.${skill}`
 
     // checks if we're efficient
-    const efficient = typeof data[path] === "boolean" ? data[path] : skills[skill]
+    const efficient = typeof data[path] === "number" ? data[path] : skills[skill]
 
     // get what stat is bound to this skill
     const stat = skillToStat(skill)

@@ -43,44 +43,62 @@ const Save = styled(C)`
   padding: 5px;
 `
 
-const determinPercent = (current, max, temp = 0) => `${(current / max) * 100}%`;
+const determinPercent = (current, max, temp = 0) => `${((current + temp) / max) * 100}%`;
 
 class HP extends Component { 
+  constructor(props) {
+    super(props);
+
+    this.handleSave = this.handleSave.bind(this);
+  }
+
   handleSave() {
     const { data, path, val, updateData, revertData, editItem } = this.props;
 
-    // only send the action if the state needs to be resaved
+    // TODO: check hp for changes so we dont save if it's
+    // unnecesary
+
+    /*
     const changed = data[path] ? true : false;
 
-    if (this.refs.number.value == val && !changed) return editItem('');
+    if (this.refs.current.value == val && !changed) return editItem('');
 
-    if (this.refs.number.value == val && changed === true) {
+    if (this.refs.current.value == val && changed === true) {
       return revertData(path);
     }
+    */
 
-    updateData(path, this.refs.number.value)
+    updateData(path, {
+      current: Number(this.refs.current.value),
+      max: Number(this.refs.max.value),
+      temp: Number(this.refs.temp.value)
+    })
   }
 
   render() {
     const { hp, editing, path, editItem, data } = this.props;
 
-    const { max, current, temp } = data[path] ? Object.assign(hp, data[path]) : hp;
+    const { current, max, temp } = data[path] ? Object.assign(hp, data[path]) : hp;
 
     // check if we're editing this component :D
     if (editing === path) {
       return (
         <C grow='1' justifyContent='space-between' alignItems='center' bg ol>
-          <Input type='number' ref='number' defaultValue={current} />
+          <C direction='row' justifyContent='space-between'>
+            <Input type='number' ref='current' defaultValue={current} />
+            <Input type='number' ref='max' defaultValue={max} />
+            <Input type='number' ref='temp' defaultValue={temp} />
+          </C>
           <Save onClick={this.handleSave}>Save</Save>
         </C>
       )
     } else {
       return (
-        <Container grow='1' onClick={() => editItem(path)}>
-          <Text size='0.9em' header>HP: {current + temp}/{max}</Text>
+        <Container onClick={() => editItem(path)}>
+          <Text size='0.9em' header>HP: {current}/{max} {(temp) ?  ` (+${temp})` : ''}</Text>
 
           <BarContainer width='100%' height='10px' bg ol>
-            <BarFiller width={determinPercent(current + temp, max)} color='blue' />
+            <BarFiller width={determinPercent(current, max, temp)} color='blue' />
             <BarFiller width={determinPercent(current, max)} color='green' />
           </BarContainer>
         </Container>

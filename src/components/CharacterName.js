@@ -1,16 +1,11 @@
 import React from 'react';
 
-import GridItem from '../atoms/GridItem';
-import Title from '../atoms/Title';
+import InlineEdit from '../atoms/InlineEdit';
 
-const Name = (props) => {
-  const { name, job, level } = props;
-
+const CharacterName = ({ name }) => {
   return (
-    <GridItem column='1 / span 12'>
-      <Title size='1.5em'>{name}, {job} level {level}</Title>
-    </GridItem>
+    <InlineEdit height='1.3em' size='1.2em' color='gold' margin='5px' path='name' value={name} />
   )
 }
 
-export default Name;
+export default CharacterName;

@@ -3,27 +3,27 @@ import { Route, Switch } from 'react-router-dom';
 
 import requireAuth from '../components/requireAuth';
 
+import Container from '../atoms/Container';
 import SlideOut from '../components/SlideOut';
 
 import Characters from '../views/Characters';
 import Character from '../views/Character';
 
-import styles from '../css/LoggedIn.module.scss'
 import Modal from '../components/Modal';
 
 class Home extends Component {
   render() {
     return (
-      <div className={styles.container}>
+      <Container  width='100%' height='100%' direction='row'>
         <Modal />
         <SlideOut />
-        <div className={styles.contentContainer}>
+        <Container width='100%' height='100%' bg='light'>
           <Switch>
             <Route path='/characters' component={Characters} exact/>
             <Route path='/characters/:characterID' component={Character} exact/>
           </Switch>
-        </div>
-      </div>
+        </Container>
+      </Container>
     )
   }
 }

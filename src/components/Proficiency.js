@@ -79,7 +79,7 @@ class Proficiency extends Component {
     } else {
       return (
         <Container width='calc(32% - 10px)' padding='5px' margin='10px 5px 0' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
-          <Title header>Proficiency</Title>
+          <Title size='0.9em'>Proficiency</Title>
           <Text margin='5px 0' header>+{currentVal}</Text>
         </Container>
       )

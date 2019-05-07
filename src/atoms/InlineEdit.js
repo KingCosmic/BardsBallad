@@ -6,11 +6,11 @@ import { updateData, revertData } from '../reducers/characters';
 
 const TextArea = styled.textarea`
   color: ${props => props.theme[props.color] || props.theme.text};
-  width: ${props => props.width || 'auto' };
-  height: ${props => props.height || 'auto' };
+  ${props => props.width && css` width: ${props => props.width}; `}
+  ${props => props.height && css` height: ${props => props.height}; `}
   ${props => props.align && css` text-align: ${props => props.align}; `} 
-  font-size: 0.9em;
-  font-weight: 100;
+  font-size: ${props => props.size || '0.9em'};
+  font-weight: ${props => props.weight || '100'};
 
   margin: ${props => props.margin || 0};
 

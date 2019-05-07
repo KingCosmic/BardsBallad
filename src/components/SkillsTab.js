@@ -45,8 +45,7 @@ const mapStateToProps = (state) => {
 
   return {
     data,
-    empty,
-    prof: levels[level].prof
+    empty
   }
 }
 
