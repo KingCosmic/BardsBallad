@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/BardsBallad/static/media/Nunito-Light.889c5cf0.ttf"
   },
   {
-    "revision": "c099123129cb815cb250",
-    "url": "/BardsBallad/static/css/main.271cd2ad.chunk.css"
+    "revision": "ecdf00a08e9694062e7e",
+    "url": "/BardsBallad/static/css/main.cdc6222d.chunk.css"
   },
   {
     "revision": "6a65e27b9db3b91d275b",
@@ -24,31 +24,31 @@ self.__precacheManifest = [
     "url": "/BardsBallad/static/media/Nunito-Regular.11781884.ttf"
   },
   {
-    "revision": "c099123129cb815cb250",
-    "url": "/BardsBallad/static/js/main.c0991231.chunk.js"
+    "revision": "ecdf00a08e9694062e7e",
+    "url": "/BardsBallad/static/js/main.ecdf00a0.chunk.js"
   },
   {
     "revision": "629a55a7e793da068dc580d184cc0e31",
     "url": "/BardsBallad/static/media/OpenSans-Regular.629a55a7.ttf"
   },
   {
-    "revision": "50145685042b4df07a1fd19957275b81",
-    "url": "/BardsBallad/static/media/OpenSans-Bold.50145685.ttf"
-  },
-  {
-    "revision": "1bf71be111189e76987a4bb9b3115cb7",
-    "url": "/BardsBallad/static/media/OpenSans-Light.1bf71be1.ttf"
+    "revision": "33f225b8f5f7d6b34a0926f58f96c1e9",
+    "url": "/BardsBallad/static/media/OpenSans-Semibold.33f225b8.ttf"
   },
   {
     "revision": "8bac22ed4fd7c8a30536be18e2984f84",
     "url": "/BardsBallad/static/media/OpenSans-ExtraBold.8bac22ed.ttf"
   },
   {
-    "revision": "33f225b8f5f7d6b34a0926f58f96c1e9",
-    "url": "/BardsBallad/static/media/OpenSans-Semibold.33f225b8.ttf"
+    "revision": "1bf71be111189e76987a4bb9b3115cb7",
+    "url": "/BardsBallad/static/media/OpenSans-Light.1bf71be1.ttf"
   },
   {
-    "revision": "09d28a8892149ac95e82d601edfbbcdc",
+    "revision": "50145685042b4df07a1fd19957275b81",
+    "url": "/BardsBallad/static/media/OpenSans-Bold.50145685.ttf"
+  },
+  {
+    "revision": "b278cf08b6a87380887c910bbff8058b",
     "url": "/BardsBallad/index.html"
   }
 ];

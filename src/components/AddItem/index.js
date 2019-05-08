@@ -39,7 +39,7 @@ class AddItem extends Component {
   // before adding it to the item list.
   openItem(item) {
     this.setState({
-      creatingItem: true,
+      creatingItem: false,
       itemInfo: {
         name: 'Custom Item',
         desc: 'Item Description.',
