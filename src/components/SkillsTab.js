@@ -34,8 +34,6 @@ const SkillsTab = (props) => {
 
         <Proficiencies />
       </Container>
-
-      
     </Container>
   )
 }

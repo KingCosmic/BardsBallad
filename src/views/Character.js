@@ -102,7 +102,7 @@ class CharacterOverlay extends Component {
 
     return (
       <div className={styles.container}>
-        <Container padding='0 15px'>
+        <Container padding='0 15px' height='5.5%'>
 
           <div className={styles.tabs}>
             <Tab active={currentTab === 0} onClick={() => this.changeTab(0)}>info</Tab>
@@ -123,7 +123,7 @@ class CharacterOverlay extends Component {
         </Container>
 
 
-        <Container direction='row' width='100%' height='calc(100% - 43px)'>
+        <Container direction='row' width='100%' height='calc(100% - 5.5%)'>
           <Container width='75%' margin='0 10px 0 0'>
             {
               (currentTab === 0) ? <InfoTab char={character} /> :

@@ -94,7 +94,7 @@ actions[HIDE_MODAL] = (state) =>
  */
 
 const initialState = {
-  overlay: '',
+  overlay: 'AddItem',
   editing: '',
   creatingCharacter: false,
   creationStage: 1

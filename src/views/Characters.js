@@ -32,8 +32,6 @@ class Characters extends Component {
       startCharacterCreation, changeCharacterCreationStage
     } = this.props;
 
-    console.log(creatingCharacter)
-
     if (creatingCharacter) {
       return (
         <CharacterCreation stage={creationStage} changeStage={changeCharacterCreationStage} />

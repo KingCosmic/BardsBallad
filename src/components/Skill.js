@@ -17,12 +17,9 @@ const modForStage = {
   3: (mod, prof) => mod + (prof * 2)
 }
 
-const stageMap = {
-  0: 'grey',
-  1: 'blue',
-  2: 'green',
-  3: 'gold'
-}
+const stageMap = { 0: 'grey', 1: 'blue', 2: 'green', 3: 'gold' }
+
+const profForStage = { 0: 'Not Proficient', 1: 'Half Proficient', 2: 'Proficient', 3: 'Expertise' }
 
 const CheckBox = styled(CB)`
   background-color: ${props => props.theme[stageMap[props.stage]]};
@@ -48,8 +45,6 @@ class Skill extends Component {
 
     const newStage = (efficient === 3) ? 0 : efficient + 1
 
-    console.log(newStage, wasEfficient)
-
     if (newStage === wasEfficient) {
       return this.props.revertData(path);
     } 
@@ -62,11 +57,9 @@ class Skill extends Component {
 
     const mod = determinMod(value);
 
-    console.log(efficient)
-
     return (
       <ListItem alignItems='center'>
-        <CheckBox onClick={this.handleClick} margin='0 5px 0 0' stage={efficient}/>
+        <CheckBox onClick={this.handleClick} margin='0 5px 0 0' stage={efficient} />
 
         <Value size='0.8em' margin='0 5px 0 0'>{modForStage[efficient](mod, prof)}</Value>
 

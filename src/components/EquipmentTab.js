@@ -45,7 +45,7 @@ class EquipmentTab extends Component {
               {
                 items.map((item, i) => {
                   return (
-                    <Item {...item} index={i} />
+                    <Item {...item} index={i} key={item.id} />
                   )
                 })
               }

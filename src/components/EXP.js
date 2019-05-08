@@ -7,6 +7,10 @@ import Text from '../atoms/Text';
 import BarContainer from '../atoms/BarContainer';
 import BarFiller from '../atoms/BarFiller';
 
+import levels from '../data/levels';
+
+const getMaxExp = (exp) => levels[Object.keys(levels).find(lvl => exp < levels[lvl].exp)].exp
+
 const Container = styled(C)`
   cursor: pointer;
 
@@ -68,11 +72,9 @@ class EXP extends Component {
   render() {
     const { exp, editing, path, editItem, data } = this.props;
 
-    console.log(exp)
-
     const currentEXP = data[path] !== undefined ? data[path] : exp;
 
-    console.log(currentEXP)
+    const maxEXP = getMaxExp(currentEXP)
 
     // check if we're editing this component :D
     if (editing === path) {
@@ -86,9 +88,9 @@ class EXP extends Component {
     } else {
       return (
         <Container grow='1' onClick={() => editItem(path)}>
-          <Text size='0.9em' header>EXP: {currentEXP}/{300}</Text>
+          <Text size='0.9em' header>EXP: {currentEXP}/{maxEXP}</Text>
           <BarContainer width='100%' height='10px' bg ol>
-            <BarFiller width={determinPercent(currentEXP, 300)} color='gold' />
+            <BarFiller width={determinPercent(currentEXP, maxEXP)} color='gold' />
           </BarContainer>
         </Container>
       )

@@ -23,7 +23,7 @@ class AddItem extends Component {
     this.state = {
       search: '',
       limit: 25,
-      creatingItem: false,
+      creatingItem: true,
       itemInfo: {}
     }
 
@@ -51,7 +51,7 @@ class AddItem extends Component {
   }
 
   render() {
-    const { search, limit, creatingItem } = this.state;
+    const { search, limit, creatingItem, itemInfo } = this.state;
 
     
 
@@ -59,7 +59,7 @@ class AddItem extends Component {
       <BackDrop onClick={(e) => {e.stopPropagation()}}>
         {
           (creatingItem === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openItem={this.openItem} /> :
-          <ItemInfo />
+          <ItemInfo {...itemInfo} />
         }
       </BackDrop>
     )
