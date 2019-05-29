@@ -28,11 +28,9 @@ const SearchInput = styled.input`
   padding: 0 12px;
   box-shadow: none;
 
-  ${props => props.ph && css`
-    &::placeholder {
-      color: ${props => props.ph};
-    }
-  `}
+  &::placeholder {
+    color: ${props => props.ph || 'rgba(255, 255, 255, .6)'};
+  }
 `
 
 const DropDownContent = styled(Container)`

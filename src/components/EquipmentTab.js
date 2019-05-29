@@ -8,8 +8,7 @@ import Search from './Search';
 import Button from '../atoms/Button';
 import Gold from './Gold';
 
-import SrdItems from '../data/items.json';
-const items = SrdItems.slice(0, 2);
+import { mergeUpdates } from '../helpers';
 
 const AddItem = styled(Button)`
   text-align: center;
@@ -20,10 +19,16 @@ class EquipmentTab extends Component {
     super(props);
 
     this.state = {
-      filter: 'all'
+      filter: 'all',
+      search: ''
     }
 
-    this.changeFilter = this.changeFilter.bind(this);
+    this.changeFilter = this.changeFilter.bind(this)
+    this.onSearch = this.onSearch.bind(this)
+  }
+
+  onSearch(event) {
+    this.setState({ search: event.target.value })
   }
 
   changeFilter(filter) {
@@ -31,21 +36,24 @@ class EquipmentTab extends Component {
   }
 
   render() {
-    const { showAddItem, char: { pieces } } = this.props;
+    const { search } = this.state;
+    const { showAddItem, showItemInfo, char: { pieces, items }, data } = this.props;
     const { copper, silver, etherium, gold, platinum } = pieces;
+
+    const itemdata = mergeUpdates(items, data.items || []);
 
     return (
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px' direction='row'>
 
         <Container width='58.5%'>
-          <Search />
+          <Search onSearch={this.onSearch} value={search} />
 
           <Container flowY='auto' height='calc(90% - 20px)' margin='10px 0'>
             <List>
               {
-                items.map((item, i) => {
+                itemdata.map((item, i) => {
                   return (
-                    <Item {...item} index={i} key={item.id} />
+                    <Item {...item} index={i} key={item.id} onClick={() => showItemInfo(item.id)} />
                   )
                 })
               }

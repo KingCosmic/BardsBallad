@@ -12,10 +12,6 @@ import ListItem from '../atoms/ListItem';
 
 import Search from './Search';
 
-import { connect } from 'react-redux';
-import { addFeat, updateFeat } from '../reducers/characters';
-import { editItem } from '../reducers/ui';
-
 const Input = styled(I)`
   outline: none;
   border: none;
@@ -97,9 +93,9 @@ class Feats extends Component {
   }
 
   render() {
-    const { feats, addFeat, data } = this.props;
+    const { char: { feats }, addFeat, update  } = this.props;
 
-    const featdata = mergeUpdates(feats, data.feats || []);
+    const featdata = mergeUpdates(feats, update.feats || []);
 
     return (
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px' direction='row'>
@@ -124,13 +120,4 @@ class Feats extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    feats: state.characters.character.feats,
-    data: state.characters.update.data,
-    empty: state.characters.update.empty,
-    editing: state.ui.editing
-  }
-}
-
-export default connect(mapStateToProps, { addFeat, updateFeat, editItem })(Feats);
+export default Feats;

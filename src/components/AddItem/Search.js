@@ -13,15 +13,14 @@ const Search = ({ onSearch, search, openItem, limit }) => {
     <Container>
       <SearchInput onSearch={onSearch} value={search}
         bgStyle={{ backgroundColor: '#72767D', boxShadow: '0 2px 5px rgba(0, 0, 0, .2), 0 0 0 1px rgba(0, 0, 0, .1)'}}
-        ph='rgba(255, 255, 255, .6)'
       />
 
       <Container flowY='auto' height='85%' margin='10px 0'>
         <List>
           {
-            SrdItems.slice(0, limit).filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
+            SrdItems.filter(item => item.name.toLowerCase().includes(search.toLowerCase())).slice(0, limit)
             .map((item, i) => (
-              <Item {...item} index={i} />
+              <Item {...item} index={i} onClick={() => openItem(item)} />
             ))
           }
         </List>

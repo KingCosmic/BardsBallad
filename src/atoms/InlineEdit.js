@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled, { css } from 'styled-components';
 
 import { connect } from 'react-redux';
-import { updateData, revertData } from '../reducers/characters';
+import { updateData, revertData } from '../reducers/update';
 
 const TextArea = styled.textarea`
   color: ${props => props.theme[props.color] || props.theme.text};
@@ -50,7 +50,7 @@ class InlineEdit extends Component {
 
   onBlur() {
     // only send the action if the state needs to be resaved
-    const changed = this.props.data[this.props.path] ? true : false;
+    const changed = this.props.update[this.props.path] ? true : false;
 
     if (this.state.value === this.props.value && !changed) return;
 
@@ -62,7 +62,7 @@ class InlineEdit extends Component {
   }
 
   render() {
-    const changed = this.props.data[this.props.path] ? true : false;
+    const changed = this.props.update[this.props.path] ? true : false;
 
     return (
       <TextArea {...this.props}
@@ -77,10 +77,8 @@ class InlineEdit extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { data } = state.characters.update
-
   return {
-    data
+    update: state.update
   }
 }
 

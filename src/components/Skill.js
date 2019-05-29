@@ -6,7 +6,7 @@ import CB from '../atoms/CheckBox';
 import Text from '../atoms/Text';
 
 import { connect } from 'react-redux';
-import { updateData, revertData } from '../reducers/characters';
+import { updateData, revertData } from '../reducers/update';
 
 import { determinMod } from '../helpers'
 

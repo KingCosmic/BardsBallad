@@ -5,10 +5,12 @@ import Container from '../../atoms/Container';
 import Button from '../../atoms/Button';
 
 import Search from './Search';
-import ItemInfo from './ItemInfo';
+import ItemInfo from './EditItem';
+
+import cloneDeep from 'lodash.clonedeep'
 
 const BackDrop = styled(Container)`
-  width: 35%;
+  width: ${props => props.creating ? '30%' : '35%'};
   height: 80%;
   border-radius: 8px;
   background-color: ${props => props.theme.dark};
@@ -23,12 +25,12 @@ class AddItem extends Component {
     this.state = {
       search: '',
       limit: 25,
-      creatingItem: true,
-      itemInfo: {}
+      creatingItem: false
     }
 
     this.onSearch = this.onSearch.bind(this)
     this.openItem = this.openItem.bind(this)
+    this.showItems = this.showItems.bind(this)
   }
 
   onSearch(event) {
@@ -38,28 +40,28 @@ class AddItem extends Component {
   // change the modal to show a item for approval / customization
   // before adding it to the item list.
   openItem(item) {
+    if (item) return this.setState({ creatingItem: true, itemInfo: { ...this.state.itemInfo, ...item } })
+
     this.setState({
-      creatingItem: false,
-      itemInfo: {
-        name: 'Custom Item',
-        desc: 'Item Description.',
-        category: 'G',
-        rarity: 'None',
-        tags: []
-      }
+      creatingItem: true
+    })
+  }
+
+  showItems() {
+    this.setState({
+      creatingItem: false
     })
   }
 
   render() {
     const { search, limit, creatingItem, itemInfo } = this.state;
-
-    
+    const { addItem } = this.props;
 
     return (
-      <BackDrop onClick={(e) => {e.stopPropagation()}}>
+      <BackDrop onClick={(e) => e.stopPropagation()} creating={creatingItem}>
         {
           (creatingItem === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openItem={this.openItem} /> :
-          <ItemInfo {...itemInfo} />
+          <ItemInfo itemInfo={itemInfo} addItem={addItem} goBack={this.showItems} changeItem={this.changeItem} />
         }
       </BackDrop>
     )

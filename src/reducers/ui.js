@@ -5,12 +5,17 @@
  * These here are our action types defined for later use
  */
 
-import { UPDATE_FEAT, UPDATE_CHARACTER, REVERT_CHARACTER } from './characters';
+import {
+  ADD_ITEM, UPDATE_FEAT, UPDATE_CHARACTER, REVERT_CHARACTER, REMOVE_ITEM, UPDATE_ITEM
+} from './update';
+
 // this type was ment for everything that when you click becomes editable (character stat, etc etc)
 // now that I'm making item events I realize I need this and am unsure what to change it to.
 export const EDIT_ITEM = 'EDIT_ITEM';
 export const START_CHARACTER_CREATION = 'START_CHARACTER_CREATION';
 export const CHANGE_CHARACTER_CREATION_STAGE = 'CHANGE_CHARACTER_CREATION_STAGE';
+
+export const SHOW_ITEM_INFO = 'SHOW_ITEM_INFO';
 
 export const SHOW_ADD_ITEM = 'SHOW_ADD_ITEM';
 export const HIDE_MODAL = 'HIDE_MODAL';
@@ -20,6 +25,13 @@ export const HIDE_MODAL = 'HIDE_MODAL';
  * 
  * Here we define our actions
  */
+
+export const showItemInfo = (itemID) => (dispatch) => {
+  dispatch({
+    type: SHOW_ITEM_INFO,
+    payload: { itemID }
+  })
+}
 
 export const editItem = (id) => (dispatch) => {
   dispatch({
@@ -74,6 +86,18 @@ actions[START_CHARACTER_CREATION] = (state, { payload }) =>
 actions[CHANGE_CHARACTER_CREATION_STAGE] = (state, { payload: { stage } }) =>
   Object.assign({}, state, { creationStage: stage })
 
+actions[ADD_ITEM] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
+actions[UPDATE_ITEM] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
+actions[REMOVE_ITEM] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
+actions[SHOW_ITEM_INFO] = (state, { payload: { itemID } }) =>
+  Object.assign({}, state, { overlay: 'ItemInfo', itemID })
+
 actions[UPDATE_FEAT] = (state) =>
   Object.assign({}, state, { editing: '' });
 
@@ -96,6 +120,7 @@ actions[HIDE_MODAL] = (state) =>
 const initialState = {
   overlay: '',
   editing: '',
+  itemID: '',
   creatingCharacter: false,
   creationStage: 1
 };

@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { updateDeathSaveSuccesses, updateDeathSaveFails } from '../reducers/characters';
-
 import GridItem from '../atoms/GridItem';
 import Container from '../atoms/Container';
 import Title from '../atoms/Title';
@@ -43,5 +41,5 @@ const mapStoreToProps = function () {
   return {};
 };
 
-export default connect(mapStoreToProps, {updateDeathSaveSuccesses, updateDeathSaveFails})(DeathSaves);
+export default connect(mapStoreToProps, { })(DeathSaves);
 

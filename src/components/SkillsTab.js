@@ -7,16 +7,14 @@ import Title from '../atoms/Title';
 import List from '../atoms/List';
 import Skills from './Skills';
 
-import { connect } from 'react-redux';
-
 import levels from '../data/levels'
 import Senses from './Senses';
 import Proficiencies from './Proficiencies';
 
 const SkillsTab = (props) => {
-  const { char: { savingThrows, skills, stats, proficiency }, data } = props;
+  const { char: { savingThrows, skills, stats, proficiency }, update } = props;
 
-  const prof = Number(data['proficiency']) || proficiency
+  const prof = Number(update['proficiency']) || proficiency
 
   return (
     <Container 
@@ -24,13 +22,13 @@ const SkillsTab = (props) => {
       direction='row'>
 
       <Container height='100%' width='50%'>
-        <SavingThrows throws={savingThrows} stats={stats} data={data} prof={prof} />
+        <SavingThrows throws={savingThrows} stats={stats} data={update} prof={prof} />
 
-        <Skills skills={skills} stats={stats} data={data} prof={prof} />
+        <Skills skills={skills} stats={stats} data={update} prof={prof} />
       </Container>
 
       <Container height='100%'>
-        <Senses stats={stats} data={data} skills={skills} prof={prof} />
+        <Senses stats={stats} data={update} skills={skills} prof={prof} />
 
         <Proficiencies />
       </Container>
@@ -38,13 +36,4 @@ const SkillsTab = (props) => {
   )
 }
 
-const mapStateToProps = (state) => {
-  const { update: { data, empty }, character: { level } } = state.characters
-
-  return {
-    data,
-    empty
-  }
-}
-
-export default connect(mapStateToProps, {})(SkillsTab);
+export default SkillsTab;

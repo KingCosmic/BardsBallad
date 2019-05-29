@@ -14,7 +14,7 @@ export default {
 
   gold: '#FFD569',
   green: '#43B581',
-  red: '#F04747',
+  red: '#FF4848',
   blue: '#337ab7'
 }
 

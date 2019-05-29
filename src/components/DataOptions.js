@@ -1,11 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import cloneDeep from 'lodash.clonedeep';
+
 import Button from '../atoms/Button';
 import Con from '../atoms/Container';
 
 import { connect } from 'react-redux';
-import { syncData } from '../reducers/characters';
+import { syncData } from '../reducers/update';
+
+import { mergeUpdates } from '../helpers';
+import DeathSaves from './DeathSaves';
 
 const Container = styled(Con)`
   position: absolute;
@@ -14,23 +19,25 @@ const Container = styled(Con)`
 `
 
 const DataOptions = (props) => {
-  const { syncData, empty, data, id } = props; 
+  const { syncData, update, character } = props;
+  const { _id, items, feats } = character; 
+
+  const updateData = cloneDeep(update);
+
+  if (updateData.items) updateData.items = mergeUpdates(items, updateData.items);
+  if (updateData.feats) updateData.feats = mergeUpdates(feats, updateData.feats);
 
   return (
     <Container>
-      <Button onClick={() => syncData(id, data)} disabled={empty} width='50px'>Save</Button>
+      <Button onClick={() => syncData(_id, updateData)} disabled={update.changes.length === 0} width='50px'>Save</Button>
     </Container>
   )
 }
 
 const mapStateToProps = (state) => {
-  const { empty, data } = state.characters.update
-  const { _id } = state.characters.character
-
   return {
-    empty,
-    data,
-    id: _id
+    update: state.update,
+    character: state.characters.character
   }
 }
 

@@ -27,17 +27,18 @@ const ListItem = styled(LI)`
   `}
 `
 
-const Description = styled(Text)`
+const Category = styled(Text)`
   overflow: hidden;
   text-overflow: ellipsis; 
+  color: rgba(255, 255, 255, .6);
 `
 
-const Item = ({ index, id, name, category, weight, value }) => {
+const Item = ({ index, id, name, category, weight, value, onClick }) => {
   return (
-    <ListItem key={id} index={index}>
+    <ListItem onClick={onClick} key={id} index={index}>
       <Container flowY='hidden' flowWrap>
         <Text size='0.9em'>{name}</Text>
-        <Description size='0.8em'>{itemTypes[category]}</Description>
+        <Category size='0.8em'>{itemTypes[category]}</Category>
       </Container>
 
       <Container direction='row'>

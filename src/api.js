@@ -3,8 +3,8 @@ import decode from 'jwt-decode';
 class ApiService {
   // Initializing important variables
   constructor() {
-    this.domain = 'https://api.bardsballad.com' // API server domain
-
+    // this.domain = 'https://api.bardsballad.com' // API server domain
+    this.domain = 'http://localhost:4000' // API server domain
 
     this.fetch = this.fetch.bind(this)
     this.loadCharacters = this.loadCharacters.bind(this)
@@ -143,7 +143,6 @@ class ApiService {
     if (response.status >= 200 && response.status < 300) { // Success status lies between 200 to 300
       return response
     } else {
-      console.log(response.json())
       var error = new Error(response)
       error.response = response
       throw error

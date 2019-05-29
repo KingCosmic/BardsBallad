@@ -19,7 +19,6 @@ export const logIn = (jwt) => (dispatch) => {
   dispatch({
     type: LOG_IN,
     payload: {
-      user: api.getProfile(),
       jwt,
     }
   })
@@ -33,11 +32,11 @@ export const logIn = (jwt) => (dispatch) => {
  */
 const actions = {}
 
-actions[LOG_IN] = (state, { payload: { user, jwt } }) =>
-  Object.assign({}, state, { loggedIn: true, user, jwt });
+actions[LOG_IN] = (state, { payload: { jwt } }) =>
+  Object.assign({}, state, { loggedIn: true, jwt });
 
 actions[LOG_OUT] = (state) =>
-  Object.assign({}, state, { loggedIn: false, user: {} });
+  Object.assign({}, state, { loggedIn: false });
 
 /**
  * Reducer
@@ -45,8 +44,7 @@ actions[LOG_OUT] = (state) =>
 
 const initialState = {
   loggedIn: false,
-  token: api.getToken() || '',
-  user: {}
+  token: api.getToken() || ''
 };
 
 export default (state = initialState, action) => {

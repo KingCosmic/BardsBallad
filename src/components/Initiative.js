@@ -73,7 +73,7 @@ class Initiative extends Component {
     if (editing === path) {
       return (
         <Container width='calc(32% - 10px)' padding='5px' margin='10px 5px 0' justifyContent='space-between' alignItems='center' bg ol>
-          <Input type='number' ref='number' defaultValue={currentVal} />
+          <Input type='number' ref='initiative' defaultValue={currentVal} />
           <Save onClick={this.handleSave}>Save</Save>
         </Container>
       )
