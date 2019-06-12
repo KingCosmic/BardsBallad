@@ -12,6 +12,10 @@ import Character from '../views/Character';
 import Modal from '../components/Modal';
 
 class Home extends Component {
+  componentWillMount() {
+    if (this.props.history.location.pathname === '/') this.props.history.replace('/characters')
+  }
+
   render() {
     return (
       <Container  width='100%' height='100%' direction='row'>

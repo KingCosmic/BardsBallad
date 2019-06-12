@@ -16,7 +16,7 @@ const Search = ({ onSearch, search, openSpell, limit }) => {
   const filteredSrd = SrdSpells.filter(spell => spell.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
-    <Container>
+    <Container height='100%' width='100%'>
       <SearchInput onSearch={onSearch} value={search}
         bgStyle={{ backgroundColor: '#72767D', boxShadow: '0 2px 5px rgba(0, 0, 0, .2), 0 0 0 1px rgba(0, 0, 0, .1)' }}
       />

@@ -35,7 +35,7 @@ const withAuth = (AuthComponent) => {
     render() {
       const { user } = this.state;
 
-      return user ? <AuthComponent /> : null
+      return user ? <AuthComponent history={this.props.history} /> : null
     }
 
   }

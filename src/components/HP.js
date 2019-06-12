@@ -43,7 +43,7 @@ const Save = styled(C)`
   padding: 5px;
 `
 
-const determinPercent = (current, max, temp = 0) => `${((current + temp) / max) * 100}%`;
+const determinPercent = (current, max, temp = 0) => ((current + temp) / max) * 100;
 
 class HP extends Component { 
   constructor(props) {
@@ -80,6 +80,11 @@ class HP extends Component {
 
     const { current, max, temp } = data[path] ? Object.assign(hp, data[path]) : hp;
 
+    const tempRender = determinPercent(current, max, temp);
+    const hpRender = determinPercent(current, max);
+
+    console.log(tempRender)
+
     // check if we're editing this component :D
     if (editing === path) {
       return (
@@ -98,8 +103,8 @@ class HP extends Component {
           <Text size='0.9em' header>HP: {current}/{max} {(temp) ?  ` (+${temp})` : ''}</Text>
 
           <BarContainer width='100%' height='10px' bg ol>
-            <BarFiller width={determinPercent(current, max, temp)} color='blue' />
-            <BarFiller width={determinPercent(current, max)} color='green' />
+            <BarFiller width={tempRender > 100 ? '100%' : `${tempRender}%`} color='blue' />
+            <BarFiller width={hpRender > 100 ? '100%' : `${hpRender}%`} color='green' />
           </BarContainer>
         </Container>
       )

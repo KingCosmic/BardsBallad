@@ -55,13 +55,13 @@ class Initiative extends Component {
     // only send the action if the state needs to be resaved
     const changed = data[path] ? true : false;
 
-    if (this.refs.number.value == value && !changed) return editItem('');
+    if (this.refs.initiative.value == value && !changed) return editItem('');
 
-    if (this.refs.number.value == value && changed === true) {
+    if (this.refs.initiative.value == value && changed === true) {
       return revertData(path);
     }
 
-    updateData(path, this.refs.number.value)
+    updateData(path, this.refs.initiative.value)
   }
 
   render() {
