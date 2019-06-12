@@ -19,8 +19,6 @@ const modForStage = {
 
 const stageMap = { 0: 'grey', 1: 'blue', 2: 'green', 3: 'gold' }
 
-const profForStage = { 0: 'Not Proficient', 1: 'Half Proficient', 2: 'Proficient', 3: 'Expertise' }
-
 const CheckBox = styled(CB)`
   background-color: ${props => props.theme[stageMap[props.stage]]};
 

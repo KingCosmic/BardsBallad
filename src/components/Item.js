@@ -22,7 +22,7 @@ const ListItem = styled(LI)`
     background-color: rgba(222, 223, 224, .1);
   }
 
-  ${props => (Math.abs(props.index % 2) == 1) && css`
+  ${props => (Math.abs(props.index % 2) === 1) && css`
     background-color: rgba(0, 0, 0, .17);
   `}
 `
@@ -33,11 +33,11 @@ const Category = styled(Text)`
   color: rgba(255, 255, 255, .6);
 `
 
-const Item = ({ index, id, name, category, weight, value, onClick }) => {
+const Item = ({ index, id, name, quantity, category, weight, value, onClick }) => {
   return (
     <ListItem onClick={onClick} key={id} index={index}>
       <Container flowY='hidden' flowWrap>
-        <Text size='0.9em'>{name}</Text>
+        <Text size='0.9em'>{name} {quantity > 1 ? `x${quantity}` : ''}</Text>
         <Category size='0.8em'>{itemTypes[category]}</Category>
       </Container>
 

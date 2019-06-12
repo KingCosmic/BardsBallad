@@ -7,6 +7,9 @@ import Text from '../atoms/Text';
 
 import EditItem from './AddItem/EditItem';
 
+import { ReactComponent as Delete } from '../assets/delete.svg';
+import { ReactComponent as Edit } from '../assets/edit.svg';
+
 import { itemTypes, propertyTypes } from '../data/constants';
 import { mergeUpdates } from '../helpers';
 
@@ -14,7 +17,7 @@ const BackDrop = styled(Container)`
   position: relative;
   width: 30%;
   min-height: 30%;
-  max-height: 50%;
+  max-height: ${props => props.editing ? '80%' : '50%'};
   border-radius: 8px;
   background-color: ${props => props.theme.dark};
   box-shadow: 0 2px 10px rgba(0, 0, 0, .2), 0 0 0 1px rgba(28, 36, 43 .6);
@@ -22,6 +25,7 @@ const BackDrop = styled(Container)`
 `
 
 const Options = styled(Container)`
+  flex-direction: row;
   position: absolute;
   top: 20px;
   right: 20px;
@@ -72,11 +76,8 @@ class ItemInfo extends Component {
 
     if (editItem) {
       return (
-        <BackDrop onClick={(e) => e.stopPropagation()}>
-          <EditItem itemInfo={item} addItem={(item) => {
-            console.log(item)
-            updateItem(itemID, item)
-          }} goBack={this.stopEdit} />
+        <BackDrop editing={true} onClick={(e) => e.stopPropagation()}>
+          <EditItem itemInfo={item} addItem={(item) => updateItem(itemID, item)} goBack={this.stopEdit} title='Edit Item' />
         </BackDrop>
       )
     }
@@ -84,8 +85,8 @@ class ItemInfo extends Component {
     return (
       <BackDrop onClick={(e) => e.stopPropagation()}>
         <Options>
-          <Text size='0.8rem' onClick={() => removeItem(itemID)}>Delete</Text>
-          <Text size='0.8rem' onClick={this.editItem}>Edit</Text>
+          <Delete style={{ cursor: 'pointer', width: '1.7vw', height: '1.7vw' }} onClick={() => removeItem(itemID)} />
+          <Edit style={{ cursor: 'pointer', width: '1.7vw', height: '1.7vw' }} size='0.8rem' onClick={this.editItem} />
         </Options>
 
         <Title>{name}</Title>

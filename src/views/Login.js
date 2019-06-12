@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+import { Link as L } from "react-router-dom";
+
 import Container from '../atoms/Container';
 import Form from '../atoms/Form';
 import Input from '../atoms/Input';
 import Title from '../atoms/Title';
+import Text from '../atoms/Text';
 
 import styles from '../css/Login.module.scss';
 
@@ -12,6 +15,10 @@ import api from '../api';
 
 const Background = styled(Container)`
   background-color: ${props => props.theme.almostblack};
+`
+
+const Link = styled(L)`
+  color: rgba(255, 255, 255, .6);
 `
 
 class Login extends Component {
@@ -31,7 +38,7 @@ class Login extends Component {
   // redirect if we're already logged in
   componentWillMount() {
     if (api.loggedIn())
-      this.props.history.replace('/');
+      this.props.history.replace('/characters');
   }
 
   handleEmail(event) {
@@ -49,7 +56,7 @@ class Login extends Component {
       email,
       password
     ).then(resp => {
-      this.props.history.replace('/')
+      this.props.history.replace('/characters')
     }).catch(alert)
 
     event.preventDefault();
@@ -71,6 +78,8 @@ class Login extends Component {
           />
           <button className={styles.button}>Login</button>
         </Form>
+
+        <Text>Need to <Link to={`/signup`}>signup?</Link></Text>
       </Background>
     )
   }

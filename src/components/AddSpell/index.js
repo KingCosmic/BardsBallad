@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import Container from '../../atoms/Container';
 
+import EditSpell from './EditSpell';
 import Search from './Search';
-import EditItem from './EditItem';
 
 const BackDrop = styled(Container)`
   width: ${props => props.creating ? '30%' : '35%'};
@@ -15,19 +15,19 @@ const BackDrop = styled(Container)`
   padding: 20px;
 `
 
-class AddItem extends Component { 
+class AddSpell extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       search: '',
       limit: 25,
-      creatingItem: false
+      creatingSpell: false
     }
 
     this.onSearch = this.onSearch.bind(this)
-    this.openItem = this.openItem.bind(this)
-    this.showItems = this.showItems.bind(this)
+    this.openSpell = this.openSpell.bind(this)
+    this.showSpells = this.showSpells.bind(this)
   }
 
   onSearch(event) {
@@ -36,33 +36,33 @@ class AddItem extends Component {
 
   // change the modal to show a item for approval / customization
   // before adding it to the item list.
-  openItem(item) {
-    if (item) return this.setState({ creatingItem: true, itemInfo: { ...this.state.itemInfo, ...item } })
+  openSpell(spell) {
+    if (spell) return this.setState({ creatingSpell: true, spellInfo: { ...this.state.spellInfo, ...spell } })
 
     this.setState({
-      creatingItem: true
+      creatingSpell: true
     })
   }
 
-  showItems() {
+  showSpells() {
     this.setState({
-      creatingItem: false
+      creatingSpell: false
     })
   }
 
   render() {
-    const { search, limit, creatingItem, itemInfo } = this.state;
-    const { addItem } = this.props;
+    const { search, limit, creatingSpell, spellInfo } = this.state;
+    const { addSpell } = this.props;
 
     return (
-      <BackDrop onClick={(e) => e.stopPropagation()} creating={creatingItem}>
+      <BackDrop onClick={(e) => e.stopPropagation()} creating={creatingSpell}>
         {
-          (creatingItem === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openItem={this.openItem} /> :
-            <EditItem itemInfo={itemInfo} addItem={addItem} goBack={this.showItems} changeItem={this.changeItem} />
+          (creatingSpell === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openSpell={this.openSpell} /> :
+            <EditSpell spellInfo={spellInfo} addSpell={addSpell} goBack={this.showSpells} changeSpell={this.changeSpell} />
         }
       </BackDrop>
     )
   }
 }
 
-export default AddItem;
+export default AddSpell;

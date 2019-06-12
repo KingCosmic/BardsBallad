@@ -1,9 +1,6 @@
 import merge from 'lodash.merge';
 import cloneDeep from 'lodash.clonedeep';
 
-import nanoid from 'nanoid/generate';
-import lowercased from 'nanoid-dictionary/lowercase';
-
 import api from '../api';
 
 /**
@@ -78,6 +75,9 @@ actions[LOAD_ALL] = (state, { payload: { characters } }) =>
 
 actions[LOAD_ONE] = (state, { payload: { characters } }) =>
   merge({}, state, { characters, character: characters[0] })
+
+actions[CHANGE_CHARACTER] = (state, { payload: { id } }) =>
+  Object.assign({}, state, { character: cloneDeep(state.characters.find(char => char._id === id)) })
 
 actions[CREATE_CHARACTER] = (state, { payload: { character } }) =>
   merge({}, state, { characters: [...state.characters, character]})

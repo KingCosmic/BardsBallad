@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
 import './css/fonts.scss';
-import './index.css';
+import './index.scss';
 
 import { ThemeProvider } from 'styled-components';
 import { Provider } from 'react-redux';

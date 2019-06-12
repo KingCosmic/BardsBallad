@@ -18,11 +18,12 @@ import CharacterStats from '../components/CharacterStats';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { showItemInfo, showAddItem, editItem } from '../reducers/ui';
+import {
+  showItemInfo, showAddItem, editItem, showAddSpell, showSpellInfo,
+  showEditSpellslots
+} from '../reducers/ui';
 import { loadOne, changeCharacter } from '../reducers/characters';
-import { updateData, revertData, addFeat, updateFeat } from '../reducers/update';
-
-import { mergeUpdates } from '../helpers';
+import { updateData, revertData, addFeat, updateFeat, updateSpellslots } from '../reducers/update';
 
 import styles from '../css/CharacterOverlay.module.scss';
 
@@ -67,7 +68,7 @@ class CharacterOverlay extends Component {
     super(props);
 
     this.state = {
-      currentTab: 3
+      currentTab: 2
     }
 
     this.changeTab = this.changeTab.bind(this);
@@ -96,7 +97,8 @@ class CharacterOverlay extends Component {
     const {
       character, addSpell, showAddItem, update,
       editItem, updateData, editing, revertData,
-      showItemInfo, addFeat, updateFeat
+      showItemInfo, addFeat, updateFeat, showAddSpell, showSpellInfo,
+      showEditSpellslots, updateSpellslots
     } = this.props;
 
     if (!character) return null
@@ -129,11 +131,13 @@ class CharacterOverlay extends Component {
             {
               (currentTab === 0) ? <InfoTab char={character} /> :
               
-              (currentTab === 1) ? <SkillsTab char={character} update={update} /> :
+              (currentTab === 1) ? <SkillsTab char={character} update={update} updateData={updateData} revertData={revertData}  /> :
               
-              (currentTab === 2) ? <SpellsTab char={character} data={update} addSpell={addSpell} /> :
+              (currentTab === 2) ? <SpellsTab char={character} data={update} showAddSpell={showAddSpell} showSpellInfo={showSpellInfo} 
+                showEditSpellslots={showEditSpellslots} updateSpellslots={updateSpellslots} /> :
 
-              (currentTab === 3) ? <EquipmentTab char={character} showItemInfo={showItemInfo} showAddItem={showAddItem} data={update} /> :
+              (currentTab === 3) ? <EquipmentTab char={character} showItemInfo={showItemInfo} showAddItem={showAddItem} update={update}
+                updateData={updateData} revertData={revertData} /> :
 
               (currentTab === 4) ? <CombatTab char={character} data={update} editItem={editItem}
                 updateData={updateData} editing={editing} revertData={revertData} /> :
@@ -163,7 +167,8 @@ const mapStateToProps = (state) => {
 }
 
 export default withRouter(connect(mapStateToProps, {
-  loadOne, changeCharacter,
+  loadOne, changeCharacter, showAddSpell,
   showAddItem, editItem, updateData, revertData, showItemInfo,
-  addFeat, updateFeat
+  addFeat, updateFeat, showSpellInfo, showEditSpellslots,
+  updateSpellslots
 })(CharacterOverlay));

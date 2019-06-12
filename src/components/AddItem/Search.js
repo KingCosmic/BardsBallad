@@ -20,7 +20,7 @@ const Search = ({ onSearch, search, openItem, limit }) => {
           {
             SrdItems.filter(item => item.name.toLowerCase().includes(search.toLowerCase())).slice(0, limit)
             .map((item, i) => (
-              <Item {...item} index={i} onClick={() => openItem(item)} />
+              <Item {...item} index={i} key={item.id} onClick={() => openItem(item)} />
             ))
           }
         </List>

@@ -6,12 +6,11 @@ import merge from 'lodash.merge';
 import Container from '../../atoms/Container';
 import Title from '../../atoms/Title';
 import Text from '../../atoms/Text';
-import InlineEdit from '../../atoms/InlineEdit';
 import Select from '../../atoms/Select';
 
 import WeaponConfig from './WeaponConfig';
 
-import { typeOptions, rarityOptions } from '../../data/constants';
+import { typeOptions, rarityOptions, boolOptions } from '../../data/constants';
 
 const Input = styled.input`
   background-color: transparent;
@@ -28,6 +27,24 @@ const Input = styled.input`
   }
 `
 
+const TextArea = styled.textarea`
+  color: ${props => props.theme.text};
+  width: 100%;
+  height: 80px;
+  max-height: 200px;
+  font-size: 0.9em;
+  font-weight: 100;
+
+  margin: 0;
+
+  border-style: none;
+  outline: none;
+  resize: none;
+  cursor: pointer;
+
+  background-color: transparent;
+`
+
 export const Property = ({ callback, title, placeholder, type, value, options, multi = false, full = false }) => {
   return (
     <Container margin='5px 0' width={full ? '100%' : '50%'}>
@@ -42,7 +59,6 @@ export const Property = ({ callback, title, placeholder, type, value, options, m
   )
 }
 
-let counter = 0;
 class EditItem extends Component {
   constructor(props) {
     super(props);
@@ -86,8 +102,8 @@ class EditItem extends Component {
   }
 
   render() {
-    const { goBack, addItem } = this.props;
-    const { name, magic, rarity, desc, category, range, longRange, attackStat, attackBonus, damageStat, damageBonus, damage1, damage2, additionalDamage, value, weight } = this.state;
+    const { goBack, addItem, title = 'New Item' } = this.props;
+    const { name, magic, rarity, desc, category, quantity, range, longRange, attackStat, attackBonus, damageStat, damageBonus, damage1, damage2, additionalDamage, value, weight } = this.state;
 
     const weaponProps = { range, longRange, attackStat, attackBonus, damageStat, damageBonus, damage1, damage2, additionalDamage, editItem: this.editItem }
 
@@ -96,7 +112,7 @@ class EditItem extends Component {
         <Container height='30px' margin='0 0 10px 0' justifyContent='space-around' direction='row'>
           <Text size='0.9rem' onClick={goBack}>Back</Text>
 
-          <Title align='center'>New Item</Title>
+          <Title align='center'>{title}</Title>
 
           <Text size='0.9rem' onClick={() => addItem(this.state)}>Confirm</Text>
         </Container>
@@ -108,7 +124,7 @@ class EditItem extends Component {
             </Container>
             <Container direction='row'>
               <Property title='Category' value={category} options={typeOptions} type='select' callback={(value) => this.editItem('category', value)} />
-              <Property title='Magic Item' value={`${magic}`} options={[{ value: false, label: 'False' }, { value: true, label: 'True' }]} type='select' callback={(value) => this.editItem('magic', value)} />
+              <Property title='Magic Item' value={magic} options={boolOptions} type='select' callback={(value) => this.editItem('magic', value)} />
             </Container>
 
             <WeaponConfig {...weaponProps} />
@@ -118,8 +134,10 @@ class EditItem extends Component {
               <Property title='Weight (in lb)' value={weight} type='number' callback={(value) => this.editItem('weight', Number(value))} />
             </Container>
 
+            <Property title='quantity' value={quantity} type='number' callback={(value) => this.editItem('quantity', Number(value))} />
+
             <Title margin='10px 0 0'>Description</Title>
-            <InlineEdit placeholder='Here are my ideals' path='description' value={desc} />
+            <TextArea placeholder='Item description goes here' value={desc} onChange={(event) => this.editItem('desc', event.target.value)} />
           </Container>
         </Container>
       </Container>

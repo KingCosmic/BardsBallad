@@ -3,16 +3,16 @@ import React from 'react';
 import Container from '../atoms/Container';
 
 import SavingThrows from './SavingThrows';
-import Title from '../atoms/Title';
-import List from '../atoms/List';
 import Skills from './Skills';
 
-import levels from '../data/levels'
 import Senses from './Senses';
 import Proficiencies from './Proficiencies';
 
 const SkillsTab = (props) => {
-  const { char: { savingThrows, skills, stats, proficiency }, update } = props;
+  const {
+    char: { savingThrows, skills, stats, armorProfs, weaponProfs, toolProfs, proficiency },
+    update, updateData, revertData
+  } = props;
 
   const prof = Number(update['proficiency']) || proficiency
 
@@ -27,10 +27,10 @@ const SkillsTab = (props) => {
         <Skills skills={skills} stats={stats} data={update} prof={prof} />
       </Container>
 
-      <Container height='100%'>
+      <Container height='100%' width='50%'>
         <Senses stats={stats} data={update} skills={skills} prof={prof} />
 
-        <Proficiencies />
+        <Proficiencies updateData={updateData} revertData={revertData} armorProfs={armorProfs} weaponProfs={weaponProfs} toolProfs={toolProfs} update={update} />
       </Container>
     </Container>
   )

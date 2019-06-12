@@ -8,11 +8,13 @@ const Button = styled.div`
   text-align: center;
   height: 27px;
   width: ${props => props.width || 'auto'};
-  opacity: .7;
+  opacity: .85;
   line-height: 27px;
   background-color: ${props => props.theme.green};
   color: rgb(200, 200, 200);
   cursor: pointer;
+
+  margin: ${props => props.margin || 0};
 
   ${props => props.disabled && css`
     opacity: 0.4;

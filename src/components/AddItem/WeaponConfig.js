@@ -1,38 +1,10 @@
 import React from 'react';
 
 import Container from '../../atoms/Container';
-import Text from '../../atoms/Text';
 
 import { Property } from './EditItem';
-import PropertyInput from '../../atoms/PropertyInput';
 
-import { propOptions, statOptions } from '../../data/constants';
-
-const diceTypes = [
-  '1d2',
-  '1d3',
-  '1d4',
-  '1d5',
-  '1d6',
-  '1d8',
-  '1d10',
-  '1d12',
-  '2d4',
-  '2d6',
-  '2d8',
-  '2d10',
-  '2d12',
-  '3d4',
-  '3d6',
-  '3d8',
-  '3d10',
-  '3d12',
-  '4d4',
-  '4d6',
-  '4d8',
-  '4d10',
-  '4d12'
-]
+import { statOptions } from '../../data/constants';
 
 const WeaponConfig = ({ range, longRange, attackStat, attackBonus, damageStat, additionalDamage, damage1, damage2, editItem }) => {
   return (

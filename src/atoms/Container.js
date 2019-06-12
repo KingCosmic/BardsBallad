@@ -11,32 +11,13 @@ const Container = styled.div`
     word-wrap: break-word;
     hyphens: auto;
   `}
+
   ${props => props.flexWrap && css` flex-wrap: wrap; `}
 
   ${props => props.float && css` float: left; `};
 
   ${props => props.flowX && css` overflow-x: ${props => props.flowX}; `}
-  ${props => props.flowY && css`
-    overflow-y: ${props => props.flowY}; 
-    
-    /* width */
-    &::-webkit-scrollbar {
-      width: ${props => props.barWidth || '8px'};
-    }
-
-    /* Track */
-    &::-webkit-scrollbar-track {
-      background-color: rgba(32, 34, 37, .6);
-      border-radius: 4px;
-    }
-
-    /* Handle */
-    &::-webkit-scrollbar-thumb {
-      background: ${props => props.theme.almostblack};
-      border-radius: 4px;
-    }
-
-  `}
+  ${props => props.flowY && css` overflow-y: ${props => props.flowY}; `}
 
   ${props => props.underline && css` border-bottom: 1px solid ${props => props.theme.grey}; `}
 

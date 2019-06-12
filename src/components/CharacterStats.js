@@ -1,8 +1,6 @@
 import React from 'react';
 
 import Container from '../atoms/Container';
-import Title from '../atoms/Title';
-import Text from '../atoms/Text';
 
 import Name from './CharacterName';
 import Class from './CharacterClass';
@@ -14,7 +12,6 @@ import Speed from './Speed';
 import AC from './AC';
 import Initiatve from './Initiative'
 import HitDice from './HitDice';
-import DeathSaves from './DeathSaves';
 import CharacterStat from './CharacterStat';
 
 const CharacterStats = (props) => {
@@ -23,10 +20,10 @@ const CharacterStats = (props) => {
   const propData = { data, editItem, updateData, editing, revertData };
 
   const {
-    name, job, level, hp, exp, ac,
+    name, job, hp, exp, ac,
     passivePerception, proficiency,
-    hitdice, deathsaves, speed,
-    initiative, pieces, stats
+    hitdice, speed,
+    initiative, stats
   } = char;
 
   const { strength, dexterity, constitution, intelligence, wisdom, charisma } = stats;

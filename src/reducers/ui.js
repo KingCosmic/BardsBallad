@@ -6,7 +6,8 @@
  */
 
 import {
-  ADD_ITEM, UPDATE_FEAT, UPDATE_CHARACTER, REVERT_CHARACTER, REMOVE_ITEM, UPDATE_ITEM
+  ADD_ITEM, UPDATE_FEAT, UPDATE_CHARACTER, REVERT_CHARACTER, REMOVE_ITEM, UPDATE_ITEM, ADD_SPELL,
+  UPDATE_SPELL, REMOVE_SPELL, UPDATE_SPELL_SLOTS
 } from './update';
 
 // this type was ment for everything that when you click becomes editable (character stat, etc etc)
@@ -16,8 +17,11 @@ export const START_CHARACTER_CREATION = 'START_CHARACTER_CREATION';
 export const CHANGE_CHARACTER_CREATION_STAGE = 'CHANGE_CHARACTER_CREATION_STAGE';
 
 export const SHOW_ITEM_INFO = 'SHOW_ITEM_INFO';
+export const SHOW_SPELL_INFO = 'SHOW_SPELL_INFO';
 
 export const SHOW_ADD_ITEM = 'SHOW_ADD_ITEM';
+export const SHOW_ADD_SPELL = 'SHOW_ADD_SPELL';
+export const SHOW_EDIT_SPELLS_LOTS = 'SHOW_EDIT_SPELL_SLOTS';
 export const HIDE_MODAL = 'HIDE_MODAL';
 
 /**
@@ -37,6 +41,13 @@ export const editItem = (id) => (dispatch) => {
   dispatch({
     type: EDIT_ITEM,
     payload: { id }
+  })
+}
+
+export const showSpellInfo = (spellID) => (dispatch) => {
+  dispatch({
+    type: SHOW_SPELL_INFO,
+    payload: { spellID }
   })
 }
 
@@ -60,6 +71,20 @@ export const showAddItem = () => (dispatch) => {
   dispatch({
     type: SHOW_ADD_ITEM,
     payload: {}
+  })
+}
+
+export const showAddSpell = () => (dispatch) => {
+  dispatch({
+    type: SHOW_ADD_SPELL,
+    payload: {}
+  })
+}
+
+export const showEditSpellslots = (level) => (dispatch) => {
+  dispatch({
+    type: SHOW_EDIT_SPELLS_LOTS,
+    payload: { level }
   })
 }
 
@@ -110,6 +135,27 @@ actions[REVERT_CHARACTER] = (state) =>
 actions[SHOW_ADD_ITEM] = (state) =>
   Object.assign({}, state, { overlay: 'AddItem' })
 
+actions[SHOW_ADD_SPELL] = (state) =>
+  Object.assign({}, state, { overlay: 'AddSpell' })
+
+actions[ADD_SPELL] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
+actions[UPDATE_SPELL] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
+actions[REMOVE_SPELL] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
+actions[UPDATE_SPELL_SLOTS] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
+actions[SHOW_SPELL_INFO] = (state, { payload: { spellID } }) =>
+  Object.assign({}, state, { overlay: 'SpellInfo', spellID })
+
+actions[SHOW_EDIT_SPELLS_LOTS] = (state, { payload: { level } }) =>
+  Object.assign({}, state, { overlay: 'EditSpellSlots', slotsLevel: level })
+
 actions[HIDE_MODAL] = (state) =>
   Object.assign({}, state, { overlay: '' })
 
@@ -121,6 +167,7 @@ const initialState = {
   overlay: '',
   editing: '',
   itemID: '',
+  slotsLevel: 0,
   creatingCharacter: false,
   creationStage: 1
 };

@@ -32,13 +32,17 @@ const Dropdown = styled.div`
   }
 `
 
+const Value = styled(Text)`
+  font-weight: 200;
+`
+
 const Select = ({ value, options, onChange, multi = false }) => {
   return (
     <Dropdown>
-      <Text>{value}</Text>
+      <Value>{options.find(opt => opt.value === value).label}</Value>
       <DropdownContent>
         {
-          options.map(({ value, label }) => <Text onClick={() => onChange(value)}>{label}</Text>)
+          options.map(({ value, label }, i) => <Value key={i} onClick={() => onChange(value)}>{label}</Value>)
         }
       </DropdownContent>
     </Dropdown>

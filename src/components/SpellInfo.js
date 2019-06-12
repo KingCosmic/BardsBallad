@@ -1,21 +1,40 @@
+
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import Container from '../atoms/Container';
 import Title from '../atoms/Title';
 import Text from '../atoms/Text';
-import Bold from '../atoms/Bold';
-import SpellEditing from './SpellEditing';
 
-const Header = styled(Container)`
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 1px solid ${props => props.theme.almostblack};
+import EditSpell from './AddSpell/EditSpell';
+
+import { ReactComponent as Delete } from '../assets/delete.svg';
+import { ReactComponent as Edit } from '../assets/edit.svg';
+
+import { itemTypes, propertyTypes } from '../data/constants';
+import { mergeUpdates } from '../helpers';
+
+const BackDrop = styled(Container)`
+  position: relative;
+  width: 30%;
+  min-height: 30%;
+  max-height: ${props => props.editing ? '80%' : '50%'};
+  border-radius: 8px;
+  background-color: ${props => props.theme.dark};
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .2), 0 0 0 1px rgba(28, 36, 43 .6);
+  padding: 20px;
 `
 
-const Section = styled(Container)`
-  border: 1px solid ${props => props.theme.almostblack};
-  border-left: none;
+const Options = styled(Container)`
+  flex-direction: row;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+`
+
+const SubText = styled.span`
+  color: rgba(255, 255, 255, .6);
+  font-size: 0.8rem;
 `
 
 class SpellInfo extends Component {
@@ -23,37 +42,63 @@ class SpellInfo extends Component {
     super(props);
 
     this.state = {
-      editing: false
+      editSpell: false
     }
+
+    this.stopEdit = this.stopEdit.bind(this);
+    this.editSpell = this.editSpell.bind(this);
+  }
+
+  stopEdit() {
+    this.setState({
+      editSpell: false
+    })
+  }
+
+  editSpell() {
+    this.setState({
+      editSpell: true
+    })
   }
 
   render() {
-    const { spell, editing, editSpell } = this.props
+    const { spells, update, spellID, removeSpell, updateSpell } = this.props;
+    const { editSpell } = this.state;
 
-    const { name } = spell;
+    const spellData = mergeUpdates(spells, update.spells || []);
 
+    const spell = spellData.find(obj => obj.id === spellID);
 
-    if (editing) {
-      return <SpellEditing spell={spell} />
-    } else {
+    const {
+      name, casttime, range, verbal, somatic, material,
+      duration, concentration, description, higherlevels
+    } = spell;
+
+    if (editSpell) {
       return (
-        <Section height='calc(100% - 1px)' width='70%'>
-          <Header>
-            <Container padding='5px'><Text>Prepared: false</Text></Container>
-  
-            <Container padding='5px' onClick={editSpell}><Text>Edit</Text></Container>
-          </Header>
-          <Container padding='5px'>
-            <Title size='2em' margin='0 0 10px 0'>{name}</Title>
-            <Text size='0.8em'><Bold weight='300'>Casting Time:</Bold> 1 action</Text>
-            <Text size='0.8em'><Bold weight='300'>Range:</Bold> Touch</Text>
-            <Text size='0.8em'><Bold weight='300'>Components:</Bold> V, S</Text>
-            <Text size='0.8em' margin='0 0 10px 0'><Bold weight='300'>Duration:</Bold> Concentration, up to 1 minute</Text>
-            <Text size='0.9em' weight='100' sub>You touch one willing creature. Once before the spell ends, the target can roll a d4 and add the number rolled to one ability check of its choice. It can roll the die before or after making the ability check. The spell then ends.</Text>
-          </Container>
-        </Section>
+        <BackDrop editing={true} onClick={(e) => e.stopPropagation()}>
+          <EditSpell spellInfo={spell} addSpell={(spell) => updateSpell(spell.id, spell)} goBack={this.stopEdit} title='Edit Item' />
+        </BackDrop>
       )
     }
+
+    return (
+      <BackDrop onClick={(e) => e.stopPropagation()}>
+        <Options>
+          <Delete style={{ cursor: 'pointer', width: '1.7vw', height: '1.7vw' }} onClick={() => removeSpell(spellID)} />
+          <Edit style={{ cursor: 'pointer', width: '1.7vw', height: '1.7vw' }} size='0.8rem' onClick={this.editSpell} />
+        </Options>
+
+        <Container padding='5px'>
+          <Title size='1em' margin='0 0 10px 0'>{name}</Title>
+          <Text size='0.8em'>Time: <SubText>{casttime}</SubText></Text>
+          <Text size='0.8em'>Range: <SubText>{range}</SubText></Text>
+          <Text size='0.8em'>Components: <SubText>{verbal ? 'V, ' : ''} {somatic ? 'S, ' : ''} {material ? `M (${material})` : ''}</SubText></Text>
+          <Text size='0.8em' margin='0 0 10px 0'>Duration: <SubText>{concentration ? `Concentration, up to ${duration}` : duration}</SubText></Text>
+          <Text size='0.8em' sub>{description}</Text>
+        </Container>
+      </BackDrop>
+    )
   }
 }
 

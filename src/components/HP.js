@@ -53,7 +53,7 @@ class HP extends Component {
   }
 
   handleSave() {
-    const { data, path, val, updateData, revertData, editItem } = this.props;
+    const { path, updateData } = this.props;
 
     // TODO: check hp for changes so we dont save if it's
     // unnecesary

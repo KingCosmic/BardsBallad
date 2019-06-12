@@ -29,7 +29,7 @@ class Characters extends Component {
   render() {
 
     const { characters, createCharacter, creatingCharacter, creationStage,
-      startCharacterCreation, changeCharacterCreationStage
+      changeCharacterCreationStage
     } = this.props;
 
     if (creatingCharacter) {
@@ -39,15 +39,15 @@ class Characters extends Component {
     }
 
     return (
-      <Container width='100%' height='100%'>
+      <Container width='calc(100% - 40px)' height='calc(100% - 40px)' padding='20px'>
         {
 
           (characters.length === 0) ? null :
 
           characters.map(character => {
-            const { name, job, lvl } = character
+            const { name, job, exp } = character
   
-            return <Character key={character._id} name={name} job={job} lvl={lvl} character={character} id={character._id} />
+            return <Character key={character._id} name={name} job={job} exp={exp} character={character} id={character._id} />
           })
         }
 

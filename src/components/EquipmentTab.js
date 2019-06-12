@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
 
 import Container from '../atoms/Container';
 import List from '../atoms/List';
@@ -9,10 +8,6 @@ import Button from '../atoms/Button';
 import Gold from './Gold';
 
 import { mergeUpdates } from '../helpers';
-
-const AddItem = styled(Button)`
-  text-align: center;
-`
 
 class EquipmentTab extends Component {
   constructor(props) {
@@ -37,10 +32,10 @@ class EquipmentTab extends Component {
 
   render() {
     const { search } = this.state;
-    const { showAddItem, showItemInfo, char: { pieces, items }, data } = this.props;
+    const { showAddItem, showItemInfo, char: { pieces, items }, update, updateData, revertData } = this.props;
     const { copper, silver, etherium, gold, platinum } = pieces;
 
-    const itemdata = mergeUpdates(items, data.items || []);
+    const itemdata = mergeUpdates(items, update.items || []);
 
     return (
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px' direction='row'>
@@ -59,15 +54,15 @@ class EquipmentTab extends Component {
               }
             </List>
           </Container>
-          <AddItem onClick={showAddItem}>Add Item</AddItem>
+          <Button onClick={showAddItem}>Add Item</Button>
         </Container>
 
-        <Container width='30%' justifyContent='center' alignItems='center'>
-          <Gold type='CP' amount={copper} />
-          <Gold type='SP' amount={silver} />
-          <Gold type='EP' amount={etherium} />
-          <Gold type='GP' amount={gold} />
-          <Gold type='PP' amount={platinum} />
+        <Container width='41.5%' justifyContent='center' alignItems='center'>
+          <Gold type='CP' amount={copper} path='pieces.copper' update={update} updateData={updateData} revertData={revertData} />
+          <Gold type='SP' amount={silver} path='pieces.silver' update={update} updateData={updateData} revertData={revertData} />
+          <Gold type='EP' amount={etherium} path='pieces.etherium' update={update} updateData={updateData} revertData={revertData} />
+          <Gold type='GP' amount={gold} path='pieces.gold' update={update} updateData={updateData} revertData={revertData} />
+          <Gold type='PP' amount={platinum} path='pieces.platinum' update={update} updateData={updateData} revertData={revertData} />
         </Container>
 
       </Container>

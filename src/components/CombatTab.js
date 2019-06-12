@@ -22,14 +22,6 @@ class CombatTab extends Component {
   }
   
   render() {
-    const {
-      char: { items },
-      data, editItem, updateData, editing, revertData
-    } = this.props;
-    const { filter } = this.state;
-
-    const propData = { data, editItem, updateData, editing, revertData };
-
     return (
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px'>
         <Container width='58.5%'>

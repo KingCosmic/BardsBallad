@@ -1,7 +1,23 @@
 
+export const boolOptions = [{ value: false, label: 'False' }, { value: true, label: 'True' }]
+
 export const sizes = {
   'T': 'Tiny', 'S': 'Small', 'M': 'Medium', 'L': 'Large', 'H': 'Huge', 'G': 'Gargantuan'
 }
+
+export const spellLevels = [
+  { value: 0, label: 'Cantrip' }, { value: 1, label: 'First' }, { value: 2, label: 'Second' }, { value: 3, label: 'Third' }, { value: 4, label: 'Fourth' }, { value: 5, label: 'Fifth' }, { value: 6, label: 'Sixth' }, { value: 7, label: 'Seventh' }, { value: 8, label: 'Eigth' }, { value: 9, label: 'Nineth' } 
+]
+
+export const schoolTypes = {
+  'A': 'Abjuration', 'C': 'Conjuration', 'D': 'Divinitation', 'E': 'Enchantment',
+  'V': 'Evocation', 'I': 'Illusion', 'N': 'Necromancy', 'T': 'Transmutation'
+}
+
+export const schoolOptions = Object.keys(schoolTypes).map(key => ({
+  value: key,
+  label: schoolTypes[key]
+}))
 
 export const statTypes = {
   'AUTO': 'Automatic', 'STR': 'Strength', 'DEX': 'Dexterity', 'CON': 'Constitution',
@@ -37,7 +53,7 @@ export const typeOptions = Object.keys(itemTypes).map(key => ({
 }))
 
 export const damageTypes = {
-  'A': 'Acid', 'B': 'Bludgeoning', 'C': 'Cold', 'F': 'Fire', 'FO': 'Force',
+  'AUTO': 'Automatic', 'A': 'Acid', 'B': 'Bludgeoning', 'C': 'Cold', 'F': 'Fire', 'FO': 'Force',
   'L': 'Lightning', 'N': 'Necrotic', 'P': 'Piercing', 'PO': 'Poison',
   'PS': 'Psychic', 'R': 'Radiant', 'S': 'Slashing', 'T': 'Thunder'
 }

@@ -5,10 +5,13 @@ import C from '../atoms/Container';
 
 import AddItem from './AddItem';
 import ItemInfo from './ItemInfo';
+import AddSpell from './AddSpell';
+import SpellInfo from './SpellInfo';
+import EditSpellSlots from './EditSpellSlots';
 
 import { connect } from 'react-redux';
 import { hideModal } from '../reducers/ui';
-import { addItem, removeItem, updateItem } from '../reducers/update';
+import { addItem, removeItem, updateItem, addSpell, removeSpell, updateSpell, updateSpellslots } from '../reducers/update';
 
 const Container = styled(C)`
   width: 100%;
@@ -22,12 +25,19 @@ const Container = styled(C)`
   display: ${props => props.visible ? 'flex' : 'none'};
 `
 
-const Modal = ({ overlay, hideModal, addItem, removeItem, updateItem, items, update, itemID }) => {
+const Modal = ({
+  overlay, hideModal, addItem, removeItem, updateItem, addSpell, updateSpell,
+  removeSpell, items, spells, update, itemID, spellID, spellSlots, slotsLevel,
+  updateSpellslots
+}) => {
   return (
     <Container visible={overlay !== ''} onClick={hideModal}>
       {
         (overlay === 'AddItem') ? <AddItem addItem={addItem} /> :
-        (overlay === 'ItemInfo') ? <ItemInfo items={items} update={update} itemID={itemID} removeItem={removeItem} updateItem={updateItem} /> : ''
+        (overlay === 'ItemInfo') ? <ItemInfo items={items} update={update} itemID={itemID} removeItem={removeItem} updateItem={updateItem} /> :
+        (overlay === 'AddSpell') ? <AddSpell addSpell={addSpell} /> :
+        (overlay === 'SpellInfo') ? <SpellInfo spells={spells} update={update} spellID={spellID} removeSpell={removeSpell} updateSpell={updateSpell} /> :
+        (overlay === 'EditSpellSlots') ? <EditSpellSlots slots={spellSlots} level={slotsLevel} update={update} goBack={hideModal} editSlots={updateSpellslots} /> : ''
       }
     </Container>
   )
@@ -38,8 +48,12 @@ const mapStateToProps = (state) => {
     overlay: state.ui.overlay,
     items: state.characters.character.items,
     update: state.update,
-    itemID: state.ui.itemID
+    itemID: state.ui.itemID,
+    spells: state.characters.character.spells,
+    spellID: state.ui.spellID,
+    spellSlots: state.characters.character.spellSlots,
+    slotsLevel: state.ui.slotsLevel
   }
 }
 
-export default connect(mapStateToProps, { hideModal, addItem, removeItem, updateItem })(Modal);
+export default connect(mapStateToProps, { hideModal, addItem, removeItem, updateItem, addSpell, updateSpell, removeSpell, updateSpellslots })(Modal);

@@ -4,38 +4,33 @@ import styled, { css } from 'styled-components';
 import { Link } from "react-router-dom";
 import Text from '../atoms/Text';
 
+import levels from '../data/levels';
+
+const getLevel = (exp) => Object.keys(levels).find(lvl => exp <= levels[lvl].exp)
+
 const Container = styled(Link)`
-  ${props => props.width && css` width: ${props => props.width}; `}
-  ${props => props.height && css` height: ${props => props.height}; `}
-  ${props => props.maxHeight && css` max-height: ${props => props.maxHeight}; `}
-  ${props => props.maxWidth && css` max-width: ${props => props.maxWidth}; `}
+  width: calc(32% - 20px);
+  height: 100px;
 
-  ${props => props.float && css` float: left; `};
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-decoration: none;
 
-  display: ${props => props.noFlex ? 'block' : 'flex'};
-  flex-direction: ${props => props.direction || 'column'};
-  ${props => props.bases && css` flex-basis: ${props => props.bases}; `}
-  ${props => props.justifyContent && css` justify-content: ${props => props.justifyContent}; `}
-  ${props => props.alignItems && css` align-items: ${props => props.alignItems}; `}
-  ${props => props.alignSelf && css` align-self: ${props => props.alignSelf}; `}
+  background: url('https://cdn.discordapp.com/attachments/391809595473002496/579335189331836939/233.png');
+  background-size: contain;
+  background-repeat: no-repeat;
 
-  margin: ${props => props.margin || 0};
-  padding: ${props => props.padding || 0};
-
-  ${props => props.grow && css` flex-grow: ${props.grow}; `}
-
-  ${props => props.bg && css`
-    background-color: ${(props) => props.theme.dark};
-    outline: 1px solid ${(props) => props.theme.almostblack};
-  `}
+  margin: 0;
+  padding: 10px;
 `
 
 const Character = (props) => {
-  const { name, job, lvl, id } = props;
+  const { name, job, exp, id } = props;
 
   return (
-    <Container to={`/characters/${id}`} width='calc(32% - 20px)' padding='10px' bg='true'>
-      <Text>{name}</Text><Text>{job}: {lvl}</Text>
+    <Container to={`/characters/${id}`}>
+      <Text>{name}</Text><Text>{job} ({getLevel(exp)})</Text>
     </Container>
   )
 }

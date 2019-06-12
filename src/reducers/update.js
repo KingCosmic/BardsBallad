@@ -21,9 +21,12 @@ export const ADD_FEAT = 'ADD_FEAT'
 export const UPDATE_FEAT = 'UPDATE_FEAT'
 export const ADD_SPELL = 'ADD_SPELL'
 export const UPDATE_SPELL = 'UPDATE_SPELL'
+export const REMOVE_SPELL = 'REMOVE_SPELL'
 export const REVERT_CHARACTER = 'REVERT_CHARACTER'
 export const SYNC_CHARACTER = 'SYNC_CHARACTER'
 export const UPDATE_CHARACTER = 'UPDATE_CHARACTER'
+export const UPDATE_SPELL_SLOTS = 'UPDATE_SPELLSLOTS'
+export const RESTORE_ALL_SPELL_SLOTS = 'RESTORE_ALL_SPELL_SLOTS'
 
 /**
  * ACTIONS
@@ -37,6 +40,21 @@ export const updateData = (path, data) => (dispatch) => dispatch({
     path,
     data
   }
+})
+
+export const addSpell = (spell) => (dispatch) => dispatch({
+  type: ADD_SPELL,
+  payload: { spell }
+})
+
+export const updateSpell = (id, data) => (dispatch) => dispatch({
+  type: UPDATE_SPELL,
+  payload: { id, data }
+})
+
+export const removeSpell = (id) => (dispatch) => dispatch({
+  type: REMOVE_SPELL,
+  payload: { id }
 })
 
 export const addItem = (item) => (dispatch) => dispatch({
@@ -64,11 +82,19 @@ export const updateFeat = (id, data) => (dispatch) => dispatch({
   payload: { id, data }
 })
 
+export const updateSpellslots = (level, slots) => (dispatch) => dispatch({
+  type: UPDATE_SPELL_SLOTS,
+  payload: { level, slots }
+})
+
+export const restoreAllSpellSlots = (slots) => (dispatch) => dispatch({
+  type: RESTORE_ALL_SPELL_SLOTS,
+  payload: { slots }
+})
+
 export const revertData = (path) => (dispatch) => dispatch({
   type: REVERT_CHARACTER,
-  payload: {
-    path,
-  }
+  payload: { path }
 })
 
 export const syncData = (id, data) => (dispatch) => {
@@ -182,32 +208,12 @@ actions[UPDATE_FEAT] = (state, { payload: { id, data } }) => {
   return merge({}, state, { changes: newChanges, feats });
 }
 
-actions[ADD_SPELL] = (state, { payload: { level } }) => {
+actions[ADD_SPELL] = (state, { payload: { spell } }) => {
   let id = nanoid(lowercased, 24)
 
   let newChanges = state.changes.includes('spells') ? state.changes : [...state.changes, 'spells']
 
-  return merge({}, state, {
-    changes: newChanges,
-    spells: [...state.update.data.spells || [],
-    {
-      id,
-      level,
-      name: 'New Spell',
-      school: 'divination',
-      castingTime: '1 action',
-      range: '15 feet',
-      verbal: false,
-      somatic: false,
-      material: [],
-      concentration: false,
-      ritual: false,
-      duration: '1 minute',
-      description: 'Here\'s your new spell edit it to your hearts content bud.',
-      new: true
-    }
-    ]
-  })
+  return merge({}, state, { changes: newChanges, spells: [...state.spells || [], { ...spell, id, new: true }] })
 }
 
 actions[UPDATE_SPELL] = (state, { payload: { id, data } }) => {
@@ -217,11 +223,11 @@ actions[UPDATE_SPELL] = (state, { payload: { id, data } }) => {
 
   let isUpdated = false;
 
-  for (let s = 0; s < spells.length; s++) {
-    let spell = spells[s];
+  for (let i = 0; i < spells.length; i++) {
+    let spell = spells[i];
 
     if (spell.id === id) {
-      spells[s] = merge(spells[s], update);
+      spells[i] = merge({}, spells[i], update);
       isUpdated = true
     }
 
@@ -231,7 +237,46 @@ actions[UPDATE_SPELL] = (state, { payload: { id, data } }) => {
 
   let newChanges = state.changes.includes('spells') ? state.changes : [...state.changes, 'spells']
 
-  return merge(state, { changes: newChanges, spells });
+  return merge({}, state, { changes: newChanges, spells });
+}
+
+actions[REMOVE_SPELL] = (state, { payload: { id } }) => {
+  let spells = cloneDeep(state.spells || []);
+
+  let update = { remove: true, id }
+
+  let isRemoved = false;
+
+  for (let i = 0; i < spells.length; i++) {
+    let spell = spells[i]
+
+    if (spell.id === id) {
+      spells[i] = merge(spells[i], update);
+      isRemoved = true
+    }
+  }
+
+  if (!isRemoved) spells.push(update);
+
+  let newChanges = state.changes.includes('spells') ? state.changes : [...state.changes, 'spells']
+
+  return merge({}, state, { changes: newChanges, spells })
+}
+
+actions[UPDATE_SPELL_SLOTS] = (state, { payload: { level, slots } }) =>
+  merge({}, state, { spellSlots: { [level]: slots }, changes: state.changes.includes('spellSlots') ? state.changes : [...state.changes, 'spellslots'] })
+
+const levelMap = { 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine' }
+actions[RESTORE_ALL_SPELL_SLOTS] = (state, { payload: { slots } }) => {
+  const updatedSlots = cloneDeep(slots);
+
+  for (let i = 1; i < 10; i++) {
+    updatedSlots[levelMap[i]].current = updatedSlots[levelMap[i]].max
+  }
+
+  let newChanges = state.changes.includes('spellSlots') ? state.changes : [...state.changes, 'spellslots']
+
+  return merge({}, state, { spellSlots: updatedSlots, changes: newChanges })
 }
 
 actions[REVERT_CHARACTER] = (state, { payload: { path } }) => {
