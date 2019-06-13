@@ -34,7 +34,7 @@ class Proficiency extends Component {
     super(props);
 
     this.state = {
-      value: props.value
+      value: props.update[props.path] || props.value
     }
 
     this.onChange = this.onChange.bind(this);
@@ -61,7 +61,8 @@ class Proficiency extends Component {
   }
 
   render() {
-    const { title, ph, value } = this.props;
+    const { title, ph } = this.props;
+    const { value } = this.state;
 
     return (
       <ListItem direction='column' minHeight='100px' margin='5px 0' hover>
@@ -74,15 +75,11 @@ class Proficiency extends Component {
 
 const Proficiencies = ({ armorProfs, weaponProfs, toolProfs, update, updateData, revertData }) => {
 
-  const armors = update['armorProfs'] || armorProfs;
-  const weapons = update['weaponProfs'] || weaponProfs;
-  const tools = update['toolProfs'] || toolProfs;
-
   return (
     <Container height='calc(70% - 20px)' padding='10px'>
-      <Proficiency title='Armor Proficiencies' ph='Heavy Armor, Leather Armor' value={armors} path='armorProfs' update={update} updateData={updateData} revertData={revertData} />
-      <Proficiency title='Weapon Proficiencies' ph='Shortswords, Light Crossbows' value={weapons} path='weaponProfs' update={update} updateData={updateData} revertData={revertData} />
-      <Proficiency title='Tool Proficiencies' ph='Artison Tools, Thieves tools' value={tools} path='toolProfs' update={update} updateData={updateData} revertData={revertData} />
+      <Proficiency title='Armor Proficiencies' ph='Heavy Armor, Leather Armor' value={armorProfs} path='armorProfs' update={update} updateData={updateData} revertData={revertData} />
+      <Proficiency title='Weapon Proficiencies' ph='Shortswords, Light Crossbows' value={weaponProfs} path='weaponProfs' update={update} updateData={updateData} revertData={revertData} />
+      <Proficiency title='Tool Proficiencies' ph='Artison Tools, Thieves tools' value={toolProfs} path='toolProfs' update={update} updateData={updateData} revertData={revertData} />
     </Container>
   )
 }
