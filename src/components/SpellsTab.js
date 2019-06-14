@@ -68,7 +68,7 @@ class SpellsTab extends Component {
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px' direction='row'>
 
         <Container width='58.5%'>
-          <Search onSearch={this.onSearch} value={search} />
+          <Search onSearch={this.onSearch} value={search} ph='Search Spells...' />
 
           <Container flowY='auto' height='calc(90% - 20px)' margin='10px 0'>
             <ListSection title='Cantrips' onClick={(spell) => showSpellInfo(spell.id)} filter={listFilter(0)} data={spellData} Component={Spell} />

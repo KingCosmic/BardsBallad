@@ -24,7 +24,7 @@ const Input = styled(I)`
   background-color: ${props => props.theme.dark};
   color: ${props => props.theme.text};
   margin: 1px;
-  width: 100%;
+  width: calc(33% - 2px);
   text-align: center;
 
   &::-webkit-inner-spin-button {
@@ -43,7 +43,7 @@ const Save = styled(C)`
   padding: 5px;
 `
 
-const determinPercent = (current, max, temp = 0) => ((current + temp) / max) * 100;
+const determinPercent = (current, max, temp = 0, isTemp = true) => ((current + ((isTemp) ? temp : 0)) / (max + temp)) * 100;
 
 class HP extends Component { 
   constructor(props) {
@@ -81,15 +81,13 @@ class HP extends Component {
     const { current, max, temp } = data[path] ? Object.assign(hp, data[path]) : hp;
 
     const tempRender = determinPercent(current, max, temp);
-    const hpRender = determinPercent(current, max);
-
-    console.log(tempRender)
+    const hpRender = determinPercent(current, max, temp, false);
 
     // check if we're editing this component :D
     if (editing === path) {
       return (
-        <C grow='1' justifyContent='space-between' alignItems='center' bg ol>
-          <C direction='row' justifyContent='space-between'>
+        <C width='100%' justifyContent='space-between' alignItems='center' bg ol>
+          <C width='100%' direction='row' justifyContent='space-between'>
             <Input type='number' ref='current' defaultValue={current} />
             <Input type='number' ref='max' defaultValue={max} />
             <Input type='number' ref='temp' defaultValue={temp} />
@@ -103,8 +101,8 @@ class HP extends Component {
           <Text size='0.9em' header>HP: {current}/{max} {(temp) ?  ` (+${temp})` : ''}</Text>
 
           <BarContainer width='100%' height='10px' bg ol>
-            <BarFiller width={tempRender > 100 ? '100%' : `${tempRender}%`} color='blue' />
-            <BarFiller width={hpRender > 100 ? '100%' : `${hpRender}%`} color='green' />
+            <BarFiller width={`${tempRender}%`} color='blue' />
+            <BarFiller width={`${hpRender}%`} color='green' />
           </BarContainer>
         </Container>
       )

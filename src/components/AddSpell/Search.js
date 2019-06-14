@@ -17,7 +17,7 @@ const Search = ({ onSearch, search, openSpell, limit }) => {
 
   return (
     <Container height='100%' width='100%'>
-      <SearchInput onSearch={onSearch} value={search}
+      <SearchInput onSearch={onSearch} value={search} ph='Search Spells...'
         bgStyle={{ backgroundColor: '#72767D', boxShadow: '0 2px 5px rgba(0, 0, 0, .2), 0 0 0 1px rgba(0, 0, 0, .1)' }}
       />
 

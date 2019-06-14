@@ -26,7 +26,7 @@ const TextArea = styled.textarea`
   background-color: transparent;
 
   &:hover {
-    background-color: ${props => props.theme.dark}
+    background-color: ${props => props.theme.dark};
   }
 `
 
@@ -68,7 +68,6 @@ class InlineEdit extends Component {
       <TextArea {...this.props}
         value={this.state.value}
         onChange={this.onChange}
-        onFocus={this.onFocus}
         onBlur={this.onBlur}
         changed={changed}
       />

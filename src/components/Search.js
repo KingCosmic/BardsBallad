@@ -29,7 +29,7 @@ const SearchInput = styled.input`
   box-shadow: none;
 
   &::placeholder {
-    color: ${props => props.ph || 'rgba(255, 255, 255, .6)'};
+    color: rgba(255, 255, 255, .6);
   }
 `
 
@@ -67,7 +67,7 @@ const DropDown = styled(Container)`
 const Search = ({ bgStyle, ph, onSearch, value }) => {
   return (
     <SearchContainer direction='row' style={bgStyle}>
-      <SearchInput placeholder='Search...' spellcheck='false' ph={ph} value={value} onChange={onSearch} />
+      <SearchInput placeholder={ph} spellcheck='false' value={value} onChange={onSearch} />
       <SearchIcons direction='row'>
         <DropDown>
           <Text align='center'>All</Text>

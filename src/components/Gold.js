@@ -23,8 +23,10 @@ class Gold extends Component {
   constructor(props) {
     super(props);
 
+
+
     this.state = {
-      value: props.amount
+      value: props.update[props.path] || props.amount
     }
 
     this.onChange = this.onChange.bind(this);
@@ -51,12 +53,12 @@ class Gold extends Component {
 
   render() {
     const { type, amount, update, path } = this.props;
+    const { value } = this.state;
 
-    const renderData = update[path] || amount;
     return (
       <Container width='40%' margin='5px 0' padding='5px' direction='row' alignItems='center'>
         <Title margin='0 10px 0 0'>{type}</Title>
-        <Input value={renderData} onChange={this.onChange} />
+        <Input value={value} onChange={this.onChange} type='number' />
       </Container>
     )
   }

@@ -33,25 +33,25 @@ const InfoTab = (props) => {
             <Container grow='1'>
               <Title margin='0 0 10px 0' header>Personality Traits</Title>
 
-              <InlineEdit placeholder='here are some of my traits' path='personality.traits' value={traits} />
+              <InlineEdit placeholder='here are some of my traits' path='personality.traits' value={traits} spellcheck='false' />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0'>
               <Title margin='0 0 10px 0' header>Ideals</Title>
 
-              <InlineEdit placeholder='Here are my ideals' path='personality.ideals' value={ideals} />
+              <InlineEdit placeholder='Here are my ideals' path='personality.ideals' value={ideals} spellcheck='false' />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0'>
               <Title margin='0 0 10px 0' header>Bonds</Title>
 
-              <InlineEdit placeholder='These are my bonds' path='personality.bonds' value={bonds} />
+              <InlineEdit placeholder='These are my bonds' path='personality.bonds' value={bonds} spellcheck='false' />
             </Container>
 
             <Container grow='1' margin='10px 0 0 0'>
               <Title margin='0 0 10px 0' header>Flaws</Title>
 
-              <InlineEdit placeholder='I have no flaws :angry:' path='personality.flaws' value={flaws} />
+              <InlineEdit placeholder='I have no flaws :angry:' path='personality.flaws' value={flaws} spellcheck='false' />
             </Container>
           </Container>
         </ListItem>
@@ -60,32 +60,32 @@ const InfoTab = (props) => {
           <Container>
             <Title header>Alignment</Title>
 
-            <InlineEdit placeholder='Chaotic/Stupid' path='alignment' value={alignment} />
+            <InlineEdit placeholder='Chaotic/Stupid' path='alignment' value={alignment} spellcheck='false' />
           </Container>
 
           <Container>
             <Title header>Race</Title>
 
-            <InlineEdit placeholder='Human' path='race' value={race} />
+            <InlineEdit placeholder='Human' path='race' value={race} spellcheck='false' />
           </Container>
 
           <Container>
             <Title header>Background</Title>
 
-            <InlineEdit placeholder='Soldier' path='background' value={background} />
+            <InlineEdit placeholder='Soldier' path='background' value={background} spellcheck='false' />
           </Container>
 
           <Container>
             <Title header>Languages</Title>
 
-            <InlineEdit placeholder='common' path='languages' value={languages} />
+            <InlineEdit placeholder='common' path='languages' value={languages} spellcheck='false' />
           </Container>
         </ListItem>
 
         <ListItem direction='column' margin='10px 0 0 0' padding='10px'>
           <Title margin='0 0 10px 0' header>Backstory</Title>
 
-          <InlineEdit height='200px' placeholder='Heres my backstory :D' path='backstory' value={backstory} />
+          <InlineEdit height='200px' placeholder='Heres my backstory :D' path='backstory' value={backstory} spellcheck='false' />
         </ListItem>
 
         <ListItem margin='10px 0 0 0' padding='10px'>
@@ -93,7 +93,7 @@ const InfoTab = (props) => {
           <Container width='100%' margin='0 10px 0 0'>
             <Title margin='0 0 10px 0' header>Allies</Title>
 
-            <InlineEdit placeholder='Its just me, myself, and I' path='allies' value={allies} />
+            <InlineEdit placeholder='Its just me, myself, and I' path='allies' value={allies} spellcheck='false' />
           </Container>
 
           <Container noFlex>
@@ -103,7 +103,7 @@ const InfoTab = (props) => {
                 <img style={{ display: 'block', height: 'calc(100% - 20px)', margin: '0 auto' }} src={img} alt='thing' />
               </Container>
             </Container>
-            <InlineEdit placeholder='Organization Name' path='organization.name' value={name} />
+            <InlineEdit placeholder='Organization Name' path='organization.name' value={name} spellcheck='false' />
           </Container>
         </ListItem>
       </List>

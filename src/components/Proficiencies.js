@@ -23,9 +23,14 @@ const TextArea = styled.textarea`
   resize: none;
 
   background-color: transparent;
+  cursor: pointer;
 
   &::placeholder {
     color: rgba(255, 255, 255, .6);
+  }
+
+  &:hover {
+    background-color: ${props => props.theme.dark};
   }
 `
 

@@ -68,7 +68,7 @@ class CharacterOverlay extends Component {
     super(props);
 
     this.state = {
-      currentTab: 2
+      currentTab: 0
     }
 
     this.changeTab = this.changeTab.bind(this);
