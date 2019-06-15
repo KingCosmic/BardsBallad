@@ -83,7 +83,7 @@ class SpellInfo extends Component {
     }
 
     return (
-      <BackDrop onClick={(e) => e.stopPropagation()}>
+      <BackDrop onMouseDown={(e) => e.stopPropagation()}>
         <Options>
           <Delete style={{ cursor: 'pointer', width: '1.7vw', height: '1.7vw' }} onClick={() => removeSpell(spellID)} />
           <Edit style={{ cursor: 'pointer', width: '1.7vw', height: '1.7vw' }} size='0.8rem' onClick={this.editSpell} />

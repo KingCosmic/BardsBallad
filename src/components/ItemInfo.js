@@ -22,6 +22,7 @@ const BackDrop = styled(Container)`
   background-color: ${props => props.theme.dark};
   box-shadow: 0 2px 10px rgba(0, 0, 0, .2), 0 0 0 1px rgba(28, 36, 43 .6);
   padding: 20px;
+  overflow-y: auto;
 `
 
 const Options = styled(Container)`
@@ -71,7 +72,7 @@ class ItemInfo extends Component {
     const {
       name, category, range, longRange,
       damage1, damage2, properties,
-      value, weight
+      value, weight, desc
     } = item;
 
     if (editItem) {
@@ -83,7 +84,7 @@ class ItemInfo extends Component {
     }
 
     return (
-      <BackDrop onClick={(e) => e.stopPropagation()}>
+      <BackDrop onMouseDown={(e) => e.stopPropagation()}>
         <Options>
           <Delete style={{ cursor: 'pointer', width: '1.7vw', height: '1.7vw' }} onClick={() => removeItem(itemID)} />
           <Edit style={{ cursor: 'pointer', width: '1.7vw', height: '1.7vw' }} size='0.8rem' onClick={this.editItem} />
@@ -102,6 +103,9 @@ class ItemInfo extends Component {
         }
         <Text size='0.8rem'>Value: <SubText>{value}</SubText></Text>
         <Text size='0.8rem'>Weight: <SubText>{weight} lbs</SubText></Text>
+
+        <Text size='0.8rem'>Description:</Text>
+        <Text><SubText>{desc}</SubText></Text>
       </BackDrop>
     )
   }

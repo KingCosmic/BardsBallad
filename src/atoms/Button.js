@@ -11,7 +11,7 @@ const Button = styled.div`
   opacity: .85;
   line-height: 27px;
   background-color: ${props => props.theme.green};
-  color: rgb(200, 200, 200);
+  color: rgb(250, 250, 250);
   cursor: pointer;
 
   margin: ${props => props.margin || 0};

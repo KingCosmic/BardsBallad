@@ -55,7 +55,7 @@ class AddSpell extends Component {
     const { addSpell } = this.props;
 
     return (
-      <BackDrop onClick={(e) => e.stopPropagation()} creating={creatingSpell}>
+      <BackDrop onMouseDown={(e) => e.stopPropagation()} creating={creatingSpell}>
         {
           (creatingSpell === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openSpell={this.openSpell} /> :
             <EditSpell spellInfo={spellInfo} addSpell={addSpell} goBack={this.showSpells} changeSpell={this.changeSpell} />

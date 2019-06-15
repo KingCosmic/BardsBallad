@@ -31,7 +31,7 @@ const Modal = ({
   updateSpellslots
 }) => {
   return (
-    <Container visible={overlay !== ''} onClick={hideModal}>
+    <Container visible={overlay !== ''} onMouseDown={hideModal}>
       {
         (overlay === 'AddItem') ? <AddItem addItem={addItem} /> :
         (overlay === 'ItemInfo') ? <ItemInfo items={items} update={update} itemID={itemID} removeItem={removeItem} updateItem={updateItem} /> :

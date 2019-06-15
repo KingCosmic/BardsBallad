@@ -62,7 +62,7 @@ class EditSpellSlots extends Component {
     const { current, max } = this.state;
 
     return (
-      <BackDrop onClick={(e) => e.stopPropagation()}>
+      <BackDrop onMouseDown={(e) => e.stopPropagation()}>
         <Container height='30px' margin='0 0 10px 0' justifyContent='space-around' direction='row'>
           <Text size='0.9rem' onClick={goBack}>cancel</Text>
 

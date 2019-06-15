@@ -7,6 +7,8 @@ import Search from './Search';
 import Button from '../atoms/Button';
 import Gold from './Gold';
 
+import { typeOptions } from '../data/constants';
+
 import { mergeUpdates } from '../helpers';
 
 class EquipmentTab extends Component {
@@ -14,7 +16,7 @@ class EquipmentTab extends Component {
     super(props);
 
     this.state = {
-      filter: 'all',
+      filter: 'ALL',
       search: ''
     }
 
@@ -31,7 +33,7 @@ class EquipmentTab extends Component {
   }
 
   render() {
-    const { search } = this.state;
+    const { search, filter } = this.state;
     const { showAddItem, showItemInfo, char: { pieces, items }, update, updateData, revertData } = this.props;
     const { copper, silver, etherium, gold, platinum } = pieces;
 
@@ -41,7 +43,7 @@ class EquipmentTab extends Component {
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px' direction='row'>
 
         <Container width='58.5%'>
-          <Search onSearch={this.onSearch} value={search} ph='Search Equipment...' />
+          <Search onSearch={this.onSearch} value={search} ph='Search Equipment...' filters={typeOptions} currentFilter={filter} onFilter={this.changeFilter} />
 
           <Container flowY='auto' height='calc(90% - 20px)' margin='10px 0'>
             <List>
@@ -57,12 +59,12 @@ class EquipmentTab extends Component {
           <Button onClick={showAddItem}>Add Item</Button>
         </Container>
 
-        <Container width='41.5%' justifyContent='center' alignItems='center'>
-          <Gold type='CP' amount={copper} path='pieces.copper' update={update} updateData={updateData} revertData={revertData} />
-          <Gold type='SP' amount={silver} path='pieces.silver' update={update} updateData={updateData} revertData={revertData} />
-          <Gold type='EP' amount={etherium} path='pieces.etherium' update={update} updateData={updateData} revertData={revertData} />
-          <Gold type='GP' amount={gold} path='pieces.gold' update={update} updateData={updateData} revertData={revertData} />
-          <Gold type='PP' amount={platinum} path='pieces.platinum' update={update} updateData={updateData} revertData={revertData} />
+        <Container width='41.5%' justifyContent='flex-end' alignItems='flex-end'>
+            <Gold type='CP' amount={copper} path='pieces.copper' update={update} updateData={updateData} revertData={revertData} />
+            <Gold type='SP' amount={silver} path='pieces.silver' update={update} updateData={updateData} revertData={revertData} />
+            <Gold type='EP' amount={etherium} path='pieces.etherium' update={update} updateData={updateData} revertData={revertData} />
+            <Gold type='GP' amount={gold} path='pieces.gold' update={update} updateData={updateData} revertData={revertData} />
+            <Gold type='PP' amount={platinum} path='pieces.platinum' update={update} updateData={updateData} revertData={revertData} />
         </Container>
 
       </Container>

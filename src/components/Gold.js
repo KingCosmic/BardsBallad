@@ -5,6 +5,7 @@ import Container from '../atoms/Container';
 import Title from '../atoms/Title';
 
 const Input = styled.input`
+  width: 100%;
   background-color: transparent;
   margin: 0;
   padding: 0;
@@ -56,7 +57,7 @@ class Gold extends Component {
     const { value } = this.state;
 
     return (
-      <Container width='40%' margin='5px 0' padding='5px' direction='row' alignItems='center'>
+      <Container width='40%' margin='5px 0' padding='5px' direction='row' alignItems='flex-end' bg ol hover>
         <Title margin='0 10px 0 0'>{type}</Title>
         <Input value={value} onChange={this.onChange} type='number' />
       </Container>

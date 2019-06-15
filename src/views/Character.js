@@ -105,7 +105,7 @@ class CharacterOverlay extends Component {
 
     return (
       <div className={styles.container}>
-        <Container padding='0 15px' height='5.5%'>
+        <Container padding='0 15px'>
 
           <div className={styles.tabs}>
             <Tab active={currentTab === 0} onClick={() => this.changeTab(0)}>info</Tab>

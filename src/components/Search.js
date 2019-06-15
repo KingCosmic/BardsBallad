@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Container from '../atoms/Container';
+import Select from '../atoms/Select';
 import Text from '../atoms/Text';
 
 // wasnt sure about the box shadow or not
@@ -33,14 +34,14 @@ const SearchInput = styled.input`
   }
 `
 
-const DropDownContent = styled(Container)`
-  display: none;
-  position: absolute;
-  background-color: black;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, .2);
-  padding: 12px 16px;
-  z-index: 1;
+const DropDown = styled(Container)`
+  min-width: 39px;
+  border-left: 1px solid ${props => props.theme.grey};
+  justify-content: center;
+
+  position: relative;
+  display: inline-block;
+  padding: 0 10px;
 `
 
 const SearchIcons = styled(Container)`
@@ -50,31 +51,12 @@ const SearchIcons = styled(Container)`
   line-height: 44px;
 `
 
-const DropDown = styled(Container)`
-  min-width: 39px;
-  border-left: 1px solid ${props => props.theme.grey};
-  justify-content: center;
-
-  position: relative;
-  display: inline-block;
-  padding: 0 10px;
-
-  &:hover ${DropDownContent} {
-    display: flex;
-  }
-`
-
-const Search = ({ bgStyle, ph, onSearch, value }) => {
+const Search = ({ bgStyle, ph, onSearch, value, onFilter, filters, currentFilter }) => {
   return (
     <SearchContainer direction='row' style={bgStyle}>
       <SearchInput placeholder={ph} spellcheck='false' value={value} onChange={onSearch} />
       <SearchIcons direction='row'>
-        <DropDown>
-          <Text align='center'>All</Text>
-          <DropDownContent>
-            <Text>Testing</Text>
-          </DropDownContent>
-        </DropDown>
+        <Select value={currentFilter} options={filters} onChange={onFilter} />
       </SearchIcons>
     </SearchContainer>
   )

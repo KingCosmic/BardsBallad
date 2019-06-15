@@ -127,7 +127,9 @@ class EditItem extends Component {
               <Property title='Magic Item' value={magic} options={boolOptions} type='select' callback={(value) => this.editItem('magic', value)} />
             </Container>
 
-            <WeaponConfig {...weaponProps} />
+            {
+              ['M', 'R'].includes(category) ? <WeaponConfig {...weaponProps} /> : null
+            }
 
             <Container direction='row'>
               <Property title='Value' value={value} placeholder='50 gp' callback={(value) => this.editItem('value', Number(value))} />

@@ -21,13 +21,19 @@ class AddItem extends Component {
 
     this.state = {
       search: '',
+      currentFilter: 'ALL',
       limit: 25,
       creatingItem: false
     }
 
+    this.onFilter = this.onFilter.bind(this)
     this.onSearch = this.onSearch.bind(this)
     this.openItem = this.openItem.bind(this)
     this.showItems = this.showItems.bind(this)
+  }
+
+  onFilter(value) {
+    this.setState({ currentFilter: value })
   }
 
   onSearch(event) {
@@ -51,14 +57,14 @@ class AddItem extends Component {
   }
 
   render() {
-    const { search, limit, creatingItem, itemInfo } = this.state;
+    const { search, limit, creatingItem, currentFilter } = this.state;
     const { addItem } = this.props;
 
     return (
-      <BackDrop onClick={(e) => e.stopPropagation()} creating={creatingItem}>
+      <BackDrop onMouseDown={(e) => e.stopPropagation()} creating={creatingItem}>
         {
-          (creatingItem === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openItem={this.openItem} /> :
-            <EditItem itemInfo={itemInfo} addItem={addItem} goBack={this.showItems} changeItem={this.changeItem} />
+          (creatingItem === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openItem={this.openItem} currentFilter={currentFilter} onFilter={this.onFilter} /> :
+            <EditItem addItem={addItem} goBack={this.showItems} changeItem={this.changeItem} />
         }
       </BackDrop>
     )

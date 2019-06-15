@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import { Link as L } from "react-router-dom";
+import { Link as L } from 'react-router-dom';
 
 import Container from '../atoms/Container';
-import Form from '../atoms/Form';
-import Input from '../atoms/Input';
+import Button from '../atoms/Button';
 import Title from '../atoms/Title';
 import Text from '../atoms/Text';
-
-import styles from '../css/Login.module.scss';
 
 import api from '../api';
 
@@ -17,8 +14,30 @@ const Link = styled(L)`
   color: rgba(255, 255, 255, .6);
 `
 
-const Background = styled(Container)`
-  background-color: ${props => props.theme.almostblack};
+const Input = styled.input`
+  margin-bottom: ${props => props.first ? '10px' : '20px'};
+  padding: 4px;
+  border: none;
+  appearance: none;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  font-size: 1vw;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+  }
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  background-color: ${props => props.theme.light};
+  width: auto;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 `
 
 class Signup extends Component {
@@ -56,34 +75,30 @@ class Signup extends Component {
       email,
       password
     ).then(resp => {
-
       this.props.history.replace('/characters');
-
     }).catch(alert)
 
     event.preventDefault();
   }
 
   render() {
-
     return (
-      <Background width='100%' height='100%' justifyContent='center' alignItems='center'>
-        <Form width='400px' height='auto' alignItems='center' onSubmit={this.handleSignup}>
-          <Title>Signup</Title>
-          <Input margin='5px'
-            type='text' value={this.state.email} placeholder='email'
-            onChange={this.handleEmail}
+      <Container justifyContent='center' alignItems='center' height='100%' bg>
+        <Form onSubmit={this.handleSignup}>
+          <Title align='center' margin='0 0 10px 0'>Signup</Title>
+          <Input first
+            placeholder='KingCosmicDev@gmail.com' type='text'
+            value={this.state.email} onChange={this.handleEmail}
           />
 
-          <Input margin='5px'
-            type='password' value={this.state.password} placeholder='password'
-            onChange={this.handlePass}
+          <Input
+            placeholder='password' type='password'
+            value={this.state.password} onChange={this.handlePass}
           />
-          <button className={styles.button}>Signup</button>
+          <Button onClick={this.handleSignup}>Signup</Button>
         </Form>
-
         <Text>Need to <Link to={`/login`}>login?</Link></Text>
-      </Background>
+      </Container>
     )
   }
 }
