@@ -43,6 +43,8 @@ const Value = styled(Text)`
 const Select = (props) => {
   const { value, options, onChange, multi = false } = props;
 
+  if (options.length === 0) return <Dropdown><Value>N/A</Value></Dropdown>;
+
   return (
     <Dropdown>
       <Value>{options.find(opt => opt.value === value).label}</Value>
