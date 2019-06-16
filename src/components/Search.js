@@ -51,7 +51,7 @@ const SearchIcons = styled(Container)`
   line-height: 44px;
 `
 
-const Search = ({ bgStyle, ph, onSearch, value, onFilter, filters, currentFilter }) => {
+const Search = ({ bgStyle, ph, onSearch, value, onFilter, filters = [], currentFilter }) => {
   return (
     <SearchContainer direction='row' style={bgStyle}>
       <SearchInput placeholder={ph} spellcheck='false' value={value} onChange={onSearch} />

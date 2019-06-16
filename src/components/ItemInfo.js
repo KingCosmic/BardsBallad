@@ -77,7 +77,7 @@ class ItemInfo extends Component {
 
     if (editItem) {
       return (
-        <BackDrop editing={true} onClick={(e) => e.stopPropagation()}>
+        <BackDrop editing={true} onMouseDown={(e) => e.stopPropagation()}>
           <EditItem itemInfo={item} addItem={(item) => updateItem(itemID, item)} goBack={this.stopEdit} title='Edit Item' />
         </BackDrop>
       )
