@@ -32,7 +32,7 @@ const TextArea = styled.textarea`
   width: 100%;
   height: 80px;
   max-height: 200px;
-  font-size: 0.9em;
+  font-size: 1vw;
   font-weight: 100;
 
   margin: 0;

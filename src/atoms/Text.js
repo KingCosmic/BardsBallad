@@ -4,7 +4,7 @@ const Text = styled.p`
   display: inline;
   ${props => props.width && css` width: ${props => props.width}; `}
   color: ${props => props.theme[props.color] || props.theme.text};
-  font-size: ${props => props.size || '1.25vw'};
+  font-size: ${props => props.size || '1.2vw'};
   font-family: ${props => props.sub ? 'Nunito' : 'OpenSans' };
   font-weight: ${props => props.weight || '200'};
 

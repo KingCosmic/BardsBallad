@@ -1,4 +1,10 @@
 
+export const getLevel = (exp) => {
+  let moreThanLevels = Object.keys(levels).filter(lvl => exp >= levels[lvl].exp);
+
+  return moreThanLevels[moreThanLevels.length - 1]
+}
+
 const levels = {
   1: {
     exp: 0,

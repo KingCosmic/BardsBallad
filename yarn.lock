@@ -780,6 +780,16 @@
   dependencies:
     codex-notifier "^1.1.2"
 
+"@editorjs/paragraph@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@editorjs/paragraph/-/paragraph-2.5.1.tgz#08d64ee5a3b88dbbf7da5cac3b7ed7a036c70186"
+  integrity sha512-kYAcocG9eEBCUU3d/Js1CQMsEJFbSOs7iULBIy7HR5MugRSbjTjtbreXkjQMkg3U1LeZgVweA9uhw3r0HekXug==
+
+"@editorjs/raw@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@editorjs/raw/-/raw-2.1.1.tgz#00cea181d8ce1a2a082352c6644090660c8237c7"
+  integrity sha512-So+Y6fLIO7+JGRa/tOsHho58hASYt1m7lDM/+0fehs+LMdYlloLmj68X2q7Wxk60R8aCrUscXt/fOggcg7giPQ==
+
 "@emotion/babel-utils@^0.6.4":
   version "0.6.10"
   resolved "https://registry.yarnpkg.com/@emotion/babel-utils/-/babel-utils-0.6.10.tgz#83dbf3dfa933fae9fc566e54fbb45f14674c6ccc"

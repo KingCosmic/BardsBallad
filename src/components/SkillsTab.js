@@ -18,7 +18,7 @@ const SkillsTab = (props) => {
 
   return (
     <Container 
-      height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px'
+      height='calc(100% - 10px)' width='calc(100% - 40px)' padding='5px 20px'
       direction='row'>
 
       <Container height='100%' width='50%'>

@@ -52,6 +52,8 @@
   ],
   "devDependencies": {
     "@editorjs/editorjs": "^2.13.0",
+    "@editorjs/paragraph": "^2.5.1",
+    "@editorjs/raw": "^2.1.1",
     "flow-bin": "^0.91.0"
   }
 }

@@ -26,6 +26,8 @@ const CharacterStats = (props) => {
     initiative, stats
   } = char;
 
+  const renderExp = data['exp'] || exp;
+
   const { strength, dexterity, constitution, intelligence, wisdom, charisma } = stats;
 
   return (
@@ -33,8 +35,8 @@ const CharacterStats = (props) => {
       <div className='needed_this_to_push_the_other_stuff_to_the_bottom_xD' />
       <Container>
 
-        <Name name={name} {...propData} />
-        <Class job={job} {...propData} />
+        <Name value={name} {...propData} />
+        <Class value={job} {...propData} exp={renderExp} />
 
         <Container padding='5px'>
           <HP hp={hp} path='hp' {...propData} />

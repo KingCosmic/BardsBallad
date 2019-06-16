@@ -6,7 +6,7 @@ import List from '../../atoms/List';
 import Item from '../Item';
 import Button from '../../atoms/Button';
 
-import { typeOptions } from '../../data/constants';
+import { typeFilters } from '../../data/constants';
 
 import SrdItems from '../../data/items.json';
 
@@ -14,7 +14,7 @@ const Search = ({ onSearch, search, openItem, limit, onFilter, currentFilter }) 
   return (
     <Container height='100%' width='100%'>
       <SearchInput onSearch={onSearch} value={search} ph='Search Equipment...' onFilter={onFilter}
-        currentFilter={currentFilter} filters={typeOptions}
+        currentFilter={currentFilter} filters={typeFilters}
         bgStyle={{ backgroundColor: '#72767D', boxShadow: '0 2px 5px rgba(0, 0, 0, .2), 0 0 0 1px rgba(0, 0, 0, .1)'}}
       />
 

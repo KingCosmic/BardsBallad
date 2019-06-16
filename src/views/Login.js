@@ -16,7 +16,8 @@ const Link = styled(L)`
 
 const Input = styled.input`
   margin-bottom: ${props => props.first ? '10px' : '20px'};
-  padding: 4px;
+  padding: 5px 10px;
+  color: rgba(20, 20, 20, .85);
   border: none;
   appearance: none;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -32,12 +33,9 @@ const Input = styled.input`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  background-color: ${props => props.theme.light};
   width: 20%;
-  border-radius: 4px;
   padding: 10px;
-  margin-bottom: 10px
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-bottom: 10px;
 `
 
 class Login extends Component {
@@ -85,7 +83,7 @@ class Login extends Component {
     return (
       <Container justifyContent='center' alignItems='center' height='100%' bg='almostblack'>
         <Form onSubmit={this.handleLogin}>
-          <Title align='center' margin='0 0 10px 0'>Login</Title>
+          <Title align='center' size='2.2vw' margin='0 0 20px 0'>Login</Title>
           <Input first
             placeholder='KingCosmicDev@gmail.com' type='text'
             value={this.state.email} onChange={this.handleEmail}

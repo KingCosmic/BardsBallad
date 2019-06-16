@@ -23,7 +23,8 @@ class AddItem extends Component {
       search: '',
       currentFilter: 'ALL',
       limit: 25,
-      creatingItem: false
+      creatingItem: false,
+      itemInfo: {},
     }
 
     this.onFilter = this.onFilter.bind(this)
@@ -43,7 +44,7 @@ class AddItem extends Component {
   // change the modal to show a item for approval / customization
   // before adding it to the item list.
   openItem(item) {
-    if (item) return this.setState({ creatingItem: true, itemInfo: { ...this.state.itemInfo, ...item } })
+    if (item) return this.setState({ creatingItem: true, itemInfo: item })
 
     this.setState({
       creatingItem: true
@@ -57,14 +58,14 @@ class AddItem extends Component {
   }
 
   render() {
-    const { search, limit, creatingItem, currentFilter } = this.state;
+    const { search, limit, creatingItem, currentFilter, itemInfo } = this.state;
     const { addItem } = this.props;
 
     return (
       <BackDrop onMouseDown={(e) => e.stopPropagation()} creating={creatingItem}>
         {
           (creatingItem === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openItem={this.openItem} currentFilter={currentFilter} onFilter={this.onFilter} /> :
-            <EditItem addItem={addItem} goBack={this.showItems} changeItem={this.changeItem} />
+            <EditItem itemInfo={itemInfo} addItem={addItem} goBack={this.showItems} changeItem={this.changeItem} />
         }
       </BackDrop>
     )

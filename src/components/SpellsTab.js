@@ -15,6 +15,8 @@ import ListSection from './ListSection';
 
 import { mergeUpdates } from '../helpers';
 
+import { schoolFilters } from '../data/constants';
+
 import spells from '../data/spells.json';
 
 const listFilter = (level) => (spell) => spell.level === level
@@ -42,10 +44,16 @@ class SpellsTab extends Component {
     super(props);
 
     this.state = {
-      search: ''
+      search: '',
+      filter: 'ALL'
     }
 
+    this.changeFilter = this.changeFilter.bind(this);
     this.onSearch = this.onSearch.bind(this);
+  }
+
+  changeFilter(filter) {
+    this.setState({ filter })
   }
 
   onSearch(event) {
@@ -58,7 +66,7 @@ class SpellsTab extends Component {
       showAddSpell, showSpellInfo, showEditSpellslots,
       updateSpellslots, data
     } = this.props;
-    const { search } = this.state;
+    const { search, filter } = this.state;
 
     const spellData = mergeUpdates(spells, data.spells || []);
 
@@ -68,7 +76,7 @@ class SpellsTab extends Component {
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px' direction='row'>
 
         <Container width='58.5%'>
-          <Search onSearch={this.onSearch} value={search} ph='Search Spells...' />
+          <Search onSearch={this.onSearch} value={search} ph='Search Spells...' filters={schoolFilters} currentFilter={filter} onFilter={this.changeFilter} />
 
           <Container flowY='auto' height='calc(90% - 20px)' margin='10px 0'>
             <ListSection title='Cantrips' onClick={(spell) => showSpellInfo(spell.id)} filter={listFilter(0)} data={spellData} Component={Spell} />

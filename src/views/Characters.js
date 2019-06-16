@@ -7,6 +7,7 @@ import { loadAll, createCharacter } from '../reducers/characters';
 import { startCharacterCreation, changeCharacterCreationStage } from '../reducers/ui';
 
 import Container from '../atoms/Container';
+import Text from '../atoms/Text';
 import Button from '../atoms/Button';
 
 import CharacterCreation from '../components/CharacterCreation';
@@ -17,6 +18,14 @@ const AddCharacter = styled(Button)`
   bottom: 15px;
   right: 15px;
 `
+const Span = styled.span`
+  text-decoration: underline;
+  color: rgba(255, 255, 255, .6);
+  cursor: pointer;
+`
+
+const EmptyState = ({ createCharacter }) =>
+  <Container height='100%' justifyContent='center' alignItems='center'><Text size='2.2vw' width='50%'>You don't seem to have any characters? Why don't you try <Span onClick={createCharacter}>Creating One</Span></Text></Container>
 
 class Characters extends Component {
 
@@ -42,13 +51,13 @@ class Characters extends Component {
       <Container width='calc(100% - 40px)' height='calc(100% - 40px)' padding='20px'>
         {
 
-          (characters.length === 0) ? null :
+          (characters.length === 0) ? <EmptyState createCharacter={createCharacter} /> :
 
-          characters.map(character => {
-            const { name, job, exp } = character
-  
-            return <Character key={character._id} name={name} job={job} exp={exp} character={character} id={character._id} />
-          })
+            characters.map(character => {
+              const { name, job, exp } = character
+
+              return <Character key={character._id} name={name} job={job} exp={exp} character={character} id={character._id} />
+            })
         }
 
         <AddCharacter onClick={createCharacter} width='150px'>Add Character</AddCharacter>

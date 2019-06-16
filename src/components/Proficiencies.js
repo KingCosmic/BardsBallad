@@ -81,7 +81,7 @@ class Proficiency extends Component {
 const Proficiencies = ({ armorProfs, weaponProfs, toolProfs, update, updateData, revertData }) => {
 
   return (
-    <Container height='calc(70% - 20px)' padding='10px'>
+    <Container height='calc(70% - 10px)' padding='5px'>
       <Proficiency title='Armor Proficiencies' ph='Heavy Armor, Leather Armor' value={armorProfs} path='armorProfs' update={update} updateData={updateData} revertData={revertData} />
       <Proficiency title='Weapon Proficiencies' ph='Shortswords, Light Crossbows' value={weaponProfs} path='weaponProfs' update={update} updateData={updateData} revertData={revertData} />
       <Proficiency title='Tool Proficiencies' ph='Artison Tools, Thieves tools' value={toolProfs} path='toolProfs' update={update} updateData={updateData} revertData={revertData} />

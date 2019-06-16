@@ -1,16 +1,18 @@
 import styled, { css } from 'styled-components';
 
 const Button = styled.div`
-  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
   border-radius: 4px;
   font-weight: 200;
   font-family: OpenSans;
   text-align: center;
-  height: 27px;
+
   width: ${props => props.width || 'auto'};
   opacity: .85;
-  line-height: 27px;
-  background-color: ${props => props.theme.green};
+  background-color: ${props => props.red ? props.theme.red : props.theme.green};
   color: rgb(250, 250, 250);
   cursor: pointer;
 

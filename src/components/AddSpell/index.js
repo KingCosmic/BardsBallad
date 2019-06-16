@@ -20,14 +20,20 @@ class AddSpell extends Component {
     super(props);
 
     this.state = {
+      filter: 'ALL',
       search: '',
       limit: 25,
       creatingSpell: false
     }
 
+    this.changeFilter = this.changeFilter.bind(this)
     this.onSearch = this.onSearch.bind(this)
     this.openSpell = this.openSpell.bind(this)
     this.showSpells = this.showSpells.bind(this)
+  }
+
+  changeFilter(filter) {
+    this.setState({ filter })
   }
 
   onSearch(event) {
@@ -51,13 +57,13 @@ class AddSpell extends Component {
   }
 
   render() {
-    const { search, limit, creatingSpell, spellInfo } = this.state;
+    const { search, filter, limit, creatingSpell, spellInfo } = this.state;
     const { addSpell } = this.props;
 
     return (
       <BackDrop onMouseDown={(e) => e.stopPropagation()} creating={creatingSpell}>
         {
-          (creatingSpell === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openSpell={this.openSpell} /> :
+          (creatingSpell === false) ? <Search onSearch={this.onSearch} search={search} limit={limit} openSpell={this.openSpell} filter={filter} changeFilter={this.changeFilter} /> :
             <EditSpell spellInfo={spellInfo} addSpell={addSpell} goBack={this.showSpells} changeSpell={this.changeSpell} />
         }
       </BackDrop>

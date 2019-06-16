@@ -28,7 +28,7 @@ const SavingThrows = (props) => {
   const { throws, stats, data, prof } = props;
 
   return (
-    <Container height='calc(30% - 20px)' margin='0 0 20px 0' padding='10px'>
+    <Container height='calc(30% - 10px)' margin='0 0 10px 0' padding='5px'>
       <Title margin='0 0 5px 0' header>Saving Throws</Title>
 
       <List width='100%'>

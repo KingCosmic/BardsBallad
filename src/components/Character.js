@@ -4,9 +4,7 @@ import styled, { css } from 'styled-components';
 import { Link } from "react-router-dom";
 import Text from '../atoms/Text';
 
-import levels from '../data/levels';
-
-const getLevel = (exp) => Object.keys(levels).find(lvl => exp <= levels[lvl].exp)
+import { getLevel } from '../data/levels';
 
 const Container = styled(Link)`
   width: calc(32% - 20px);

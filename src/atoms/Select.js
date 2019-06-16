@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Text from './Text';
 
 const DropdownContent = styled.div`
-  display: ${props => props.open ? 'block' : 'none'};
+  display: none;
   position: absolute;
   background-color: ${props => props.theme.middleblack};
   min-width: 160px;
@@ -30,55 +30,29 @@ const Dropdown = styled.div`
 
   position: relative;
   display: inline-block;
+
+  &:hover  ${DropdownContent} {
+    display: block;
+  }
 `
 
 const Value = styled(Text)`
   font-weight: 200;
 `
 
-class Select extends Component {
-  constructor(props) {
-    super(props);
+const Select = (props) => {
+  const { value, options, onChange, multi = false } = props;
 
-    this.state = {
-      open: false
-    }
-
-    this.openSelect = this.openSelect.bind(this);
-    this.onSelect = this.onSelect.bind(this);
-  }
-
-  openSelect() {
-    this.setState({
-      open: true
-    })
-  }
-
-  onSelect(value) {
-    this.setState({
-      open: false
-    }, () => {
-      this.props.onChange(value);
-    })
-  }
-
-  render() {
-    const { value, options, onChange, multi = false } = this.props;
-    const { open } = this.state;
-
-    console.log(open)
-
-    return (
-      <Dropdown onClick={this.openSelect}>
-        <Value>{options.find(opt => opt.value === value).label}</Value>
-        <DropdownContent open={open} onClick={(e) => e.stopPropagation()}>
-          {
-            options.map(({ value, label }, i) => <Value key={i} onClick={() => this.onSelect(value)}>{label}</Value>)
-          }
-        </DropdownContent>
-      </Dropdown>
-    )
-  }
+  return (
+    <Dropdown>
+      <Value>{options.find(opt => opt.value === value).label}</Value>
+      <DropdownContent onClick={(e) => e.stopPropagation()}>
+        {
+          options.map(({ value, label }, i) => <Value key={i} onClick={() => onChange(value)}>{label}</Value>)
+        }
+      </DropdownContent>
+    </Dropdown>
+  )
 }
 
 export default Select;

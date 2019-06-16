@@ -10,14 +10,16 @@ export const spellLevels = [
 ]
 
 export const schoolTypes = {
-  'A': 'Abjuration', 'C': 'Conjuration', 'D': 'Divinitation', 'E': 'Enchantment',
+  'ALL': 'All', 'A': 'Abjuration', 'C': 'Conjuration', 'D': 'Divinitation', 'E': 'Enchantment',
   'V': 'Evocation', 'I': 'Illusion', 'N': 'Necromancy', 'T': 'Transmutation'
 }
 
-export const schoolOptions = Object.keys(schoolTypes).map(key => ({
+export const schoolFilters = Object.keys(schoolTypes).map(key => ({
   value: key,
   label: schoolTypes[key]
 }))
+
+export const schoolOptions = schoolFilters.filter((key, index) => index !== 0)
 
 export const statTypes = {
   'AUTO': 'Automatic', 'STR': 'Strength', 'DEX': 'Dexterity', 'CON': 'Constitution',
@@ -47,10 +49,12 @@ export const itemTypes = {
   'WE': 'Wealth', 'SCF': 'Spellcasting Focus', 'AT': 'Artison Tools', 'INS': 'Musical Instrument'
 }
 
-export const typeOptions = Object.keys(itemTypes).map(key => ({
+export const typeFilters = Object.keys(itemTypes).map(key => ({
   value: key,
   label: itemTypes[key]
 }))
+
+export const typeOptions = typeFilters.filter((key, index) => index !== 0);
 
 export const damageTypes = {
   'AUTO': 'Automatic', 'A': 'Acid', 'B': 'Bludgeoning', 'C': 'Cold', 'F': 'Fire', 'FO': 'Force',

@@ -7,7 +7,7 @@ import Search from './Search';
 import Button from '../atoms/Button';
 import Gold from './Gold';
 
-import { typeOptions } from '../data/constants';
+import { typeFilters } from '../data/constants';
 
 import { mergeUpdates } from '../helpers';
 
@@ -43,7 +43,7 @@ class EquipmentTab extends Component {
       <Container height='calc(100% - 40px)' width='calc(100% - 40px)' padding='20px' direction='row'>
 
         <Container width='58.5%'>
-          <Search onSearch={this.onSearch} value={search} ph='Search Equipment...' filters={typeOptions} currentFilter={filter} onFilter={this.changeFilter} />
+          <Search onSearch={this.onSearch} value={search} ph='Search Equipment...' filters={typeFilters} currentFilter={filter} onFilter={this.changeFilter} />
 
           <Container flowY='auto' height='calc(90% - 20px)' margin='10px 0'>
             <List>

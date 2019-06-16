@@ -62,14 +62,11 @@ class InlineEdit extends Component {
   }
 
   render() {
-    const changed = this.props.update[this.props.path] ? true : false;
-
     return (
       <TextArea {...this.props}
         value={this.state.value}
         onChange={this.onChange}
         onBlur={this.onBlur}
-        changed={changed}
       />
     )
   }
