@@ -24,12 +24,10 @@ const CharacterStats = (props) => {
     name, job, hp, exp, ac,
     passivePerception, proficiency,
     hitdice, speed,
-    initiative, stats, pieces
+    initiative, stats
   } = char;
 
   const renderExp = data['exp'] || exp;
-
-  const { copper, silver, etherium, gold, platinum } = pieces;
 
   const { strength, dexterity, constitution, intelligence, wisdom, charisma } = stats;
 
@@ -42,13 +40,6 @@ const CharacterStats = (props) => {
       <Container padding='5px'>
         <HP hp={hp} path='hp' {...propData} />
         <EXP exp={exp} path='exp' {...propData} />
-      </Container>
-
-      <Container direction='row'>
-        <Gold type='SP' amount={silver} path='pieces.silver' {...propData} />
-        <Gold type='EP' amount={etherium} path='pieces.etherium' {...propData} />
-        <Gold type='GP' amount={gold} path='pieces.gold' {...propData} />
-        <Gold type='PP' amount={platinum} path='pieces.platinum' {...propData} />
       </Container>
 
       <Container direction='row'>
