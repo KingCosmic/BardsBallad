@@ -18,21 +18,37 @@ class SavingThrow extends Component {
   constructor(props) {
     super(props);
 
+    const { update, efficient, skill } = props;
+
+    this.path = `savingThrows.${skill}`;
+
+    this.state = {
+      efficient: typeof update[this.path] === 'boolean' ? update[this.path] : efficient
+    }
+
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
-    const { path, efficient, wasEfficient } = this.props;
+    const { update, revertData, updateData } = this.props;
+    const { efficient } = this.state;
 
-    if (efficient !== wasEfficient) {
-      return this.props.revertData(path);
-    }
+    const changed = typeof update[this.path] === 'boolean'
 
-    this.props.updateData(path, !efficient);
+    this.setState({
+      efficient: !efficient
+    }, () => {
+      if (efficient !== this.props.efficient) {
+        return revertData(this.path);
+      }
+
+      updateData(this.path, !efficient);
+    })
   }
 
   render() {
-    const { efficient, value, skill, prof } = this.props;
+    const { value, skill, prof } = this.props;
+    const { efficient } = this.state;
 
     const mod = determinMod(value);
 

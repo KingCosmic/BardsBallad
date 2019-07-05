@@ -48,7 +48,7 @@ const Spell = ({ item, name, school, source, casttime, ritual, concentration, ra
       <Container direction='row'>
         {ritual ? <Square><Text>R</Text></Square> : null}
         {concentration ? <Square><Text>C</Text></Square> : null}
-        <Text color='gold'>{source}</Text>
+        <Text color='gold'>{source || 'CUSTOM'}</Text>
       </Container>
       <Text>{casttime}, {range}</Text>
     </Container>

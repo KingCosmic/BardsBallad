@@ -3,17 +3,12 @@
 .container {
   width: calc(100% - 20px);
   height: calc(100% - 20px);
-
-  display: flex;
-  flex-direction: column;
-
-
   margin: 10px;
 }
 
 .tabs {
   width: 43.7%;
-  height: 100%;
+  height: calc(100% - 1px);
 
   border-bottom: 1px solid $grey;
 }

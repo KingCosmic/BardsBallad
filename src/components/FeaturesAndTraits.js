@@ -53,47 +53,10 @@ class Feats extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSave = this.handleSave.bind(this);
-    this.renderItemOrEditField = this.renderItemOrEditField.bind(this);
-  }
-
-  handleSave() {
-    const { editing } = this.props;
-    const { name, uses, description } = this.refs;
-
-
-    this.props.updateFeat(editing, {
-      name: name.value,
-      uses: uses.value,
-      description: description.value
-    })
-  }
-
-  renderItemOrEditField(item, i) {
-    const { name, uses, description, id } = item;
-    const { editItem, editing } = this.props;
-
-    if (editing === id) {
-      return (
-        <ListItem key={id} padding='10px 0' direction='column'>
-          <Container direction='row' >
-            <Input ref='name' type='text' height='1.5em' width='40%' defaultValue={name} />
-            <Input ref='uses' type='number' height='1.5em' width='10%' defaultValue={uses} align='center' />
-            <Save width='20%' onClick={this.handleSave}>Save</Save>
-          </Container>
-          <DescriptionEdit ref='description' defaultValue={description} />
-        </ListItem>
-      )
-    }
-
-    return <Feat index={i}
-      key={id} name={name} uses={uses} description={description}
-      onClick={() => editItem(id)}
-    />
   }
 
   render() {
-    const { char: { feats }, addFeat, update  } = this.props;
+    const { char: { feats }, showAddFeat, update  } = this.props;
 
     const featdata = mergeUpdates(feats, update.feats || []);
 
@@ -106,13 +69,15 @@ class Feats extends Component {
             <List>
               {
                 featdata.map((feat, i) => {
-                  return this.renderItemOrEditField(feat, i)
+                  return <Feat index={i}
+                    key={feat.id} {...feat}
+                  />
                 })
               }
             </List>
           </Container>
 
-          <AddItem onClick={addFeat}>Add Feat or Trait</AddItem>
+          <AddItem onClick={showAddFeat}>Add Feat or Trait</AddItem>
         </Container>
 
       </Container>

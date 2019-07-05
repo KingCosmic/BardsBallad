@@ -20,10 +20,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   showItemInfo, showAddItem, editItem, showAddSpell, showSpellInfo,
-  showEditSpellslots
+  showAddFeat, showEditSpellslots
 } from '../reducers/ui';
 import { loadOne, changeCharacter } from '../reducers/characters';
-import { updateData, revertData, addFeat, updateFeat, updateSpellslots } from '../reducers/update';
+import { updateData, revertData, updateSpellslots } from '../reducers/update';
 
 import styles from '../css/CharacterOverlay.module.scss';
 
@@ -97,7 +97,7 @@ class CharacterOverlay extends Component {
     const {
       character, addSpell, showAddItem, update,
       editItem, updateData, editing, revertData,
-      showItemInfo, addFeat, updateFeat, showAddSpell, showSpellInfo,
+      showItemInfo, showAddFeat, showAddSpell, showSpellInfo,
       showEditSpellslots, updateSpellslots
     } = this.props;
 
@@ -105,7 +105,7 @@ class CharacterOverlay extends Component {
 
     return (
       <div className={styles.container}>
-        <Container padding='0 15px'>
+        <Container height='5.5%' padding='0 15px' noFlex>
 
           <div className={styles.tabs}>
             <Tab active={currentTab === 0} onClick={() => this.changeTab(0)}>info</Tab>
@@ -142,9 +142,8 @@ class CharacterOverlay extends Component {
               (currentTab === 4) ? <CombatTab char={character} data={update} editItem={editItem}
                 updateData={updateData} editing={editing} revertData={revertData} /> :
 
-              (currentTab === 5) ? <FeaturesAndTraits char={character} editing={editing} update={update}
-                addFeat={addFeat} updateFeat={updateFeat} editItem={editItem}
-          /> : ''
+              (currentTab === 5) ? <FeaturesAndTraits char={character}  update={update}
+                showAddFeat={showAddFeat} /> : ''
         }
           </Container>
 
@@ -169,6 +168,6 @@ const mapStateToProps = (state) => {
 export default withRouter(connect(mapStateToProps, {
   loadOne, changeCharacter, showAddSpell,
   showAddItem, editItem, updateData, revertData, showItemInfo,
-  addFeat, updateFeat, showSpellInfo, showEditSpellslots,
+  showAddFeat, showSpellInfo, showEditSpellslots,
   updateSpellslots
 })(CharacterOverlay));

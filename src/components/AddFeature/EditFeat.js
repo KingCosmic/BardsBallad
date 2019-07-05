@@ -8,8 +8,6 @@ import Title from '../../atoms/Title';
 import Text from '../../atoms/Text';
 import Select from '../../atoms/Select';
 
-import WeaponConfig from './WeaponConfig';
-
 import { typeOptions, rarityOptions, boolOptions } from '../../data/constants';
 
 const Input = styled.input`
@@ -149,10 +147,6 @@ class EditItem extends Component {
               <Property title='Category' value={category} options={typeOptions} type='select' callback={(value) => this.editItem('category', value)} />
               <Property title='Magic Item' value={magic} options={boolOptions} type='select' callback={(value) => this.editItem('magic', value)} />
             </Container>
-
-            {
-              ['M', 'R'].includes(category) ? <WeaponConfig {...weaponProps} /> : null
-            }
 
             <Container direction='row'>
               <Property title='Value' value={value} placeholder='50 gp' callback={(value) => this.editItem('value', Number(value))} />

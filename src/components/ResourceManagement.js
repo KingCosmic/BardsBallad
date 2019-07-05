@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class ExtraTabInfo extends Component {
+class ResourceManagement extends Component {
   constructor(props) {
     super(props);
 
@@ -12,4 +12,4 @@ class ExtraTabInfo extends Component {
   }
 }
 
-export default ExtraTabInfo;
+export default ResourceManagement;

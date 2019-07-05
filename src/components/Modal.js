@@ -7,11 +7,15 @@ import AddItem from './AddItem';
 import ItemInfo from './ItemInfo';
 import AddSpell from './AddSpell';
 import SpellInfo from './SpellInfo';
+import AddFeature from './AddFeature';
 import EditSpellSlots from './EditSpellSlots';
 
 import { connect } from 'react-redux';
 import { hideModal } from '../reducers/ui';
-import { addItem, removeItem, updateItem, addSpell, removeSpell, updateSpell, updateSpellslots } from '../reducers/update';
+import {
+  addItem, removeItem, updateItem, addSpell, removeSpell, updateSpell, updateSpellslots,
+  addFeat
+} from '../reducers/update';
 
 const Container = styled(C)`
   width: 100%;
@@ -37,6 +41,7 @@ const Modal = ({
         (overlay === 'ItemInfo') ? <ItemInfo items={items} update={update} itemID={itemID} removeItem={removeItem} updateItem={updateItem} /> :
         (overlay === 'AddSpell') ? <AddSpell addSpell={addSpell} /> :
         (overlay === 'SpellInfo') ? <SpellInfo spells={spells} update={update} spellID={spellID} removeSpell={removeSpell} updateSpell={updateSpell} /> :
+        (overlay === 'AddFeat') ? <AddFeature addFeat={addFeat} /> :
         (overlay === 'EditSpellSlots') ? <EditSpellSlots slots={spellSlots} level={slotsLevel} update={update} goBack={hideModal} editSlots={updateSpellslots} /> : ''
       }
     </Container>

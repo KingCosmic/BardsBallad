@@ -22,9 +22,9 @@ const SkillsTab = (props) => {
       direction='row'>
 
       <Container height='100%' width='50%'>
-        <SavingThrows throws={savingThrows} stats={stats} data={update} prof={prof} />
+        <SavingThrows throws={savingThrows} stats={stats} update={update} prof={prof} />
 
-        <Skills skills={skills} stats={stats} data={update} prof={prof} />
+        <Skills skills={skills} stats={stats} update={update} prof={prof} />
       </Container>
 
       <Container height='100%' width='50%'>

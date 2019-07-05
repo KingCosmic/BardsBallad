@@ -18,7 +18,7 @@ const Input = styled.input`
   outline: none;
   border: none;
   color: ${props => props.theme.text};
-  font-size: 0.9em;
+  font-size: 1vw;
   font-family: 'OpenSans';
 
   &::placeholder {
@@ -32,7 +32,7 @@ const TextArea = styled.textarea`
   min-height: 50px;
   height: auto;
   max-height: 150px;
-  font-size: 0.9em;
+  font-size: 1vw;
   font-weight: 100;
 
   margin: 0;
@@ -44,18 +44,41 @@ const TextArea = styled.textarea`
   background-color: transparent;
 `
 
-export const Property = ({ callback, title, placeholder, type, value, options, multi = false, full = false }) => {
-  return (
-    <Container margin='5px 0' width={full ? '100%' : '50%'}>
-      <Text size='0.8rem' weight='200' color='gold'>{title}</Text>
+export class Property extends Component {
+  constructor(props) {
+    super(props);
 
-      {
-        (type && type === 'select') ?
-          <Select value={value} options={options} multi={multi} onChange={(value) => callback(value)} /> :
-          <Input type={type ? type : 'text'} placeholder={placeholder} value={value} onChange={({ target: { value } }) => callback(value)} />
-      }
-    </Container>
-  )
+    this.state = {
+      value: props.value
+    }
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(value) {
+    this.setState({
+      value
+    }, () => {
+      this.props.callback(value)
+    })
+  }
+
+  render() {
+    const { callback, title, placeholder, type, options, multi = false, full = false } = this.props;
+    const { value } = this.state;
+
+    return (
+      <Container margin='5px 0' width={full ? '100%' : '50%'}>
+        <Text size='1.2vw' weight='200' color='gold'>{title}</Text>
+
+        {
+          (type && type === 'select') ?
+            <Select value={value} options={options} multi={multi} onChange={this.onChange} /> :
+            <Input type={type ? type : 'text'} placeholder={placeholder} value={value} onChange={({ target: { value } }) => this.onChange(value)} />
+        }
+      </Container>
+    )
+  }
 }
 
 class EditSpell extends Component {
@@ -135,7 +158,7 @@ class EditSpell extends Component {
           <TextArea placeholder='Spell description goes here' value={description} onChange={(event) => this.editSpell('description', event.target.value)} />
 
           <Title margin='10px 0 0'>Higher Levels</Title>
-          <TextArea placeholder='When you cast this spell using a spell slot of 5th level or higher, you can increase the size of the cube by 100 feet for each slot level beyond 4th. Thus you could protect a cube that can be up to 200 feet on one side by using a spell slot of 5th level.' value={higherlevels} onChange={(event) => this.editSpell('higherlevels', event.target.value)} />
+          <TextArea placeholder='When you cast this spell using a spell slot of 5th level or higher, the bludgeoning damage increases by 1d8 for each slot level above 4th.' value={higherlevels} onChange={(event) => this.editSpell('higherlevels', event.target.value)} />
         </Container>
       </Container>
     )

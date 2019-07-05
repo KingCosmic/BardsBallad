@@ -7,16 +7,16 @@ const DropdownContent = styled.div`
   position: absolute;
   background-color: ${props => props.theme.middleblack};
   min-width: 160px;
+  max-height: 300px;
+  overflow: scroll;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
-
   p {
     color: white;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
     cursor: pointer;
-
     &:hover {
       background-color: ${props => props.theme.grey};
     }
@@ -27,10 +27,8 @@ const Dropdown = styled.div`
   cursor: pointer;
   min-width: 39px;
   justify-content: center;
-
   position: relative;
   display: inline-block;
-
   &:hover  ${DropdownContent} {
     display: block;
   }

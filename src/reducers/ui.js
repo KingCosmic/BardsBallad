@@ -21,7 +21,10 @@ export const SHOW_SPELL_INFO = 'SHOW_SPELL_INFO';
 
 export const SHOW_ADD_ITEM = 'SHOW_ADD_ITEM';
 export const SHOW_ADD_SPELL = 'SHOW_ADD_SPELL';
+export const SHOW_ADD_FEAT = 'SHOW_ADD_FEAT';
+
 export const SHOW_EDIT_SPELLS_LOTS = 'SHOW_EDIT_SPELL_SLOTS';
+
 export const HIDE_MODAL = 'HIDE_MODAL';
 
 /**
@@ -81,6 +84,13 @@ export const showAddSpell = () => (dispatch) => {
   })
 }
 
+export const showAddFeat = () => (dispatch) => {
+  dispatch({
+    type: SHOW_ADD_FEAT,
+    payload: {}
+  })
+}
+
 export const showEditSpellslots = (level) => (dispatch) => {
   dispatch({
     type: SHOW_EDIT_SPELLS_LOTS,
@@ -134,6 +144,9 @@ actions[REVERT_CHARACTER] = (state) =>
 
 actions[SHOW_ADD_ITEM] = (state) =>
   Object.assign({}, state, { overlay: 'AddItem' })
+
+actions[SHOW_ADD_FEAT] = (state) =>
+  Object.assign({}, state, { overlay: 'AddFeat' })
 
 actions[SHOW_ADD_SPELL] = (state) =>
   Object.assign({}, state, { overlay: 'AddSpell' })

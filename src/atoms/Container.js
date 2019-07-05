@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 const Container = styled.div`
   ${props => props.width && css` width: ${props => props.width}; `}
-  ${props => props.height && css` height: ${props => props.height}; `}
+  height: ${props => props.height || 'auto'};
   ${props => props.maxHeight && css` max-height: ${props => props.maxHeight}; `}
   ${props => props.maxWidth && css` max-width: ${props => props.maxWidth}; `}
 

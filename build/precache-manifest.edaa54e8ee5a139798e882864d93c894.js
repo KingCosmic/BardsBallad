@@ -1,43 +1,43 @@
 self.__precacheManifest = [
   {
-    "revision": "629a55a7e793da068dc580d184cc0e31",
-    "url": "/BardsBallad/static/media/OpenSans-Regular.629a55a7.ttf"
+    "revision": "50145685042b4df07a1fd19957275b81",
+    "url": "/BardsBallad/static/media/OpenSans-Bold.50145685.ttf"
   },
   {
-    "revision": "a16986727cc068bac0c1",
-    "url": "/BardsBallad/static/css/main.0e468cad.chunk.css"
+    "revision": "584ae4ae7d9c2b48c730",
+    "url": "/BardsBallad/static/css/main.b699cac4.chunk.css"
   },
   {
-    "revision": "c2029b526e939bfe518e",
-    "url": "/BardsBallad/static/js/1.c2029b52.chunk.js"
+    "revision": "89c9b081f81bcb0e2a5a",
+    "url": "/BardsBallad/static/js/1.89c9b081.chunk.js"
   },
   {
     "revision": "d3145e3cbbcc9d4e4715",
     "url": "/BardsBallad/static/js/runtime~main.d3145e3c.js"
   },
   {
-    "revision": "11781884e3a96b39d8c6cd0e2bdaa40a",
-    "url": "/BardsBallad/static/media/Nunito-Regular.11781884.ttf"
-  },
-  {
     "revision": "507906229d794aee1c5be34e1b0fd054",
     "url": "/BardsBallad/static/media/Nunito-Bold.50790622.ttf"
+  },
+  {
+    "revision": "11781884e3a96b39d8c6cd0e2bdaa40a",
+    "url": "/BardsBallad/static/media/Nunito-Regular.11781884.ttf"
   },
   {
     "revision": "889c5cf0c4b919bfb66d09df46d314dd",
     "url": "/BardsBallad/static/media/Nunito-Light.889c5cf0.ttf"
   },
   {
-    "revision": "a16986727cc068bac0c1",
-    "url": "/BardsBallad/static/js/main.a1698672.chunk.js"
+    "revision": "629a55a7e793da068dc580d184cc0e31",
+    "url": "/BardsBallad/static/media/OpenSans-Regular.629a55a7.ttf"
+  },
+  {
+    "revision": "584ae4ae7d9c2b48c730",
+    "url": "/BardsBallad/static/js/main.584ae4ae.chunk.js"
   },
   {
     "revision": "1bf71be111189e76987a4bb9b3115cb7",
     "url": "/BardsBallad/static/media/OpenSans-Light.1bf71be1.ttf"
-  },
-  {
-    "revision": "50145685042b4df07a1fd19957275b81",
-    "url": "/BardsBallad/static/media/OpenSans-Bold.50145685.ttf"
   },
   {
     "revision": "8bac22ed4fd7c8a30536be18e2984f84",
@@ -48,6 +48,10 @@ self.__precacheManifest = [
     "url": "/BardsBallad/static/media/OpenSans-Semibold.33f225b8.ttf"
   },
   {
+    "revision": "3ae688ca10eb12eb5e395c1e216d1ded",
+    "url": "/BardsBallad/static/media/patreon.3ae688ca.png"
+  },
+  {
     "revision": "f7213e1dda669c5cda41024d9df8ea14",
     "url": "/BardsBallad/static/media/delete.f7213e1d.svg"
   },
@@ -56,7 +60,7 @@ self.__precacheManifest = [
     "url": "/BardsBallad/static/media/edit.c8faf3be.svg"
   },
   {
-    "revision": "ddc114f652e79be18ab4b35526db9d88",
+    "revision": "a43603e7bda339e878ae66276e51233f",
     "url": "/BardsBallad/index.html"
   }
 ];

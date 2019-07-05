@@ -17,6 +17,7 @@ const BackDrop = styled(Container)`
   position: relative;
   width: 30%;
   min-height: 30%;
+  height: ${props => props.editing ? '80%' : 'auto'};
   max-height: ${props => props.editing ? '80%' : '50%'};
   border-radius: 8px;
   background-color: ${props => props.theme.dark};
@@ -34,7 +35,7 @@ const Options = styled(Container)`
 
 const SubText = styled.span`
   color: rgba(255, 255, 255, .6);
-  font-size: 0.8rem;
+  font-size: 0.95vw;
 `
 
 class ItemInfo extends Component {
@@ -91,21 +92,21 @@ class ItemInfo extends Component {
         </Options>
 
         <Title>{name}</Title>
-        <Text size='0.8rem'>{itemTypes[category]}</Text>
+        <Text size='0.95vw' margin='0 0 10px 0'><SubText>{itemTypes[category]}</SubText></Text>
 
         {
-          <Container margin='10px 0 0 0'>
-            <Text size='0.8rem'>Range: <SubText>{range}/{longRange}</SubText></Text>
-            <Text size='0.8rem'>Damage {damage2 ? '(one-handed)' : ''}: <SubText>{damage1}</SubText></Text>
-            { damage2 && <Text size='0.8rem'>Damage (two-handed): <SubText>{damage2}</SubText></Text> }
-            <Text size='0.8rem'>Properties: <SubText>{properties.map(prop => propertyTypes[prop]).join(', ')}</SubText></Text>
-          </Container>
+          ['M', 'R'].includes(category) ?
+            <Container>
+              <Text size='0.95vw'>Range: <SubText>{range}/{longRange}</SubText></Text>
+              <Text size='0.95vw'>Damage {damage2 ? '(one-handed)' : ''}: <SubText>{damage1}</SubText></Text>
+              { damage2 && <Text size='0.8rem'>Damage (two-handed): <SubText>{damage2}</SubText></Text> }
+              <Text size='0.95vw'>Properties: <SubText>{properties.map(prop => propertyTypes[prop]).join(', ')}</SubText></Text>
+            </Container> : null
         }
-        <Text size='0.8rem'>Value: <SubText>{value}</SubText></Text>
-        <Text size='0.8rem'>Weight: <SubText>{weight} lbs</SubText></Text>
+        <Text size='0.95vw'>Value: <SubText>{value}</SubText></Text>
+        <Text size='0.95vw'>Weight: <SubText>{weight} lbs</SubText></Text>
 
-        <Text size='0.8rem'>Description:</Text>
-        <Text><SubText>{desc}</SubText></Text>
+        <Text margin='5px 0 0 0'><SubText>{desc}</SubText></Text>
       </BackDrop>
     )
   }

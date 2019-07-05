@@ -18,11 +18,13 @@ const BackDrop = styled(Container)`
   position: relative;
   width: 30%;
   min-height: 30%;
-  max-height: ${props => props.editing ? '80%' : '50%'};
+  height: ${props => props.editing ? '80%' : 'auto'};
+  max-height: ${props => props.editing ? '80%' : '60%'};
   border-radius: 8px;
   background-color: ${props => props.theme.dark};
   box-shadow: 0 2px 10px rgba(0, 0, 0, .2), 0 0 0 1px rgba(28, 36, 43 .6);
   padding: 20px;
+  overflow-y: auto;
 `
 
 const Options = styled(Container)`
@@ -34,7 +36,7 @@ const Options = styled(Container)`
 
 const SubText = styled.span`
   color: rgba(255, 255, 255, .6);
-  font-size: 0.8rem;
+  font-size: 0.95vw;
 `
 
 class SpellInfo extends Component {
@@ -90,12 +92,12 @@ class SpellInfo extends Component {
         </Options>
 
         <Container padding='5px'>
-          <Title size='1em' margin='0 0 10px 0'>{name}</Title>
-          <Text size='0.8em'>Time: <SubText>{casttime}</SubText></Text>
-          <Text size='0.8em'>Range: <SubText>{range}</SubText></Text>
-          <Text size='0.8em'>Components: <SubText>{verbal ? 'V, ' : ''} {somatic ? 'S, ' : ''} {material ? `M (${material})` : ''}</SubText></Text>
-          <Text size='0.8em' margin='0 0 10px 0'>Duration: <SubText>{concentration ? `Concentration, up to ${duration}` : duration}</SubText></Text>
-          <Text size='0.8em' sub>{description}</Text>
+          <Title size='1vw' margin='0 0 10px 0'>{name}</Title>
+          <Text size='0.95vw'>CastTime: <SubText>{casttime}</SubText></Text>
+          <Text size='0.95vw'>Range: <SubText>{range}</SubText></Text>
+          <Text size='0.95vw'>Components: <SubText>{verbal ? 'V, ' : ''} {somatic ? 'S, ' : ''} {material ? `M (${material})` : ''}</SubText></Text>
+          <Text size='0.95vw' margin='0 0 10px 0'>Duration: <SubText>{concentration ? `Concentration, up to ${duration}` : duration}</SubText></Text>
+          <Text size='0.95vw'><SubText>{description}</SubText></Text>
         </Container>
       </BackDrop>
     )

@@ -25,7 +25,7 @@ const Span = styled.span`
 `
 
 const EmptyState = ({ createCharacter }) =>
-  <Container height='100%' justifyContent='center' alignItems='center'><Text size='2.2vw' width='50%'>You don't seem to have any characters? Why don't you try <Span onClick={createCharacter}>Creating One</Span></Text></Container>
+  <Container height='100%' justifyContent='center' alignItems='center'><Text size='2.2vw' width='50%'>You don't seem to have any characters, why don't you try <Span onClick={createCharacter}>Creating One</Span>?</Text></Container>
 
 class Characters extends Component {
 
@@ -38,7 +38,7 @@ class Characters extends Component {
   render() {
 
     const { characters, createCharacter, creatingCharacter, creationStage,
-      changeCharacterCreationStage
+      changeCharacterCreationStage, loaded
     } = this.props;
 
     if (creatingCharacter) {
@@ -51,7 +51,7 @@ class Characters extends Component {
       <Container width='calc(100% - 40px)' height='calc(100% - 40px)' padding='20px'>
         {
 
-          (characters.length === 0) ? <EmptyState createCharacter={createCharacter} /> :
+          (characters.length === 0 && loaded === true) ? <EmptyState createCharacter={createCharacter} /> :
 
             characters.map(character => {
               const { name, job, exp } = character

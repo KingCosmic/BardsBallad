@@ -3,6 +3,26 @@ import merge from 'lodash.merge';
 // determin the modifier from a stat.
 export const determinMod = (val) => Math.floor((val - 10) / 2);
 
+export const renderReq = (prereqs = []) => {
+  if (prereqs.length === 0) return ''
+
+  return prereqs.map(({ type, which, value }) => {
+    switch(type) {
+      case 'ability':
+        return `${value} ${which.toLowerCase()}`
+      case 'race', 'subrace':
+        return value
+      case 'prof':
+        return `${value} proficiency`
+      case 'level':
+        return `level ${value}`
+      case 'special':
+        return value
+      default:
+        return ''
+    }
+  }).join(', ')
+} 
 
 const diceRegex = /((\d+)d(\d+)(\w))/gi
 // parser out data strings.

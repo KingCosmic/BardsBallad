@@ -17,6 +17,11 @@ const modForStage = {
   3: (mod, prof) => mod + (prof * 2)
 }
 
+const skillMap = {
+  'animalHandling': 'animal handling',
+  'sleightOfHand': 'sleight of hand'
+}
+
 const stageMap = { 0: 'grey', 1: 'blue', 2: 'green', 3: 'gold' }
 
 const CheckBox = styled(CB)`
@@ -35,23 +40,39 @@ class Skill extends Component {
   constructor(props) {
     super(props);
 
+    const { update, efficient, skill } = props;
+
+    this.path = `skills.${skill}`;
+
+    this.state = {
+      efficient: typeof update[this.path] === 'number' ? update[this.path] : efficient
+    }
+
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
-    const { path, efficient, wasEfficient } = this.props;
+    const { revertData, updateData } = this.props;
+    const { efficient } = this.state;
 
     const newStage = (efficient === 3) ? 0 : efficient + 1
 
-    if (newStage === wasEfficient) {
-      return this.props.revertData(path);
-    } 
+    this.setState({
+      efficient: newStage
+    }, () => {
+      if (newStage === this.props.efficient) {
+        return revertData(this.path);
+      }
 
-    this.props.updateData(path, newStage);
+      updateData(this.path, newStage);
+    })
   }
   
   render() {
-    const { efficient, value, skill, stat, prof } = this.props;
+    const { stats, skill, stat, prof, update } = this.props;
+    const { efficient } = this.state;
+
+    const value = update[`stats.${stat}`] || stats[stat];
 
     const mod = determinMod(value);
 
@@ -61,7 +82,7 @@ class Skill extends Component {
 
         <Value size='0.8em' margin='0 5px 0 0'>{modForStage[efficient](mod, prof)}</Value>
 
-        <Text size='0.8em'>{skill}</Text>
+        <Text size='0.8em'>{skillMap[skill] || skill}</Text>
 
         <Text size='0.8em' margin='0 0 0 5px'>({stat})</Text>
       </ListItem>

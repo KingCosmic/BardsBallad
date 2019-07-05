@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import Container from '../atoms/Container';
+import C from '../atoms/Container';
 import Title from '../atoms/Title';
+
+const Container = styled(C)`
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${props => props.theme.almostblack};
+  }
+`
 
 const Input = styled.input`
   width: 100%;
@@ -12,8 +20,9 @@ const Input = styled.input`
   outline: none;
   border: none;
   color: ${props => props.theme.text};
-  font-size: 0.9em;
+  font-size: 1.25vw;
   font-family: 'OpenSans';
+  cursor: pointer;
 
   &::placeholder {
     color: #8e9297;
@@ -23,8 +32,6 @@ const Input = styled.input`
 class Gold extends Component {
   constructor(props) {
     super(props);
-
-
 
     this.state = {
       value: props.update[props.path] || props.amount
@@ -53,11 +60,11 @@ class Gold extends Component {
   }
 
   render() {
-    const { type, amount, update, path } = this.props;
+    const { type, amount, path } = this.props;
     const { value } = this.state;
 
     return (
-      <Container width='40%' margin='5px 0' padding='5px' direction='row' alignItems='flex-end' bg ol hover>
+      <Container margin='5px' padding='5px' direction='row' alignItems='flex-end' bg ol hover>
         <Title margin='0 10px 0 0'>{type}</Title>
         <Input value={value} onChange={this.onChange} type='number' />
       </Container>
