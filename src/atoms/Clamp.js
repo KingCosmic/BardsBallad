@@ -143,9 +143,6 @@ ClampLines.propTypes = {
   id: PropTypes.string.isRequired,
   lines: PropTypes.number,
   ellipsis: PropTypes.string,
-  buttons: PropTypes.bool,
-  moreText: PropTypes.string,
-  lessText: PropTypes.string,
   className: PropTypes.string,
   delay: PropTypes.number,
   stopPropagation: PropTypes.bool,
@@ -155,9 +152,7 @@ ClampLines.propTypes = {
 ClampLines.defaultProps = {
   lines: 3,
   ellipsis: '...',
-  buttons: true,
-  moreText: 'Read more',
-  lessText: 'Read less',
   delay: 300,
-  innerElement: 'div'
+  innerElement: 'div',
+  text: ''
 };

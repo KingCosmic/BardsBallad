@@ -7,7 +7,7 @@
 
 import {
   ADD_ITEM, UPDATE_FEAT, UPDATE_CHARACTER, REVERT_CHARACTER, REMOVE_ITEM, UPDATE_ITEM, ADD_SPELL,
-  UPDATE_SPELL, REMOVE_SPELL, UPDATE_SPELL_SLOTS
+  UPDATE_SPELL, REMOVE_SPELL, UPDATE_SPELL_SLOTS, ADD_FEAT, REMOVE_FEAT
 } from './update';
 
 // this type was ment for everything that when you click becomes editable (character stat, etc etc)
@@ -18,6 +18,7 @@ export const CHANGE_CHARACTER_CREATION_STAGE = 'CHANGE_CHARACTER_CREATION_STAGE'
 
 export const SHOW_ITEM_INFO = 'SHOW_ITEM_INFO';
 export const SHOW_SPELL_INFO = 'SHOW_SPELL_INFO';
+export const SHOW_FEAT_INFO = 'SHOW_FEAT_INFO';
 
 export const SHOW_ADD_ITEM = 'SHOW_ADD_ITEM';
 export const SHOW_ADD_SPELL = 'SHOW_ADD_SPELL';
@@ -51,6 +52,13 @@ export const showSpellInfo = (spellID) => (dispatch) => {
   dispatch({
     type: SHOW_SPELL_INFO,
     payload: { spellID }
+  })
+}
+
+export const showFeatInfo = (featID) => (dispatch) => {
+  dispatch({
+    type: SHOW_FEAT_INFO,
+    payload: { featID }
   })
 }
 
@@ -133,8 +141,17 @@ actions[REMOVE_ITEM] = (state) =>
 actions[SHOW_ITEM_INFO] = (state, { payload: { itemID } }) =>
   Object.assign({}, state, { overlay: 'ItemInfo', itemID })
 
+actions[ADD_FEAT] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
 actions[UPDATE_FEAT] = (state) =>
-  Object.assign({}, state, { editing: '' });
+  Object.assign({}, state, { overlay: '' });
+
+actions[REMOVE_FEAT] = (state) =>
+  Object.assign({}, state, { overlay: '' })
+
+actions[SHOW_FEAT_INFO] = (state, { payload: { featID } }) =>
+  Object.assign({}, state, { overlay: 'FeatInfo', featID })
 
 actions[UPDATE_CHARACTER] = (state) =>
   Object.assign({}, state, { editing: '' });
@@ -180,6 +197,8 @@ const initialState = {
   overlay: '',
   editing: '',
   itemID: '',
+  spellID: '',
+  featID: '',
   slotsLevel: 0,
   creatingCharacter: false,
   creationStage: 1

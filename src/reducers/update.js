@@ -19,6 +19,7 @@ export const UPDATE_ITEM = 'UPDATE_ITEM'
 export const REMOVE_ITEM = 'REMOVE_ITEM'
 export const ADD_FEAT = 'ADD_FEAT'
 export const UPDATE_FEAT = 'UPDATE_FEAT'
+export const REMOVE_FEAT = 'REMOVE_FEAT'
 export const ADD_SPELL = 'ADD_SPELL'
 export const UPDATE_SPELL = 'UPDATE_SPELL'
 export const REMOVE_SPELL = 'REMOVE_SPELL'
@@ -72,14 +73,19 @@ export const removeItem = (id) => (dispatch) => dispatch({
   payload: { id }
 })
 
-export const addFeat = () => (dispatch) => dispatch({
+export const addFeat = (feat) => (dispatch) => dispatch({
   type: ADD_FEAT,
-  payload: {}
+  payload: { feat }
 })
 
 export const updateFeat = (id, data) => (dispatch) => dispatch({
   type: UPDATE_FEAT,
   payload: { id, data }
+})
+
+export const removeFeat = (id) => (dispatch) => dispatch({
+  type: REMOVE_FEAT,
+  payload: { id }
 })
 
 export const updateSpellslots = (level, slots) => (dispatch) => dispatch({
@@ -176,12 +182,12 @@ actions[REMOVE_ITEM] = (state, { payload: { id } }) => {
   return merge({}, state, { changes: newChanges, items })
 }
 
-actions[ADD_FEAT] = (state) => {
+actions[ADD_FEAT] = (state, { payload: { feat } }) => {
   let id = nanoid(lowercased, 24)
 
-  let newChanges = state.changes.includes('feats') ? state.changes : [ ...state.changes, 'feats' ]
+  let newChanges = state.changes.includes('feats') ? state.changes : [...state.changes, 'feats']
 
-  return merge({}, state, { changes: newChanges, feats: [...state.feats || [], { name: 'new feat', uses: 0, description: 'click to edit me', id, new: true }] })
+  return merge({}, state, { changes: newChanges, feats: [...state.feats || [], { ...feat, id, new: true }] })
 }
 
 actions[UPDATE_FEAT] = (state, { payload: { id, data } }) => {
@@ -206,6 +212,29 @@ actions[UPDATE_FEAT] = (state, { payload: { id, data } }) => {
   let newChanges = state.changes.includes('feats') ? state.changes : [...state.changes, 'feats']
 
   return merge({}, state, { changes: newChanges, feats });
+}
+
+actions[REMOVE_FEAT] = (state, { payload: { id } }) => {
+  let feats = cloneDeep(state.feats || []);
+
+  let update = { remove: true, id }
+
+  let isRemoved = false;
+
+  for (let i = 0; i < feats.length; i++) {
+    let feat = feats[i]
+
+    if (feat.id === id) {
+      feats[i] = merge(feats[i], update);
+      isRemoved = true
+    }
+  }
+
+  if (!isRemoved) feats.push(update);
+
+  let newChanges = state.changes.includes('feats') ? state.changes : [...state.changes, 'feats']
+
+  return merge({}, state, { changes: newChanges, feats })
 }
 
 actions[ADD_SPELL] = (state, { payload: { spell } }) => {

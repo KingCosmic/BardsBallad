@@ -8,13 +8,14 @@ import ItemInfo from './ItemInfo';
 import AddSpell from './AddSpell';
 import SpellInfo from './SpellInfo';
 import AddFeature from './AddFeature';
+import FeatInfo from './FeatInfo';
 import EditSpellSlots from './EditSpellSlots';
 
 import { connect } from 'react-redux';
 import { hideModal } from '../reducers/ui';
 import {
   addItem, removeItem, updateItem, addSpell, removeSpell, updateSpell, updateSpellslots,
-  addFeat
+  addFeat, updateFeat, removeFeat
 } from '../reducers/update';
 
 const Container = styled(C)`
@@ -32,7 +33,7 @@ const Container = styled(C)`
 const Modal = ({
   overlay, hideModal, addItem, removeItem, updateItem, addSpell, updateSpell,
   removeSpell, items, spells, update, itemID, spellID, spellSlots, slotsLevel,
-  updateSpellslots
+  updateSpellslots, addFeat, updateFeat, removeFeat, feats, featID
 }) => {
   return (
     <Container visible={overlay !== ''} onMouseDown={hideModal}>
@@ -42,6 +43,7 @@ const Modal = ({
         (overlay === 'AddSpell') ? <AddSpell addSpell={addSpell} /> :
         (overlay === 'SpellInfo') ? <SpellInfo spells={spells} update={update} spellID={spellID} removeSpell={removeSpell} updateSpell={updateSpell} /> :
         (overlay === 'AddFeat') ? <AddFeature addFeat={addFeat} /> :
+        (overlay === 'FeatInfo') ? <FeatInfo feats={feats} update={update} featID={featID} updateFeat={updateFeat} removeFeat={removeFeat} /> :
         (overlay === 'EditSpellSlots') ? <EditSpellSlots slots={spellSlots} level={slotsLevel} update={update} goBack={hideModal} editSlots={updateSpellslots} /> : ''
       }
     </Container>
@@ -57,8 +59,14 @@ const mapStateToProps = (state) => {
     spells: state.characters.character.spells,
     spellID: state.ui.spellID,
     spellSlots: state.characters.character.spellSlots,
-    slotsLevel: state.ui.slotsLevel
+    slotsLevel: state.ui.slotsLevel,
+    feats: state.characters.character.feats,
+    featID: state.ui.featID
   }
 }
 
-export default connect(mapStateToProps, { hideModal, addItem, removeItem, updateItem, addSpell, updateSpell, removeSpell, updateSpellslots })(Modal);
+export default connect(mapStateToProps, {
+  hideModal, addItem, removeItem, updateItem,
+  addSpell, updateSpell, removeSpell,
+  updateSpellslots, addFeat, updateFeat, removeFeat
+})(Modal);

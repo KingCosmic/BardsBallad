@@ -35,7 +35,7 @@ const Text = styled(T)`
 `
 
 const Feat = (props) => {
-  const { name, uses, prerequisite, description, source, index, onClick, showRequirements = false } = props;
+  const { name, uses, prerequisite, desc, source, index, onClick, showRequirements = false } = props;
 
   return (
     <ListItem index={index} onClick={onClick}>
@@ -47,7 +47,7 @@ const Feat = (props) => {
           <Title size='1.1vw'>{source || 'CUSTOM'}</Title>
       </Container>
 
-      <Clamp text={description} component={Description} />
+      <Clamp text={desc} component={Description} />
     </ListItem>
   )
 }

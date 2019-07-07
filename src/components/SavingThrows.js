@@ -14,8 +14,6 @@ const CHA = 'charisma'
 
 const SavingThrows = (props) => {
   const { throws, stats, update, prof } = props
-  
-  console.log(throws);
 
   return (
     <Container height='calc(30% - 10px)' margin='0 0 10px 0' padding='5px'>

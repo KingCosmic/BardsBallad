@@ -20,7 +20,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   showItemInfo, showAddItem, editItem, showAddSpell, showSpellInfo,
-  showAddFeat, showEditSpellslots
+  showAddFeat, showFeatInfo, showEditSpellslots
 } from '../reducers/ui';
 import { loadOne, changeCharacter } from '../reducers/characters';
 import { updateData, revertData, updateSpellslots } from '../reducers/update';
@@ -97,7 +97,8 @@ class CharacterOverlay extends Component {
     const {
       character, addSpell, showAddItem, update,
       editItem, updateData, editing, revertData,
-      showItemInfo, showAddFeat, showAddSpell, showSpellInfo,
+      showItemInfo, showAddFeat, showFeatInfo,
+      showAddSpell, showSpellInfo,
       showEditSpellslots, updateSpellslots
     } = this.props;
 
@@ -143,7 +144,7 @@ class CharacterOverlay extends Component {
                 updateData={updateData} editing={editing} revertData={revertData} /> :
 
               (currentTab === 5) ? <FeaturesAndTraits char={character}  update={update}
-                showAddFeat={showAddFeat} /> : ''
+                showAddFeat={showAddFeat} showFeatInfo={showFeatInfo} /> : ''
         }
           </Container>
 
@@ -168,6 +169,6 @@ const mapStateToProps = (state) => {
 export default withRouter(connect(mapStateToProps, {
   loadOne, changeCharacter, showAddSpell,
   showAddItem, editItem, updateData, revertData, showItemInfo,
-  showAddFeat, showSpellInfo, showEditSpellslots,
+  showAddFeat, showFeatInfo, showSpellInfo, showEditSpellslots,
   updateSpellslots
 })(CharacterOverlay));

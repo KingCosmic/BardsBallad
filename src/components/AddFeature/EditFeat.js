@@ -85,48 +85,27 @@ class EditItem extends Component {
     super(props);
 
     this.state = {
-      name: 'Custom Item',
-      rarity: 'N',
-      category: 'G',
-      magic: false,
-      attackStat: 'AUTO',
-      attackBonus: '',
-      damageStat: 'AUTO',
-      additionalDamage: '',
-      damage1: '2d6',
-      damage2: '',
-      range: '',
-      longRange: '',
-      properties: [],
-      requirements: [],
-      modifiers: [],
-      weight: 0,
-      quantity: 1,
-      value: 0,
+      name: 'Custom Feat',
       desc: '',
-      reqAttune: false,
-      charges: '',
-      sources: []
+      uses: 0
     }
 
-    this.editItem = this.editItem.bind(this)
+    this.editFeat = this.editFeat.bind(this)
   }
 
   componentWillMount() {
     this.setState({
-      ...merge({}, this.state, this.props.itemInfo)
+      ...merge({}, this.state, this.props.featInfo)
     })
   }
 
-  editItem(path, data) {
+  editFeat(path, data) {
     this.setState({ [path]: data })
   }
 
   render() {
-    const { goBack, addItem, title = 'New Item' } = this.props;
-    const { name, magic, rarity, desc, category, quantity, range, longRange, attackStat, attackBonus, damageStat, damageBonus, damage1, damage2, additionalDamage, value, weight } = this.state;
-
-    const weaponProps = { range, longRange, attackStat, attackBonus, damageStat, damageBonus, damage1, damage2, additionalDamage, editItem: this.editItem }
+    const { goBack, addFeat, title = 'New Feat' } = this.props;
+    const { name, desc, uses } = this.state;
 
     return (
       <Container height='100%' width='100%'>
@@ -135,28 +114,17 @@ class EditItem extends Component {
 
           <Title align='center'>{title}</Title>
 
-          <Text size='0.9rem' onClick={() => addItem(this.state)}>Confirm</Text>
+          <Text size='0.9rem' onClick={() => addFeat(this.state)}>Confirm</Text>
         </Container>
         <Container flowY='auto' height='calc(100% - 40px)'>
           <Container>
             <Container direction='row'>
-              <Property title='Name' placeholder='Greatsword' value={name} callback={(value) => this.editItem('name', value)} />
-              <Property title='Rarity' value={rarity} options={rarityOptions} type='select' callback={(value) => this.editItem('rarity', value)} />
+              <Property title='Name' placeholder='Greatsword' value={name} callback={(value) => this.editFeat('name', value)} />
+              <Property title='uses' value={uses} type='number' callback={(value) => this.editFeat('uses', Number(value))} />
             </Container>
-            <Container direction='row'>
-              <Property title='Category' value={category} options={typeOptions} type='select' callback={(value) => this.editItem('category', value)} />
-              <Property title='Magic Item' value={magic} options={boolOptions} type='select' callback={(value) => this.editItem('magic', value)} />
-            </Container>
-
-            <Container direction='row'>
-              <Property title='Value' value={value} placeholder='50 gp' callback={(value) => this.editItem('value', Number(value))} />
-              <Property title='Weight (in lb)' value={weight} type='number' callback={(value) => this.editItem('weight', Number(value))} />
-            </Container>
-
-            <Property title='quantity' value={quantity} type='number' callback={(value) => this.editItem('quantity', Number(value))} />
 
             <Title margin='10px 0 0'>Description</Title>
-            <TextArea placeholder='Item description goes here' value={desc} onChange={(event) => this.editItem('desc', event.target.value)} />
+            <TextArea placeholder='Item description goes here' value={desc} onChange={(event) => this.editFeat('desc', event.target.value)} />
           </Container>
         </Container>
       </Container>

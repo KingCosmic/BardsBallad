@@ -64,7 +64,7 @@ class Gold extends Component {
     const { value } = this.state;
 
     return (
-      <Container margin='5px' padding='5px' direction='row' alignItems='flex-end' bg ol hover>
+      <Container margin='5px' padding='5px' direction='row' bg ol hover>
         <Title margin='0 10px 0 0'>{type}</Title>
         <Input value={value} onChange={this.onChange} type='number' />
       </Container>

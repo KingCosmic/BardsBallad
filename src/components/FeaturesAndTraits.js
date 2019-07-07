@@ -56,7 +56,7 @@ class Feats extends Component {
   }
 
   render() {
-    const { char: { feats }, showAddFeat, update  } = this.props;
+    const { char: { feats }, showAddFeat, showFeatInfo, update  } = this.props;
 
     const featdata = mergeUpdates(feats, update.feats || []);
 
@@ -69,7 +69,7 @@ class Feats extends Component {
             <List>
               {
                 featdata.map((feat, i) => {
-                  return <Feat index={i}
+                  return <Feat index={i} onClick={() => showFeatInfo(feat.id)}
                     key={feat.id} {...feat}
                   />
                 })
