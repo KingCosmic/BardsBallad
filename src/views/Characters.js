@@ -13,10 +13,17 @@ import Button from '../atoms/Button';
 import CharacterCreation from '../components/CharacterCreation';
 import Character from '../components/Character';
 
-const AddCharacter = styled(Button)`
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
+const CreateCharacter = styled(Text)`
+  color: ${props => props.theme.text};
+  background-color: ${props => props.theme.green};
+  position: fixed;
+  bottom: 30px;
+  right: 20px;
+  font-size: 3em;
+  padding: 0 18px;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, .1);
 `
 const Span = styled.span`
   text-decoration: underline;
@@ -48,7 +55,7 @@ class Characters extends Component {
     }
 
     return (
-      <Container width='calc(100% - 40px)' height='calc(100% - 40px)' padding='20px'>
+      <Container display='inline-block' width='calc(100% - 40px)' height='calc(100% - 40px)' padding='20px'>
         {
 
           (characters.length === 0 && loaded === true) ? <EmptyState createCharacter={createCharacter} /> :
@@ -56,11 +63,11 @@ class Characters extends Component {
             characters.map(character => {
               const { name, job, exp } = character
 
-              return <Character key={character._id} name={name} job={job} exp={exp} character={character} id={character._id} />
+              return <Character key={character._id} name={name} job={job} exp={exp} character={character} id={character._id} history={this.props.history} />
             })
         }
 
-        <AddCharacter onClick={createCharacter} width='150px'>Add Character</AddCharacter>
+        <CreateCharacter onClick={createCharacter}>&#43;</CreateCharacter>
       </Container>
     )
   }

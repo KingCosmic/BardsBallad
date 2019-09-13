@@ -32,39 +32,43 @@ const CharacterStats = (props) => {
   const { strength, dexterity, constitution, intelligence, wisdom, charisma } = stats;
 
   return (
-    <Container width='25%'>
+    <Container justifyContent='space-between' width='25%'>
 
-      <Name value={name} {...propData} />
-      <Class value={job} {...propData} exp={renderExp} />
+      <div></div>
 
-      <Container padding='5px'>
-        <HP hp={hp} path='hp' {...propData} />
-        <EXP exp={exp} path='exp' {...propData} />
-      </Container>
+      <Container>
+        <Name value={name} {...propData} />
+        <Class value={job} {...propData} exp={renderExp} />
 
-      <Container direction='row'>
-        <AC ac={ac} path='ac' {...propData} />
-        <Speed speed={speed} path='speed' {...propData} />
-        <Initiatve value={initiative} path='initiative' {...propData} />
-      </Container>
+        <Container padding='5px'>
+          <HP hp={hp} path='hp' {...propData} />
+          <EXP exp={exp} path='exp' {...propData} />
+        </Container>
 
-      <Container direction='row'>
-        <Proficiency value={proficiency} path='proficiency' {...propData} />
+        <Container direction='row'>
+          <AC ac={ac} path='ac' {...propData} />
+          <Speed speed={speed} path='speed' {...propData} />
+          <Initiatve value={initiative} path='initiative' {...propData} />
+        </Container>
 
-        <PassivePerception value={passivePerception} path='passivePerception' {...propData} />
+        <Container direction='row'>
+          <Proficiency value={proficiency} path='proficiency' {...propData} />
 
-        <HitDice path='hitdice' hd={hitdice} {...propData} />
-      </Container>
+          <PassivePerception value={passivePerception} path='passivePerception' {...propData} />
 
-      <Container direction='row'>
-        <CharacterStat name='STR' val={strength} path='stats.strength' {...propData} />
-        <CharacterStat name='DEX' val={dexterity} path='stats.dexterity' {...propData} />
-        <CharacterStat name='CON' val={constitution} path='stats.constitution' {...propData} />
-      </Container>
-      <Container direction='row'>
-        <CharacterStat name='INT' val={intelligence} path='stats.intelligence' {...propData} />
-        <CharacterStat name='WIS' val={wisdom} path='stats.wisdom' {...propData} />
-        <CharacterStat name='CHA' val={charisma} path='stats.charisma' {...propData} />
+          <HitDice path='hitdice' hd={hitdice} {...propData} />
+        </Container>
+
+        <Container direction='row'>
+          <CharacterStat name='STR' val={strength} path='stats.strength' {...propData} />
+          <CharacterStat name='DEX' val={dexterity} path='stats.dexterity' {...propData} />
+          <CharacterStat name='CON' val={constitution} path='stats.constitution' {...propData} />
+        </Container>
+        <Container direction='row'>
+          <CharacterStat name='INT' val={intelligence} path='stats.intelligence' {...propData} />
+          <CharacterStat name='WIS' val={wisdom} path='stats.wisdom' {...propData} />
+          <CharacterStat name='CHA' val={charisma} path='stats.charisma' {...propData} />
+        </Container>
       </Container>
 
     </Container>

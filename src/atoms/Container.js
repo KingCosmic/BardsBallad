@@ -27,7 +27,7 @@ const Container = styled.div`
   ${props => props.left && css` left: ${props => props.left}; `}
   ${props => props.bottom && css` bottom: ${props => props.bottom}; `}
     
-  display: ${props => props.noFlex ? 'block' : 'flex'};
+  display: ${props => props.noFlex ? 'block' : props.display ? props.display : 'flex'};
   flex-direction: ${props => props.direction || 'column'};
   ${props => props.bases && css` flex-basis: ${props => props.bases}; `}
   ${props => props.justifyContent && css` justify-content: ${props => props.justifyContent}; `}

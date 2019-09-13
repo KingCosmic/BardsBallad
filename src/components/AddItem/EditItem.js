@@ -8,6 +8,8 @@ import Title from '../../atoms/Title';
 import Text from '../../atoms/Text';
 import Select from '../../atoms/Select';
 
+import TextArea from 'react-textarea-autosize';
+
 import WeaponConfig from './WeaponConfig';
 
 import { typeOptions, rarityOptions, boolOptions } from '../../data/constants';
@@ -25,24 +27,6 @@ const Input = styled.input`
   &::placeholder {
     color: #8e9297;
   }
-`
-
-const TextArea = styled.textarea`
-  color: ${props => props.theme.text};
-  width: 100%;
-  height: 80px;
-  max-height: 200px;
-  font-size: 1vw;
-  font-weight: 100;
-
-  margin: 0;
-
-  border-style: none;
-  outline: none;
-  resize: none;
-  cursor: pointer;
-
-  background-color: transparent;
 `
 
 export class Property extends Component {

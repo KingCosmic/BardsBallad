@@ -44,7 +44,7 @@ export const rarityOptions = Object.keys(rarityTypes).map(key => ({
 
 export const itemTypes = {
   'ALL': 'All', 'G': 'Adventuring Gear', 'LA': 'Light Armor', 'MA': 'Medium Armor', 'HA': 'Heavy Armor',
-  'S': 'Shield', 'M': 'Melee Weapon', 'R': 'Ranged Weapon', 'A': 'Ammunition', 'RD': 'Rod',
+  'S': 'Shield', 'M': 'Melee Weapon', 'R': 'Ranged Weapon', 'A': 'Ammunition', 'RD': 'Rod', 'T': 'Tools',
   'ST': 'Staff', 'WD': 'Wand', 'RG': 'Ring', 'P': 'Potion', 'SC': 'Scroll', 'W': 'Wondrous Item',
   'WE': 'Wealth', 'SCF': 'Spellcasting Focus', 'AT': 'Artison Tools', 'INS': 'Musical Instrument'
 }

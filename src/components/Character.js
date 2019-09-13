@@ -6,29 +6,35 @@ import Text from '../atoms/Text';
 
 import { getLevel } from '../data/levels';
 
-const Container = styled(Link)`
-  width: calc(32% - 20px);
+const Container = styled.div`
+  width: calc(33% - 30px);
+  cursor: pointer;
   height: 100px;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  text-decoration: none;
+  position: relative;
+  display: inline-block;
 
   background: url('https://cdn.discordapp.com/attachments/391809595473002496/579335189331836939/233.png');
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
 
-  margin: 0;
+  margin: 5px;
   padding: 10px;
+  border-radius: 4px;
+`
+
+const Name = styled(Text)`
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
 `
 
 const Character = (props) => {
-  const { name, job, exp, id } = props;
+  const { name, job, exp, id, history } = props;
 
   return (
-    <Container to={`/characters/${id}`}>
-      <Text>{name}</Text><Text>{job} ({getLevel(exp)})</Text>
+    <Container onClick={() => history.replace(`/characters/${id}`)}>
+      <Name>{name} <br/> {job} ({getLevel(exp)})</Name>
     </Container>
   )
 }
