@@ -60,7 +60,7 @@ class Gold extends Component {
   }
 
   render() {
-    const { type, amount, path } = this.props;
+    const { type } = this.props;
     const { value } = this.state;
 
     return (

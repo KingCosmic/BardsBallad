@@ -7,7 +7,6 @@ import Container from '../../atoms/Container';
 import Title from '../../atoms/Title';
 import Text from '../../atoms/Text';
 import Select from '../../atoms/Select';
-import Checkbox from '../../atoms/CheckBox';
 
 import { spellLevels, schoolOptions, boolOptions } from '../../data/constants';
 
@@ -64,7 +63,7 @@ export class Property extends Component {
   }
 
   render() {
-    const { callback, title, placeholder, type, options, multi = false, full = false } = this.props;
+    const { title, placeholder, type, options, multi = false, full = false } = this.props;
     const { value } = this.state;
 
     return (
@@ -130,7 +129,7 @@ class EditSpell extends Component {
 
           <Text size='0.9rem' onClick={() => addSpell(this.state)}>Confirm</Text>
         </Container>
-        <Container flowY='auto' height='calc(100% - 40px)' flowY='scroll'>
+        <Container flowY='auto' height='calc(100% - 40px)'>
           <Container direction='row'>
             <Property title='Name' placeholder='Fireball' value={name} callback={(value) => this.editSpell('name', value)} />
             <Property title='Level' value={level} options={spellLevels} type='select' callback={(value) => this.editSpell('level', value)} />

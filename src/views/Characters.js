@@ -8,7 +8,6 @@ import { startCharacterCreation, changeCharacterCreationStage } from '../reducer
 
 import Container from '../atoms/Container';
 import Text from '../atoms/Text';
-import Button from '../atoms/Button';
 
 import CharacterCreation from '../components/CharacterCreation';
 import Character from '../components/Character';
@@ -55,7 +54,7 @@ class Characters extends Component {
     }
 
     return (
-      <Container display='inline-block' width='calc(100% - 40px)' height='calc(100% - 40px)' padding='20px'>
+      <Container display='inline-block' width='calc(100% - 40px)' height='calc(100% - 40px)' padding='20px' flowY='auto'>
         {
 
           (characters.length === 0 && loaded === true) ? <EmptyState createCharacter={createCharacter} /> :

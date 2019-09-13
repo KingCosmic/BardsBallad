@@ -20,7 +20,7 @@ class Home extends Component {
     return (
       <Container  width='100%' height='100%' direction='row'>
         <Modal />
-        <SlideOut />
+        <SlideOut history={this.props.history} />
         <Container width='100%' height='100%' bg='light'>
           <Switch>
             <Route path='/characters' component={Characters} exact/>

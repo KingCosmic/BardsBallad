@@ -39,7 +39,7 @@ const Value = styled(Text)`
 `
 
 const Select = (props) => {
-  const { value, options, onChange, multi = false } = props;
+  const { value, options, onChange } = props;
 
   if (options.length === 0) return <Dropdown><Value>N/A</Value></Dropdown>;
 

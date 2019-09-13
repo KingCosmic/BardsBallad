@@ -11,7 +11,6 @@ import EditSpell from './AddSpell/EditSpell';
 import { ReactComponent as Delete } from '../assets/delete.svg';
 import { ReactComponent as Edit } from '../assets/edit.svg';
 
-import { itemTypes, propertyTypes } from '../data/constants';
 import { mergeUpdates } from '../helpers';
 
 const BackDrop = styled(Container)`
@@ -73,7 +72,7 @@ class SpellInfo extends Component {
 
     const {
       name, casttime, range, verbal, somatic, material,
-      duration, concentration, description, higherlevels
+      duration, concentration, description
     } = spell;
 
     if (editSpell) {

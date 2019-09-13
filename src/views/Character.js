@@ -95,7 +95,7 @@ class CharacterOverlay extends Component {
   render() {
     const { currentTab } = this.state;
     const {
-      character, addSpell, showAddItem, update,
+      character, showAddItem, update,
       editItem, updateData, editing, revertData,
       showItemInfo, showAddFeat, showFeatInfo,
       showAddSpell, showSpellInfo,

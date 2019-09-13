@@ -10,7 +10,9 @@ export const renderReq = (prereqs = []) => {
     switch(type) {
       case 'ability':
         return `${value} ${which.toLowerCase()}`
-      case 'race', 'subrace':
+      case 'race':
+        return value
+      case 'subrace':
         return value
       case 'prof':
         return `${value} proficiency`

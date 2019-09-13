@@ -6,7 +6,6 @@ import merge from 'lodash.merge';
 import Container from '../atoms/Container';
 import Text from '../atoms/Text';
 
-import List from '../atoms/List';
 import Spell from './Spell';
 import Search from './Search';
 import Button from '../atoms/Button';
@@ -16,8 +15,6 @@ import ListSection from './ListSection';
 import { mergeUpdates } from '../helpers';
 
 import { schoolFilters } from '../data/constants';
-
-import spells from '../data/spells.json';
 
 const listFilter = (level) => (spell) => spell.level === level
 

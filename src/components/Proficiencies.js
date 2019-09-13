@@ -3,8 +3,6 @@ import styled from 'styled-components';
 
 import Container from '../atoms/Container';
 import Title from '../atoms/Title';
-import Text from '../atoms/Text';
-import List from '../atoms/List';
 import ListItem from '../atoms/ListItem';
 
 const TextArea = styled.textarea`

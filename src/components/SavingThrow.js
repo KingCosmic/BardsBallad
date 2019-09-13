@@ -30,10 +30,8 @@ class SavingThrow extends Component {
   }
 
   handleClick() {
-    const { update, revertData, updateData } = this.props;
+    const { revertData, updateData } = this.props;
     const { efficient } = this.state;
-
-    const changed = typeof update[this.path] === 'boolean'
 
     this.setState({
       efficient: !efficient

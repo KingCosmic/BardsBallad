@@ -49,7 +49,7 @@ export class Property extends Component {
   }
 
   render() {
-    const { callback, title, placeholder, type, options, multi = false, full = false } = this.props;
+    const { title, placeholder, type, options, multi = false, full = false } = this.props;
     const { value } = this.state;
 
     return (

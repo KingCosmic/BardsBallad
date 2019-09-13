@@ -8,8 +8,6 @@ import Title from '../../atoms/Title';
 import Text from '../../atoms/Text';
 import Select from '../../atoms/Select';
 
-import { typeOptions, rarityOptions, boolOptions } from '../../data/constants';
-
 const Input = styled.input`
   background-color: transparent;
   margin: 0;
@@ -63,7 +61,7 @@ export class Property extends Component {
   }
 
   render() {
-    const { callback, title, placeholder, type, options, multi = false, full = false } = this.props;
+    const { title, placeholder, type, options, multi = false, full = false } = this.props;
     const { value } = this.state;
 
     return (

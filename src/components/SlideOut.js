@@ -3,9 +3,7 @@ import styled from 'styled-components';
 
 import Container from '../atoms/Container';
 import Title from '../atoms/Title';
-
-import KoFi from '../assets/kofi.png';
-import Patreon from '../assets/patreon.png'
+import Text from '../atoms/Text';
 
 const Backdrop = styled(Container)`
   width: 12%;
@@ -13,10 +11,14 @@ const Backdrop = styled(Container)`
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
 
   background-color: ${props => props.theme.dark};
   border-right: 1px solid ${props => props.theme.almostblack};
+`
+
+const Item = styled(Text)`
+  color: rgba(255, 255, 255, .9);
+  cursor: pointer;
 `
 
 class SlideOut extends Component {
@@ -29,12 +31,14 @@ class SlideOut extends Component {
   }
 
   render() {
-    const { open } = this.state;
+    const { history } = this.props;
+    // const { open } = this.state;
 
     return (
       <Backdrop>
         <Title padding='5px'>Bards Ballad</Title>
 
+        <Item onClick={() => history.replace('/characters')}>Characters</Item>
       </Backdrop>
     )
   }

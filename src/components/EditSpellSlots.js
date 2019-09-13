@@ -57,7 +57,7 @@ class EditSpellSlots extends Component {
   }
 
   render() {
-    const { slots, level, update, goBack, editSlots } = this.props;
+    const { level, goBack, editSlots } = this.props;
 
     const { current, max } = this.state;
 

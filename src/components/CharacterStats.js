@@ -6,7 +6,6 @@ import Name from './CharacterName';
 import Class from './CharacterClass';
 import HP from './HP';
 import EXP from './EXP';
-import Gold from './Gold';
 import PassivePerception from './PassivePerception';
 import Proficiency from './Proficiency';
 import Speed from './Speed';

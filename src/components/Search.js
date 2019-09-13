@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import Container from '../atoms/Container';
 import Select from '../atoms/Select';
-import Text from '../atoms/Text';
 
 // wasnt sure about the box shadow or not
 // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, .1);
@@ -32,16 +31,6 @@ const SearchInput = styled.input`
   &::placeholder {
     color: rgba(255, 255, 255, .6);
   }
-`
-
-const DropDown = styled(Container)`
-  min-width: 39px;
-  border-left: 1px solid ${props => props.theme.grey};
-  justify-content: center;
-
-  position: relative;
-  display: inline-block;
-  padding: 0 10px;
 `
 
 const SearchIcons = styled(Container)`
