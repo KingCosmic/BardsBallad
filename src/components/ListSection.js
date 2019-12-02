@@ -1,41 +1,49 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Container from '../atoms/Container';
-import Text from '../atoms/Text';
-import List from '../atoms/List';
+import Text from './Text';
 
-const Header = styled(Container)`
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 5px 5px;
+  width: 100%;
+`
+
+const Header = styled.div`
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding: 5px;
   border-bottom: 1px solid ${props => props.theme.gold};
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  background-color: ${props => props.hcolor ? props.theme[props.hcolor] : props.theme.light};
+  background-color: ${props => props.hcolor ? props.theme[props.hcolor] : 'transparent'};
 `
 
-const ListSection = ({ title, Component, filter, data, headerColor, HeaderExtra = () => null, onClick = () => {} }) => {
+const HeaderText = styled(Text)`
+  color: ${props => props.theme.gold};
+  font-size: 1.4em;
+`
+
+const ListSection = ({ title, Component, filter = () => true, data = [], headerColor, HeaderExtra = () => null, onClick = () => {}, showOnEmpty = false }) => {
   const filterdData = data.filter(filter);
 
-  if (filterdData.length === 0) return null;
+  if (filterdData.length === 0 && showOnEmpty === false) return null;
 
   return (
-    <Container margin='0 5px 5px'>
+    <Container>
       <Header hcolor={headerColor}>
-        <Text color='gold'>{title}</Text>
+        <HeaderText>{title}</HeaderText>
         <HeaderExtra />
       </Header>
-      <List>
+      <div>
         {
           filterdData.map((item, i) => {
             return (
-              <Component item={item} {...item} index={i} key={item.id} onClick={onClick} />
+              <Component item={item} {...item} index={i} key={item.id} onClick={() => onClick(item)} />
             )
           })
         }
-      </List>
+      </div>
     </Container>
   )
 }

@@ -1,73 +1,88 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { loadAll, createCharacter } from '../reducers/characters';
-import { startCharacterCreation, changeCharacterCreationStage } from '../reducers/ui';
+import { loadAll, createCharacter, deleteCharacter } from '../reducers/characters';
+import { startCharacterCreation, changeCharacterCreationStage, toggleSideNav } from '../reducers/ui';
 
-import Container from '../atoms/Container';
-import Text from '../atoms/Text';
+import Header from '../components/Header';
 
-import CharacterCreation from '../components/CharacterCreation';
+//import CharacterCreation from '../components/CharacterCreation';
 import Character from '../components/Character';
 
-const CreateCharacter = styled(Text)`
+const Tab = styled.div`
+  height: 100%;
+  width: 100%;
+  padding: 65px 0 0 0;
+  overflow-y: auto;
+
+  @media only screen and (min-width: 768px) {
+    position: static;
+    padding: 10px;
+  }
+`
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  @media only screen and (min-width: 768px) {
+    display: inline-block;
+  }
+`
+
+const CreateCharacter = styled.p`
   color: ${props => props.theme.text};
   background-color: ${props => props.theme.green};
   position: fixed;
   bottom: 30px;
   right: 20px;
-  font-size: 3em;
-  padding: 0 18px;
-  cursor: pointer;
+  font-size: 2em;
+  padding: 10px 20px;
   border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, .1);
 `
-const Span = styled.span`
-  text-decoration: underline;
-  color: rgba(255, 255, 255, .6);
-  cursor: pointer;
-`
-
-const EmptyState = ({ createCharacter }) =>
-  <Container height='100%' justifyContent='center' alignItems='center'><Text size='2.2vw' width='50%'>You don't seem to have any characters, why don't you try <Span onClick={createCharacter}>Creating One</Span>?</Text></Container>
 
 class Characters extends Component {
-
-  componentWillMount() {
-
+  componentDidMount() {
     if (!this.props.loaded) this.props.loadAll()
-
   }
 
   render() {
-
-    const { characters, createCharacter, creatingCharacter, creationStage,
-      changeCharacterCreationStage, loaded
+    const {
+      characters, createCharacter, deleteCharacter,
+      creatingCharacter, toggleSideNav
     } = this.props;
 
     if (creatingCharacter) {
       return (
-        <CharacterCreation stage={creationStage} changeStage={changeCharacterCreationStage} />
+        {
+          //<CharacterCreation stage={creationStage} changeStage={changeCharacterCreationStage} />
+        }
       )
     }
 
     return (
-      <Container display='inline-block' width='calc(100% - 40px)' height='calc(100% - 40px)' padding='20px' flowY='auto'>
-        {
+      <Tab>
+        <Header title='Characters' leftClick={toggleSideNav} />
+        <Container>
+          {
+            (characters.length === 0) ? null :
 
-          (characters.length === 0 && loaded === true) ? <EmptyState createCharacter={createCharacter} /> :
-
-            characters.map(character => {
+            Array.from(characters).reverse().map(character => {
               const { name, job, exp } = character
 
-              return <Character key={character._id} name={name} job={job} exp={exp} character={character} id={character._id} history={this.props.history} />
+              return <Character key={character._id} name={name} job={job} exp={exp} character={character} id={character._id} deleteCharacter={deleteCharacter} history={this.props.history} />
             })
-        }
+          }
+        </Container>
 
         <CreateCharacter onClick={createCharacter}>&#43;</CreateCharacter>
-      </Container>
+      </Tab>
     )
   }
 }
@@ -82,4 +97,8 @@ const mapStateToProps = (state) => {
 }
 
 
-export default withRouter(connect(mapStateToProps, { loadAll, createCharacter, startCharacterCreation, changeCharacterCreationStage })(Characters));
+export default withRouter(connect(mapStateToProps, {
+  loadAll, createCharacter, deleteCharacter,
+  startCharacterCreation, changeCharacterCreationStage,
+  toggleSideNav
+})(Characters));

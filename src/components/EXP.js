@@ -1,102 +1,106 @@
-/* eslint eqeqeq: 'off' */
-
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import I from '../atoms/Input';
-import C from '../atoms/Container';
-import Text from '../atoms/Text';
-import BarContainer from '../atoms/BarContainer';
-import BarFiller from '../atoms/BarFiller';
+import T from './Text';
 
-import levels from '../data/levels';
+import EditExperience from '../modals/SideInfo/Experience';
 
-const getMaxExp = (exp) => levels[Object.keys(levels).find(lvl => exp < levels[lvl].exp)].exp
+import { getLevel } from '../data/levels';
 
-const Container = styled(C)`
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${props => props.theme.dark};
-    outline: 1px solid ${props => props.theme.almostblack};
-  }
-`
-
-const Input = styled(I)`
-  outline: none;
-  border: none;
-  background-color: ${props => props.theme.dark};
-  color: ${props => props.theme.text};
-  margin: 1px;
-  width: 100%;
-  text-align: center;
-
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-`
-
-const Save = styled(C)`
-  color: ${props => props.theme.text};
-  background-color: ${props => props.theme.green};
-  margin: 1px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  width: calc(100% - 10px);
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   padding: 5px;
 `
 
-const determinPercent = (current, max) => `${(current / max) * 100}%`;
+const BarContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 1.7em;
+
+  background-color: ${props => props.theme.middleblack};
+  border-left: 2px;
+  border-right: 2px;
+  border-style: solid;
+  border-color: ${props => props.theme.almostblack};
+
+  @media only screen and (min-width: 768px) {
+    height: 10px;
+    border: 1px solid;
+  }
+`
+
+const BarFiller = styled.div`
+  display: flex;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: ${props => `${props.value}%`};
+
+  background-color: ${props => props.theme[props.color] || props.theme.text};
+`
+
+const Text = styled(T)`
+  z-index: 50;
+  color: rgb(255, 255, 255, .8);
+`
+
+const DesktopText = styled(Text)`
+  display: none;
+  font-size: 0.9em;
+
+  @media only screen and (min-width: 768px) {
+    display: block;
+  }
+`
+
+const MobileText = styled(Text)`
+  @media only screen and (min-width: 768px) {
+    display: none;
+  }
+`
+
+const determinPercent = (current, max, temp = 0, isTemp = true) => (current > max) ? 100 : ((current + ((isTemp) ? temp : 0)) / (max + temp)) * 100;
 
 class EXP extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSave = this.handleSave.bind(this);
+    this.editEXP = this.editEXP.bind(this);
   }
 
-  handleSave() {
-    const { data, path, exp, updateData, revertData, editItem } = this.props;
+  editEXP() {
+    const { openModal, closeModal } = this.props;
 
-    // check to see we arent making unnecesarry saves
-    const changed = data[path] ? true : false;
-
-    if (this.refs.exp.value == exp && !changed) return editItem('');
-
-    if (this.refs.exp.value == exp && changed === true) {
-      return revertData(path);
-    }
-
-    updateData(path, Number(this.refs.exp.value))
+    openModal({
+      id: 'expeditmodal',
+      type: 'custom',
+      content: <EditExperience {...this.props} requestClose={() => closeModal({ id: 'expeditmodal' })} />
+    })
   }
-  
+
   render() {
-    const { exp, editing, path, editItem, data } = this.props;
+    const { current } = this.props;
 
-    const currentEXP = data[path] !== undefined ? data[path] : exp;
+    const max = getLevel(current).exp
 
-    const maxEXP = getMaxExp(currentEXP)
+    const expRender = determinPercent(current, max);
 
-    // check if we're editing this component :D
-    if (editing === path) {
-      return (
-        <C grow='1' justifyContent='space-between' alignItems='center' bg ol>
-          <Input type='number' ref='exp' defaultValue={currentEXP} />
-
-          <Save onClick={this.handleSave}>Save</Save>
-        </C>
-      )
-    } else {
-      return (
-        <Container grow='1' onClick={() => editItem(path)}>
-          <Text size='0.9em' header>EXP: {currentEXP}/{maxEXP}</Text>
-          <BarContainer width='100%' height='10px' bg ol>
-            <BarFiller width={determinPercent(currentEXP, maxEXP)} color='gold' />
-          </BarContainer>
-        </Container>
-      )
-    }
+    return (
+      <Container>
+        <DesktopText>EXP: {current}/{max}</DesktopText>
+        <BarContainer onClick={this.editEXP}>
+          <MobileText>EXP: {current}/{max}</MobileText>
+          <BarFiller value={expRender} color='gold' />
+        </BarContainer>
+      </Container>
+    )
   }
 }
 

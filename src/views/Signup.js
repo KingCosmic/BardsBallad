@@ -3,26 +3,40 @@ import styled from 'styled-components';
 
 import { Link as L } from 'react-router-dom';
 
-import Container from '../atoms/Container';
-import Button from '../atoms/Button';
-import Title from '../atoms/Title';
-import Text from '../atoms/Text';
+import Button from '../components/Button';
+import Text from '../components/Text';
 
 import api from '../api';
+
+const BackDrop = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: ${props => props.theme.middleblack};
+`
+
+const Header = styled(Text)`
+  color: ${props => props.theme.gold};
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 20px;
+`
 
 const Link = styled(L)`
   color: rgba(255, 255, 255, .6);
 `
 
 const Input = styled.input`
-  margin-bottom: ${props => props.first ? '10px' : '20px'};
-  padding: 5px 10px;
+  margin-bottom: ${props => props.first ? '15px' : '20px'};
+  padding: 10px;
   color: rgba(20, 20, 20, .85);
   border: none;
   appearance: none;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   border-radius: 4px;
-  font-size: 1vw;
+  font-size: 1em;
 
   &:focus {
     outline: none;
@@ -33,7 +47,7 @@ const Input = styled.input`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  width: 20%;
+  width: 80%;
   padding: 10px;
   margin-bottom: 10px;
 `
@@ -53,7 +67,7 @@ class Signup extends Component {
   }
 
   // redirect if we're already logged in
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (api.loggedIn())
       this.props.history.replace('/characters');
   }
@@ -73,7 +87,7 @@ class Signup extends Component {
       email,
       password
     ).then(resp => {
-      this.props.history.replace('/characters');
+      this.props.history.replace('/characters')
     }).catch(alert)
 
     event.preventDefault();
@@ -81,9 +95,9 @@ class Signup extends Component {
 
   render() {
     return (
-      <Container justifyContent='center' alignItems='center' height='100%' bg='almostblack'>
+      <BackDrop>
         <Form onSubmit={this.handleSignup}>
-          <Title align='center' size='2.2vw' margin='0 0 20px 0'>Signup</Title>
+          <Header>Signup</Header>
           <Input first
             placeholder='KingCosmicDev@gmail.com' type='text'
             value={this.state.email} onChange={this.handleEmail}
@@ -96,7 +110,7 @@ class Signup extends Component {
           <Button onClick={this.handleSignup}>Signup</Button>
         </Form>
         <Text>Need to <Link to={`/login`}>login?</Link></Text>
-      </Container>
+      </BackDrop>
     )
   }
 }

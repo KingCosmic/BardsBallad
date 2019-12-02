@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import ListItem from '../atoms/ListItem';
-import CB from '../atoms/CheckBox';
-import Text from '../atoms/Text';
+import T from './Text';
 
-import { connect } from 'react-redux';
-import { updateData, revertData } from '../reducers/update';
+import SelectProficiency from '../modals/SelectProficiency';
 
+import { skillToStat } from '../data/skills';
 import { determinMod } from '../helpers'
 
 const modForStage = {
@@ -22,74 +20,84 @@ const skillMap = {
   'sleightOfHand': 'sleight of hand'
 }
 
-const stageMap = { 0: 'grey', 1: 'blue', 2: 'green', 3: 'gold' }
+const stageMap = { 1: 'blue', 2: 'green', 3: 'gold' }
 
-const CheckBox = styled(CB)`
-  background-color: ${props => props.theme[stageMap[props.stage]]};
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 5px;
+  margin-top: 5px;
+`
 
-  &:hover {
-    background-color: ${props => props.theme[stageMap[props.stage + 1]] || 'none'};
+const CheckBox = styled.div`
+  height: 1.8em;
+  width: 1.8em;
+  background-color: ${props => props.checked ? props.theme[props.color || 'green'] || props.color : props.theme.grey};
+  margin-right: 5px;
+
+  @media only screen and (min-width: 768px) {
+    width: 1.5em;
+    height: 1.5em;
+  }
+`
+
+const Text = styled(T)`
+  font-size: 1.5em;
+  padding: 0 5px;
+
+  @media only screen and (min-width: 768px) {
+    font-size: 1.3em;
   }
 `
 
 const Value = styled(Text)`
   text-decoration: underline ${props => props.theme.grey};
+  margin-right: 5px;
 `
 
 class Skill extends Component {
   constructor(props) {
     super(props);
 
-    const { update, efficient, skill } = props;
-
-    this.path = `skills.${skill}`;
-
-    this.state = {
-      efficient: typeof update[this.path] === 'number' ? update[this.path] : efficient
-    }
-
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
-    const { revertData, updateData } = this.props;
-    const { efficient } = this.state;
+    const { characterID, openModal, closeModal, syncData, skills, skill } = this.props;
 
-    const newStage = (efficient === 3) ? 0 : efficient + 1
-
-    this.setState({
-      efficient: newStage
-    }, () => {
-      if (newStage === this.props.efficient) {
-        return revertData(this.path);
-      }
-
-      updateData(this.path, newStage);
+    openModal({
+      id: 'selectproficiencymodal',
+      type: 'custom',
+      content: <SelectProficiency title={skillMap[skill] || skill} characterID={characterID} efficient={skills[skill]} skills={skills} skill={skill} syncData={syncData} requestClose={() => closeModal({ id: 'selectproficiencymodal' })} />
     })
   }
   
   render() {
-    const { stats, skill, stat, prof, update } = this.props;
-    const { efficient } = this.state;
+    const { stats, skills, skill, prof } = this.props;
 
-    const value = update[`stats.${stat}`] || stats[stat];
+    const efficient = skills[skill]
+
+    const value = stats[skillToStat(skill)];
 
     const mod = determinMod(value);
 
     return (
-      <ListItem alignItems='center'>
-        <CheckBox onClick={this.handleClick} margin='0 5px 0 0' stage={efficient} />
+      <Container>
+        <CheckBox onClick={this.handleClick} checked={efficient !== 0} color={stageMap[efficient]} />
 
-        <Value size='0.8em' margin='0 5px 0 0'>{modForStage[efficient](mod, prof)}</Value>
+        <Value>
+          {
+            modForStage[efficient](mod, prof) < 0 ?
+              modForStage[efficient](mod, prof) :
+              `+${modForStage[efficient](mod, prof)}`
+          }  
+        </Value>
 
-        <Text size='0.8em'>{skillMap[skill] || skill}</Text>
-
-        <Text size='0.8em' margin='0 0 0 5px'>({stat})</Text>
-      </ListItem>
+        <Text>{skillMap[skill] || skill}</Text>
+      </Container>
     )
   }
 }
 
-const mapStateToProps = (state) => ({})
-
-export default connect(mapStateToProps, { updateData, revertData })(Skill);
+export default Skill;

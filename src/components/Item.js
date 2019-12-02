@@ -1,51 +1,63 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import LI from '../atoms/ListItem';
-import Container from '../atoms/Container';
-import Text from '../atoms/Text';
+import T from './Text';
 
-import { itemTypes } from '../data/constants';
+//import { itemTypes } from '../data/constants';
 
-const ListItem = styled(LI)`
-  width: calc(100% - 12px);
+const Text = styled(T)`
+  font-size: 1.2em;
+
+  @media only screen and (min-width: 768px) {
+    font-size: 1em;
+  }
+`
+
+const Container = styled.div`
+  display: flex;
+  width: 100%;
   padding: 5px;
-
-  justify-content: space-between;
   align-items: center;
 
   flex-direction: row;
-
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgba(222, 223, 224, .1);
-  }
 
   ${props => (Math.abs(props.index % 2) === 1) && css`
     background-color: rgba(0, 0, 0, .17);
   `}
 `
 
-const Category = styled(Text)`
-  overflow: hidden;
-  text-overflow: ellipsis; 
-  color: rgba(255, 255, 255, .6);
+const EquippedCheckbox = styled.div`
+  width: 1.2em;
+  height: 1.2em;
+  border: 1px solid ${props => props.theme.gold};
+  border-radius: 50%;
+  margin-right: 10px;
+
+  @media only screen and (min-width: 768px) {
+    width: .9em;
+    height: .9em;
+  }
+`
+
+const InnerContainer = styled.div`
+  display: flex;
+  flex: 1;
+
+  justify-content: space-between;
+  align-items: center;
+
+  flex-direction: row;
 `
 
 const Item = ({ index, id, name, quantity, category, weight, value, onClick }) => {
   return (
-    <ListItem onClick={onClick} key={id} index={index}>
-      <Container flowY='hidden' flowWrap>
-        <Text size='0.9em'>{name} {quantity > 1 ? `x${quantity}` : ''}</Text>
-        <Category size='0.8em'>{itemTypes[category]}</Category>
-      </Container>
-
-      <Container direction='row'>
-        <Text margin='0 6px'>{weight} lb</Text>
-        <Text margin='0 6px'>{value}</Text>
-      </Container>
-    </ListItem>
+    <Container onClick={onClick} key={id} index={index}>
+      <EquippedCheckbox />
+      <InnerContainer>
+        <Text>{name}</Text>
+        <Text>{quantity > 1 ? quantity : ''}</Text>
+      </InnerContainer>
+    </Container>
   )
 }
 

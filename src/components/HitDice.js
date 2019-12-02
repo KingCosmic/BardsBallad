@@ -1,90 +1,75 @@
-/* eslint eqeqeq: 'off' */
-
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import I from '../atoms/Input';
-import C from '../atoms/Container';
-import Title from '../atoms/Title';
-import Text from '../atoms/Text';
+import T from './Text';
 
-
-const Container = styled(C)`
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   cursor: pointer;
-
-  &:hover {
-    background-color: ${props => props.theme.almostblack};
-  }
-`
-
-const Input = styled(I)`
-  outline: none;
-  border: none;
-  background-color: ${props => props.theme.dark};
-  color: ${props => props.theme.text};
-  margin: 1px;
-  width: 100%;
-  text-align: center;
-
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-`
-
-const Save = styled(C)`
-  color: ${props => props.theme.text};
-  background-color: ${props => props.theme.green};
-  margin: 1px;
+  padding: 10px;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  width: calc(100% - 10px);
-  padding: 5px;
+  width: 33.33%;
+  border: 2px solid ${props => props.theme.almostblack};
+
+  @media only screen and (min-width: 768px) {
+    background: ${props => props.theme.dark};
+    width: 32%;
+    padding: 5px;
+    margin: 5px;
+    justify-content: center;
+    border: 1px solid ${props => props.theme.almostblack};
+  }
+`
+
+const Text = styled(T)`
+  font-size: 1.5em;
+
+  @media only screen and (min-width: 768px) {
+    font-size: 1.25vw;
+  }
 `
 
 class HitDice extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSave = this.handleSave.bind(this);
+    this.editStat = this.editStat.bind(this)
   }
 
-  handleSave() {
-    const { data, path, hd, updateData, revertData, editItem } = this.props;
+  editStat() {
+    const { path, syncData, characterID, value, openModal, closeModal } = this.props;
 
-    // only send the action if the state needs to be resaved
-    const changed = data[path] ? true : false;
+    openModal({
+      id: 'hdeditmodal',
+      type: 'string',
+      title: 'Edit HitDice',
+      defaultValue: value,
+      onCancel: () => closeModal({ id: 'hdeditmodal' }),
+      onConfirm: (newValue) => {
+        if (newValue === value) return closeModal({ id: 'hdeditmodal' });
 
-    if (this.refs.hitdie.value == hd && !changed) return editItem('');
-
-    if (this.refs.hitdie.value == hd && changed === true) {
-      return revertData(path);
-    }
-
-    updateData(path, this.refs.hitdie.value)
+        closeModal({ id: 'hdeditmodal' })
+        syncData(
+          characterID,
+          {
+            [path]: newValue
+          }
+        )
+      }
+    })
   }
 
   render() {
-    const { hd, editing, path, editItem, data } = this.props;
+    const { value } = this.props;
 
-    const currentVal = data[path] || hd;
+    return (
+      <Container onClick={this.editStat}>
+        <Text color='gold'>HD</Text>
 
-    // check if we're editing this component :D
-    if (editing === path) {
-      return (
-        <Container width='calc(32% - 10px)' padding='5px' margin='10px 5px 0' justifyContent='space-between' alignItems='center' bg ol>
-          <Input ref='hitdie' defaultValue={currentVal} />
-          <Save onClick={this.handleSave}>Save</Save>
-        </Container>
-      )
-    } else {
-      return (
-        <Container width='calc(32% - 10px)' padding='5px' margin='10px 5px 0' justifyContent='center' alignItems='center' onClick={() => editItem(path)} bg ol>
-          <Title header>Hit Dice</Title>
-          <Text header>{currentVal}</Text>
-        </Container>
-      )
-    }
+        <Text>{value}</Text>
+      </Container>
+    )
   }
 }
 

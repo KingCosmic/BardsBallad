@@ -1,4 +1,51 @@
 
+export const spellDefaults = {
+  name: 'Custom Spell',
+  level: 0,
+  school: 'A',
+  ritual: false,
+  casttime: '',
+  range: '',
+  duration: '',
+  concentration: false,
+  verbal: false,
+  somatic: false,
+  material: '',
+  description: '',
+  higherlevels: ''
+}
+
+export const itemDefaults = {
+  name: 'Custom Item',
+  rarity: 'N',
+  category: 'G',
+  magic: false,
+  attackStat: 'AUTO',
+  attackBonus: '',
+  damageStat: 'AUTO',
+  additionalDamage: '',
+  damage1: '2d6',
+  damage2: '',
+  range: '',
+  longRange: '',
+  properties: [],
+  requirements: [],
+  modifiers: [],
+  weight: 0,
+  quantity: 1,
+  value: 0,
+  desc: '',
+  reqAttune: false,
+  charges: '',
+  sources: []
+}
+
+export const featDefaults = {
+  name: 'Custom Feature',
+  uses: 0,
+  desc: ''
+}
+
 export const boolOptions = [{ value: false, label: 'False' }, { value: true, label: 'True' }]
 
 export const sizes = {
@@ -6,7 +53,7 @@ export const sizes = {
 }
 
 export const spellLevels = [
-  { value: 0, label: 'Cantrip' }, { value: 1, label: 'First' }, { value: 2, label: 'Second' }, { value: 3, label: 'Third' }, { value: 4, label: 'Fourth' }, { value: 5, label: 'Fifth' }, { value: 6, label: 'Sixth' }, { value: 7, label: 'Seventh' }, { value: 8, label: 'Eigth' }, { value: 9, label: 'Nineth' } 
+  { value: 0, label: 'Cantrip' }, { value: 1, label: 'First' }, { value: 2, label: 'Second' }, { value: 3, label: 'Third' }, { value: 4, label: 'Fourth' }, { value: 5, label: 'Fifth' }, { value: 6, label: 'Sixth' }, { value: 7, label: 'Seventh' }, { value: 8, label: 'Eigth' }, { value: 9, label: 'Nineth' }
 ]
 
 export const schoolTypes = {

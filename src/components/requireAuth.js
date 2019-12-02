@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import api from '../api';
 
 const withAuth = (AuthComponent) => {
-  
+
   class AuthWrapped extends Component {
     constructor(props) {
       super(props);
@@ -14,7 +14,7 @@ const withAuth = (AuthComponent) => {
 
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
       if (!api.loggedIn()) {
         this.props.history.replace('/login')
       }
@@ -25,7 +25,7 @@ const withAuth = (AuthComponent) => {
             user: profile
           })
         }
-        catch(err) {
+        catch (err) {
           api.logout()
           this.props.history.replace('/login')
         }

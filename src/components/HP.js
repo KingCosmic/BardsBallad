@@ -1,112 +1,106 @@
-/* eslint eqeqeq: 'off' */
-
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import I from '../atoms/Input';
-import C from '../atoms/Container';
-import Text from '../atoms/Text';
-import BarContainer from '../atoms/BarContainer';
-import BarFiller from '../atoms/BarFiller';
+import T from './Text';
 
-const Container = styled(C)`
-  cursor: pointer;
+import EditHealth from '../modals/SideInfo/Health';
 
-  &:hover {
-    background-color: ${props => props.theme.dark};
-    outline: 1px solid ${props => props.theme.almostblack};
-  }
-`
-
-const Input = styled(I)`
-  outline: none;
-  border: none;
-  background-color: ${props => props.theme.dark};
-  color: ${props => props.theme.text};
-  margin: 1px;
-  width: calc(33% - 2px);
-  text-align: center;
-
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-`
-
-const Save = styled(C)`
-  color: ${props => props.theme.text};
-  background-color: ${props => props.theme.green};
-  margin: 1px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  width: calc(100% - 10px);
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   padding: 5px;
+`
+
+const BarContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 1.7em;
+
+  background-color: ${props => props.theme.middleblack};
+  border-left: 2px;
+  border-right: 2px;
+  border-style: solid;
+  border-color: ${props => props.theme.almostblack};
+
+  @media only screen and (min-width: 768px) {
+    height: 10px;
+    border: 1px solid;
+  }
+`
+
+const BarFiller = styled.div`
+  display: flex;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: ${props => `${props.value}%`};
+
+  background-color: ${props => props.theme[props.color] || props.theme.text};
+`
+
+const Text = styled(T)`
+  z-index: 50;
+  color: ${props => props.theme.text};
+`
+
+const DesktopText = styled(Text)`
+  display: none;
+  font-size: 0.9em;
+
+  @media only screen and (min-width: 768px) {
+    display: block;
+  }
+`
+
+const MobileText = styled(Text)`
+  opacity: .8;
+  @media only screen and (min-width: 768px) {
+    display: none;
+  }
 `
 
 const determinPercent = (current, max, temp = 0, isTemp = true) => ((current + ((isTemp) ? temp : 0)) / (max + temp)) * 100;
 
-class HP extends Component { 
+class HP extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSave = this.handleSave.bind(this);
+    this.editHP = this.editHP.bind(this);
   }
 
-  handleSave() {
-    const { path, updateData } = this.props;
+  editHP() {
+    const { openModal, closeModal } = this.props;
 
-    // TODO: check hp for changes so we dont save if it's
-    // unnecesary
-
-    /*
-    const changed = data[path] ? true : false;
-
-    if (this.refs.current.value == val && !changed) return editItem('');
-
-    if (this.refs.current.value == val && changed === true) {
-      return revertData(path);
-    }
-    */
-
-    updateData(path, {
-      current: Number(this.refs.current.value),
-      max: Number(this.refs.max.value),
-      temp: Number(this.refs.temp.value)
+    openModal({
+      id: 'hpeditmodal',
+      type: 'custom',
+      content: <EditHealth {...this.props} requestClose={() => closeModal({ id: 'hpeditmodal' })} />
     })
   }
 
   render() {
-    const { hp, editing, path, editItem, data } = this.props;
-
-    const { current, max, temp } = data[path] ? Object.assign(hp, data[path]) : hp;
+    const { current, max, temp } = this.props;
 
     const tempRender = determinPercent(current, max, temp);
     const hpRender = determinPercent(current, max, temp, false);
 
-    // check if we're editing this component :D
-    if (editing === path) {
-      return (
-        <C width='100%' justifyContent='space-between' alignItems='center' bg ol>
-          <C width='100%' direction='row' justifyContent='space-between'>
-            <Input type='number' ref='current' defaultValue={current} />
-            <Input type='number' ref='max' defaultValue={max} />
-            <Input type='number' ref='temp' defaultValue={temp} />
-          </C>
-          <Save onClick={this.handleSave}>Save</Save>
-        </C>
-      )
-    } else {
-      return (
-        <Container onClick={() => editItem(path)}>
-          <Text size='0.9em' header>HP: {current}/{max} {(temp) ?  ` (+${temp})` : ''}</Text>
-
-          <BarContainer width='100%' height='10px' bg ol>
-            <BarFiller width={`${tempRender}%`} color='blue' />
-            <BarFiller width={`${hpRender}%`} color='green' />
-          </BarContainer>
-        </Container>
-      )
-    }
+    return (
+      <Container>
+        <DesktopText>HP: {current}/{max} {(temp) ? ` (+${temp})` : ''}</DesktopText>
+        <BarContainer onClick={this.editHP}>
+          <MobileText>HP: {current}/{max} {(temp) ? ` (+${temp})` : ''}</MobileText>
+          <BarFiller value={tempRender} color='blue' />
+          <BarFiller value={hpRender} color='green' />
+        </BarContainer>
+      </Container>
+    )
   }
 }
+
 export default HP;

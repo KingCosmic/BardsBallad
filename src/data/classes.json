@@ -1,0 +1,68 @@
+[
+  {
+    "id": "",
+    "name": "Barbarian",
+    "hitDice": "12",
+    "proficiencies": {
+      "armor": ["light", "medium", "shields"],
+      "weapons": ["simple", "martial"],
+      "savingthrows": ["STR", "CON"],
+      "skills": [
+        { "type": "choose", "amount": 2, "from": ["AH", "A", "I", "N", "P", "S"] }
+      ]
+    },
+    "equipment": [
+      { "type": "choose", "from": ["qocckzhrpszyijolfusvprru", "Martial"] },
+      {
+        "type": "choose",
+        "from": [
+          { "amount": 2, "id": "yveglribnpkdxphzjluuqoya" },
+          "Simple"
+        ]
+      },
+      {
+        "amount": 4,
+        "id": "cezsolbqthxysagpoeijxpih"
+      },
+      "nmwmyfgcrrasuddcbokdlfys"
+    ],
+    "levels": [
+      [
+        {
+          "type": "F",
+          "id": "123313213",
+          "name": "Rage",
+          "description": "sdadsadad"
+        },
+        {
+          "type": "F",
+          "id": "123123",
+          "name": "Unarmored Defense",
+          "description": "sdadsadad",
+          "modifiers": [
+            { "type": "SET", "target": "AC", "value": "10 + DEX + CON" }
+          ]
+        }
+      ],
+      [
+        {
+          "type": "F",
+          "id": "45434213",
+          "name": "Reckless Attack",
+          "description": "adsadada"
+        },
+        {
+          "type": "F",
+          "id": "839183103",
+          "name": "Danger Sense",
+          "description": "adsadada"
+        }
+      ],
+      [
+        {
+          "type": "Subclass"
+        }
+      ]
+    ]
+  }
+]

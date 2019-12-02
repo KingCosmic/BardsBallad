@@ -1,67 +1,85 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import ListItem from '../atoms/ListItem';
-import CheckBox from '../atoms/CheckBox';
-import Text from '../atoms/Text';
-
-import { connect } from 'react-redux';
-import { updateData, revertData } from '../reducers/update';
+import T from './Text';
 
 import { determinMod } from '../helpers'
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 5px;
+  width: 100%;
+  margin-top: 5px;
+`
+
+const CheckBox = styled.div`
+  height: 1.8em;
+  width: 1.8em;
+  background-color: ${props => props.checked ? props.theme[props.color || 'green'] || props.color : props.theme.grey};
+  margin-right: 5px;
+
+  @media only screen and (min-width: 768px) {
+    width: 1.5em;
+    height: 1.5em;
+  }
+`
+
+const Text = styled(T)`
+  font-size: 1.5em;
+  padding: 0 5px;
+
+  @media only screen and (min-width: 768px) {
+    font-size: 1.3em;
+  }
+`
+
 const Value = styled(Text)`
   text-decoration: underline ${props => props.theme.grey};
+  margin-right: 5px;
 `
 
 class SavingThrow extends Component {
   constructor(props) {
     super(props);
 
-    const { update, efficient, skill } = props;
-
-    this.path = `savingThrows.${skill}`;
-
-    this.state = {
-      efficient: typeof update[this.path] === 'boolean' ? update[this.path] : efficient
-    }
-
-    this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleClick() {
-    const { revertData, updateData } = this.props;
-    const { efficient } = this.state;
+  handleChange() {
+    const { characterID, syncData, throws, skill } = this.props;
 
-    this.setState({
-      efficient: !efficient
-    }, () => {
-      if (efficient !== this.props.efficient) {
-        return revertData(this.path);
+    syncData(
+      characterID,
+      {
+        [`savingThrows.${skill}`]: !throws[skill]
       }
-
-      updateData(this.path, !efficient);
-    })
+    )
   }
 
   render() {
-    const { value, skill, prof } = this.props;
-    const { efficient } = this.state;
+    const { throws, skill, stats, prof } = this.props;
 
-    const mod = determinMod(value);
+    const efficient = throws[skill]
+    const mod = determinMod(stats[skill]);
 
     return (
-      <ListItem alignItems='center'>
-        <CheckBox onClick={this.handleClick} margin='0 5px 0 0' checked={efficient} />
+      <Container>
+        <CheckBox onClick={this.handleChange} checked={efficient} />
 
-        <Value size='0.8em' margin='0 5px 0 0'>{efficient ? mod + prof : mod}</Value>
+        <Value>
+          {
+            (efficient ? mod + prof : mod) < 0 ? 
+              (efficient ? mod + prof : mod) :
+              `+${(efficient ? mod + prof : mod) }`
+          }
+        </Value>
 
-        <Text size='0.8em'>{skill}</Text>
-      </ListItem>
+        <Text>{skill || 'saving throw'}</Text>
+      </Container>
     )
   }
 }
 
-const mapStateToProps = (state) => ({})
-
-export default connect(mapStateToProps, { updateData, revertData })(SavingThrow);
+export default SavingThrow;

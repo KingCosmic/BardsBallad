@@ -32,6 +32,14 @@ class ApiService {
     })
   }
 
+  deleteCharacter(id) {
+    return this.fetch(`${this.domain}/${id}/delete`, {
+      method: 'DELETE'
+    }).then(res => {
+      return Promise.resolve(res)
+    })
+  }
+
   loadCharacters() {
     return this.fetch(`${this.domain}/characters`, {
       method: 'GET'
@@ -133,8 +141,8 @@ class ApiService {
       headers,
       ...options
     })
-    .then(this._checkStatus)
-    .then(response => response.json())
+      .then(this._checkStatus)
+      .then(response => response.json())
   }
 
   _checkStatus(response) {
@@ -142,6 +150,7 @@ class ApiService {
     if (response.status >= 200 && response.status < 300) { // Success status lies between 200 to 300
       return response
     } else {
+      console.log(response)
       var error = new Error(response)
       error.response = response
       throw error

@@ -1,11 +1,22 @@
 import React from 'react';
+import styled from 'styled-components';
 
-import Container from '../atoms/Container';
-import Title from '../atoms/Title';
-import List from '../atoms/List';
 import Skill from './Skill';
+import Text from './Text';
 
-import { skillToStat } from '../data/skills';
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  width: 100%;
+`
+
+const Title = styled(Text)`
+  color: ${props => props.theme.gold};
+  margin-bottom: 5px;
+  font-size: 2em;
+  border-bottom: 1px solid ${props => props.theme.gold};
+`
 
 const AC = 'acrobatics';
 const AH = 'animalHandling';
@@ -27,104 +38,28 @@ const STE = 'stealth';
 const SUR = 'survival';
 
 const Skills = (props) => {
-  const { skills, stats, update, prof } = props;
-
   return (
-    <Container height='calc(70% - 20px)' padding='10px'>
-      <Title margin='0 0 5px 0' header>Skills</Title>
+    <Container>
+      <Title>Skills</Title>
 
-      <List flowY='scroll' width='100%' barWidth='0px'>
-        <Skill
-          key={AC} stats={stats} skill={AC} stat={skillToStat(AC)} efficient={skills[AC]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={AH} stats={stats} skill={AH} stat={skillToStat(AH)} efficient={skills[AH]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={AR} stats={stats} skill={AR} stat={skillToStat(AR)} efficient={skills[AR]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={AT} stats={stats} skill={AT} stat={skillToStat(AT)} efficient={skills[AT]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={DE} stats={stats} skill={DE} stat={skillToStat(DE)} efficient={skills[DE]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={HI} stats={stats} skill={HI} stat={skillToStat(HI)} efficient={skills[HI]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={IN} stats={stats} skill={IN} stat={skillToStat(IN)} efficient={skills[IN]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={INT} stats={stats} skill={INT} stat={skillToStat(INT)} efficient={skills[INT]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={INV} stats={stats} skill={INV} stat={skillToStat(INV)} efficient={skills[INV]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={MED} stats={stats} skill={MED} stat={skillToStat(MED)} efficient={skills[MED]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={NAT} stats={stats} skill={NAT} stat={skillToStat(NAT)} efficient={skills[NAT]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={PER} stats={stats} skill={PER} stat={skillToStat(PER)} efficient={skills[PER]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={PERF} stats={stats} skill={PERF} stat={skillToStat(PERF)} efficient={skills[PERF]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={PERS} stats={stats} skill={PERS} stat={skillToStat(PERS)} efficient={skills[PERS]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={REL} stats={stats} skill={REL} stat={skillToStat(REL)} efficient={skills[REL]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={SOH} stats={stats} skill={SOH} stat={skillToStat(SOH)} efficient={skills[SOH]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={STE} stats={stats} skill={STE} stat={skillToStat(STE)} efficient={skills[STE]}
-          prof={prof} update={update}
-        />
-
-        <Skill
-          key={SUR} stats={stats} skill={SUR} stat={skillToStat(SUR)} efficient={skills[SUR]}
-          prof={prof} update={update}
-        />
-        
-      </List>
+      <Skill key='1' skill={AC} {...props} />
+      <Skill key='2' skill={AH} {...props} />
+      <Skill key='3' skill={AR} {...props} />
+      <Skill key='4' skill={AT} {...props} />
+      <Skill key='5' skill={DE} {...props} />
+      <Skill key='6' skill={HI} {...props} />
+      <Skill key='7' skill={IN} {...props} />
+      <Skill key='8' skill={INT} {...props} />
+      <Skill key='9' skill={INV} {...props} />
+      <Skill key='10' skill={MED} {...props} />
+      <Skill key='11' skill={NAT} {...props} />
+      <Skill key='12' skill={PER} {...props} />
+      <Skill key='13' skill={PERF} {...props} />
+      <Skill key='14' skill={PERS} {...props} />
+      <Skill key='15' skill={REL} {...props} />
+      <Skill key='16' skill={SOH} {...props} />
+      <Skill key='17' skill={STE} {...props} />
+      <Skill key='18' skill={SUR} {...props} />
     </Container>
   )
 }

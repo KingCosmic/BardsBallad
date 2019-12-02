@@ -1,4 +1,8 @@
 import merge from 'lodash.merge';
+import cloneDeep from 'lodash.clonedeep';
+
+
+export { merge, cloneDeep }
 
 // determin the modifier from a stat.
 export const determinMod = (val) => Math.floor((val - 10) / 2);
@@ -7,12 +11,10 @@ export const renderReq = (prereqs = []) => {
   if (prereqs.length === 0) return ''
 
   return prereqs.map(({ type, which, value }) => {
-    switch(type) {
+    switch (type) {
       case 'ability':
         return `${value} ${which.toLowerCase()}`
-      case 'race':
-        return value
-      case 'subrace':
+      case ('race', 'subrace'):
         return value
       case 'prof':
         return `${value} proficiency`
@@ -24,7 +26,7 @@ export const renderReq = (prereqs = []) => {
         return ''
     }
   }).join(', ')
-} 
+}
 
 const diceRegex = /((\d+)d(\d+)(\w))/gi
 // parser out data strings.
@@ -47,5 +49,5 @@ export const mergeUpdates = (array, updates = []) => {
   })
 
   return array.map(value => modUpdates.has(value.id) ? merge(value, modUpdates.get(value.id)) : value)
-  .concat(newUpdates).filter(item => !item.remove);
+    .concat(newUpdates).filter(item => !item.remove);
 }

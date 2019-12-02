@@ -1,15 +1,14 @@
 import { combineReducers } from 'redux';
 
-
 import characters from './characters';
-import update from './update';
 import user from './user';
+import modals from './modals';
 import ui from './ui';
 
 const reducers = combineReducers({
   characters,
-  update,
   user,
+  modals,
   ui
 })
 

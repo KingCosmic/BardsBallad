@@ -1,28 +1,21 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import Container from '../atoms/Container';
-import Text from '../atoms/Text';
+import T from './Text';
 
-import { getLevel } from '../data/levels';
+import ChangeClass from '../modals/SideInfo/ChangeClass';
 
-const Input = styled.input`
-  background-color: transparent;
-  margin: 0 5px;
-  padding: 0;
-  outline: none;
-  border: none;
+//import { getLevel } from '../data/levels';
+
+const Text = styled(T)`
   color: ${props => props.theme.text};
-  font-size: 1.2vw;
-  font-family: 'OpenSans';
-  cursor: pointer;
+  font-size: 1.5em;
 
-  &:hover {
-    background-color: ${props => props.theme.middleblack};
-  }
+  padding: 5px;
+  width: 100%;
 
-  &::placeholder {
-    color: #8e9297;
+  @media only screen and (min-width: 768px) {
+    font-size: 1.2vw;
   }
 `
 
@@ -30,44 +23,24 @@ class CharacterClass extends Component {
   constructor(props) {
     super(props);
 
-    this.path = 'job';
-
-    this.state = {
-      value: props.value
-    }
-
-    this.onChange = this.onChange.bind(this);
-    this.onBlur = this.onBlur.bind(this);
+    this.changeClass = this.changeClass.bind(this);
   }
 
-  onChange(event) {
-    this.setState({
-      value: event.target.value
+  changeClass() {
+    const { openModal, closeModal } = this.props;
+
+    openModal({
+      id: 'classchangemodal',
+      type: 'custom',
+      content: <ChangeClass {...this.props} requestClose={() => closeModal({ id: 'classchangemodal' })} />
     })
   }
 
-  onBlur() {
-    // only send the action if the state needs to be resaved
-    const changed = this.props.data[this.path] ? true : false;
-
-    if (this.state.value === this.props.value && !changed) return;
-
-    if (this.state.value === this.props.value && changed) {
-      return this.props.revertData(this.path);
-    }
-
-    this.props.updateData(this.path, this.state.value);
-  }
-
   render() {
-    const { exp } = this.props;
-    const { value } = this.state;
+    const { job } = this.props;
 
     return (
-      <Container alignItems='center' direction='row'>
-        <Input value={value} onChange={this.onChange} onBlur={this.onBlur} />
-        <Text>level: {getLevel(exp)}</Text>
-      </Container>
+      <Text onClick={this.changeClass}>{job}</Text>
     )
   }
 }

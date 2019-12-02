@@ -1,64 +1,44 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-const Input = styled.input`
-  background-color: transparent;
-  margin: 0 5px;
-  padding: 0;
-  outline: none;
-  border: none;
+import T from './Text';
+
+import ChangeName from '../modals/SideInfo/ChangeName';
+
+const Text = styled(T)`
   color: ${props => props.theme.gold};
-  font-size: 1.4vw;
-  font-family: 'OpenSans';
-  cursor: pointer;
+  font-size: 1.7em;
 
-  &:hover {
-    background-color: ${props => props.theme.middleblack};
-  }
+  padding: 0 5px;
+  width: 100%;
 
-  &::placeholder {
-    color: #8e9297;
+  @media only screen and (min-width: 768px) {
+    font-size: 1.4vw;
   }
 `
 
 class CharacterName extends Component {
   constructor(props) {
     super(props);
-
-    this.path = 'name';
-
-    this.state = {
-      value: props.value
-    }
-
-    this.onChange = this.onChange.bind(this);
-    this.onBlur = this.onBlur.bind(this);
+  
+    this.changeName = this.changeName.bind(this);
   }
 
-  onChange(event) {
-    this.setState({
-      value: event.target.value
+  changeName() {
+    const { openModal, closeModal } = this.props;
+
+    openModal({
+      id: 'namechangemodal',
+      type: 'custom',
+      content: <ChangeName {...this.props} requestClose={() => closeModal({ id: 'namechangemodal' })} />
     })
   }
 
-  onBlur() {
-    // only send the action if the state needs to be resaved
-    const changed = this.props.data[this.path] ? true : false;
-
-    if (this.state.value === this.props.value && !changed) return;
-
-    if (this.state.value === this.props.value && changed) {
-      return this.props.revertData(this.path);
-    }
-
-    this.props.updateData(this.path, this.state.value);
-  }
-
   render() {
-    const { value } = this.state;
+    const { name } = this.props;
 
     return (
-      <Input value={value} onChange={this.onChange} onBlur={this.onBlur} />
+      <Text onClick={this.changeName}>{name}</Text>
     )
   }
 }
