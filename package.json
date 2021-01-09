@@ -1,45 +1,65 @@
 {
-  "name": "bardsballadrefactor",
-  "version": "0.1.0",
+  "name": "gatsby-starter-default",
   "private": true,
-  "homepage": "https://bardsballad.com/",
+  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "version": "0.1.0",
+  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
+    "@reach/alert": "^0.10.5",
+    "@reach/listbox": "^0.10.5",
+    "@styled-icons/boxicons-solid": "^10.6.0",
+    "@styled-icons/ionicons-outline": "^10.6.0",
+    "@styled-icons/ionicons-sharp": "^10.6.0",
+    "@types/jwt-decode": "^2.2.1",
+    "@types/react-helmet": "^6.0.0",
+    "@types/react-portal": "^4.0.2",
+    "@types/styled-components": "^5.1.1",
+    "gatsby": "^2.24.23",
+    "gatsby-image": "^2.4.14",
+    "gatsby-plugin-manifest": "^2.4.21",
+    "gatsby-plugin-offline": "^3.2.21",
+    "gatsby-plugin-react-helmet": "^3.3.10",
+    "gatsby-plugin-sharp": "^2.6.24",
+    "gatsby-source-filesystem": "^2.3.23",
+    "gatsby-transformer-sharp": "^2.5.12",
     "jwt-decode": "^2.2.0",
+    "localforage": "^1.8.1",
     "lodash.clonedeep": "^4.5.0",
-    "lodash.merge": "^4.6.1",
-    "nanoid": "^2.0.3",
-    "nanoid-dictionary": "^2.0.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-icons": "^3.7.0",
-    "react-redux": "^7.1.0",
-    "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1",
-    "react-textarea-autosize": "^7.1.0",
-    "react-virtualized": "^9.21.1",
-    "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0",
-    "styled-components": "^4.3.2"
+    "lodash.merge": "^4.6.2",
+    "nanoid": "^3.1.12",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-helmet": "^6.1.0",
+    "react-icons": "^3.10.0",
+    "react-portal": "^4.2.1",
+    "react-ridge-state": "^4.1.6",
+    "react-textarea-autosize": "^8.2.0",
+    "react-virtualized-auto-sizer": "^1.0.2",
+    "react-window": "^1.8.5",
+    "styled-components": "^5.1.1"
   },
+  "devDependencies": {
+    "prettier": "2.0.5"
+  },
+  "keywords": [
+    "gatsby"
+  ],
+  "license": "MIT",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "start": "npm run develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "bugs": {
+    "url": "https://github.com/gatsbyjs/gatsby/issues"
   }
 }

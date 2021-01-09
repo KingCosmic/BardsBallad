@@ -1,0 +1,56 @@
+html, body, #___gatsby, #gatsby-focus-wrapper {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+p, textarea, input {
+  font-family: OpenSans;
+  font-weight: 200;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+p {
+  color: rgba(255, 255, 255, .87);
+  font-size: 1em;
+  font-weight: 200;
+}
+
+textarea, input {
+  user-select: text;
+}
+
+textarea {
+  color: white;
+  width: 100%;
+  font-size: 1em;
+  font-weight: 200;
+  margin: 0;
+  border-style: none;
+  outline: none;
+  resize: none;
+  background-color: transparent;
+}
+
+textarea ::placeholder {
+  color: #8e9297;
+}
+
+* ::-webkit-scrollbar {
+  display: none;
+}
+
+[data-reach-listbox-popover] {
+  max-height: 250px;
+  overflow-y: auto;
+  border: none;
+  outline: none;
+}
