@@ -7,7 +7,8 @@ class ApiService {
 
   // Initializing important variables
   constructor() {
-    this.domain = 'http://localhost:4000' // API server domain
+    // API server url
+    this.domain = 'https://api-ftdzf.ondigitalocean.app'
 
     this.fetch = this.fetch.bind(this)
     this.loadCharacters = this.loadCharacters.bind(this)
@@ -98,7 +99,9 @@ class ApiService {
 
   getToken() {
     // Retrieves the user token from localStorage
-    return localStorage.getItem('id_token')
+    if (typeof window !== `undefined`) {
+      return localStorage.getItem('id_token')
+    }
   }
 
   logout() {
