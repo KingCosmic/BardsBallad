@@ -31,7 +31,6 @@ function Creations(props: Props) {
     if (!state.isLoaded) loadAll()
 
     if (!localStorage.getItem('synced')) syncCharacters()
-    localStorage.setItem('synced', 'true') 
   })
 
   return (

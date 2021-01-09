@@ -15,7 +15,9 @@ import { Character, Spell, Item, Feat } from '../types'
 export function syncCharacters() {
   api.loadCharacters()
   .then(chars => {
-    saveCharacters(chars)
+    saveCharacters(chars).then(() => {
+      localStorage.setItem('synced', 'true')
+    })
   })
 }
 
