@@ -90,11 +90,6 @@ export interface Character {
   alignment: string // characters alignment
   exp: number // how much exp does this character have?
 
-  bonds:string
-  flaws:string
-  ideals:string
-  traits:string
-
   avatar: string // the url of the characters avatar
 
   languages: string // characters languages

@@ -7,7 +7,9 @@ interface Level {
 export const getLevel = (exp: number) => {
   let moreThanLevels = levels.filter(lvl => exp >= lvl.exp)
 
-  return  { ...moreThanLevels[moreThanLevels.length - 1], expToNext: levels[moreThanLevels.length].exp }
+  const expToNext = levels[moreThanLevels.length] ? levels[moreThanLevels.length].exp : exp
+
+  return  { ...moreThanLevels[moreThanLevels.length - 1], expToNext }
 }
 
 const levels: Level[] = [

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import { charsState, loadAll, createChar } from '../../state/characters'
+import { syncCharacters } from '../../services/db'
 
 import FloatingButton from '../FloatingButton'
 
@@ -28,6 +29,9 @@ function Creations(props: Props) {
 
   useEffect(() => {
     if (!state.isLoaded) loadAll()
+
+    if (!localStorage.getItem('synced')) syncCharacters()
+    localStorage.setItem('synced', 'true') 
   })
 
   return (

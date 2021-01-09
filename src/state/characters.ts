@@ -27,8 +27,7 @@ export const loadAll = () => {
     charsState.set({
       characters,
       isLoaded: true,
-      characterID: '',
-      currentRevision: ''
+      characterID: ''
     })
   })
 }
@@ -46,8 +45,7 @@ export const setCurrentCharacter = (id: string) => {
     charsState.set({
       characters,
       isLoaded,
-      characterID: id,
-      currentRevision: char._rev
+      characterID: id
     })
   } else {
     // if we aren't loaded, we should load then change
@@ -59,8 +57,7 @@ export const setCurrentCharacter = (id: string) => {
       charsState.set({
         characters,
         isLoaded: true,
-        characterID: char ? char._id : '',
-        currentRevision: char ? char._rev : ''
+        characterID: char ? char._id : ''
       })
     })
   }
@@ -80,8 +77,7 @@ export const getCharacter = (id: string, cb) => {
   charsState.set({
     characters,
     isLoaded,
-    characterID: id,
-    currentRevision: char._rev
+    characterID: id
   })
 
   return cb(false, true)

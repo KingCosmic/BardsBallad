@@ -13,7 +13,6 @@ export * from './skills'
 export function createCharacter(sys: string): Character {
   return {
     _id: nanoid(),
-    _rev: '',
     system: sys,
     ownerID: '',
     name: 'Aliza CartWight',
@@ -24,7 +23,7 @@ export function createCharacter(sys: string): Character {
     exp: 0,
     avatar: 'https://cdn.discordapp.com/avatars/643624686420492340/9178a7cb490db40ad12eac27f5b4a096.webp',
 
-    languages: ['common'],
+    languages: 'common',
 
     conditions: [],
     actions: [],
@@ -108,7 +107,10 @@ export function createCharacter(sys: string): Character {
     deathsaves: {
       fails: 0,
       success: 0
-    }
+    },
+
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 }
 

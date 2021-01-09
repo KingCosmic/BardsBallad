@@ -1,5 +1,7 @@
 import localforage from 'localforage'
 
+import api from './api'
+
 import { cloneDeep } from 'lodash'
 
 import { nanoid } from 'nanoid'
@@ -11,7 +13,10 @@ import { charsState } from '../state/characters'
 import { Character, Spell, Item, Feat } from '../types'
 
 export function syncCharacters() {
-
+  api.loadCharacters()
+  .then(chars => {
+    saveCharacters(chars)
+  })
 }
 
 export function generateID() {
@@ -26,6 +31,8 @@ export function changeName(name:string): Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.name = name
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -42,6 +49,8 @@ export function changeJob(job: string): Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.job = job
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -58,6 +67,8 @@ export function changeExp(exp: number): Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.exp = exp
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -80,6 +91,8 @@ export function changeHp(hp:HP):Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.hp = hp
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -96,6 +109,8 @@ export function changeAC(ac:number):Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.ac = ac
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -112,6 +127,8 @@ export function changeSpeed(spd:number):Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.speed = spd
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -128,6 +145,8 @@ export function changeInitiative(init:number):Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.initiative = init
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -144,6 +163,8 @@ export function changePP(pp:number):Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.passivePerception = pp
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -160,6 +181,8 @@ export function changeHitDice(hd:string):Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.hitdice = hd
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -176,6 +199,8 @@ export function changeStat(stat:string, value:number):Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       if (char.stats[stat]) char.stats[stat] = value
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -192,6 +217,8 @@ export function addItem(item: Item): Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.items.push(item)
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -212,6 +239,8 @@ export function editItem(updatedItem: Item): Promise<boolean> {
 
         if (item.id === updatedItem.id) {
           char.items[c] = updatedItem
+
+          char.updatedAt = new Date().toISOString();
         }
       }
     }
@@ -230,6 +259,8 @@ export function deleteItem(itemID: string) {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.items = char.items.filter(item => item.id !== itemID)
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -254,6 +285,8 @@ export function addSpell(spell: Spell): Promise<boolean> {
       })
 
       char.spells.push(spell)
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -274,6 +307,8 @@ export function editSpell(updatedSpell: Spell) {
 
           if (spell.id === updatedSpell.id) {
             char.spells[c] = updatedSpell
+
+            char.updatedAt = new Date().toISOString();
           }
         }
       }
@@ -292,6 +327,8 @@ export function deleteSpell(spellID: string) {
   const characters = cloneDeep(state.characters).map(char => {
       if (char._id === id) {
         char.spells = char.spells.filter(spell => spell.id !== spellID)
+
+        char.updatedAt = new Date().toISOString();
       }
 
       return char
@@ -309,6 +346,8 @@ export function addFeat(feat:Feat):Promise<boolean> {
   const characters = cloneDeep(state.characters).map(char => {
     if (char._id === id) {
       char.feats.push(feat)
+
+      char.updatedAt = new Date().toISOString();
     }
 
     return char
@@ -329,6 +368,8 @@ export function editFeat(updatedFeat:Feat) {
 
           if (feat.id === updatedFeat.id) {
             char.feats[c] = updatedFeat
+
+            char.updatedAt = new Date().toISOString();
           }
         }
       }
@@ -347,6 +388,8 @@ export function deleteFeat(featID: string) {
   const characters = cloneDeep(state.characters).map(char => {
       if (char._id === id) {
         char.feats = char.feats.filter(feat => feat.id !== featID)
+
+        char.updatedAt = new Date().toISOString();
       }
 
       return char
@@ -366,8 +409,11 @@ export function toggleSave(save: string, value: boolean) {
     return false
 
   const characters = (cloneDeep(state.characters) as Character[]).map((char) => {
-    if (char._id === id)
+    if (char._id === id) {
       char.savingThrows[save] = value
+
+      char.updatedAt = new Date().toISOString();
+    }
 
     return char
   })
@@ -384,7 +430,11 @@ export async function setSkillProficiency(skill: string, value: number): Promise
   if (!Object.values(SkillNames).includes(skill)) return false
 
   const characters = cloneDeep(state.characters).map(char => {
-    if (char._id === id) char.skills[skill] = value
+    if (char._id === id) {
+      char.skills[skill] = value
+
+      char.updatedAt = new Date().toISOString();
+    }
 
     return char
   })

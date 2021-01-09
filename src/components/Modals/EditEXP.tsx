@@ -85,7 +85,7 @@ function EditEXP(props: Props) {
 
         <Title>Edit Experience</Title>
 
-        <p>{currentLevel.expToNext} for level {currentLevel.level + 1}</p>
+        <p>{defaultValue - currentLevel.expToNext} for level {currentLevel.level + 1}</p>
 
         <Input type='number' defaultValue={defaultValue} onChange={event => setValue((event.target.value as unknown) as number)} />
 
