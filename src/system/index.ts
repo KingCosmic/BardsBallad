@@ -1,7 +1,6 @@
 import { nanoid } from 'nanoid'
 
 import { Character } from '../types'
-import { string } from 'prop-types'
 
 export { getLevel } from './level'
 

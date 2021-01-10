@@ -8,14 +8,12 @@ interface CharState {
   isLoaded: boolean
   characters: Character[]
   characterID: string
-  currentRevision: string
 }
 
 export const charsState = newRidgeState<CharState>({
   isLoaded: false,
   characters: [],
-  characterID: '',
-  currentRevision: ''
+  characterID: ''
 })
 
 export const createChar = (sys: string) => {
