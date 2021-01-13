@@ -20,9 +20,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
         <Layout>
-          <Router>
-            <Creations path="/app/creations" />
-            <Character path="/app/characters/:characterID" />
+          <Router basepath='/app'>
+            <Creations path='/app/creations' />
+            <Character path='/app/characters/:characterID' />
           </Router>
         </Layout>
     </ThemeProvider>
