@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { ThemeProvider } from 'styled-components'
+import theme from '../../theme'
 
 import Container from './Container'
 import SideNav from './SideNav'
@@ -8,11 +10,13 @@ function Layout({ children }) {
   const [isSideNavOpen, setIsSideNavOpen] = useState(false)
 
   return (
-    <Container>
-      {/*<Modals /> */}
-      <SideNav isOpen={isSideNavOpen} setIsOpen={setIsSideNavOpen} />
-      <ViewContainer>{children}</ViewContainer>
-    </Container>
+    <ThemeProvider theme={theme}>
+      <Container>
+        {/*<Modals /> */}
+        <SideNav isOpen={isSideNavOpen} setIsOpen={setIsSideNavOpen} />
+        <ViewContainer>{children}</ViewContainer>
+      </Container>
+    </ThemeProvider>
   )
 }
 

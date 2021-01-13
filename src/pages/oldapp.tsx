@@ -8,7 +8,6 @@ import withAuth from '../components/WithAuth'
 import theme from '../theme'
 
 import Layout from '../components/Layout'
-import Creations from '../components/Creations'
 import Character from '../components/Character'
 
 const Router = styled(R)`
@@ -17,16 +16,16 @@ const Router = styled(R)`
 `
 
 function App() {
-  return (
+  return (<h1>testing</h1>/*
     <ThemeProvider theme={theme}>
         <Layout>
-          <Router basepath='/app'>
+          <Router>
             <Creations path='/app/creations' />
             <Character path='/app/characters/:characterID' />
           </Router>
         </Layout>
     </ThemeProvider>
-  )
+  */)
 }
 
 export default withAuth(App)

@@ -4,9 +4,11 @@ import styled from 'styled-components'
 import { charsState, loadAll, createChar } from '../../state/characters'
 import { syncCharacters } from '../../services/db'
 
-import FloatingButton from '../FloatingButton'
+import Layout from '../../components/Layout'
 
-import Character from '../ListCharacter'
+import FloatingButton from '../../components/FloatingButton'
+
+import Character from '../../components/ListCharacter'
 
 const Container = styled.div`
   height: 100%;
@@ -34,15 +36,17 @@ function Creations(props: Props) {
   })
 
   return (
-    <Container>
-      <CreationsList>
-        {state.characters.map(character => (
-          <Character key={character._id}  {...character} />
-        ))}
-      </CreationsList>
+    <Layout>
+      <Container>
+        <CreationsList>
+          {state.characters.map(character => (
+            <Character key={character._id}  {...character} />
+          ))}
+        </CreationsList>
 
-      <FloatingButton onClick={() => createChar('dnd:5e')}>&#43;</FloatingButton>
-    </Container>
+        <FloatingButton onClick={() => createChar('dnd:5e')}>&#43;</FloatingButton>
+      </Container>
+    </Layout>
   )
 }
 

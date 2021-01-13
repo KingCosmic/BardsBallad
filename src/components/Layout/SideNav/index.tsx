@@ -1,14 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { navigate } from 'gatsby'
 
 import Container from './Container'
 import MenuItem from './MenuItem'
 
+import withAuth from '../../WithAuth'
+
 import { Settings } from '@styled-icons/ionicons-outline/Settings'
 import { Group } from '@styled-icons/boxicons-solid/Group'
 
 
-function SideNav() {
+type Props = {
+  isOpen:boolean,
+  setIsOpen(open:boolean):void
+}
+
+function SideNav(props:Props) {
   return (
     <Container>
       <MenuItem>
@@ -22,4 +29,4 @@ function SideNav() {
   )
 }
 
-export default SideNav
+export default withAuth(SideNav)
