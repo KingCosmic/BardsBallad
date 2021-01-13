@@ -40,11 +40,11 @@ function Creations(props: Props) {
       <Container>
         <CreationsList>
           {state.characters.map(character => (
-            <Character key={character._id}  {...character} />
+            <Character key={character.id}  {...character} />
           ))}
         </CreationsList>
 
-        <FloatingButton onClick={() => createChar('dnd:5e')}>&#43;</FloatingButton>
+        <FloatingButton onClick={() => createChar('DND5E')}>&#43;</FloatingButton>
       </Container>
     </Layout>
   )

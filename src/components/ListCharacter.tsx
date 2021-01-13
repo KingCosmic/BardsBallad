@@ -46,16 +46,16 @@ type Props = {
   name: string
   job: string
   exp: number
-  _id: string
+  id: string
 }
 
 function ListCharacter(props: Props) {
-  const { name, job, exp, _id } = props
+  const { name, job, exp, id } = props
 
   return (
-    <Container key={_id} onClick={() => navigate(`/app/characters/${_id}`)}>
+    <Container key={id} onClick={() => navigate(`/app/characters/${id}`)}>
       <OptionsButton onClick={(e) => {
-        deleteCharacter(_id)
+        deleteCharacter(id)
         e.stopPropagation()
       }}>
         <Delete width='1em' height='1em' />

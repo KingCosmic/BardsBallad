@@ -32,7 +32,7 @@ export function changeName(name:string): Promise<boolean> {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.name = name
 
       char.updatedAt = new Date().toISOString();
@@ -50,7 +50,7 @@ export function changeJob(job: string): Promise<boolean> {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.job = job
 
       char.updatedAt = new Date().toISOString();
@@ -68,7 +68,7 @@ export function changeExp(exp: number): Promise<boolean> {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.exp = exp
 
       char.updatedAt = new Date().toISOString();
@@ -92,7 +92,7 @@ export function changeHp(hp:HP):Promise<boolean> {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.hp = hp
 
       char.updatedAt = new Date().toISOString();
@@ -110,7 +110,7 @@ export function changeAC(ac:number):Promise<boolean> {
   const id = state.characterID;
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.ac = ac
 
       char.updatedAt = new Date().toISOString();
@@ -128,7 +128,7 @@ export function changeSpeed(spd:number):Promise<boolean> {
   const id = state.characterID;
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.speed = spd
 
       char.updatedAt = new Date().toISOString();
@@ -146,7 +146,7 @@ export function changeInitiative(init:number):Promise<boolean> {
   const id = state.characterID;
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.initiative = init
 
       char.updatedAt = new Date().toISOString();
@@ -164,7 +164,7 @@ export function changePP(pp:number):Promise<boolean> {
   const id = state.characterID;
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.passivePerception = pp
 
       char.updatedAt = new Date().toISOString();
@@ -182,7 +182,7 @@ export function changeHitDice(hd:string):Promise<boolean> {
   const id = state.characterID;
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.hitdice = hd
 
       char.updatedAt = new Date().toISOString();
@@ -200,7 +200,7 @@ export function changeStat(stat:string, value:number):Promise<boolean> {
   const id = state.characterID;
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       if (char.stats[stat]) char.stats[stat] = value
 
       char.updatedAt = new Date().toISOString();
@@ -218,7 +218,7 @@ export function addItem(item: Item): Promise<boolean> {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.items.push(item)
 
       char.updatedAt = new Date().toISOString();
@@ -236,7 +236,7 @@ export function editItem(updatedItem: Item): Promise<boolean> {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       for (let c = 0; c < char.items.length; c++) {
         let item = char.items[c]
 
@@ -260,7 +260,7 @@ export function deleteItem(itemID: string) {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.items = char.items.filter(item => item.id !== itemID)
 
       char.updatedAt = new Date().toISOString();
@@ -278,7 +278,7 @@ export function addSpell(spell: Spell): Promise<boolean> {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       const spellSlot = char.spellSlots.find((slot) => slot.level === spell.level)
 
       if (!spellSlot) char.spellSlots.push({
@@ -304,7 +304,7 @@ export function editSpell(updatedSpell: Spell) {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-      if (char._id === id) {
+      if (char.id === id) {
         for (let c = 0; c < char.spells.length; c++) {
           let spell = char.spells[c]
 
@@ -328,7 +328,7 @@ export function deleteSpell(spellID: string) {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-      if (char._id === id) {
+      if (char.id === id) {
         char.spells = char.spells.filter(spell => spell.id !== spellID)
 
         char.updatedAt = new Date().toISOString();
@@ -347,7 +347,7 @@ export function addFeat(feat:Feat):Promise<boolean> {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.feats.push(feat)
 
       char.updatedAt = new Date().toISOString();
@@ -365,7 +365,7 @@ export function editFeat(updatedFeat:Feat) {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-      if (char._id === id) {
+      if (char.id === id) {
         for (let c = 0; c < char.feats.length; c++) {
           let feat = char.feats[c]
 
@@ -389,7 +389,7 @@ export function deleteFeat(featID: string) {
   const id = state.characterID
 
   const characters = state.characters.map(char => {
-      if (char._id === id) {
+      if (char.id === id) {
         char.feats = char.feats.filter(feat => feat.id !== featID)
 
         char.updatedAt = new Date().toISOString();
@@ -412,7 +412,7 @@ export function toggleSave(save: string, value: boolean) {
     return false
 
   const characters = state.characters.map((char) => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.savingThrows[save] = value
 
       char.updatedAt = new Date().toISOString();
@@ -433,7 +433,7 @@ export async function setSkillProficiency(skill: string, value: number): Promise
   if (!Object.values(SkillNames).includes(skill)) return false
 
   const characters = state.characters.map(char => {
-    if (char._id === id) {
+    if (char.id === id) {
       char.skills[skill] = value
 
       char.updatedAt = new Date().toISOString();
@@ -450,20 +450,19 @@ export function createCharacter(sys: string): Promise<boolean> {
 
   var newChar = createChar(sys)
 
-  console.log(newChar._id)
-
-  return saveCharacters([...state.characters, newChar], newChar._id, 'new')
+  return saveCharacters([...state.characters, newChar], newChar.id, 'new')
 }
 
 export function deleteCharacter(id: string): Promise<boolean> {
   const state = charsState.get()
 
-  return saveCharacters(state.characters.filter(char => char._id !== id), id, 'removed')
+  return saveCharacters(state.characters.filter(char => char.id !== id), id, 'removed')
 }
 
 export function getCharacters():Promise<Character[]> {
   return new Promise((resolve, reject) => {
     localforage.getItem('characters')
+    // @ts-ignore
     .then((characters:Character[]) => resolve(characters || []))
     .catch(reject)
   })
@@ -471,6 +470,7 @@ export function getCharacters():Promise<Character[]> {
 
 export function getCharacter(id:string):Promise<Character[]> {
   return new Promise((resolve, reject) => {
+    // @ts-ignore
     localforage.getItem('characters').then((characters:Character[]) => {
       const char = characters.filter(c => c._id === id)
       resolve(char)
@@ -517,8 +517,6 @@ export function updatedSyncData(id:string, type:string):Promise<boolean> {
 
     // we're removing a character
     else if (type === 'removed') {
-      console.log('new', syncData.new)
-      console.log(syncData.new.includes(id))
       // if this character was made before we synced, just remove it from the sync data.
       if (syncData.new.includes(id)) {
         syncData.new = syncData.new.filter(newID => newID != id);

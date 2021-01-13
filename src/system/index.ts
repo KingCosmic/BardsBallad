@@ -11,7 +11,7 @@ export * from './skills'
 // TODO: Import auth and use user id in creation
 export function createCharacter(sys: string): Character {
   return {
-    _id: nanoid(),
+    id: nanoid(),
     system: sys,
     ownerID: '',
     name: 'Aliza CartWight',
