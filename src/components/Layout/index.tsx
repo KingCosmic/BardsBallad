@@ -6,6 +6,8 @@ import Container from './Container'
 import SideNav from './SideNav'
 import ViewContainer from './ViewContainer'
 
+import withAuth from '../WithAuth'
+
 function Layout({ children }) {
   const [isSideNavOpen, setIsSideNavOpen] = useState(false)
 
@@ -20,4 +22,4 @@ function Layout({ children }) {
   )
 }
 
-export default Layout
+export default withAuth(Layout)

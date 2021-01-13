@@ -4,8 +4,6 @@ import { navigate } from 'gatsby'
 import Container from './Container'
 import MenuItem from './MenuItem'
 
-import withAuth from '../../WithAuth'
-
 import { Settings } from '@styled-icons/ionicons-outline/Settings'
 import { Group } from '@styled-icons/boxicons-solid/Group'
 
@@ -29,4 +27,4 @@ function SideNav(props:Props) {
   )
 }
 
-export default withAuth(SideNav)
+export default SideNav
