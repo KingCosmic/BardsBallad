@@ -8,8 +8,7 @@ class ApiService {
   // Initializing important variables
   constructor() {
     // API server url
-    //this.domain = 'https://api-ftdzf.ondigitalocean.app'
-    this.domain = 'http://localhost:4000'
+    this.domain = 'https://api-ftdzf.ondigitalocean.app'
 
     this.fetch = this.fetch.bind(this)
     this.loadCharacters = this.loadCharacters.bind(this)
@@ -28,7 +27,7 @@ class ApiService {
   }
 
   syncCharacters(characters: Character[]) {
-    return this.fetch(`${this.domain}/characters/create`, {
+    return this.fetch(`${this.domain}/characters/sync`, {
       method: 'POST'
     })
   }
@@ -80,6 +79,8 @@ class ApiService {
   }
 
   decodeToken(token?:string):User {
+    if (typeof window === 'undefined') return;
+
     token = (token !== undefined) ? token : this.getToken()
     return decode(token)
   }

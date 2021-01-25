@@ -1,6 +1,5 @@
 import React from "react"
 
-import Layout from "../components/Layout"
 import SEO from "../components/seo"
 
 // TODO: add in the theme provider and everything
@@ -9,11 +8,11 @@ import SEO from "../components/seo"
 // with routes leading to 404)
 
 const NotFoundPage = () => (
-  <Layout>
+  <div>
     <SEO title="404: Not found" />
     <h1>NOT FOUND</h1>
     <p>You just hit a route that doesn&#39;t exist... the sadness.</p>
-  </Layout>
+  </div>
 )
 
 export default NotFoundPage
