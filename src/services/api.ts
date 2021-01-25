@@ -1,6 +1,6 @@
 import decode from 'jwt-decode'
 
-import { Character } from '../types'
+import { Character, User } from '../types'
 
 class ApiService {
   domain: string
@@ -8,7 +8,8 @@ class ApiService {
   // Initializing important variables
   constructor() {
     // API server url
-    this.domain = 'https://api-ftdzf.ondigitalocean.app'
+    //this.domain = 'https://api-ftdzf.ondigitalocean.app'
+    this.domain = 'http://localhost:4000'
 
     this.fetch = this.fetch.bind(this)
     this.loadCharacters = this.loadCharacters.bind(this)
@@ -54,7 +55,7 @@ class ApiService {
       })
     }).then(res => {
       this.setToken(res.token) // Setting the token in localStorage
-      return Promise.resolve(res);
+      return Promise.resolve(this.decodeToken(res.token));
     })
   }
 
@@ -68,7 +69,7 @@ class ApiService {
       })
     }).then(res => {
       this.setToken(res.token) // Setting the token in localStorage
-      return Promise.resolve(res);
+      return Promise.resolve(this.decodeToken(res.token));
     })
   }
 
@@ -78,11 +79,14 @@ class ApiService {
     return !!token && !this.isTokenExpired(token) // handwaiving here
   }
 
-  isTokenExpired(token: string) {
-    try {
-      const decoded = decode(token)
+  decodeToken(token?:string):User {
+    token = (token !== undefined) ? token : this.getToken()
+    return decode(token)
+  }
 
-      console.log(decoded)
+  isTokenExpired(token:string) {
+    try {
+      const decoded = this.decodeToken(token)
 
       // @ts-ignore
       return (decoded.exp > Date.now() / 1000)

@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import { charsState, loadAll, createChar } from '../../state/characters'
-import { syncCharacters } from '../../services/db'
+import { syncCharacters, deleteCharacter } from '../../services/db'
 
 import Layout from '../../components/Layout'
+
+import DeleteConfirmation from '../../components/Modals/DeleteConfirmation'
 
 import FloatingButton from '../../components/FloatingButton'
 
@@ -28,6 +30,9 @@ type Props = {
 
 function Creations(props: Props) {
   let [state] = charsState.use()
+  
+  const [id, setID] = useState('')
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (!state.isLoaded) loadAll()
@@ -37,10 +42,16 @@ function Creations(props: Props) {
 
   return (
     <Layout>
+      <DeleteConfirmation id={id} chars={state.characters} isOpen={deleting} setIsOpen={setDeleting} onConfirm={() => deleteCharacter(id)} />
       <Container>
         <CreationsList>
           {state.characters.map(character => (
-            <Character key={character.id}  {...character} />
+            <Character key={character._id}  {...character} onDelete={id => {
+              // set the id of the character we're deleting.
+              setID(id)
+              // tell the modal to open.
+              setDeleting(true)
+            }} />
           ))}
         </CreationsList>
 

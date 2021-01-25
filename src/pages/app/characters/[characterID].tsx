@@ -49,11 +49,11 @@ function Character(props: Props) {
 
   const [{ characters, characterID }] = charsState.use()
 
-  const character = characters.find(char => char.id === characterID)
+  const character = characters.find(char => char._id === characterID)
 
   useEffect(() => {
     setCurrentCharacter(props.params.characterID)
-  }, [])
+  }, [props.params.characterID])
 
   if (!character) return null
 

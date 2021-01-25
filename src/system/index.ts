@@ -1,5 +1,7 @@
 import { nanoid } from 'nanoid'
 
+import { authState } from '../state/auth'
+
 import { Character } from '../types'
 
 export { getLevel } from './level'
@@ -10,10 +12,12 @@ export * from './skills'
 
 // TODO: Import auth and use user id in creation
 export function createCharacter(sys: string): Character {
+  const { user } = authState.useValue()
+
   return {
-    id: nanoid(),
+    _id: nanoid(),
+    ownerID: user.id,
     system: sys,
-    ownerID: '',
     name: 'Aliza CartWight',
     race: 'Half-Elf',
     job: 'Sorcerer',

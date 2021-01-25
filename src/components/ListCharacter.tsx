@@ -6,7 +6,6 @@ import { navigate } from 'gatsby'
 import { Delete } from './Icons'
 
 import { getLevel } from '../system'
-import { deleteCharacter } from '../services/db'
 
 const Container = styled.div`
   position: relative;
@@ -43,19 +42,20 @@ const Name = styled.p`
 `
 
 type Props = {
-  name: string
-  job: string
-  exp: number
-  id: string
+  name:string,
+  job:string,
+  exp:number,
+  _id:string,
+  onDelete(id:string):void
 }
 
 function ListCharacter(props: Props) {
-  const { name, job, exp, id } = props
+  const { name, job, exp, _id, onDelete } = props
 
   return (
-    <Container key={id} onClick={() => navigate(`/app/characters/${id}`)}>
+    <Container key={_id} onClick={() => navigate(`/app/characters/${_id}`)}>
       <OptionsButton onClick={(e) => {
-        deleteCharacter(id)
+        onDelete(_id)
         e.stopPropagation()
       }}>
         <Delete width='1em' height='1em' />

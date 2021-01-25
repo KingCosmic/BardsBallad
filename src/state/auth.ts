@@ -2,28 +2,34 @@ import { newRidgeState } from 'react-ridge-state'
 
 import api from '../services/api'
 
+import { User } from '../types'
+
 interface AuthState {
-  isLoggedIn: boolean
+  isLoggedIn:boolean,
+  user?:User
 }
 
 export const authState = newRidgeState<AuthState>({
-  isLoggedIn: api.isLoggedIn()
+  isLoggedIn: api.isLoggedIn(),
+  user: api.decodeToken()
 })
 
 // Wrap any Firebase methods we want to use making sure ...
 // ... to save the user to state.
 export function login(email: string, password: string) {
-  return api.login(email, password).then(() => {
+  return api.login(email, password).then(user => {
     authState.set({
-      isLoggedIn: true
+      isLoggedIn: true,
+      user
     })
   })
 }
 
 export function signup(email: string, password: string) {
-  return api.signup(email, password).then(() => {
+  return api.signup(email, password).then(user => {
     authState.set({
-      isLoggedIn: true
+      isLoggedIn: true,
+      user
     })
   })
 }
@@ -31,7 +37,8 @@ export function signup(email: string, password: string) {
 export function signout() {
   return api.logout().then(() => {
     authState.set({
-      isLoggedIn: false
+      isLoggedIn: false,
+      user: undefined
     })
   })
 }

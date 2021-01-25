@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import { Character } from '../../../types'
-
+import EditingInfo from './Editing'
+import Property from './Property'
 import Level from './Level'
 
-import Property from './Property'
-
+import { Character } from '../../../types'
 import { getLevel } from '../../../system'
 
 const Avatar = styled.div<{ src: string }>`
@@ -23,9 +22,9 @@ const Avatar = styled.div<{ src: string }>`
 
 const TopContainer = styled.div`
   display: flex;
-  padding-bottom: 20px;
   width: 100%;
-  align-items: center;
+  align-items: flex-end;
+  margin-bottom: 20px;
 `
 
 const Container = styled.div`
@@ -58,6 +57,19 @@ const Row = styled.div`
   padding-top: 0px;
 `
 
+const EditButton = styled.p`
+  color: ${props => props.theme.text};
+  background-color: ${props => props.theme.green};
+  position: fixed;
+  right: calc(50% + 60px);
+  bottom: 20px;
+  font-size: 2em;
+  padding: 7px 19px;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+`
+
 type Props = {
   char: Character
 }
@@ -65,27 +77,41 @@ type Props = {
 function InfoTab({ char }: Props) {
   const { name, avatar, exp, job, race, background, alignment, backstory } = char;
 
+  const [editing, setIsEditing] = useState(true)
+
   return (
     <Container>
-      <TopContainer>
-        <Avatar src={avatar}><Level>{getLevel(exp).level}</Level></Avatar>
-        <BottomContainer>
-          <Title>{name}</Title>
-          <SubValue>{job}</SubValue>
-        </BottomContainer>
-      </TopContainer>
+      {
+        editing ?
 
-      <BottomContainer>
-        <Row>
-          <Property title='Background' value={background} />
-          <Property title='Race' value={race} />
-        </Row>
-        <Row>
-          <Property title='Alignment' value={alignment} />
-          <Property title='Age' value='26' />
-        </Row>
-        <Property title='Backstory' value={backstory} />
-      </BottomContainer>
+          <EditingInfo data={char} />
+          
+          : (
+          <>
+            <TopContainer>
+              <Avatar src={avatar}><Level>{getLevel(exp).level}</Level></Avatar>
+              <BottomContainer>
+                <Title>{name}</Title>
+                <SubValue>{job}</SubValue>
+              </BottomContainer>
+            </TopContainer>
+
+            <BottomContainer>
+              <Row>
+                <Property title='Background' value={background} />
+                <Property title='Race' value={race} />
+              </Row>
+              <Row>
+                <Property title='Alignment' value={alignment} />
+                <Property title='Age' value='26' />
+              </Row>
+              <Property title='Backstory' value={backstory} />
+            </BottomContainer>
+
+            <EditButton onClick={() => setIsEditing(true)}>&#43;</EditButton>
+          </>
+        )
+      }
     </Container>
   )
 }
