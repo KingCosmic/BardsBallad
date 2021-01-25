@@ -11,7 +11,7 @@ interface AuthState {
 
 export const authState = newRidgeState<AuthState>({
   isLoggedIn: api.isLoggedIn(),
-  user: api.decodeToken()
+  user: api.getProfile()
 })
 
 // Wrap any Firebase methods we want to use making sure ...

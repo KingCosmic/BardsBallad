@@ -78,10 +78,7 @@ class ApiService {
     return !!token && !this.isTokenExpired(token) // handwaiving here
   }
 
-  decodeToken(token?:string):User {
-    if (typeof window === 'undefined') return;
-
-    token = (token !== undefined) ? token : this.getToken()
+  decodeToken(token:string):User {
     return decode(token)
   }
 
@@ -117,8 +114,11 @@ class ApiService {
   }
 
   getProfile() {
-    // Using jwt-decode npm package to decode the token
-    return decode(this.getToken())
+    try {
+      return this.decodeToken(this.getToken())
+    } catch (err) {
+      return undefined
+    }
   }
 
 
