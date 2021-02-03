@@ -1,10 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import Select from '../Select'
 import TextArea from 'react-textarea-autosize'
+import Property from './shared/Property'
 
-import { spellLevels, schoolOptions, boolOptions } from '../../system/constants'
+import {
+  spellLevels, schoolOptions, boolOptions
+} from '../../system/constants'
 
 const DesktopHeader = styled.div`
   display: flex;
@@ -54,48 +56,6 @@ const Title = styled.p`
   color: ${props => props.theme.gold};
   font-size: 0.9em;
 `
-
-const PropertyContainer = styled.div<{ full: boolean }>`
-  display: flex;
-  flex-direction: column;
-  margin: 5px 0;
-  width: ${props => (props.full ? '100%' : '50%')};
-`
-
-const Property = props => {
-  const {
-    title,
-    value,
-    placeholder,
-    type,
-    options,
-    multi = false,
-    full = false,
-    callback,
-  } = props
-
-  return (
-    <PropertyContainer full={full}>
-      <Title>{title}</Title>
-
-      {type && type === 'select' ? (
-        <Select
-          value={value}
-          options={options}
-          multi={multi}
-          onChange={callback}
-        />
-      ) : (
-        <Input
-          type={type ? type : 'text'}
-          placeholder={placeholder}
-          value={value}
-          onChange={({ target: { value } }) => callback(value)}
-        />
-      )}
-    </PropertyContainer>
-  )
-}
 
 const EditSpell = props => {
   const {

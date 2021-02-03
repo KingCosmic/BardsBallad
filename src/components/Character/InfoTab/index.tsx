@@ -7,6 +7,7 @@ import Level from './Level'
 
 import { Character } from '../../../types'
 import { getLevel } from '../../../system'
+import { updateInfo } from '../../../services/db'
 
 const Avatar = styled.div<{ src: string }>`
   position: relative;
@@ -75,16 +76,19 @@ type Props = {
 }
 
 function InfoTab({ char }: Props) {
-  const { name, avatar, exp, job, race, background, alignment, backstory } = char;
+  const { name, avatar, exp, job, race, background, alignment, backstory, age } = char;
 
-  const [editing, setIsEditing] = useState(true)
+  const [editing, setIsEditing] = useState(false)
 
   return (
     <Container>
       {
         editing ?
 
-          <EditingInfo data={char} />
+          <EditingInfo data={char} saveData={info => {
+            updateInfo(info)
+            setIsEditing(false)
+          }} />
           
           : (
           <>
@@ -103,7 +107,7 @@ function InfoTab({ char }: Props) {
               </Row>
               <Row>
                 <Property title='Alignment' value={alignment} />
-                <Property title='Age' value='26' />
+                <Property title='Age' value={age} />
               </Row>
               <Property title='Backstory' value={backstory} />
             </BottomContainer>

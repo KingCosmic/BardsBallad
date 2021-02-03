@@ -18,7 +18,7 @@ const PropertyContainer = styled.div`
 
 type Props = {
   title: string,
-  value: string
+  value: string | number
 }
 
 function Property({ title, value }: Props) {

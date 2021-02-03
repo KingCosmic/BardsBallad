@@ -86,6 +86,7 @@ export interface Character {
 
   name: string // name of this character
   race: string // race of this character
+  age:number // age of this character
   job: string // what is this characters class (class is restricted so we use job instead)
   background: string // this characters background
   alignment: string // characters alignment
@@ -181,6 +182,16 @@ export interface Character {
 
   createdAt:string,
   updatedAt:string
+}
+
+export interface InfoObject {
+  name:string,
+  job:string,
+  background:string,
+  race:string,
+  alignment:string,
+  age:number,
+  backstory:string
 }
 
 export interface User {

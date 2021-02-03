@@ -10,7 +10,7 @@ import { createCharacter as createChar, SkillNames } from '../system'
 
 import { charsState } from '../state/characters'
 
-import { Character, Spell, Item, Feat } from '../types'
+import { Character, Spell, Item, Feat, InfoObject } from '../types'
 import { syncState } from '../state/sync'
 
 export function syncCharacters() {
@@ -24,6 +24,24 @@ export function syncCharacters() {
 
 export function generateID() {
   return nanoid(23)
+}
+
+export function updateInfo(info:InfoObject):Promise<boolean> {
+  const state = charsState.get()
+
+  const id = state.characterID
+
+  const characters = state.characters.map(char => {
+    if (char._id === id) {
+      char = { ...char, ...info }
+
+      char.updatedAt = new Date().toISOString();
+    }
+
+    return cloneDeep(char)
+  })
+
+  return saveCharacters(characters, id, 'modified')
 }
 
 export function changeName(name:string): Promise<boolean> {

@@ -4,8 +4,6 @@ import styled from 'styled-components'
 import Container from './Container'
 import TopRow from './TopRow'
 
-import Name from './Name'
-import Class from './Class'
 import HP from './HP'
 import EXP from './EXP'
 import ArmorClass from './ArmorClass'
@@ -30,8 +28,6 @@ const BottomContainer = styled.div`
 function SideInfo(props) {
   const { char } = props
   const {
-    name,
-    job,
     hp,
     exp,
     stats,
@@ -47,9 +43,6 @@ function SideInfo(props) {
       <TopRow />
 
       <BottomContainer>
-        <Name name={name} />
-        <Class job={job} />
-
         <HP hp={hp} />
         <EXP current={exp} />
 
