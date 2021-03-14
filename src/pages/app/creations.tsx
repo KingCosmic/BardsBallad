@@ -28,7 +28,7 @@ type Props = {
   path: string
 }
 
-function Creations(props: Props) {
+function Creations(props:Props) {
   let [state] = charsState.use()
   
   const [id, setID] = useState('')

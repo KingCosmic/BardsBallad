@@ -12,7 +12,7 @@ export * from './skills'
 
 // TODO: Import auth and use user id in creation
 export function createCharacter(sys: string): Character {
-  const { user } = authState.useValue()
+  const { user } = authState.get()
 
   return {
     _id: nanoid(),
@@ -21,6 +21,7 @@ export function createCharacter(sys: string): Character {
     name: 'Aliza CartWight',
     race: 'Half-Elf',
     job: 'Sorcerer',
+    age: 20,
     background: 'Farmhand',
     alignment: 'Neutral/Good',
     exp: 0,

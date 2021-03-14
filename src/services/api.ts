@@ -148,6 +148,8 @@ class ApiService {
     if (response.status >= 200 && response.status < 300) { // Success status lies between 200 to 300
       return response
     } else {
+      console.log(response)
+      
       var error = new Error(response.toString())
       throw error
     }
