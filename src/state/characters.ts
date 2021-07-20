@@ -3,6 +3,7 @@ import { newRidgeState } from 'react-ridge-state'
 import { getCharacters, createCharacter } from '../services/db'
 
 import { Character } from '../types'
+import { updateCharacters } from './sync'
 
 interface CharState {
   isLoaded:boolean
@@ -27,6 +28,9 @@ export const loadAll = () => {
       isLoaded: true,
       characterID: ''
     })
+
+    if (characters.length === 0) return;
+    updateCharacters(characters)
   })
 }
 

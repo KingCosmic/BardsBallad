@@ -79,6 +79,8 @@ export interface Slot {
 }
 
 export interface Character {
+  version:string // the current version number of characters.
+
   _id:string // id for the character.
 
   system: string // which system is this character for?

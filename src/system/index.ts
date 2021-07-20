@@ -10,11 +10,12 @@ export * from './constants'
 
 export * from './skills'
 
-// TODO: Import auth and use user id in creation
 export function createCharacter(sys: string): Character {
   const { user } = authState.get()
 
   return {
+    version: '1.0.0',
+
     _id: nanoid(),
     ownerID: user.id,
     system: sys,

@@ -12,14 +12,32 @@ import { charsState } from '../state/characters'
 
 import { Character, Spell, Item, Feat, InfoObject } from '../types'
 import { syncState } from '../state/sync'
+import { convertCharacters } from '../system/converters'
 
-export function syncCharacters() {
-  api.loadCharacters()
-  .then(chars => {
-    saveCharacters(chars).then(() => {
-      localStorage.setItem('synced', 'true')
+// TODO: change this to sync the local characters with the remote ones.
+// currently it just loads the remote ones to local storage.
+export async function syncCharacters(remote:boolean) {
+  const sync_data:SyncData = await localforage.getItem('sync_data');
+
+  
+
+  // are we syncing remotely? or are we just pulling the character data (first open application or not.)
+  if (remote) {
+    api.syncCharacters(syncState.get())
+    .then(chars => {
+      // if characters are undefined it means our sync didnt have any data so just pretend it didnt happen.
+      if (chars !== undefined) {
+        saveCharacters(chars)
+      }
     })
-  })
+  } else {
+    api.loadCharacters()
+    .then(chars => {
+      convertCharacters(chars).then(() => {
+        localStorage.setItem('synced', 'true')
+      })
+    })
+  }
 }
 
 export function generateID() {
@@ -44,7 +62,7 @@ export function updateInfo(info:InfoObject):Promise<boolean> {
   return saveCharacters(characters, id, 'modified')
 }
 
-export function changeName(name:string): Promise<boolean> {
+export function changeName(name:string):Promise<boolean> {
   const state = charsState.get()
 
   const id = state.characterID
@@ -509,37 +527,51 @@ export function saveCharacters(chars:Character[], id?:string, type?:string):Prom
       }, () => {
         if (id === undefined) return resolve(true);
 
-        updatedSyncData(id, type)
+        updateSyncData([{
+          id, type
+        }])
         .then(resolve)
       })
     })
   })
 }
 
+type SyncData = {
+  id:string,
+  type:string
+}
+
 // this function reduces code duplication,
-export function updatedSyncData(id:string, type:string):Promise<boolean> {
+export function updateSyncData(data:Array<SyncData>):Promise<boolean> {
   return new Promise((resolve) => {
     var syncData = syncState.get();
 
-    // adding a character.
-    if (type === 'new') {
-      // if we somehow already have this id, don't worry about it
-      if (!syncData.new.includes(id)) syncData.new.push(id);
-    }
+    for (let i = 0; i < data.length; i++) {
+      const { type, id } = data[i];
 
-    // we're changing a character
-    else if (type === 'modified') {
-      // don't add it if it already exists
-      if (!syncData.modified.includes(id)) syncData.modified.push(id);
-    }
+      // adding a character.
+      if (type === 'new') {
+        // if we somehow already have this id, don't worry about it
+        if (!syncData.created.includes(id)) syncData.created.push(id);
+      }
 
-    // we're removing a character
-    else if (type === 'removed') {
-      // if this character was made before we synced, just remove it from the sync data.
-      if (syncData.new.includes(id)) {
-        syncData.new = syncData.new.filter(newID => newID != id);
-      } else if (!syncData.removed.includes(id)) {
-        syncData.removed.push(id);
+      // we're changing a character
+      else if (type === 'modified') {
+        // don't add it if it already exists
+        if (!syncData.updated.includes(id)) syncData.updated.push(id);
+      }
+
+      // we're removing a character
+      else if (type === 'removed') {
+        // if this character was made before we synced, just remove it from the sync data.
+        if (syncData.created.includes(id)) {
+          syncData.created = syncData.created.filter(newID => newID != id);
+        }
+        
+        // otherwise we need to add it to the removed array if it isn't already.
+        else if (!syncData.deleted.includes(id)) {
+          syncData.deleted.push(id);
+        }
       }
     }
 

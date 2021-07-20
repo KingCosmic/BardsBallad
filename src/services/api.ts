@@ -1,5 +1,6 @@
 import decode from 'jwt-decode'
 
+import { SyncState } from '../state/sync'
 import { Character, User } from '../types'
 
 class ApiService {
@@ -26,9 +27,14 @@ class ApiService {
     })
   }
 
-  syncCharacters(characters: Character[]) {
+  syncCharacters(syncData:SyncState) {
+    // check our data to make sure we arent trying to sync nothing.
+    if (syncData.created.length === 0 && syncData.updated.length === 0 && syncData.deleted.length === 0) return Promise.resolve(undefined);
+
+
     return this.fetch(`${this.domain}/characters/sync`, {
-      method: 'POST'
+      method: 'POST',
+      body: JSON.stringify(syncData)
     })
   }
 

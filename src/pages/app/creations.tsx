@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { charsState, loadAll, createChar } from '../../state/characters'
-import { syncCharacters, deleteCharacter } from '../../services/db'
-
+import DeleteConfirmation from '../../components/Modals/DeleteConfirmation'
+import FloatingButton from '../../components/FloatingButton'
+import Character from '../../components/ListCharacter'
+import SyncIssues from '../../components/Modals/Sync'
 import Layout from '../../components/Layout'
 
-import DeleteConfirmation from '../../components/Modals/DeleteConfirmation'
-
-import FloatingButton from '../../components/FloatingButton'
-
-import Character from '../../components/ListCharacter'
+import { charsState, loadAll, createChar } from '../../state/characters'
+import { syncCharacters, deleteCharacter } from '../../services/db'
 
 const Container = styled.div`
   height: 100%;
@@ -37,12 +35,13 @@ function Creations(props:Props) {
   useEffect(() => {
     if (!state.isLoaded) loadAll()
 
-    if (!localStorage.getItem('synced')) syncCharacters()
+    if (!localStorage.getItem('synced')) syncCharacters(false)
   })
 
   return (
     <Layout>
       <DeleteConfirmation id={id} chars={state.characters} isOpen={deleting} setIsOpen={setDeleting} onConfirm={() => deleteCharacter(id)} />
+      <SyncIssues />
       <Container>
         <CreationsList>
           {state.characters.map(character => (
