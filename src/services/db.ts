@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid'
 
 import { createCharacter as createChar, SkillNames } from '../system'
 
-import { charsState } from '../state/characters'
+import { charsState, loadAll } from '../state/characters'
 
 import { Character, Spell, Item, Feat, InfoObject } from '../types'
 import { syncState } from '../state/sync'
@@ -16,14 +16,13 @@ import { convertCharacters } from '../system/converters'
 
 // TODO: change this to sync the local characters with the remote ones.
 // currently it just loads the remote ones to local storage.
-export async function syncCharacters(remote:boolean) {
-  const sync_data:SyncData = await localforage.getItem('sync_data');
-
-  
-
+export function syncCharacters(remote:boolean) {
   // are we syncing remotely? or are we just pulling the character data (first open application or not.)
+  const charState = charsState.get();
+  const sState = syncState.get();
+
   if (remote) {
-    api.syncCharacters(syncState.get())
+    api.syncCharacters(sState, charState.characters)
     .then(chars => {
       // if characters are undefined it means our sync didnt have any data so just pretend it didnt happen.
       if (chars !== undefined) {
@@ -31,9 +30,49 @@ export async function syncCharacters(remote:boolean) {
       }
     })
   } else {
+
     api.loadCharacters()
-    .then(chars => {
-      convertCharacters(chars).then(() => {
+    .then(async chars => {
+      // grab our local characters
+      let localChars = charState.characters;
+
+      // if we haven't loaded the local characters then laod em.
+      if (!charState.isLoaded) {
+        localChars = await loadAll()
+      }
+      // filter the remote characters by updatedAt field
+      let filteredChars:Character[] = chars.filter((c:Character) => {
+        // keep remote if we never deleted it client side.
+        let keepRemote = sState.deleted.includes(c._id) ? false : true;
+        let index = localChars.findIndex((lc) => {
+          if (c._id === lc._id && keepRemote) {
+            // calculate the time they was updatedAt
+            var rTime = new Date(c.updatedAt).getTime();
+            var lTime = new Date(lc.updatedAt).getTime();
+
+            // check the difference in times.
+            var time = rTime - lTime;
+
+            // if the time is below zero that means the local version was changed after the remote one.
+            if (time > 0) keepRemote = false;
+
+            // return true so we get this index.
+            return true;
+          }
+
+          // return false so we can find the index.
+          return false;
+        })
+
+        // if we're keeping the remote character remove the local one.
+        if (keepRemote && index !== -1) localChars.splice(index, 1);
+
+        // return for the filter.
+        return keepRemote;
+      })
+
+      // run our characters through a converter and then update our local state.
+      convertCharacters(filteredChars.concat(localChars)).then(() => {
         localStorage.setItem('synced', 'true')
       })
     })

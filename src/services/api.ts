@@ -27,14 +27,20 @@ class ApiService {
     })
   }
 
-  syncCharacters(syncData:SyncState) {
+  syncCharacters(syncData:SyncState, chars:Character[]) {
     // check our data to make sure we arent trying to sync nothing.
     if (syncData.created.length === 0 && syncData.updated.length === 0 && syncData.deleted.length === 0) return Promise.resolve(undefined);
+
+    let data = {
+      created: chars.filter(c => syncData.created.includes(c._id)),
+      updated: chars.filter(c => syncData.updated.includes(c._id)),
+      deleted: syncData.deleted
+    }
 
 
     return this.fetch(`${this.domain}/characters/sync`, {
       method: 'POST',
-      body: JSON.stringify(syncData)
+      body: JSON.stringify(data)
     })
   }
 

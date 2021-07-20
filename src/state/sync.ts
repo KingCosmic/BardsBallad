@@ -1,3 +1,4 @@
+import localforage from 'localforage'
 import { newRidgeState } from 'react-ridge-state'
 import { convertCharacters } from '../system/converters'
 
@@ -18,6 +19,19 @@ export const syncState = newRidgeState<SyncState>({
   updated: [],
   deleted: []
 })
+
+export async function loadState() {
+  let state:SyncState = await localforage.getItem('sync_data') || { created: [], updated: [], deleted: [] } as SyncState;
+  
+  syncState.set({
+    converted: false,
+    syncIssues: false,
+    syncing: false,
+    created: state.created,
+    updated: state.updated,
+    deleted: state.deleted
+  })
+}
 
 export function updateCharacters(chars) {
   const state = syncState.get()

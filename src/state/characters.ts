@@ -1,3 +1,4 @@
+import localforage from 'localforage'
 import { newRidgeState } from 'react-ridge-state'
 
 import { getCharacters, createCharacter } from '../services/db'
@@ -21,17 +22,18 @@ export const createChar = (sys: string) => {
   createCharacter(sys)
 }
 
-export const loadAll = () => {
-  getCharacters().then(characters => {
-    charsState.set({
-      characters,
-      isLoaded: true,
-      characterID: ''
-    })
-
-    if (characters.length === 0) return;
-    updateCharacters(characters)
+export const loadAll = async () => {
+  const chars = await getCharacters()
+  charsState.set({
+    characters: chars,
+    isLoaded: true,
+    characterID: ''
   })
+
+  if (chars.length === 0) return [];
+  updateCharacters(chars)
+
+  return chars;
 }
 
 export const setCurrentCharacter = (id:string) => {
