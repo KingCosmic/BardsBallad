@@ -9,7 +9,7 @@ class ApiService {
   // Initializing important variables
   constructor() {
     // API server url
-    this.domain = 'http://localhost:4000'
+    this.domain = 'https://api-ftdzf.ondigitalocean.app'
 
     this.fetch = this.fetch.bind(this)
     this.loadCharacters = this.loadCharacters.bind(this)
