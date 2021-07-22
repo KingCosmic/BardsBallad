@@ -55,7 +55,7 @@ function FeaturesAndTraits(props: Props) {
       <FeatureInfoModal isOpen={isViewing} setIsOpen={setIsViewing} feats={feats} featID={featID} />
 
       <EmptyText empty={feats.length === 0}>
-        Looks like you don't have any feats, try adding some :(
+        Looks like you don't have any feats, try adding some D:
       </EmptyText>
 
       <div>
