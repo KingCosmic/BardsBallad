@@ -9,7 +9,7 @@ class ApiService {
   // Initializing important variables
   constructor() {
     // API server url
-    this.domain = 'https://api-ftdzf.ondigitalocean.app'
+    this.domain = 'http://localhost:4000'
 
     this.fetch = this.fetch.bind(this)
     this.loadCharacters = this.loadCharacters.bind(this)
@@ -36,7 +36,6 @@ class ApiService {
       updated: chars.filter(c => syncData.updated.includes(c._id)),
       deleted: syncData.deleted
     }
-
 
     return this.fetch(`${this.domain}/characters/sync`, {
       method: 'POST',

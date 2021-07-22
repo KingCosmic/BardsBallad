@@ -30,7 +30,6 @@ export function syncCharacters(remote:boolean) {
       }
     })
   } else {
-
     api.loadCharacters()
     .then(async chars => {
       // grab our local characters
@@ -72,9 +71,8 @@ export function syncCharacters(remote:boolean) {
       })
 
       // run our characters through a converter and then update our local state.
-      convertCharacters(filteredChars.concat(localChars)).then(() => {
-        localStorage.setItem('synced', 'true')
-      })
+      convertCharacters(filteredChars.concat(localChars))
+      .then(() => syncCharacters(true))
     })
   }
 }

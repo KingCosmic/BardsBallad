@@ -25,8 +25,6 @@ const EmptyText = styled.p<EmptyProps>`
   display: ${props => (props.empty ? 'block' : 'none')};
 `
 
-const ListContainer = styled.div``
-
 const AddFeature = styled.p`
   color: ${props => props.theme.text};
   background-color: ${props => props.theme.green};
@@ -60,7 +58,7 @@ function FeaturesAndTraits(props: Props) {
         Looks like you don't have any feats, try adding some :(
       </EmptyText>
 
-      <ListContainer>
+      <div>
         {
           feats.map((feat, i) => {
             return (
@@ -68,7 +66,7 @@ function FeaturesAndTraits(props: Props) {
             )
           })
         }
-      </ListContainer>
+      </div>
 
       <AddFeature onClick={() => setIsAdding(true)}>&#43;</AddFeature>
     </Container>
