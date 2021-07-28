@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { syncState } from '../../../../state/sync'
 
 import MenuItem from './MenuItem'
 
@@ -14,9 +15,11 @@ const Container = styled.div`
 `
 
 function TopRow(props) {
+  const [state] = syncState.use();
+
   return (
     <Container>
-      <MenuItem>test</MenuItem>
+      <MenuItem>{state.isSyncing ? 'syncing' : 'synced'}</MenuItem>
     </Container>
   )
 }

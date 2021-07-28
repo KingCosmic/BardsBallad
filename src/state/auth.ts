@@ -14,8 +14,6 @@ export const authState = newRidgeState<AuthState>({
   user: api.getProfile()
 })
 
-// Wrap any Firebase methods we want to use making sure ...
-// ... to save the user to state.
 export function login(email: string, password: string) {
   return api.login(email, password).then(user => {
     authState.set({

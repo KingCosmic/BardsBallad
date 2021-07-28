@@ -6,9 +6,8 @@ import FloatingButton from '../../components/FloatingButton'
 import Character from '../../components/ListCharacter'
 import Layout from '../../components/Layout'
 
-import { charsState, loadAll, createChar } from '../../state/characters'
-import { syncCharacters, deleteCharacter } from '../../services/db'
-import { loadState } from '../../state/sync'
+import { charsState, createChar } from '../../state/characters'
+import { deleteCharacter } from '../../services/db'
 
 const Container = styled.div`
   height: 100%;
@@ -22,34 +21,18 @@ const CreationsList = styled.div`
   width: 100%;
 `
 
-type Props = {
-  path: string
-}
-
-function Creations(props:Props) {
-  let [state] = charsState.use()
+function Creations() {
+  let [CharState] = charsState.use()
   
   const [id, setID] = useState('')
   const [deleting, setDeleting] = useState(false)
 
-  useEffect(() => {
-    if (!state.isLoaded) {
-      loadState()
-      .then(() => {
-        loadAll()
-        .then(() => {
-          syncCharacters(false);
-        })
-      })
-    }
-  })
-
   return (
     <Layout>
-      <DeleteConfirmation id={id} chars={state.characters} isOpen={deleting} setIsOpen={setDeleting} onConfirm={() => deleteCharacter(id)} />
+      <DeleteConfirmation id={id} chars={CharState.characters} isOpen={deleting} setIsOpen={setDeleting} onConfirm={() => deleteCharacter(id)} />
       <Container>
         <CreationsList>
-          {state.characters.map(character => (
+          {CharState.characters.map(character => (
             <Character key={character._id}  {...character} onDelete={id => {
               // set the id of the character we're deleting.
               setID(id)

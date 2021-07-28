@@ -1,10 +1,11 @@
-import localforage from 'localforage'
 import { newRidgeState } from 'react-ridge-state'
+import localforage from 'localforage'
 
-import { getCharacters, createCharacter } from '../services/db'
+import { createCharacter, syncCharacters } from '../services/db'
 
 import { Character } from '../types'
-import { updateCharacters } from './sync'
+import { convertCharacters } from '../system/converters'
+import { authState } from './auth'
 
 interface CharState {
   isLoaded:boolean
@@ -12,59 +13,57 @@ interface CharState {
   characterID:string
 }
 
-export const charsState = newRidgeState<CharState>({
-  isLoaded: false,
-  characters: [],
-  characterID: ''
-})
+export const charsState = newRidgeState<CharState>(
+  {
+    isLoaded: false,
+    characters: [],
+    characterID: ''
+  },
+  {
+    onSet: async (newState) => {
+      try {
+        await localforage.setItem('characters', newState.characters)
+      } catch(e) {}
+    }
+  }
+)
+
+async function setInitialState() {
+  const auth = authState.get()
+
+  if (!auth.isLoggedIn) return
+
+  try {
+    // grab the item from storage.
+    const initialState:Character[] = await localforage.getItem('characters') || []
+
+    // check if our item exists.
+    if (initialState) {
+      // run our characters through the converters incase some are old.
+      // this will set our state.
+      convertCharacters(initialState);
+
+      // sync the characters from the website after loading our local ones
+      // better responsiveness this way.
+      syncCharacters(false)
+    }
+  } catch (e) {
+    console.log(`Error: ${e}`)
+  }
+}
+
+// set state as our application starts.
+setInitialState();
 
 export const createChar = (sys: string) => {
   createCharacter(sys)
 }
 
-export const loadAll = async () => {
-  const chars = await getCharacters()
-  charsState.set({
-    characters: chars,
-    isLoaded: true,
-    characterID: ''
-  })
-
-  if (chars.length === 0) return [];
-  updateCharacters(chars)
-
-  return chars;
-}
-
 export const setCurrentCharacter = (id:string) => {
-  const { isLoaded, characters } = charsState.get()
-
-  // if we're loaded we should just set stuff
-  if (isLoaded) {
-    const char = characters.find(c => c._id === id)
-
-    // if we don't have this character don't do anything
-    if (!char) return
-
-    charsState.set({
-      characters,
-      isLoaded,
-      characterID: id
-    })
-  } else {
-    // if we aren't loaded, we should load then change
-    getCharacters().then(characters => {
-      const char = characters.find(c => c._id === id)
-
-      // if we don't have this character we'll still load the rest
-      // just don't set the current one
-      charsState.set({
-        characters,
-        isLoaded: true,
-        characterID: char ? char._id : ''
-      })
-    })
-  }
+  charsState.set(prevState => ({
+    ...prevState,
+    characterID: id
+  }))
 }
 
 export const getCharacter = (id:string, cb) => {

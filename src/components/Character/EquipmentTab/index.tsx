@@ -25,8 +25,6 @@ const EmptyText = styled.p<EmptyProps>`
   display: ${props => (props.empty ? 'block' : 'none')};
 `
 
-const ListContainer = styled.div``
-
 const AddEquipment = styled.p`
   color: ${props => props.theme.text};
   background-color: ${props => props.theme.green};
@@ -41,15 +39,13 @@ const AddEquipment = styled.p`
 `
 
 const Rows = styled.div`
-  margin-top: 5px;
-  display: flex;
   align-items: center;
-
   flex-direction: row;
+  margin-bottom: 8px;
+  display: flex;
 `
 
 const InnerRows = styled.div`
-  padding: 0 10px;
   display: flex;
   flex: 1;
 
@@ -60,7 +56,13 @@ const InnerRows = styled.div`
 `
 
 const RowText = styled.p`
-  font-size: 0.6em;
+  font-size: .9em;
+  width: 64px;
+  text-align: center;
+`
+
+const NameText = styled.p`
+  font-size: .9em;
 `
 
 type Props = {
@@ -90,17 +92,17 @@ function EquipmentTab(props: Props) {
             <Rows>
               <RowText>EQUIP</RowText>
               <InnerRows>
-                <RowText>NAME</RowText>
+                <NameText>NAME</NameText>
                 <RowText>QUANTITY</RowText>
               </InnerRows>
             </Rows>
-            <ListContainer>
+            <div>
               {items.map((item, i) => {
                 return (
                   <Item data={item} index={i} key={item.id} onClick={() => { setIsViewing(true); setItemID(item.id) }} />
                 )
               })}
-            </ListContainer>
+            </div>
           </>
         ) : null
       }

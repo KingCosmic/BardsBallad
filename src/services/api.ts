@@ -12,25 +12,9 @@ class ApiService {
     this.domain = 'https://api-ftdzf.ondigitalocean.app'
 
     this.fetch = this.fetch.bind(this)
-    this.loadCharacters = this.loadCharacters.bind(this)
-    this.loadCharacter = this.loadCharacter.bind(this)
-    this.login = this.login.bind(this)
-    this.signup = this.signup.bind(this);
-  }
-
-  updateCharacter(id: string, data: object) {
-    return this.fetch(`${this.domain}/characters/${id}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        data
-      })
-    })
   }
 
   syncCharacters(syncData:SyncState, chars:Character[]) {
-    // check our data to make sure we arent trying to sync nothing.
-    if (syncData.created.length === 0 && syncData.updated.length === 0 && syncData.deleted.length === 0) return Promise.resolve(undefined);
-
     let data = {
       created: chars.filter(c => syncData.created.includes(c._id)),
       updated: chars.filter(c => syncData.updated.includes(c._id)),
@@ -45,12 +29,6 @@ class ApiService {
 
   loadCharacters() {
     return this.fetch(`${this.domain}/characters`, {
-      method: 'GET'
-    })
-  }
-
-  loadCharacter(id) {
-    return this.fetch(`${this.domain}/characters/${id}`, {
       method: 'GET'
     })
   }
