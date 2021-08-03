@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 
 import { charsState, createChar } from '../../state/characters'
 import { deleteCharacter } from '../../services/db'
+import SEO from '../../components/seo'
 
 const Container = styled.div`
   height: 100%;
@@ -29,6 +30,7 @@ function Creations() {
 
   return (
     <Layout>
+      <SEO title='creations' />
       <DeleteConfirmation id={id} chars={CharState.characters} isOpen={deleting} setIsOpen={setDeleting} onConfirm={() => deleteCharacter(id)} />
       <Container>
         <CreationsList>

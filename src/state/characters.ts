@@ -28,7 +28,7 @@ export const charsState = newRidgeState<CharState>(
   }
 )
 
-async function setInitialState() {
+export async function setInitialState() {
   const auth = authState.get()
 
   if (!auth.isLoggedIn) return

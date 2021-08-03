@@ -8,6 +8,7 @@ import { Link as L } from 'gatsby'
 import Button from '../components/Button'
 
 import { authState, login } from '../state/auth'
+import { setInitialState } from '../state/characters'
 
 const Text = styled.p`
   font-size: 1.3em;
@@ -76,13 +77,9 @@ const Input = styled.input<InputProps>`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: calc(20% + 20px);
   padding: 10px;
   margin-bottom: 10px;
-
-  @media only screen and (min-width: 768px) {
-    width: calc(20% + 20px);
-  }
 `
 
 function handleLogin(event: any, email: string, password: string, setHaveLoggedIn?: boolean) {
@@ -91,6 +88,7 @@ function handleLogin(event: any, email: string, password: string, setHaveLoggedI
     password
   ).then(() => {
     navigate('/app/creations')
+    setInitialState()
   }).catch(console.log)
 
   event.preventDefault()

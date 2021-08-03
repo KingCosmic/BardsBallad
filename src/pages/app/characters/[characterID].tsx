@@ -16,6 +16,8 @@ import FeaturesAndTraits from '../../../components/Character/FeaturesAndTraits'
 
 import SideInfo from '../../../components/Character/SideInfo'
 
+import SEO from '../../../components/seo'
+
 const Container = styled.div`
   display: flex;
   flex-direction: row;
@@ -61,6 +63,8 @@ function Character(props: Props) {
     <Layout>
       <Container>
         <ViewContainer>
+          <SEO title={character.name} />
+
           <DesktopTabs selectedTab={selectedTab} changeTab={setSelectedTab} />
 
           <TabContainer>
