@@ -70,3 +70,6 @@ yarn-error.log
 
 # JetBrains IDE folder
 .idea
+
+# NPM package lock
+package-lock.json
