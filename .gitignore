@@ -53,6 +53,7 @@ typings/
 
 # dotenv environment variable files
 .env*
+!.env.example
 
 # gatsby files
 .cache/
@@ -67,4 +68,11 @@ yarn-error.log
 .pnp.js
 # Yarn Integrity file
 .yarn-integrity
+
+# JetBrains IDE folder
+.idea
+
+# NPM package lock
 package-lock.json
+# Yarn lock file
+yarn.lock

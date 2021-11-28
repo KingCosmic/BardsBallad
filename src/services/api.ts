@@ -9,7 +9,8 @@ class ApiService {
   // Initializing important variables
   constructor() {
     // API server url
-    this.domain = 'https://api-ftdzf.ondigitalocean.app'
+    // this.domain = 'https://api-ftdzf.ondigitalocean.app'
+    this.domain = process.env.GATSBY_API_SERVER;
 
     this.fetch = this.fetch.bind(this)
   }
