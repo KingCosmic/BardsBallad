@@ -111,7 +111,7 @@ function Login() {
         <Header>Login</Header>
         <Input
           first
-          placeholder="KingCosmicDev@gmail.com"
+          placeholder="support@bardsballad.com"
           type="text"
           value={email}
           onChange={event => setEmail(event.target.value)}

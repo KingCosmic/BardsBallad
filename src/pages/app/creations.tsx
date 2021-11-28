@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import DeleteConfirmation from '../../components/Modals/DeleteConfirmation'
+import CharacterBuilder from '../../components/Modals/CharacterBuilder'
 import FloatingButton from '../../components/FloatingButton'
 import Character from '../../components/ListCharacter'
 import Layout from '../../components/Layout'
@@ -27,11 +28,13 @@ function Creations() {
   
   const [id, setID] = useState('')
   const [deleting, setDeleting] = useState(false)
+  const [isBuilding, setBuilding] = useState(false)
 
   return (
     <Layout>
       <SEO title='creations' />
       <DeleteConfirmation id={id} chars={CharState.characters} isOpen={deleting} setIsOpen={setDeleting} onConfirm={() => deleteCharacter(id)} />
+      <CharacterBuilder isOpen={isBuilding} setIsOpen={setBuilding} onConfirm={() => {}} />
       <Container>
         <CreationsList>
           {CharState.characters.map(character => (
@@ -40,11 +43,11 @@ function Creations() {
               setID(id)
               // tell the modal to open.
               setDeleting(true)
-            }} />
+            }}/>
           ))}
         </CreationsList>
 
-        <FloatingButton onClick={() => createChar('DND5E')}>&#43;</FloatingButton>
+        <FloatingButton onClick={() => setBuilding(true)}>&#43;</FloatingButton>
       </Container>
     </Layout>
   )

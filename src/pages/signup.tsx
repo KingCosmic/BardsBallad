@@ -88,17 +88,14 @@ const Form = styled.form`
   }
 `
 
-async function handleSignup(
-  event: any,
-  email: string,
-  password: string) {
+async function handleSignup(event: any, email: string, password: string) {
   signup(email, password)
-    .then(() => {
-      navigate('/login')
-    })
-    .catch(alert => {
-      // TODO: Show Alert telling them authentication failed, and why.
-    })
+  .then(() => {
+    navigate('/login')
+  })
+  .catch(alert => {
+    // TODO: Show Alert telling them authentication failed, and why.
+  })
 
   event.preventDefault()
 }
@@ -121,7 +118,7 @@ function Signup() {
 
         <Input
           first
-          placeholder="JohnDoe"
+          placeholder="Thodak"
           type="text"
           value={username}
           onChange={event => setUsername(event.target.value)}
@@ -129,7 +126,7 @@ function Signup() {
 
         <Input
           first
-          placeholder="JohnDoe@example.com"
+          placeholder="support@bardsballad.com"
           type="text"
           value={email}
           onChange={event => setEmail(event.target.value)}
@@ -144,7 +141,7 @@ function Signup() {
         <Button onClick={e => handleSignup(e, email, password)}>Signup</Button>
 
         <Text>
-          Have an account already? <Link to="/login">login</Link>
+          Need to <Link to="/login">login?</Link>
         </Text>
       </Form>
     </BackDrop>
