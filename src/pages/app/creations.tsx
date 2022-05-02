@@ -47,7 +47,7 @@ function Creations() {
           ))}
         </CreationsList>
 
-        <FloatingButton onClick={() => setBuilding(true)}>&#43;</FloatingButton>
+        <FloatingButton onClick={() => createChar('DND5E')}>&#43;</FloatingButton>
       </Container>
     </Layout>
   )

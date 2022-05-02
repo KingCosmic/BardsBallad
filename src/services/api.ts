@@ -116,7 +116,8 @@ class ApiService {
     // performs api calls sending the required authentication headers
     const headers = {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Origin': '*'
     }
 
     // Setting Authorization header
