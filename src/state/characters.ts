@@ -1,87 +1,53 @@
 import { newRidgeState } from 'react-ridge-state'
-import localforage from 'localforage'
 
-import { createCharacter, syncCharacters } from '../services/db'
+import { produce } from 'immer'
 
-import { Character } from '../types'
-import { convertCharacters } from '../system/converters'
-import { authState } from './auth'
+import Storage from '../lib/storage'
 
-interface CharState {
-  isLoaded:boolean
-  characters:Character[]
-  characterID:string
-}
+import { type CharacterData } from './character'
+import { SystemData } from './systems'
 
-export const charsState = newRidgeState<CharState>(
-  {
-    isLoaded: false,
-    characters: [],
-    characterID: ''
-  },
-  {
-    onSet: async (newState) => {
-      try {
-        await localforage.setItem('characters', newState.characters)
-      } catch(e) {}
-    }
-  }
-)
+export const charactersState = newRidgeState<CharacterData[]>([])
 
-export async function setInitialState() {
-  const auth = authState.get()
-
-  if (!auth.isLoggedIn) return
-
+export async function loadCharacters() {
   try {
-    // grab the item from storage.
-    const initialState:Character[] = await localforage.getItem('characters') || []
+    let chars: CharacterData[] = []
 
-    // check if our item exists.
-    if (initialState) {
-      // run our characters through the converters incase some are old.
-      // this will set our state.
-      convertCharacters(initialState);
+    const names = await Storage.keys()
 
-      // sync the characters from the website after loading our local ones
-      // better responsiveness this way.
-      syncCharacters(false)
+    for (let n = 0; n < names.length; n++) {
+      const char = await Storage.get(names[n])
+
+      chars.push(char)
     }
-  } catch (e) {
-    console.log(`Error: ${e}`)
+
+    charactersState.set(chars)
+  } catch(e) {
+    // TODO: show error message to user.
+    charactersState.set([])
   }
 }
 
-// set state as our application starts.
-setInitialState();
+loadCharacters()
 
-export const createChar = (sys: string) => {
-  createCharacter(sys)
+export function createCharacter(name: string, system: SystemData) {
+  const character = { id: '', name, system, data: system.defaultCharacterData, ownerID: '', version: '', createdAt: '', updatedAt: '' }
+  charactersState.set((prevState) => [ ...prevState, character ])
+  Storage.set(character.name, character)
 }
 
-export const setCurrentCharacter = (id:string) => {
-  charsState.set(prevState => ({
-    ...prevState,
-    characterID: id
-  }))
+export function deleteCharacter(name: string) {
+  charactersState.set((prevState) => prevState.filter((char) => char.name !== name))
+  Storage.remove(name)
 }
 
-export const getCharacter = (id:string, cb) => {
-  const { isLoaded, characters } = charsState.get()
-
-  // if we're loaded we should just set stuff
-  if (!isLoaded) return cb(false, false)
-
-  const char = characters.find(c => c._id === id)
-
-  // if we don't have this character don't do anything
-  if (!char) return cb(true, false)
-
-  charsState.set({
-    characters,
-    isLoaded,
-    characterID: id
-  })
-
-  return cb(false, true)
+function getDefaultData(): { [key: string]: any } {
+  return {
+    info: [],
+    stats: [],
+    savingThrows: [],
+    skills: [],
+    spells: [],
+    equipment: [],
+  }
 }

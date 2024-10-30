@@ -1,0 +1,1 @@
+export default (val?:number) => (val !== undefined) ? Math.floor((val - 10) / 2) : 0

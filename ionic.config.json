@@ -1,0 +1,7 @@
+{
+  "name": "BardsBallad",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

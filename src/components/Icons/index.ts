@@ -1,2 +1,0 @@
-
-export { Delete } from './delete'
