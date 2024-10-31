@@ -722,9 +722,6 @@ export const systemsState = newRidgeState<SystemData[]>([
         properties: {
           name: {
             type: 'string'
-          },
-          value: {
-            type: 'string'
           }
         }
       },
