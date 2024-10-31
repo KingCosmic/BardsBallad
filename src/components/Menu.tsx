@@ -17,6 +17,7 @@ import {
   IonNote,
   IonTitle,
   IonToolbar,
+  isPlatform,
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
@@ -49,7 +50,7 @@ const Menu: React.FC = () => {
   const location = useLocation()
 
   return (
-    <IonMenu menuId='nav-menu' contentId='main' type='overlay'>
+    <IonMenu menuId='nav-menu' contentId='main' type='overlay' style={{ maxWidth: isPlatform('desktop') ? '10%' : '' }}>
       <IonContent>
         <IonList>
           <IonListHeader>BardsBallad</IonListHeader>
