@@ -115,12 +115,13 @@ function BlueprintEditor({ isVisible, requestClose }: ModalProps) {
       </IonHeader>
       <IonContent>
         <ReactFlow
-          nodes={initialNodes}
-          edges={initialEdges}
+          nodes={nodes}
+          edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
+          colorMode='system'
           fitView
         >
           <Controls />
