@@ -6,9 +6,27 @@ import {
   type NodeProps,
   type Node,
 } from '@xyflow/react';
+import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonHeader, IonInput } from '@ionic/react';
  
 function TextNode({ id, data }: NodeProps<Node<{ text: string }>>) {
-  const { updateNodeData } = useReactFlow();
+  const { updateNodeData } = useReactFlow()
+
+  return (
+    <IonCard>
+      <IonCardHeader>
+        <IonCardTitle>node {id}</IonCardTitle>
+      </IonCardHeader>
+      <IonCardContent>
+        <IonInput label='text' labelPlacement='floating' fill='outline' value={data.text} onIonChange={(ev: Event) => {
+          const val = (ev.target as HTMLIonInputElement).value as string
+
+          updateNodeData(id, { text: val })
+        }} />
+      </IonCardContent>
+
+      <Handle type='source' position={Position.Right} />
+    </IonCard>
+  )
  
   return (
     <div

@@ -6,6 +6,7 @@ import {
   useNodesData,
 } from '@xyflow/react';
 import { isTextNode, type MyNode } from './utils';
+import { IonCard, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react';
  
 function ResultNode() {
   const connections = useHandleConnections({
@@ -14,26 +15,22 @@ function ResultNode() {
   const nodesData = useNodesData<MyNode>(
     connections.map((connection) => connection.source),
   );
-  const textNodes = nodesData.filter(isTextNode);
- 
+  const textNodes = nodesData.filter(isTextNode)
+
   return (
-    <div
-      style={{
-        background: '#eee',
-        color: '#222',
-        padding: 10,
-        fontSize: 12,
-        borderRadius: 10,
-      }}
-    >
-      <Handle type="target" position={Position.Left} />
-      <div>
-        incoming texts:{' '}
+    <IonCard>
+      <Handle type='target' position={Position.Left} />
+      <IonCardHeader>
+        <IonCardTitle>Return</IonCardTitle>
+      </IonCardHeader>
+      <IonCardContent>
+        <p>incoming texts</p>
+
         {textNodes.map(({ data }, i) => <div key={i}>{data.text}</div>) ||
           'none'}
-      </div>
-    </div>
-  );
+      </IonCardContent>
+    </IonCard>
+  )
 }
  
 export default memo(ResultNode);
