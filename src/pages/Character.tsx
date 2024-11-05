@@ -1,4 +1,4 @@
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenu, IonMenuButton, IonPage, IonSelect, IonSelectOption, IonText, IonTitle, IonToolbar } from '@ionic/react'
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonSelect, IonSelectOption, IonSplitPane, IonTitle, IonToolbar } from '@ionic/react'
 import './Page.css'
 import { characterState, setCharacter } from '../state/character'
 import { useEffect, useState } from 'react'
@@ -9,7 +9,6 @@ import Skills from '../tabs/Skills'
 import { useParams } from 'react-router'
 import { charactersState } from '../state/characters'
 
-import { isPlatform } from '@ionic/react'
 
 import { informationCircleOutline } from 'ionicons/icons'
 import Combat from '../tabs/Combat'
@@ -18,6 +17,7 @@ import Feats from '../tabs/Feats'
 import Notes from '../tabs/Notes'
 import Spells from '../tabs/Spells'
 import Divider from '../components/Divider'
+import CharacterMenu from '../components/CharacterMenu'
 
 const Character: React.FC = () => {
   const characters = charactersState.useValue()
@@ -49,83 +49,78 @@ const Character: React.FC = () => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
+
       <IonContent className='ion-padding' fullscreen>
 
-      {
-        isPlatform('desktop') ? (
-          <div>
-            <IonButtons>
-              <IonButton
-                color={(tab === 'Info') ? 'warning' : ''}
-                onClick={() => setTab('Info')}
-              >
-                Info
-              </IonButton>
+        <div className='ion-hide-md-down' style={{ overflowX: 'scroll' }}>
+          <IonButtons>
+            <IonButton
+              color={(tab === 'Info') ? 'warning' : ''}
+              onClick={() => setTab('Info')}
+            >
+              Info
+            </IonButton>
 
-              <IonButton
-                color={(tab === 'Skills') ? 'warning' : ''}
-                onClick={() => setTab('Skills')}
-              >
-                Skills
-              </IonButton>
+            <IonButton
+              color={(tab === 'Skills') ? 'warning' : ''}
+              onClick={() => setTab('Skills')}
+            >
+              Skills
+            </IonButton>
 
-              <IonButton
-                color={(tab === 'Spells') ? 'warning' : ''}
-                onClick={() => setTab('Spells')}
-              >
-                Spells
-              </IonButton>
+            <IonButton
+              color={(tab === 'Spells') ? 'warning' : ''}
+              onClick={() => setTab('Spells')}
+            >
+              Spells
+            </IonButton>
 
-              <IonButton
-                color={(tab === 'Equipment') ? 'warning' : ''}
-                onClick={() => setTab('Equipment')}
-              >
-                Equipment
-              </IonButton>
+            <IonButton
+              color={(tab === 'Equipment') ? 'warning' : ''}
+              onClick={() => setTab('Equipment')}
+            >
+              Equipment
+            </IonButton>
 
-              <IonButton
-                color={(tab === 'Combat') ? 'warning' : ''}
-                onClick={() => setTab('Combat')}
-              >
-                Combat
-              </IonButton>
+            <IonButton
+              color={(tab === 'Combat') ? 'warning' : ''}
+              onClick={() => setTab('Combat')}
+            >
+              Combat
+            </IonButton>
 
-              <IonButton
-                color={(tab === 'Features') ? 'warning' : ''}
-                onClick={() => setTab('Features')}
-              >
-                Features
-              </IonButton>
+            <IonButton
+              color={(tab === 'Features') ? 'warning' : ''}
+              onClick={() => setTab('Features')}
+            >
+              Features
+            </IonButton>
 
-              <IonButton
-                color={(tab === 'Notes') ? 'warning' : ''}
-                onClick={() => setTab('Notes')}
-              >
-                Notes
-              </IonButton>
-            </IonButtons>
-            <Divider />
-          </div>
-        ) : (
-          <IonSelect className='ion-margin-bottom' label='Tab'
-            fill='outline'
-            value={tab}
-            onIonChange={(e) => setTab(e.detail.value)}
-          >
-            <IonSelectOption value='Info'>Info</IonSelectOption>
-            <IonSelectOption value='Skills'>Skills</IonSelectOption>
-            <IonSelectOption value='Spells'>Spells</IonSelectOption>
-            <IonSelectOption value='Equipment'>Equipment</IonSelectOption>
-            <IonSelectOption value='Combat'>Combat</IonSelectOption>
-            <IonSelectOption value='Features'>Features</IonSelectOption>
-            <IonSelectOption value='Notes'>Notes</IonSelectOption>
-          </IonSelect>
-        )
-      }
+            <IonButton
+              color={(tab === 'Notes') ? 'warning' : ''}
+              onClick={() => setTab('Notes')}
+            >
+              Notes
+            </IonButton>
+          </IonButtons>
+          <Divider />
+        </div>
+
+        <IonSelect className='ion-margin-bottom ion-hide-md-up' label='Tab'
+          fill='outline'
+          value={tab}
+          onIonChange={(e) => setTab(e.detail.value)}
+        >
+          <IonSelectOption value='Info'>Info</IonSelectOption>
+          <IonSelectOption value='Skills'>Skills</IonSelectOption>
+          <IonSelectOption value='Spells'>Spells</IonSelectOption>
+          <IonSelectOption value='Equipment'>Equipment</IonSelectOption>
+          <IonSelectOption value='Combat'>Combat</IonSelectOption>
+          <IonSelectOption value='Features'>Features</IonSelectOption>
+          <IonSelectOption value='Notes'>Notes</IonSelectOption>
+        </IonSelect>
 
         {getTab(tab, { character })}
-
-        <ModalManager />
       </IonContent>
     </IonPage>
   )

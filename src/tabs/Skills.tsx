@@ -5,6 +5,7 @@ import { useState } from 'react'
 import EditObjectModal from '../modals/EditObjectModal'
 import generateObject from '../utils/generateObject'
 import { openModal } from '../state/modals'
+import Divider from '../components/Divider'
 
 type TabProps = {
   character: CharacterData
@@ -92,14 +93,31 @@ function Skills({ character }: TabProps) {
           <IonCol>Mod</IonCol>
           <IonCol>Save</IonCol>
         </IonRow>
+        <Divider />
         {
           character.data.stats.map((stat: any) => {
             return (
               <IonRow onClick={() => setStatData(stat)}>
-                <IonCol>{stat.score}</IonCol>
-                <IonCol>{stat.name}</IonCol>
-                <IonCol>{getMod(stat.score)}</IonCol>
-                <IonCol>{getMod(stat.score) + (stat.saveProficient ? character.data.proficiencyBonus.value : 0)}</IonCol>
+                <IonCol>
+                  <div style={{ backgroundColor: 'gray', padding: 5, display: 'flex', justifyContent: 'center' }}>
+                    {stat.score}
+                  </div>
+                </IonCol>
+                <IonCol>
+                  <div style={{ padding: 5, display: 'flex', justifyContent: 'center' }}>
+                    {stat.name}
+                  </div>
+                </IonCol>
+                <IonCol>
+                  <div style={{ backgroundColor: 'gray', padding: 5, display: 'flex', justifyContent: 'center' }}>
+                    {getMod(stat.score)}
+                  </div>
+                </IonCol>
+                <IonCol>
+                  <div style={{ backgroundColor: 'gray', padding: 5, display: 'flex', justifyContent: 'center' }}>
+                    {getMod(stat.score) + (stat.saveProficient ? character.data.proficiencyBonus.value : 0)}
+                  </div>
+                </IonCol>
               </IonRow>
             )
           })

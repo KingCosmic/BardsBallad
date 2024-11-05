@@ -1,16 +1,19 @@
-import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonButton, IonItem, IonText, IonNote, isPlatform } from '@ionic/react'
-import { type CharacterData, characterState, JsonActionType, runJsonAction } from '../state/character'
+import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonButton, IonItem, IonText, IonNote } from '@ionic/react'
+import { characterState, JsonActionType, runJsonAction } from '../state/character'
 import generateObject from '../utils/generateObject'
 import { openModal } from '../state/modals'
+import useBreakpoint from '../utils/useBreakpoint'
 
 const CharacterMenu = () => {
 
   const character = characterState.useValue()
 
+  const isLargeScreen = useBreakpoint('md', 'more')
+
   if (!character) return <></>
 
   return (
-    <IonMenu menuId='info-menu' side='end' contentId='main' type='overlay' style={{ maxWidth: isPlatform('desktop') ? '10%' : '' }}>
+    <IonMenu menuId='info-menu' side='end' contentId='main' type='overlay' style={{ maxWidth: isLargeScreen ? '10%' : '' }}>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Extras</IonTitle>

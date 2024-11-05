@@ -36,6 +36,14 @@ import Character from './pages/Character'
 import Characters from './pages/Characters'
 import Library from './pages/Library'
 import CharacterMenu from './components/CharacterMenu'
+import System from './pages/System'
+import ModalManager from './components/ModalManager'
+import DesignerMenu from './components/DesignerMenu'
+
+import { Editor } from '@craftjs/core'
+import Container from './designer/Container'
+import Button from './designer/Button'
+import Text from './designer/Text'
 
 setupIonicReact()
 
@@ -43,25 +51,33 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane contentId='main'>
-          <Menu />
-          <CharacterMenu />
-          <IonRouterOutlet id='main'>
-            <Route path='/' exact={true}>
-              <Redirect to='/characters' />
-            </Route>
-            <Route path='/character/:name'>
-              <Character />
-            </Route>
-            <Route path='/characters' exact={true}>
-              <Characters />
-            </Route>
+        <Editor resolver={{ Container, Text, Button }}>
+          <IonSplitPane contentId='main'>
+            <Menu />
+            <IonRouterOutlet id='main'>
+              <Route path='/' exact={true}>
+                <Redirect to='/characters' />
+              </Route>
+              <Route path='/character/:name'>
+                <Character />
+              </Route>
+              <Route path='/characters' exact={true}>
+                <Characters />
+              </Route>
 
-            <Route path='/library' exact={true}>
-              <Library />
-            </Route>
-          </IonRouterOutlet>
-        </IonSplitPane>
+              <Route path='/library' exact={true}>
+                <Library />
+              </Route>
+              <Route path='/systems/:name'>
+                <System />
+              </Route>
+            </IonRouterOutlet>
+
+            <CharacterMenu />
+            <DesignerMenu />
+          </IonSplitPane>
+          <ModalManager />
+        </Editor>
       </IonReactRouter>
     </IonApp>
   );

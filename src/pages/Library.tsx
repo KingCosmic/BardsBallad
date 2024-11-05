@@ -29,7 +29,7 @@ const Library: React.FC = () => {
 
         {systems.length ? (
           systems.map((sys) => (
-            <IonCard>
+            <IonCard href={`/systems/${sys.name}`}>
               <IonCardHeader>
                 <IonCardTitle>{sys.name}</IonCardTitle>
                 <IonCardSubtitle>v{sys.version}</IonCardSubtitle>

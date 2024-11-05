@@ -23,6 +23,7 @@ import {
 import { useLocation } from 'react-router-dom';
 import { bodyOutline, bodySharp, ellipsisHorizontal, ellipsisVertical, libraryOutline, librarySharp, logoAppleAppstore, logoDiscord, logoGithub, logoGooglePlaystore, mailOutline, personCircle, search, } from 'ionicons/icons';
 import './Menu.css';
+import useBreakpoint from '../utils/useBreakpoint';
 
 interface AppPage {
   url: string;
@@ -49,8 +50,10 @@ const appPages: AppPage[] = [
 const Menu: React.FC = () => {
   const location = useLocation()
 
+  const isLargeScreen = useBreakpoint('md', 'more')
+
   return (
-    <IonMenu menuId='nav-menu' contentId='main' type='overlay' style={{ maxWidth: isPlatform('desktop') ? '10%' : '' }}>
+    <IonMenu menuId='nav-menu' contentId='main' type='overlay' style={{ maxWidth: isLargeScreen ? '10%' : '' }}>
       <IonContent>
         <IonList>
           <IonListHeader>BardsBallad</IonListHeader>
@@ -63,7 +66,7 @@ const Menu: React.FC = () => {
                   <IonLabel>{appPage.title}</IonLabel>
                 </IonItem>
               </IonMenuToggle>
-            );
+            )
           })}
         </IonList>
         <IonCard color='light'>

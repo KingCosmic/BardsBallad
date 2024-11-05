@@ -51,17 +51,23 @@ function Spells({ character }: TabProps) {
                   <div>
                     <IonText>ability</IonText>
                     <br />
-                    <IonText>{casting.ability}</IonText>
+                    <IonText>
+                      <p>{casting.ability}</p>
+                    </IonText>
                   </div>
                   <div>
                     <IonText>save dc</IonText>
                     <br />
-                    <IonText>{casting.save}</IonText>
+                    <IonText>
+                      <p>{casting.save}</p>
+                    </IonText>
                   </div>
                   <div>
                     <IonText>att bonus</IonText>
                     <br />
-                    <IonText>{casting.attackBonus}</IonText>
+                    <IonText>
+                      <p>{casting.attackBonus}</p>
+                    </IonText>
                   </div>
                 </div>
                 {
