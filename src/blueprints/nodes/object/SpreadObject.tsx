@@ -50,6 +50,13 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: st
     }
   })
 
+  useEffect(() => {
+    if (!system) return
+
+    setSpreadType(system.types.find(type => type.name === inputType) || { name: '', properties: [] })
+    updateNodeInternals(id)
+  }, [system, inputType])
+
   return (
     <IonCard style={{ width: 250 }}>
       <IonCardHeader>

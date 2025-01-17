@@ -10,6 +10,8 @@ import { informationCircleOutline } from 'ionicons/icons'
 import { PageData } from '../state/systems'
 import RenderEditorData from '../designer/RenderEditorData'
 
+import lz from 'lzutf8'
+
 const Character: React.FC = () => {
   const characters = charactersState.useValue()
   const character = characterState.useValue()
@@ -25,7 +27,7 @@ const Character: React.FC = () => {
     if (!character) return
 
     setTab(character.system.pages[0].name)
-  }, [characters, name, setTab, setCurrentCharacter])
+  }, [name])
 
   if (!character) return <>loading...</>
 
@@ -67,7 +69,7 @@ const Character: React.FC = () => {
 
 function RenderTab({ page, hidden }: { page: PageData, hidden: boolean }) {
   return (
-    <RenderEditorData style={{ display: hidden ? 'none': 'block' }} data={JSON.parse(page.lexical)} />
+    <RenderEditorData style={{ display: hidden ? 'none': 'block' }} data={JSON.parse(lz.decompress(lz.decodeBase64(page.lexical)))} />
   )
 }
 

@@ -15,19 +15,22 @@ import SpreadObject from './nodes/object/SpreadObject'
 import StringIncludes from './nodes/strings/Include'
 import StringCompare from './nodes/strings/Compare'
 import StringConcat from './nodes/strings/Concat'
-import NumberToString from './nodes/numbers/ToString'
 
 /* Array Imports */
 import RemoveFromArray from './nodes/array/Remove'
 import AddItemToArray from './nodes/array/Add'
 import Filter from './nodes/array/Filter'
 import Map from './nodes/array/Map'
+import UpdateArray from './nodes/array/Update'
+import GetItemFromArray from './nodes/array/Get'
 
 import Number from './nodes/numbers/Number'
 import Subtract from './nodes/numbers/Subtract'
 import Divide from './nodes/numbers/Divide'
 import Floor from './nodes/numbers/Floor'
 import Add from './nodes/numbers/Add'
+import Multiply from './nodes/numbers/Multiply'
+import NumberToString from './nodes/numbers/ToString'
 
 import EnumCompare from './nodes/enums/Compare'
 import Enum from './nodes/enums/Enum'
@@ -35,7 +38,6 @@ import Enum from './nodes/enums/Enum'
 import Branch from './nodes/booleans/Branch'
 import Inverse from './nodes/booleans/Inverse'
 import String from './nodes/strings/String'
-import Update from './nodes/array/Update'
 import Boolean from './nodes/booleans/Boolean'
 
 const nodeTypes: NodeTypes = {
@@ -58,7 +60,8 @@ const nodeTypes: NodeTypes = {
   /* Array Nodes */
   add_to_array: AddItemToArray,
   array_remove: RemoveFromArray,
-  array_update: Update,
+  array_update: UpdateArray,
+  array_get: GetItemFromArray,
   filter: Filter,
   map: Map,
 
@@ -78,6 +81,7 @@ const nodeTypes: NodeTypes = {
   divide: Divide,
   add: Add,
   subtract: Subtract,
+  multiply: Multiply,
   floor: Floor,
 
   /* Enum Nodes */

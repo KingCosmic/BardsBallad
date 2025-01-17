@@ -11,16 +11,19 @@ import Remove from './scripts/arrays/remove'
 import Update from './scripts/arrays/update'
 import Filter from './scripts/arrays/filter'
 import Map from './scripts/arrays/map'
+import Get from './scripts/arrays/get'
 
 import SpreadObject from './scripts/object/spread'
+
+import SetPageState from './scripts/setPageState'
 
 import NewString from './scripts/strings/string'
 import StringIncludes from './scripts/strings/includes'
 import StringCompare from './scripts/strings/compare'
-import SetPageState from './scripts/setPageState'
+import StringConcat from './scripts/strings/concat'
+import numberToString from './scripts/numbers/numberToString'
 
 import BlueprintProcessor from '../utils/Blueprints/processBlueprint'
-import numberToString from './scripts/numbers/numberToString'
 
 import createDataFromType from './scripts/object/createDataFromType'
 
@@ -31,6 +34,7 @@ import Divide from './scripts/numbers/divide'
 import Subtract from './scripts/numbers/subtract'
 import floor from './scripts/numbers/floor'
 import Add from './scripts/numbers/add'
+import Multiply from './scripts/numbers/multiply'
 
 import Boolean from './scripts/booleans/boolean'
 import Branch from './scripts/booleans/branch'
@@ -56,6 +60,7 @@ export const nodeScripts: { [key:string]: NodeScript } = {
 
   /* Array Scripts */
   add_to_array: AddItemToArray,
+  array_get: Get,
   array_remove: Remove,
   array_update: Update,
   filter: Filter,
@@ -65,6 +70,7 @@ export const nodeScripts: { [key:string]: NodeScript } = {
   string_new: NewString,
   string_includes: StringIncludes,
   string_compare: StringCompare,
+  string_concat: StringConcat,
 
   /* Object Scripts */
   spread_object: SpreadObject,
@@ -76,6 +82,7 @@ export const nodeScripts: { [key:string]: NodeScript } = {
   add: Add,
   subtract: Subtract,
   floor: floor,
+  multiply: Multiply,
 
   /* Enum Scripts */
   new_enum: Enum,

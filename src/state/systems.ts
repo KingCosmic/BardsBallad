@@ -2,7 +2,9 @@ import { Edge, Node } from '@xyflow/react';
 import { produce } from 'immer';
 import { newRidgeState } from 'react-ridge-state'
 import { getDefaultNodes } from '../blueprints/utils';
-import { SystemStorage } from '../lib/storage';
+import { SystemStorage } from '../lib/storage'
+
+import DND5EBackup from '../lib/backup-dnd5e.json'
 
 export type TypeData = {
   type: string;
@@ -66,6 +68,10 @@ export async function loadSystems() {
       systems.push(sys)
     }
 
+    if (systems.length === 0) {
+      systems.push(DND5EBackup)
+    }
+
     systemsState.set(systems)
   } catch(e) {
     // TODO: show error message to user.
@@ -122,4 +128,9 @@ export function createSystem() {
 
   systemsState.set(newSystems)
   SystemStorage.set(newData.name, newData)
+}
+
+export function deleteSystem(name: string) {
+  systemsState.set((prevState) => prevState.filter((sys) => sys.name !== name))
+  SystemStorage.remove(name)
 }

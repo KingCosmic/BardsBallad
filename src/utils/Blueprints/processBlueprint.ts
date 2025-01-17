@@ -13,6 +13,8 @@ class BlueprintProcessor {
   params: Map<string, any> = new Map()
   output: any = null
 
+  enumOptions: Map<string, string[]> = new Map()
+
   constructor(bp: BlueprintData) {
     this.blueprint = bp
   }
@@ -66,6 +68,14 @@ class BlueprintProcessor {
     return this.blueprint.edges.filter(e => (type === 'input') ? (e.target === nodeID) : (e.source === nodeID)).map(e => (type === 'input') ? e.targetHandle?.split('-')[0] : e.sourceHandle?.split('-')[0])
   }
 
+  getParamType(nodeID: string, paramName: string) {
+    const edges = this.blueprint.edges.filter(e => (e.target === nodeID) && (e.targetHandle?.split('-')[0] === paramName))
+
+    const edge = edges.find((edge) => (this.params.get(edge.id) !== undefined))
+
+    return edge?.targetHandle?.split('-')[1]
+  }
+
   getParam(nodeID: string, paramName: string) {
     const edges = this.blueprint.edges.filter(e => (e.target === nodeID) && (e.targetHandle?.split('-')[0] === paramName))
 
@@ -79,6 +89,16 @@ class BlueprintProcessor {
 
     for (let e = 0; e < edges.length; e++) {
       this.params.set(edges[e].id, value)
+    }
+
+    return this.params
+  }
+
+  setEnumOptions(nodeID: string, paramName: string, options: string[]) {
+    const edges = this.blueprint.edges.filter(e => (e.source === nodeID) && (e.sourceHandle?.split('-')[0] === paramName))
+
+    for (let e = 0; e < edges.length; e++) {
+      this.enumOptions.set(edges[e].id, options)
     }
 
     return this.params

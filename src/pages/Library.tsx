@@ -1,11 +1,15 @@
-import { IonButtons, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonNote, IonPage, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react'
+import { IonActionSheet, IonButtons, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonNote, IonPage, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react'
 
-import { createSystem, systemsState } from '../state/systems'
+import { createSystem, deleteSystem, SystemData, systemsState } from '../state/systems'
 
 import { add } from 'ionicons/icons'
+import Pressable from '../components/Pressable'
+import { useState } from 'react'
 
 const Library: React.FC = () => {
   const systems = systemsState.useValue()
+
+  const [isDeleting, setIsDeleting] = useState<null | SystemData>(null)
 
   return (
     <IonPage>
@@ -29,15 +33,17 @@ const Library: React.FC = () => {
 
         {systems.length ? (
           systems.map((sys) => (
-            <IonCard key={sys.name} routerLink={`/systems/${sys.name}`}>
-              <IonCardHeader>
-                <IonCardTitle>{sys.name}</IonCardTitle>
-                <IonCardSubtitle>v{sys.version}</IonCardSubtitle>
-              </IonCardHeader>
-            </IonCard>
+            <Pressable key={sys.name} onLongPress={() => setIsDeleting(sys)}>
+              <IonCard routerLink={`/systems/${sys.name}`}>
+                <IonCardHeader>
+                  <IonCardTitle>{sys.name}</IonCardTitle>
+                  <IonCardSubtitle>v{sys.version}</IonCardSubtitle>
+                </IonCardHeader>
+              </IonCard>
+            </Pressable>
           ))
         ) : (
-          <IonText>Doesn't look like you have any systems yet... I'm not sure how this happened haha, please report it in the discord or other channels</IonText>
+          <IonText>Doesn't look like you have any systems refreshing should load a backup of dnd5e</IonText>
         )}
 
         <IonFab slot='fixed' vertical='bottom' horizontal='end'>
@@ -45,6 +51,34 @@ const Library: React.FC = () => {
             <IonIcon icon={add} />
           </IonFabButton>
         </IonFab>
+
+        <IonActionSheet
+          isOpen={isDeleting !== null}
+          header={`Delete ${isDeleting?.name}`}
+          buttons={[
+            {
+              text: 'Delete',
+              role: 'destructive',
+              data: {
+                action: 'delete',
+              },
+            },
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              data: {
+                action: 'cancel',
+              },
+            },
+          ]}
+          onDidDismiss={({ detail }) => {
+            if (detail.data.action === 'delete') {
+              deleteSystem(isDeleting?.name || '')
+            }
+
+            setIsDeleting(null)
+          }}
+        />
       </IonContent>
     </IonPage>
   );

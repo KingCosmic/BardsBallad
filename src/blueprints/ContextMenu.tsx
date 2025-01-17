@@ -123,6 +123,9 @@ export default function ContextMenu({
           Array
           {(submenuVisible === 4) && (
             <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
+              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('array_get')}>
+                Get Item
+              </li>
               <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('add_to_array')}>
                 Add Item
               </li>
@@ -200,6 +203,9 @@ export default function ContextMenu({
               </li>
               <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('subtract')}>
                 Subtract
+              </li>
+              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('multiply')}>
+                Multiply
               </li>
               <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('floor')}>
                 Floor

@@ -101,6 +101,8 @@ export function getDefaultDataForType(type: string) {
       return { inputType: 'unknown' }
     case 'array_update':
       return { inputType: 'unknown' }
+    case 'array_get':
+      return { inputType: 'unknown' }
     case 'filter':
       return { inputType: 'unknown' }
     case 'map':
@@ -123,6 +125,8 @@ export function getDefaultDataForType(type: string) {
       return { number1: 0, number2: 0 }
     case 'divide':
       return { number1: 0, number2: 0 }
+    case 'multiply':
+        return { number1: 0, number2: 0 }
     case 'floor':
       return { number: 0 }
     case 'new_enum':

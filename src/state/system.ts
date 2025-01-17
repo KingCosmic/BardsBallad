@@ -8,6 +8,8 @@ import { editorState, setPage } from './editor'
 
 import { SystemStorage } from '../lib/storage'
 
+import lz from 'lzutf8'
+
 let saveTimeout: NodeJS.Timeout | null = null
 export const systemState = newRidgeState<SystemData | null>(null, {
   onSet: async (sys) => {
@@ -53,7 +55,7 @@ export function updatePageLexical(lexical: string) {
 
     if (index === -1) return
     
-    draft.pages[index].lexical = lexical
+    draft.pages[index].lexical = lz.encodeBase64(lz.compress(lexical))
   })
 
   systemState.set(newState)

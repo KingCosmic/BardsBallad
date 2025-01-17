@@ -6,6 +6,8 @@ import { useEffect } from 'react'
 import Container from '../../designer/components/Container'
 import { getDefaultNodes } from '../../blueprints/utils'
 
+import lz from 'lzutf8'
+
 function Editor() {
   const system = systemState.useValue()
   const editor = editorState.useValue()
@@ -24,12 +26,15 @@ function Editor() {
       return
     }
 
-    actions.deserialize(lexical)
+    actions.deserialize(lz.decompress(lz.decodeBase64(lexical)))
   }, [editor.page])
 
   return (
     <div style={{
-      marginTop: 10
+      marginTop: 10,
+      borderRadius: '4px',
+      borderColor: 'gray',
+      borderWidth: '1px'
     }}>
       <Frame>
         <Element is={Container} canvas>
