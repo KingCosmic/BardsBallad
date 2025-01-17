@@ -3,7 +3,7 @@
 
 type Options = {
   type: string;
-  isArray: boolean;
+  isArray?: boolean;
   min?: number;
   max?: number;
   options?: string[];

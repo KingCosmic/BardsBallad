@@ -1,24 +1,25 @@
 import { newRidgeState } from 'react-ridge-state'
 
 type ModalData = {
+  type: string;
   title: string;
-  objData: any;
+  data: any;
   onSave(value: any): void;
   onDelete?(): void;
 }
 
 type ModalInfo = {
   id: number;
-  data: ModalData;
+  modal: ModalData;
 }
 
 let idCounter = 0;
 
 export const modalState = newRidgeState<ModalInfo[]>([])
 
-export function openModal(data: ModalData) {
+export function openModal(modal: ModalData) {
   modalState.set(
-    (prevState) => [...prevState, { id: idCounter++, data }],
+    (prevState) => [...prevState, { id: idCounter++, modal }],
   );
 }
 

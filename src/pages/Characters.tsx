@@ -29,7 +29,7 @@ const Characters: React.FC = () => {
 
         {characters.length ? (
           characters.map((char) => (
-            <Pressable onLongPress={() => setIsDeleting(char)}>
+            <Pressable key={char.name} onLongPress={() => setIsDeleting(char)}>
               <IonCard routerLink={`/character/${char.name}`}>
                 <IonCardHeader>
                   <IonCardTitle>{char.name}</IonCardTitle>

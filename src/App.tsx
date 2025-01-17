@@ -30,12 +30,26 @@ import '@ionic/react/css/display.css'
 /* import '@ionic/react/css/palettes/dark.class.css'; */
 import '@ionic/react/css/palettes/dark.system.css'
 
+import './App.css'
+
 /* Theme variables */
 import './theme/variables.css'
 import Character from './pages/Character'
 import Characters from './pages/Characters'
 import Library from './pages/Library'
 import CharacterMenu from './components/CharacterMenu'
+import System from './pages/System'
+import ModalManager from './components/ModalManager'
+import SystemMenu from './components/SystemMenu'
+
+import { Editor } from '@craftjs/core'
+import Text from './designer/components/Text'
+import Searchbar from './designer/Searchbar'
+import FAB from './designer/FloatingActionButton'
+import { updatePageLexical } from './state/system'
+import DesignerDivider from './designer/components/Divider'
+import Container from './designer/components/Container'
+// import { RenderNode } from './designer/RenderNode'
 
 setupIonicReact()
 
@@ -43,25 +57,33 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane contentId='main'>
-          <Menu />
-          <CharacterMenu />
-          <IonRouterOutlet id='main'>
-            <Route path='/' exact={true}>
-              <Redirect to='/characters' />
-            </Route>
-            <Route path='/character/:name'>
-              <Character />
-            </Route>
-            <Route path='/characters' exact={true}>
-              <Characters />
-            </Route>
+        <Editor resolver={{ Container, Text, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updatePageLexical(query.serialize())}>
+          <IonSplitPane contentId='main'>
+            <Menu />
+            <IonRouterOutlet id='main'>
+              <Route path='/' exact={true}>
+                <Redirect to='/characters' />
+              </Route>
+              <Route path='/character/:name'>
+                <Character />
+              </Route>
+              <Route path='/characters' exact={true}>
+                <Characters />
+              </Route>
 
-            <Route path='/library' exact={true}>
-              <Library />
-            </Route>
-          </IonRouterOutlet>
-        </IonSplitPane>
+              <Route path='/library' exact={true}>
+                <Library />
+              </Route>
+              <Route path='/systems/:name'>
+                <System />
+              </Route>
+            </IonRouterOutlet>
+
+            <CharacterMenu />
+            <SystemMenu />
+          </IonSplitPane>
+          <ModalManager />
+        </Editor>
       </IonReactRouter>
     </IonApp>
   );
