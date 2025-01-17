@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   IonButtons,
@@ -8,98 +8,117 @@ import {
   IonContent,
   IonToolbar,
   IonTitle,
-  IonInput,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
 } from '@ionic/react'
 
-import { addEdge, Background, Controls, Edge, OnConnect, ReactFlow, useEdgesState, useNodesState } from '@xyflow/react'
+import { Background, Connection, Controls, Edge, MiniMap, OnBeforeDelete, ReactFlow } from '@xyflow/react'
  
 import '@xyflow/react/dist/style.css'
 import './BlueprintEditor.css'
 
-import ResultNode from '../blueprints/ResultNode'
-import TextNode from '../blueprints/TextNode'
-import UppercaseNode from '../blueprints/UppercaseNode'
-import { MyNode } from '../blueprints/utils'
+import NodeContextMenu from '../blueprints/NodeContextMenu'
+import { BlueprintData } from '../state/systems'
+import ContextMenu from '../blueprints/ContextMenu'
 
-const nodeTypes = {
-  text: TextNode,
-  result: ResultNode,
-  uppercase: UppercaseNode,
-}
+import { blueprintState, onConnect, onEdgesChange, onNodesChange, setEdges, setNodes } from '../state/blueprint'
 
-const initialNodes: MyNode[] = [
-  {
-    id: '1',
-    type: 'text',
-    data: {
-      text: 'hello',
-    },
-    position: { x: -100, y: -50 },
-  },
-  {
-    id: '2',
-    type: 'text',
-    data: {
-      text: 'world',
-    },
-    position: { x: 0, y: 100 },
-  },
-  {
-    id: '3',
-    type: 'uppercase',
-    data: { text: '' },
-    position: { x: 100, y: -100 },
-  },
-  {
-    id: '4',
-    type: 'result',
-    data: {},
-    position: { x: 300, y: -75 },
-  },
-];
- 
-const initialEdges: Edge[] = [
-  {
-    id: 'e1-3',
-    source: '1',
-    target: '3',
-  },
-  {
-    id: 'e3-4',
-    source: '3',
-    target: '4',
-  },
-  {
-    id: 'e2-4',
-    source: '2',
-    target: '4',
-  },
-];
+import nodeTypes from '../blueprints/nodeTypes'
 
 type ModalProps = {
   title: string;
   onDelete?(): void;
-  onSave(newData: { [key:string]: any }): void;
+  onSave(newData: BlueprintData): void;
   
   isVisible: boolean;
   requestClose(): void;
-  data: { [key:string]: any };
+  data: BlueprintData;
 }
 
-function BlueprintEditor({ isVisible, requestClose }: ModalProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+const isValidConnection = (conn: Connection | Edge) => {
+  if (!conn.sourceHandle || !conn.targetHandle) return false
 
-  const onConnect: OnConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges],
+  const sourceType = conn.sourceHandle.split('-')[1]
+  const targetType = conn.targetHandle.split('-')[1]
+
+  if (!sourceType || !targetType) return false
+
+  if ((targetType === 'object') && !['string', 'number', 'boolean', 'enum', 'blueprint'].includes(sourceType)) return true
+  if ((targetType === 'array') && sourceType.endsWith('(Array)')) return true
+
+  return (sourceType === targetType)
+}
+
+function BlueprintEditor({ isVisible, requestClose, data, onSave }: ModalProps) {
+  const [nodeMenu, setNodeMenu] = useState<any | null>(null)
+  const [contextMenu, setContextMenu] = useState<any | null>(null)
+  const ref = useRef<any>(null)
+
+  const { nodes, edges } = blueprintState.useValue()
+
+  useEffect(() => {
+    setNodes(data.nodes)
+    setEdges(data.edges)
+  }, [data])
+
+  const onNodeContextMenu = useCallback(
+    (event: any, node: any) => {
+      // Prevent native context menu from showing
+      event.preventDefault()
+
+      if (!ref || !ref.current) return
+ 
+      // Calculate position of the context menu. We want to make sure it
+      // doesn't get positioned off-screen.
+      const pane = ref.current.getBoundingClientRect()
+      setNodeMenu({
+        id: node.id,
+        top: event.clientY < pane.height - 200 && event.clientY,
+        left: event.clientX < pane.width - 200 && event.clientX,
+        right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
+        bottom: event.clientY >= pane.height - 200 && pane.height - event.clientY,
+      })
+      setContextMenu(null)
+    },
+    [setNodeMenu]
   )
 
+  const onBeforeDelete: OnBeforeDelete = useCallback(async ({ nodes, edges }) => {
+    if (nodes.find(n => ['entry', 'output'].includes(n.type!))) return false
+
+    return true
+  }, [])
+
+  const onContextMenu = useCallback(
+    (event: any) => {
+      // Prevent native context menu from showing
+      event.preventDefault()
+
+      if (!ref || !ref.current) return
+ 
+      // Calculate position of the context menu. We want to make sure it
+      // doesn't get positioned off-screen.
+      const pane = ref.current.getBoundingClientRect()
+      setContextMenu({
+        top: event.clientY < pane.height - 200 && event.clientY,
+        left: event.clientX < pane.width - 200 && event.clientX,
+        right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
+        bottom: event.clientY >= pane.height - 200 && pane.height - event.clientY,
+        // for spawning nodes off context menu.
+        rawX: event.clientX,
+        rawY: event.clientY
+      })
+      setNodeMenu(null)
+    },
+    [setContextMenu]
+  )
+
+  // Close the context menu if it's open whenever the window is clicked.
+  const onPaneClick = useCallback(() => {
+    setNodeMenu(null)
+    setContextMenu(null)
+  }, [setNodeMenu, setContextMenu])
+
   return (
-    <IonModal isOpen={isVisible}>
+    <IonModal className='blueprint-modal' isOpen={isVisible}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot='start'>
@@ -107,26 +126,40 @@ function BlueprintEditor({ isVisible, requestClose }: ModalProps) {
           </IonButtons>
           <IonTitle>Action Flow</IonTitle>
           <IonButtons slot='end'>
-            <IonButton color='primary' strong={true} onClick={requestClose}>
+            <IonButton color='primary' strong={true} onClick={() => {
+              onSave({ nodes, edges })
+              console.log({ nodes, edges })
+              requestClose()
+            }}>
               Confirm
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={nodeTypes}
-          colorMode='system'
-          fitView
-        >
-          <Controls />
-          <Background />
-        </ReactFlow>
+        <div style={{ width: '100%', height: '100%' }}>
+          <ReactFlow
+            ref={ref}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onBeforeDelete={onBeforeDelete}
+            isValidConnection={isValidConnection}
+            onPaneClick={onPaneClick}
+            onNodeContextMenu={onNodeContextMenu}
+            onPaneContextMenu={onContextMenu}
+            nodeTypes={nodeTypes}
+            colorMode='system'
+          >
+            <MiniMap />
+            <Background />
+            <Controls />
+            {nodeMenu && <NodeContextMenu onClick={onPaneClick} {...nodeMenu} />}
+            {contextMenu && <ContextMenu onClick={onPaneClick} {...contextMenu} />}
+          </ReactFlow>
+        </div>
       </IonContent>
     </IonModal>
   )

@@ -30,6 +30,8 @@ import '@ionic/react/css/display.css'
 /* import '@ionic/react/css/palettes/dark.class.css'; */
 import '@ionic/react/css/palettes/dark.system.css'
 
+import './App.css'
+
 /* Theme variables */
 import './theme/variables.css'
 import Character from './pages/Character'
@@ -38,12 +40,16 @@ import Library from './pages/Library'
 import CharacterMenu from './components/CharacterMenu'
 import System from './pages/System'
 import ModalManager from './components/ModalManager'
-import DesignerMenu from './components/DesignerMenu'
+import SystemMenu from './components/SystemMenu'
 
 import { Editor } from '@craftjs/core'
-import Container from './designer/Container'
-import Button from './designer/Button'
-import Text from './designer/Text'
+import Text from './designer/components/Text'
+import Searchbar from './designer/Searchbar'
+import FAB from './designer/FloatingActionButton'
+import { updatePageLexical } from './state/system'
+import DesignerDivider from './designer/components/Divider'
+import Container from './designer/components/Container'
+// import { RenderNode } from './designer/RenderNode'
 
 setupIonicReact()
 
@@ -51,7 +57,7 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <Editor resolver={{ Container, Text, Button }}>
+        <Editor resolver={{ Container, Text, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updatePageLexical(query.serialize())}>
           <IonSplitPane contentId='main'>
             <Menu />
             <IonRouterOutlet id='main'>
@@ -74,7 +80,7 @@ const App: React.FC = () => {
             </IonRouterOutlet>
 
             <CharacterMenu />
-            <DesignerMenu />
+            <SystemMenu />
           </IonSplitPane>
           <ModalManager />
         </Editor>

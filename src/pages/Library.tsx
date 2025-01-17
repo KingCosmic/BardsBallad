@@ -1,8 +1,8 @@
 import { IonButtons, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonNote, IonPage, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react'
 
-import { systemsState } from '../state/systems'
+import { createSystem, systemsState } from '../state/systems'
 
-import { Link } from 'react-router-dom'
+import { add } from 'ionicons/icons'
 
 const Library: React.FC = () => {
   const systems = systemsState.useValue()
@@ -23,13 +23,13 @@ const Library: React.FC = () => {
 
         <IonNote>
           <h6 style={{ paddingLeft: 12, paddingRight: 12 }}>
-            In the future you can edit / create new systems for use. These will involve some custom tooling that's currently in development.
+            Click on a system to edit it!
           </h6>
         </IonNote>
 
         {systems.length ? (
           systems.map((sys) => (
-            <IonCard href={`/systems/${sys.name}`}>
+            <IonCard key={sys.name} routerLink={`/systems/${sys.name}`}>
               <IonCardHeader>
                 <IonCardTitle>{sys.name}</IonCardTitle>
                 <IonCardSubtitle>v{sys.version}</IonCardSubtitle>
@@ -39,6 +39,12 @@ const Library: React.FC = () => {
         ) : (
           <IonText>Doesn't look like you have any systems yet... I'm not sure how this happened haha, please report it in the discord or other channels</IonText>
         )}
+
+        <IonFab slot='fixed' vertical='bottom' horizontal='end'>
+          <IonFabButton onClick={() => createSystem()}>
+            <IonIcon icon={add} />
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   );

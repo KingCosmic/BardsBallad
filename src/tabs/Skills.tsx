@@ -71,7 +71,9 @@ function Skills({ character }: TabProps) {
 
       <IonList inset={true}>
         <IonItem button={true} onClick={() => {
-          openModal({ title: 'Edit Proficiency Bonus', objData: character.data.proficiencyBonus,
+          openModal({ title: 'Edit Proficiency Bonus',
+            data: character.data.proficiencyBonus,
+            type: 'edit_object',
             onSave: (data) => runJsonAction({
               name: 'Update Proficiency Bonus',
               target: `data/proficiencyBonus`,
@@ -97,7 +99,7 @@ function Skills({ character }: TabProps) {
         {
           character.data.stats.map((stat: any) => {
             return (
-              <IonRow onClick={() => setStatData(stat)}>
+              <IonRow key={stat.name} onClick={() => setStatData(stat)}>
                 <IonCol>
                   <div style={{ backgroundColor: 'gray', padding: 5, display: 'flex', justifyContent: 'center' }}>
                     {stat.score}
@@ -142,7 +144,7 @@ function Skills({ character }: TabProps) {
               <IonItem button={true} onClick={() => setSkillData(skill)}>
                 <VisualBox slot='start' type={skill.proficiency} />
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <IonLabel>{getMod(character.data.stats.find((s:any) => s.name === skill.stat)?.score) + (bonus[skill.proficiency])}</IonLabel>
+                  <IonLabel>{getMod(character.data.stats.find((s: any) => s.name === skill.stat)?.score) + (bonus[skill.proficiency])}</IonLabel>
                   <IonLabel>{skill.name}</IonLabel>
                 </div>
                 <IonNote slot='end'>({skill.stat})</IonNote>
@@ -153,34 +155,34 @@ function Skills({ character }: TabProps) {
       </IonList>
 
       <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton>
-            <IonIcon icon={chevronUpCircle}></IonIcon>
-          </IonFabButton>
-          <IonFabList side="top">
-            <IonButton
-              style={{ marginRight: '80%'}}
-              onClick={() => {
-                runJsonAction({
-                  name: 'Add Skill', target: 'data/skills', type: JsonActionType.ADDITEM,
-                  value: generateObject(character.system.types.find(type => type.name === 'Skill')!)
-                })}
-              }
-            >
-              <IonText>Add Skill</IonText>
-            </IonButton>
-            <IonButton
-              style={{ marginRight: '75%'}}
-              onClick={() => {
-                runJsonAction({
-                  name: 'Add Stat', target: 'data/stats', type: JsonActionType.ADDITEM,
-                  value: generateObject(character.system.types.find(type => type.name === 'Stat')!)
-                })}
-              }
-            >
-              <IonText>Add Stat</IonText>
-            </IonButton>
-          </IonFabList>
-        </IonFab>
+        <IonFabButton>
+          <IonIcon icon={chevronUpCircle}></IonIcon>
+        </IonFabButton>
+        <IonFabList side="top">
+          <IonButton
+            style={{ marginRight: '80%'}}
+            onClick={() => {
+              runJsonAction({
+                name: 'Add Skill', target: 'data/skills', type: JsonActionType.ADDITEM,
+                value: generateObject(character.system.types.find(type => type.name === 'Skill')!)
+              })}
+            }
+          >
+            <IonText>Add Skill</IonText>
+          </IonButton>
+          <IonButton
+            style={{ marginRight: '75%'}}
+            onClick={() => {
+              runJsonAction({
+                name: 'Add Stat', target: 'data/stats', type: JsonActionType.ADDITEM,
+                value: generateObject(character.system.types.find(type => type.name === 'Stat')!)
+              })}
+            }
+          >
+            <IonText>Add Stat</IonText>
+          </IonButton>
+        </IonFabList>
+      </IonFab>
     </>
   )
 }

@@ -1,21 +1,21 @@
+import { SystemType } from '../state/systems'
 import getRandomDataFromType from './getRandomDataFromType'
 
-export default function generateObject(typeDef:{ [key:string]: any }) {
+export default function generateObject(typeDef: SystemType | string) {
+  if (typeof typeDef === 'string') return getRandomDataFromType({ type: typeDef })
+
   let exampleData: { [key:string]: any } = {
-    _def: {}
+    _type: {
+      ...typeDef
+    }
   }
 
-  const keys = Object.keys(typeDef.properties)
+  for (let i = 0; i < typeDef.properties.length; i++) {
+    const prop = typeDef.properties[i]
 
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
+    let options = prop.typeData
 
-    let options = typeDef.properties[key]
-
-    if (typeof options === 'string') options = { type: options }
-
-    exampleData._def[key] = options
-    exampleData[key] = getRandomDataFromType(options)
+    exampleData[prop.key] = getRandomDataFromType(options)
   }
 
   return exampleData

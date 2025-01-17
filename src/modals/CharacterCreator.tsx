@@ -59,12 +59,12 @@ function CharacterCreatorModal(props:any) {
         </IonItem>
 
         <IonItem>
-          <IonSelect label='System' labelPlacement='stacked'
-            value={systems}
+          <IonSelect label='System' labelPlacement='stacked' interface='popover'
+            value={system}
             onIonChange={(e) => setSystem(e.detail.value)}
           >
             {
-              systems.map((option) => <IonSelectOption value={option}>{option.name}</IonSelectOption>)
+              systems.map((option) => <IonSelectOption key={option.name} value={option}>{option.name}</IonSelectOption>)
             }
           </IonSelect>
         </IonItem>

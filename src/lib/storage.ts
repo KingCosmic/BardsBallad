@@ -5,8 +5,10 @@ class Storage {
 
   public isCreated: boolean = false;
 
-  constructor() {
-    this.store = new IoStorage()
+  constructor(name: string | undefined) {
+    this.store = new IoStorage({
+      name: name
+    })
 
     this.createStorage()
   }
@@ -45,4 +47,8 @@ class Storage {
   }
 }
 
-export default new Storage()
+export const CharacterStorage = new Storage('characters')
+
+export const SystemStorage = new Storage('systems')
+
+export default Storage

@@ -61,7 +61,7 @@ const Menu: React.FC = () => {
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
+                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection='root' lines="none" detail={false}>
                   <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                   <IonLabel>{appPage.title}</IonLabel>
                 </IonItem>
@@ -69,17 +69,18 @@ const Menu: React.FC = () => {
             )
           })}
         </IonList>
-        <IonCard color='light'>
-          <IonCardHeader>
-            <IonToolbar color='light'>
-              <IonButton slot='start' color='warning'>Beta</IonButton>
-            </IonToolbar>
-          </IonCardHeader>
 
-          <IonCardContent>
-            We're happy you're using the BardsBallad Beta! If you run into any problems please reach out to us through one of the platforms below!
-          </IonCardContent>
-        </IonCard>
+          <IonCard color='light'>
+            <IonCardHeader>
+              <IonToolbar color='light'>
+                <IonButton slot='start' color='warning'>Beta</IonButton>
+              </IonToolbar>
+            </IonCardHeader>
+
+            <IonCardContent>
+              We're happy you're using the BardsBallad Beta! If you run into any problems please reach out to us through one of the platforms below!
+            </IonCardContent>
+          </IonCard>
 
         <IonToolbar>
           <IonButtons>
