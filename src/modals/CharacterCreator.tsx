@@ -33,8 +33,9 @@ function CharacterCreatorModal(props:any) {
           </IonButtons>
           <IonTitle>Create Chararacter</IonTitle>
           <IonButtons slot='end'>
-            <IonButton strong={true} onClick={() => {
+            <IonButton color='primary' strong={true} onClick={() => {
               if (!system) return modal.current?.dismiss()
+              if (!name) return
               createCharacter(name, system)
               setName('')
               setSystem((systems[0]) ? systems[0] : null)
@@ -58,12 +59,12 @@ function CharacterCreatorModal(props:any) {
         </IonItem>
 
         <IonItem>
-          <IonSelect label='System' labelPlacement='stacked'
-            value={systems}
+          <IonSelect label='System' labelPlacement='stacked' interface='popover'
+            value={system}
             onIonChange={(e) => setSystem(e.detail.value)}
           >
             {
-              systems.map((option) => <IonSelectOption value={option}>{option.name}</IonSelectOption>)
+              systems.map((option) => <IonSelectOption key={option.name} value={option}>{option.name}</IonSelectOption>)
             }
           </IonSelect>
         </IonItem>

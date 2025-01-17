@@ -1,16 +1,21 @@
-import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonButton, IonItem, IonText, IonNote } from '@ionic/react'
-import { type CharacterData, characterState, JsonActionType, runJsonAction } from '../state/character'
-import generateObject from '../utils/generateObject'
-import { openModal } from '../state/modals'
+import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonNote } from '@ionic/react'
+import { characterState } from '../state/character'
+import useBreakpoint from '../utils/useBreakpoint'
+import { useLocation } from 'react-router'
 
 const CharacterMenu = () => {
 
+  let location = useLocation()
+
   const character = characterState.useValue()
 
+  const isLargeScreen = useBreakpoint('md', 'more')
+
   if (!character) return <></>
+  if (!location.pathname.startsWith('/character/')) return <></>
 
   return (
-    <IonMenu menuId='info-menu' side='end' contentId='main' type='overlay'>
+    <IonMenu menuId='info-menu' side='end' contentId='main' type='overlay' style={{ maxWidth: isLargeScreen ? '10%' : '' }}>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Extras</IonTitle>
@@ -22,7 +27,7 @@ const CharacterMenu = () => {
           These things will move to a better area to accomodate them, but for the time being they're going here.
         </IonNote>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+        {/* <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
           <IonTitle>HitDice</IonTitle>
           <IonButton onClick={() =>
             runJsonAction({
@@ -134,7 +139,7 @@ const CharacterMenu = () => {
               )
             })
           }
-        </IonList>
+        </IonList> */}
       </IonContent>
     </IonMenu>
   )

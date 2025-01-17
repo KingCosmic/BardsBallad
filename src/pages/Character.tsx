@@ -1,33 +1,31 @@
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenu, IonMenuButton, IonPage, IonSelect, IonSelectOption, IonText, IonTitle, IonToolbar } from '@ionic/react'
+import { IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react'
 import './Page.css'
-import { characterState, setCharacter } from '../state/character'
+import { characterState, setCurrentCharacter } from '../state/character'
 import { useEffect, useState } from 'react'
-import Equipment from '../tabs/Equipment'
-import Info from '../tabs/Info'
-import Skills from '../tabs/Skills'
 
 import { useParams } from 'react-router'
 import { charactersState } from '../state/characters'
 
-import { menuController } from '@ionic/core/components'
 import { informationCircleOutline } from 'ionicons/icons'
-import Combat from '../tabs/Combat'
-import ModalManager from '../components/ModalManager'
-import Feats from '../tabs/Feats'
-import Notes from '../tabs/Notes'
-import Spells from '../tabs/Spells'
+import { PageData } from '../state/systems'
+import RenderEditorData from '../designer/RenderEditorData'
 
 const Character: React.FC = () => {
   const characters = charactersState.useValue()
   const character = characterState.useValue()
 
-  const [tab, setTab] = useState('Info')
+  const [tab, setTab] = useState(character ? character.system.pages[0].name : 'test')
 
   const { name } = useParams<{ name: string; }>()
 
   useEffect(() => {
-    setCharacter(characters.find(c => c.name === name))
-  }, [name])
+    const character = characters.find(c => c.name === name)
+    setCurrentCharacter(character)
+
+    if (!character) return
+
+    setTab(character.system.pages[0].name)
+  }, [characters, name, setTab, setCurrentCharacter])
 
   if (!character) return <>loading...</>
 
@@ -36,8 +34,7 @@ const Character: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot='start'>
-            <IonBackButton />
-            {/* <IonMenuButton menu='nav-menu' /> */}
+            <IonMenuButton menu='nav-menu' />
           </IonButtons>
           <IonTitle>{character.name}</IonTitle>
           <IonButtons slot='end'>
@@ -50,46 +47,28 @@ const Character: React.FC = () => {
 
       <IonContent className='ion-padding' fullscreen>
         <IonSelect className='ion-margin-bottom' label='Tab'
+          interface='popover'
           fill='outline'
           value={tab}
           onIonChange={(e) => setTab(e.detail.value)}
         >
-          <IonSelectOption value='Info'>Info</IonSelectOption>
-          <IonSelectOption value='Skills'>Skills</IonSelectOption>
-          <IonSelectOption value='Spells'>Spells</IonSelectOption>
-          <IonSelectOption value='Equipment'>Equipment</IonSelectOption>
-          <IonSelectOption value='Combat'>Combat</IonSelectOption>
-          <IonSelectOption value='Features'>Features</IonSelectOption>
-          <IonSelectOption value='Notes'>Notes</IonSelectOption>
+          {
+            character.system.pages.map((page) => <IonSelectOption key={page.name} value={page.name}>{page.name}</IonSelectOption>)
+          }
         </IonSelect>
 
-        {getTab(tab, { character })}
-
-        <ModalManager />
+        {
+          character.system.pages.map((page) => <RenderTab key={page.name} page={page} hidden={page.name !== tab} />)
+        }
       </IonContent>
     </IonPage>
-  );
-};
+  )
+}
 
-function getTab(tab: string, props: any) {
-  switch(tab) {
-    case 'Info':
-      return <Info {...props} />
-    case 'Skills':
-      return <Skills {...props} />
-    case 'Equipment':
-      return <Equipment {...props} />
-    case 'Spells':
-      return <Spells {...props} />
-    case 'Combat':
-      return <Combat {...props} />
-    case 'Features':
-      return <Feats {...props} />
-    case 'Notes':
-      return <Notes {...props} />
-    default:
-      return <p>{tab} is not a valid tab.</p>
-  }
+function RenderTab({ page, hidden }: { page: PageData, hidden: boolean }) {
+  return (
+    <RenderEditorData style={{ display: hidden ? 'none': 'block' }} data={JSON.parse(page.lexical)} />
+  )
 }
 
 export default Character;

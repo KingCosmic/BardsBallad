@@ -2,10 +2,11 @@
 import { newRidgeState } from 'react-ridge-state'
 
 import { produce } from 'immer'
-import getNestedProperty from '../utils/getNestedProperty';
-import setNestedProperty from '../utils/setNestedProperty';
-import Storage from '../lib/storage';
-import { SystemData } from './systems';
+import getNestedProperty from '../utils/getNestedProperty'
+import setNestedProperty from '../utils/setNestedProperty'
+import { CharacterStorage } from '../lib/storage'
+import { SystemData } from './systems'
+import { setCharacterData } from './characters'
 
 
 // TODO: add support for type checking? like for example let additem check to make sure values are expected types
@@ -43,14 +44,15 @@ export const characterState = newRidgeState<CharacterData | null>(null, {
     if (char === null) return
 
     try {
-      await Storage.set(char.name, char);
+      setCharacterData(char.name, char)
+      await CharacterStorage.set(char.name, char)
     } catch (e) {
       // TODO: show error message to user.
     }
   }
 })
 
-export function setCharacter(char: CharacterData | null = null) {
+export function setCurrentCharacter(char: CharacterData | null = null) {
   characterState.set(char)
 }
 
