@@ -1,5 +1,4 @@
 name: Generate a build, publish and push to another branch.
-
 on:
   push:
     branches:
@@ -32,7 +31,8 @@ jobs:
         uses: SamKirkland/web-deploy@v1
         with:
           target-server: ${{ secrets.SERVER_IP }}
-          remote-user: ${{ secrets.SERVER_USERNAME }}
+          ssh-port: ${{ secrets.SERVER_PORT }}
+          remote-user: ${{ secrets.SSH_USERNAME }}
           private-ssh-key: ${{ secrets.SSH_KEY }}
           source-path: ./dist/
           destination-path: ~/public_html/
