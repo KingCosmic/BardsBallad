@@ -83,7 +83,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
             onIonChange={(e) => {
               const t = system?.types.find(type => type.name === e.detail.value) || null
               setType(t)
-              setDataCopy({ ...dataCopy, data: generateObject(t || e.detail.value), typeData: { ...dataCopy.typeData, type: e.detail.value }})
+              setDataCopy({ ...dataCopy, data: dataCopy.typeData.isArray ? [] : generateObject(t || e.detail.value), typeData: { ...dataCopy.typeData, type: e.detail.value }})
             }}
           >
             <IonSelectOption value='string'>
@@ -118,7 +118,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
                 if (!dataCopy.typeData.isArray) {
                   setDataCopy({ ...dataCopy, data: [], typeData: { ...dataCopy.typeData, isArray: true }})
                 } else {
-                  setDataCopy({ ...dataCopy, data: '', typeData: { ...dataCopy.typeData, isArray: false }})
+                  setDataCopy({ ...dataCopy, data: generateObject(dataCopy.typeData.type), typeData: { ...dataCopy.typeData, isArray: false }})
                 }
               }}>Is Array?</IonCheckbox>
             </IonItem>
