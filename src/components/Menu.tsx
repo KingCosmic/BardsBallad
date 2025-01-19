@@ -57,7 +57,7 @@ const Menu: React.FC = () => {
       <IonContent>
         <IonList>
           <IonListHeader>BardsBallad</IonListHeader>
-          <IonNote>V0.8.2</IonNote>
+          <IonNote>V0.1.0</IonNote>
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>

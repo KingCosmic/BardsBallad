@@ -26,13 +26,3 @@ jobs:
           FOLDER: dist # the directory where our build is placed.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
           MESSAGE: "Build: ({sha}) {msg}" # The commit message
-      
-      - name: 📂 Sync Files
-        uses: SamKirkland/web-deploy@v1
-        with:
-          target-server: ${{ secrets.SERVER_IP }}
-          ssh-port: ${{ secrets.SERVER_PORT }}
-          remote-user: ${{ secrets.SSH_USERNAME }}
-          private-ssh-key: ${{ secrets.SSH_KEY }}
-          source-path: ./dist/
-          destination-path: ~/public_html/
