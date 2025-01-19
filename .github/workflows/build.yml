@@ -3,7 +3,7 @@ name: Generate a build and push to another branch.
 on:
   push:
     branches:
-      - main # The branch name to build deployments from.
+      - master # The branch name to build deployments from.
 
 jobs:
   build:
