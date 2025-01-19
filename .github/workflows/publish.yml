@@ -1,4 +1,4 @@
-name: Generate a build and push to another branch.
+name: Deploy build to webhost.
 
 on:
   push:
