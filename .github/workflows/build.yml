@@ -1,4 +1,4 @@
-name: Generate a build and push to another branch.
+name: Generate a build, publish and push to another branch.
 
 on:
   push:
@@ -27,3 +27,12 @@ jobs:
           FOLDER: dist # the directory where our build is placed.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
           MESSAGE: "Build: ({sha}) {msg}" # The commit message
+      
+      - name: 📂 Sync Files
+        uses: SamKirkland/web-deploy@v1
+        with:
+          target-server: ${{ secrets.SERVER_IP }}
+          remote-user: ${{ secrets.SERVER_USERNAME }}
+          private-ssh-key: ${{ secrets.SSH_KEY }}
+          source-path: ./dist/
+          destination-path: ~/public_html/
