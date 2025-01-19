@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   IonButtons,
@@ -61,11 +61,13 @@ function EditPageStateModal(props: Props) {
               if (!type) return requestClose()
               if (!props.data) return requestClose()
 
-              const newStateData = {
+              const newStateData: { name: string, type: TypeData } = {
                 name,
                 type: {
                   type,
-                  isArray
+                  isArray,
+                  useTextArea: false,
+                  options: []
                 }
               }
 
