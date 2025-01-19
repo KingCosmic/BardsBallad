@@ -1,0 +1,22 @@
+name: Generate a build and push to another branch.
+
+on:
+  push:
+    branches:
+      - build # The branch name to deploy from.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Push
+    steps:
+      - name: 🚚 Get Latest Code
+        uses: actions/checkout@v4
+
+      - name: 📂 Sync Files
+        uses: SamKirkland/web-deploy@v1
+        with:
+          target-server: ${{ secrets.SERVER_IP }}
+          remote-user: ${{ secrets.SERVER_USERNAME }}
+          private-ssh-key: ${{ secrets.SSH_KEY }}
+          destination-path: ~/public_html/
