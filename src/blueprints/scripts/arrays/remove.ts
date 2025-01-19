@@ -11,7 +11,7 @@ export default {
     let newArray = baseArray.concat()
 
     if (index !== -1) {
-      newArray.splice(index)
+      newArray.splice(index, 1)
     }
 
     processor.setParam(node.id, 'output', newArray)
