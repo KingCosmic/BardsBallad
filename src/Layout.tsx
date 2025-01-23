@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router'
 import ModalManager from './components/ModalManager'
+import { sidebarState, closeSidebar } from './state/sidebar'
 
 const topItems = [
   {
@@ -65,13 +66,17 @@ const bottomItems = [
 ]
 
 const Layout: React.FC = () => {
+  const isOpen = sidebarState.useValue()
+
   return (
     <div className='w-screen h-screen bg-background text-primary transition-colors'>
+      <div onClick={closeSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen sm:translate-x-0`} />
       <aside
-        className='fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0'
+        onClick={closeSidebar}
+        className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 fixed top-0 left-0 z-40 w-64 h-screen transition-transform sm:translate-x-0`}
         aria-label='Sidebar'
       >
-        <div className='h-full flex flex-col justify-between px-3 py-4 overflow-y-auto bg-neutral-50 dark:bg-neutral-950'>
+        <div className='h-full flex flex-col justify-between px-3 py-4 overflow-y-auto bg-neutral-50 dark:bg-neutral-950' onClick={(e) => e.stopPropagation()}>
           <div>
             <a
               href='https://bardsballad.com/'
