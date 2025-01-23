@@ -7,32 +7,26 @@ import {
   Position,
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react'
+import Card from '../../../components/Card'
  
 function BooleanBranch(_props: NodeProps<Node<{ boolean: boolean; }>>) {
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Branch</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Branch'>
       <Handle type='target' id='prev-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
+      <p style={{ marginTop: 5 }}>
+        input (boolean)
+      </p>
 
-        <p style={{ marginTop: 5 }}>
-          input (boolean)
-        </p>
+      <p style={{ textAlign: 'right', marginTop: 5 }}>
+        true
+      </p>
 
-        <p style={{ textAlign: 'right', marginTop: 5 }}>
-          true
-        </p>
-
-        <p style={{ textAlign: 'right', marginTop: 5 }}>
-          false
-        </p>
-      </IonCardContent>
+      <p style={{ textAlign: 'right', marginTop: 5 }}>
+        false
+      </p>
 
       <Handle type='target' id='input-boolean' position={Position.Left}
         style={{ top: 85, bottom: 'auto' }}
@@ -45,7 +39,7 @@ function BooleanBranch(_props: NodeProps<Node<{ boolean: boolean; }>>) {
       <Handle type='source' id='false-node' position={Position.Right}
         style={{ top: 136, bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  

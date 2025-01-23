@@ -1,25 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonInput,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-  IonLabel,
-  IonCheckbox,
-  IonList,
-} from '@ionic/react'
-
-import { TypeData } from '../state/systems'
-import { systemState } from '../state/system'
 import EditStringModal from './EditString'
+import Modal from '../components/Modal'
+
+import { systemState } from '../state/system'
+import { TypeData } from '../state/systems'
+import ModalHeader from '../components/Modal/Header'
+import ModalBody from '../components/Modal/Body'
+import ModalFooter from '../components/Modal/Footer'
+import Button from '../components/inputs/Button'
+import TextInput from '../components/inputs/TextInput'
+import Select from '../components/inputs/Select'
+import Checkbox from '../components/inputs/Checkbox'
 
 type Props = {
   data: { key: string; typeData: TypeData, typeName: string } | null;
@@ -30,9 +22,7 @@ type Props = {
   onDelete(): void;
 }
 
-function EditTypeModal(props: Props) {
-  const { data, requestClose, onSave, onDelete } = props
-
+const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, onDelete }) => {
   const [key, setKey] = useState('')
   const [propertyData, setPropertyData] = useState<TypeData>({ type: '', useTextArea: false, isArray: false, options: [] })
 
@@ -50,83 +40,29 @@ function EditTypeModal(props: Props) {
   }, [data])
 
   return (
-    <IonModal isOpen={props.isOpen}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot='start'>
-            <IonButton onClick={() => requestClose()}>Cancel</IonButton>
-          </IonButtons>
-          <IonTitle>Edit Type Property</IonTitle>
-          <IonButtons slot='end'>
-            <IonButton color='primary' strong={true} onClick={() => {
-              if (!key) return requestClose()
-              if (!propertyData) return requestClose()
-              if (!props.data) return requestClose()
+    <Modal isOpen={isOpen} onClose={requestClose}>
+      <ModalHeader title='Edit Type Property' onClose={requestClose} />
 
-              const newTypeData = {
-                key,
-                typeData: propertyData
-              }
-              
-              onSave(newTypeData)
-              requestClose()
-            }}>
-              Confirm
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className='ion-padding'>
-        <IonItem>
-          <IonInput
-            label='Key'
-            labelPlacement='stacked'
-            type='text'
-            placeholder='baba yaga'
-            value={key}
-            onIonInput={(ev) => setKey((ev.target as unknown as HTMLInputElement).value)}
-          />
-        </IonItem>
+      <ModalBody>
+        <TextInput id='key' label='key' placeholder='baba yaga' value={key} onChange={setKey} isValid errorMessage='' />
 
-        <IonItem>
-          <IonSelect label='Type' labelPlacement='stacked'
-            value={propertyData.type}
-            onIonChange={(e) => setPropertyData({ ...propertyData, type: e.detail.value })}
-          >
-            <IonSelectOption value='string'>
-              string
-            </IonSelectOption>
-            <IonSelectOption value='number'>
-              number
-            </IonSelectOption>
-            <IonSelectOption value='boolean'>
-              boolean
-            </IonSelectOption>
-            <IonSelectOption value='enum'>
-              enum
-            </IonSelectOption>
+        <Select id='type' label='Type' value={propertyData.type} onChange={type => setPropertyData({ ...propertyData, type })}>
+          <option value='string'>string</option>
+          
+          <option value='number'>number</option>
+          
+          <option value='boolean'>boolean</option>
+          
+          <option value='enum'>enum</option>
 
-            {
-              system?.types.map((type) => {
-                return (
-                  <IonSelectOption key={type.name} value={type.name}>
-                    {type.name}
-                  </IonSelectOption>
-                )
-              })
-            }
-          </IonSelect>
-        </IonItem>
+          {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+        </Select>
 
-        <IonItem>
-          <IonCheckbox checked={propertyData.isArray} onIonChange={() => setPropertyData({ ...propertyData, isArray: !propertyData.isArray })}>Is Array?</IonCheckbox>
-        </IonItem>
+        <Checkbox id='is-array' label='Is Array?' checked={propertyData.isArray} onChange={val => setPropertyData({ ...propertyData, isArray: val })} />
 
         {
           ((propertyData.type === 'string') && (!propertyData.isArray)) && (
-            <IonItem>
-              <IonCheckbox checked={propertyData.useTextArea} onIonChange={() => setPropertyData({ ...propertyData, useTextArea: !propertyData.useTextArea })}>Use Textarea?</IonCheckbox>
-            </IonItem>
+            <Checkbox id='use-textarea' label='Use Textarea?' checked={propertyData.useTextArea} onChange={val => setPropertyData({ ...propertyData, useTextArea: val })} />
           )
         }
 
@@ -136,7 +72,7 @@ function EditTypeModal(props: Props) {
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <p>Options</p>
 
-                <IonButton
+                <div
                   onClick={() => {
                     const index = propertyData.options.findIndex(o => o === 'New Option')
 
@@ -145,37 +81,24 @@ function EditTypeModal(props: Props) {
                     setPropertyData({ ...propertyData, options: [ ...propertyData.options, 'New Option'] })
                   }}
                 >
-                  Add
-                </IonButton>
+                  <p>Add</p>
+                </div>
               </div>
 
               <p style={{ height: 1, width: '100%', backgroundColor: 'white', marginTop: 4, marginBottom: 4 }} />
 
-              <IonList inset={true}>
+              <div>
                 {propertyData.options.map((item) => {
                   return (
-                    <IonItem color='light' key={item} button={true} onClick={() => setEditOption(item)}>
-                      <IonLabel>{item}</IonLabel>
-                    </IonItem>
+                    <div key={item} onClick={() => setEditOption(item)}>
+                      <p>{item}</p>
+                    </div>
                   )
                 })}
-              </IonList>
+              </div>
             </div>
           )
         }
-
-        <div style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
-          <IonButton
-            color='danger'
-            onClick={() => {
-              onDelete()
-              requestClose()
-            }}
-            disabled={parentType?.properties.length === 1}
-          >
-            Delete
-          </IonButton>
-        </div>
 
         <EditStringModal data={editOption} isOpen={editOption !== null}
           requestClose={() => setEditOption(null)}
@@ -191,8 +114,33 @@ function EditTypeModal(props: Props) {
             setPropertyData({ ...propertyData, options: newOptions })
           }}
         />
-      </IonContent>
-    </IonModal>
+      </ModalBody>
+
+      <ModalFooter>
+        <Button color='danger'
+          onClick={() => {
+            onDelete()
+            requestClose()
+          }}
+          disabled={parentType?.properties.length === 1}
+        >
+          Delete
+        </Button>
+
+        <Button color='primary' onClick={() => {
+          if (!key) return requestClose()
+          if (!propertyData) return requestClose()
+
+          const newTypeData = {
+            key,
+            typeData: propertyData
+          }
+          
+          onSave(newTypeData)
+          requestClose()
+        }}>Update</Button>
+      </ModalFooter>
+    </Modal>
   )
 }
 

@@ -48,7 +48,7 @@ export function updatePageLexical(lexical: string) {
   const system = systemState.get()
   const editor = editorState.get()
 
-  if (!system) return
+  if (!system || lexical === '{}') return
 
   const newState = produce(system, (draft) => {
     const index = draft.pages.findIndex((data => data.name === editor.page))

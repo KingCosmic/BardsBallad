@@ -1,7 +1,5 @@
-import { IonAccordion, IonAccordionGroup, IonCheckbox, IonInput, IonItem, IonLabel, IonList, IonSelect, IonSelectOption } from '@ionic/react'
-
 import { NodeHelpersType, Node, useNode, UserComponentConfig } from '@craftjs/core'
-import { PropsWithChildren, useCallback, useEffect, useMemo } from 'react'
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
 import { openModal } from '../../state/modals'
 import { getReturnTypeOfBlueprint } from '../../utils/Blueprints/getReturnTypeOfBlueprint'
 import { BlueprintData } from '../../state/systems'
@@ -10,6 +8,11 @@ import { useLocalState } from '../hooks/useLocalState'
 import BlueprintProcessor from '../../utils/Blueprints/processBlueprint'
 import { AddData, useLocalData } from '../renderer/Context'
 import { characterState } from '../../state/character'
+import AccordionGroup from '../../components/AccordionGroup'
+import Accordion from '../../components/Accordion'
+import Checkbox from '../../components/inputs/Checkbox'
+import TextInput from '../../components/inputs/TextInput'
+import Select from '../../components/inputs/Select'
 
 type ContainerProps = {
   showPlaceholder?: boolean;
@@ -171,6 +174,7 @@ function ContainerSettings() {
   }))
 
   const localParams = useLocalState(id)
+  const [openAccordion, setOpenAccordion] = useState(-1)
 
   useEffect(() => {
     setProp((props: any) => {
@@ -183,380 +187,212 @@ function ContainerSettings() {
   }, [localParams])
 
   return (
-    <IonAccordionGroup>
-      <IonItem>
-        <IonCheckbox checked={showPlaceholder} onIonChange={() => {
-          setProp((props: any) => props.showPlaceholder = !showPlaceholder)
-        }}>Show Placeholder</IonCheckbox>
-      </IonItem>
-      <IonAccordion value='visibility'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Visibility</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              <IonCheckbox checked={dynamicVisibility} onIonChange={() => {
-                setProp((props: any) => props.dynamicVisibility = !dynamicVisibility)
-              }}>Dynamic Visibility?</IonCheckbox>
-            </IonItem>
+    <AccordionGroup>
+      <Checkbox id='show-placeholder' label='Visible?' checked={showPlaceholder} onChange={val => setProp((props: any) => props.showPlaceholder = val)} />
 
-            {
-              dynamicVisibility ? (
-                <IonItem button={true} onClick={() => openModal({
-                  type: 'blueprint',
-                  title: '',
-                  data: visibilityBlueprint,
-                  onSave: (blueprint) => {
-                    setProp((props: any) => props.visibilityBlueprint = blueprint)
-                  }
-                })}>
-                  Visibility Blueprint
-                </IonItem>
-              ) : (
-                <IonItem>
-                  <IonCheckbox checked={isVisible} onIonChange={() => {
-                    setProp((props: any) => props.isVisible = !isVisible)
-                  }}>Visible?</IonCheckbox>
-                </IonItem>
-              )
-            }
-          </IonList>
-        </div>
-      </IonAccordion>
-      <IonAccordion value='list'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>List</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              <IonCheckbox checked={isList} onIonChange={() => {
-                setProp((props: any) => {
-                  const newValue = !isList
+      <Accordion id='visibility' title='Visibility' isOpen={openAccordion === 0} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 0 : -1)}>
+        <Checkbox id='dynamic-visiblity' label='Dynamic Visibility?' checked={dynamicVisibility} onChange={val => setProp((props: any) => props.dynamicVisibility = val)} />
 
-                  props.isList = newValue
-
-                  if (!newValue) {
-                    props.local = []
-                  } else if (newValue) {
-                    props.local = [
-                      {
-                        name: dataName,
-                        type: getReturnTypeOfBlueprint(blueprint),
-                        isArray: false
-                      }
-                    ]
-                  }
-
-                  return props
-                })
-              }}>Is Dynamic List?</IonCheckbox>
-            </IonItem>
-
-            <IonItem>
-              <IonInput label='variable name' labelPlacement='stacked' fill='outline' placeholder='listItem' value={dataName} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
-                setProp((props: any) => {
-                  props.dataName = val
-
-                  const index = props.local.findIndex((localProp: any) => localProp.name === dataName)
-
-                  if (index === -1) return
-
-                  props.local[index].name = val
-
-                  return props
-                })
-              }} />
-            </IonItem>
-
-            <IonItem button={true} onClick={() => openModal({
+        {
+          dynamicVisibility ? (
+            <p onClick={() => openModal({
               type: 'blueprint',
               title: '',
-              data: blueprint,
+              data: visibilityBlueprint,
               onSave: (blueprint) => {
-                setProp((props: any) => {
-                  props.blueprint = blueprint
-      
-                  const index = props.local.findIndex((localProp: any) => localProp.name === dataName)
-      
-                  if (index === -1) return
-      
-                  props.local[index].type = getReturnTypeOfBlueprint(blueprint)
-      
-                  return props
-                })
+                setProp((props: any) => props.visibilityBlueprint = blueprint)
               }
             })}>
-              List Data Blueprint
-            </IonItem>
-          </IonList>
-        </div>
-      </IonAccordion>
-      <IonAccordion value='input'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Input</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem button={true} onClick={() => openModal({
-              type: 'blueprint',
-              title: '',
-              data: onPress,
-              onSave: (blueprint) => {
-                setProp((props: any) => props.onPress = blueprint)
+              Visibility Blueprint
+            </p>
+          ) : (
+            <Checkbox id='is-visible' label='Visible?' checked={isVisible} onChange={val => setProp((props: any) => props.isVisible = val)} />
+          )
+        }
+      </Accordion>
+      <Accordion id='list' title='List' isOpen={openAccordion === 1} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 1 : -1)}>
+        <Checkbox id='is-list' label='Is Dynamic List' checked={isList} onChange={val => {
+          setProp((props: any) => {
+            props.isList = val
+
+            props.local = val ? [
+              {
+                name: dataName,
+                type: getReturnTypeOfBlueprint(blueprint),
+                isArray: false
               }
-            })}>
-              On Press Blueprint
-            </IonItem>
-          </IonList>
-        </div>
-      </IonAccordion>
-      <IonAccordion value='layout'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Layout</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              <IonSelect label='Display' labelPlacement='floating' placeholder='Select Display'
-                value={display}
-                onIonChange={(e) => setProp((props: any) => props.display = e.detail.value)}
-              >
-                <IonSelectOption value='block'>Block</IonSelectOption>
-                <IonSelectOption value='flex'>Flex</IonSelectOption>
-                <IonSelectOption value='grid'>Grid</IonSelectOption>
-              </IonSelect>
-            </IonItem>
+            ] : []
 
-            <IonItem>
-              <IonSelect label='Position' labelPlacement='floating' placeholder='Select Position'
-                value={position}
-                onIonChange={(e) => setProp((props: any) => props.position = e.detail.value)}
-              >
-                <IonSelectOption value='static'>Static</IonSelectOption>
-                <IonSelectOption value='relative'>Relative</IonSelectOption>
-                <IonSelectOption value='absolute'>Absolute</IonSelectOption>
-                <IonSelectOption value='fixed'>Fixed</IonSelectOption>
-                <IonSelectOption value='sticky'>Sticky</IonSelectOption>
-              </IonSelect>
-            </IonItem>
+            return props
+          })
+        }} />
 
-            {
-              (position !== 'static') ? (
-                <>
-                  <IonItem>
-                    <IonInput type='text' label='Top' value={top} onIonInput={(ev) => setProp((props: any) => props.top = (ev.target as unknown as HTMLInputElement).value)} />
-                  </IonItem>
+        <TextInput id='variable-name' label='Variable Name' isValid errorMessage='' value={dataName} onChange={val => {
+          setProp((props: any) => {
+            props.dataName = val
 
-                  <IonItem>
-                    <IonInput type='text' label='Right' value={right} onIonInput={(ev) => setProp((props: any) => props.right = (ev.target as unknown as HTMLInputElement).value)} />
-                  </IonItem>
+            const index = props.local.findIndex((localProp: any) => localProp.name === dataName)
 
-                  <IonItem>
-                    <IonInput type='text' label='Bottom' value={bottom} onIonInput={(ev) => setProp((props: any) => props.bottom = (ev.target as unknown as HTMLInputElement).value)} />
-                  </IonItem>
+            if (index === -1) return
 
-                  <IonItem>
-                    <IonInput type='text' label='Left' value={left} onIonInput={(ev) => setProp((props: any) => props.left = (ev.target as unknown as HTMLInputElement).value)} />
-                  </IonItem>
-                </>
-              ) : null
-            }
+            props.local[index].name = val
 
-            {
-              display === 'grid' ? (
-                <>
-                  <IonItem>
-                    <IonInput type='number' label='Colums' value={columns} onIonInput={(ev) => setProp((props: any) => props.gridColumns = +(ev.target as unknown as HTMLInputElement).value)} />
-                  </IonItem>
+            return props
+          })
+        }} />
 
-                  <IonItem>
-                    <IonInput type='number' label='Rows' value={rows} onIonInput={(ev) => setProp((props: any) => props.gridRows = +(ev.target as unknown as HTMLInputElement).value)} />
-                  </IonItem>
-                </>
-              ) : null
-            }
+        <p onClick={() => openModal({
+          type: 'blueprint',
+          title: '',
+          data: blueprint,
+          onSave: (blueprint) => {
+            setProp((props: any) => {
+              props.blueprint = blueprint
+  
+              const index = props.local.findIndex((localProp: any) => localProp.name === dataName)
+  
+              if (index === -1) return
+  
+              props.local[index].type = getReturnTypeOfBlueprint(blueprint)
+  
+              return props
+            })
+          }
+        })}>
+          List Data Blueprint
+        </p>
+      </Accordion>
+      <Accordion id='input' title='Input' isOpen={openAccordion === 2} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 2 : -1)}>
+        <p onClick={() => openModal({
+          type: 'blueprint',
+          title: '',
+          data: onPress,
+          onSave: (blueprint) => {
+            setProp((props: any) => props.onPress = blueprint)
+          }
+        })}>
+          On Press Blueprint
+        </p>
+      </Accordion>
 
-            {
-              ['flex', 'grid'].includes(display) ? (
-                <>
-                  <IonItem>
-                    <IonSelect label='Flex Direction' labelPlacement='floating' placeholder='Select Direction'
-                      value={flexDirection}
-                      onIonChange={(e) => setProp((props: any) => props.flexDirection = e.detail.value)}
-                    >
-                      <IonSelectOption value='row'>Row</IonSelectOption>
-                      <IonSelectOption value='column'>Column</IonSelectOption>
-                      <IonSelectOption value='row-reverse'>Reverse Row</IonSelectOption>
-                      <IonSelectOption value='column-reverse'>Reverse Column</IonSelectOption>
-                    </IonSelect>
-                  </IonItem>
+      <Accordion id='layout' title='Layout' isOpen={openAccordion === 3} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 3 : -1)}>
+        <Select id='display' label='Display' value={display} onChange={val => setProp((props: any) => props.display = val)}>
+          <option value='block'>Block</option>
+          <option value='flex'>Flex</option>
+          <option value='grid'>Grid</option>
+        </Select>
 
-                  <IonItem>
-                    <IonSelect label='Align Items' labelPlacement='floating' placeholder='Select Alignment'
-                      value={alignItems}
-                      onIonChange={(e) => setProp((props: any) => props.alignItems = e.detail.value)}
-                    >
-                      <IonSelectOption value='initial'>Initial</IonSelectOption>
-                      <IonSelectOption value='inherit'>Inherit</IonSelectOption>
-                      <IonSelectOption value='normal'>Normal</IonSelectOption>
-                      <IonSelectOption value='stretch'>Stretch</IonSelectOption>
-                      <IonSelectOption value='center'>Center</IonSelectOption>
-                      <IonSelectOption value='flex-start'>Flex-Start</IonSelectOption>
-                      <IonSelectOption value='flex-end'>Flex-End</IonSelectOption>
-                      <IonSelectOption value='start'>Start</IonSelectOption>
-                      <IonSelectOption value='end'>End</IonSelectOption>
-                      <IonSelectOption value='baseline'>Baseline</IonSelectOption>
-                    </IonSelect>
-                  </IonItem>
+        <Select id='position' label='Position' value={position} onChange={val => setProp((props: any) => props.position = val)}>
+          <option value='static'>Static</option>
+          <option value='relative'>Relative</option>
+          <option value='absolute'>Absolute</option>
+          <option value='fixed'>Fixed</option>
+          <option value='sticky'>Sticky</option>
+        </Select>
 
-                  <IonItem>
-                    <IonSelect label='Justify Content' labelPlacement='floating' placeholder='Select Alignment'
-                      value={justifyContent}
-                      onIonChange={(e) => setProp((props: any) => props.justifyContent = e.detail.value)}
-                    >
-                      <IonSelectOption value='initial'>Initial</IonSelectOption>
-                      <IonSelectOption value='inherit'>Inherit</IonSelectOption>
-                      <IonSelectOption value='stretch'>Stretch</IonSelectOption>
-                      <IonSelectOption value='center'>Center</IonSelectOption>
-                      <IonSelectOption value='flex-start'>Flex-Start</IonSelectOption>
-                      <IonSelectOption value='flex-end'>Flex-End</IonSelectOption>
-                      <IonSelectOption value='space-between'>Space-Between</IonSelectOption>
-                      <IonSelectOption value='space-around'>Space-Around</IonSelectOption>
-                      <IonSelectOption value='space-evenly'>Space-Evenly</IonSelectOption>
-                    </IonSelect>
-                  </IonItem>
+        {
+          (position !== 'static') ? (
+            <>
+              <TextInput id='top' label='Top' isValid errorMessage='' value={top} onChange={val => setProp((props: any) => props.top = val)} />
+              
+              <TextInput id='right' label='Right' isValid errorMessage='' value={right} onChange={val => setProp((props: any) => props.right = val)} />
 
-                  <IonItem>
-                    <IonInput type='text' label='Gap' value={gap} onIonInput={(ev) => setProp((props: any) => props.gap = (ev.target as unknown as HTMLInputElement).value)} />
-                  </IonItem>
-                </>
-              ) : null
-            }
-          </IonList>
-        </div>
-      </IonAccordion>
-      <IonAccordion value='spacing'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Spacing</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              <IonInput type='text' label='Margin Top' value={marginTop} onIonInput={(ev) => setProp((props: any) => props.marginTop = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+              <TextInput id='bottom' label='Bottom' isValid errorMessage='' value={bottom} onChange={val => setProp((props: any) => props.bottom = val)} />
 
-            <IonItem>
-              <IonInput type='text' label='Margin Right' value={marginRight} onIonInput={(ev) => setProp((props: any) => props.marginRight = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+              <TextInput id='left' label='Left' isValid errorMessage='' value={left} onChange={val => setProp((props: any) => props.left = val)} />
+            </>
+          ) : null
+        }
 
-            <IonItem>
-              <IonInput type='text' label='Margin Bottom' value={marginBottom} onIonInput={(ev) => setProp((props: any) => props.marginBottom = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+        {
+          display === 'grid' ? (
+            <>
+              <TextInput id='columns' label='Columns' isValid errorMessage='' value={columns} onChange={val => setProp((props: any) => props.columns = val)} />
+              
+              <TextInput id='rows' label='Rows' isValid errorMessage='' value={rows} onChange={val => setProp((props: any) => props.rows = val)} />
+            </>
+          ) : null
+        }
 
-            <IonItem>
-              <IonInput type='text' label='Margin Left' value={marginLeft} onIonInput={(ev) => setProp((props: any) => props.marginLeft = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+        {
+          ['flex', 'grid'].includes(display) ? (
+            <>
+              <Select id='flex-direction' label='Flex Direction' value={flexDirection} onChange={val => setProp((props: any) => props.flexDirection = val)}>
+                <option value='row'>Row</option>
+                <option value='column'>Column</option>
+                <option value='row-reverse'>Reverse Row</option>
+                <option value='column-reverse'>Reverse Column</option>
+              </Select>
 
-            <IonItem>
-              <IonInput type='text' label='Padding Top' value={paddingTop} onIonInput={(ev) => setProp((props: any) => props.paddingTop = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+              <Select id='align-items' label='Align Items' value={alignItems} onChange={val => setProp((props: any) => props.alignItems = val)}>
+                <option value='initial'>Initial</option>
+                <option value='inherit'>Inherit</option>
+                <option value='normal'>Normal</option>
+                <option value='stretch'>Stretch</option>
+                <option value='center'>Center</option>
+                <option value='flex-start'>Flex-Start</option>
+                <option value='flex-end'>Flex-End</option>
+                <option value='start'>Start</option>
+                <option value='end'>End</option>
+                <option value='baseline'>Baseline</option>
+              </Select>
 
-            <IonItem>
-              <IonInput type='text' label='Padding Right' value={paddingRight} onIonInput={(ev) => setProp((props: any) => props.paddingRight = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+              <Select id='justify-content' label='Justify Content' value={justifyContent} onChange={val => setProp((props: any) => props.justifyContent = val)}>
+                <option value='initial'>Initial</option>
+                <option value='inherit'>Inherit</option>
+                <option value='stretch'>Stretch</option>
+                <option value='center'>Center</option>
+                <option value='flex-start'>Flex-Start</option>
+                <option value='flex-end'>Flex-End</option>
+                <option value='space-between'>Space-Between</option>
+                <option value='space-around'>Space-Around</option>
+                <option value='space-evenly'>Space-Evenly</option>
+              </Select>
 
-            <IonItem>
-              <IonInput type='text' label='Padding Bottom' value={paddingBottom} onIonInput={(ev) => setProp((props: any) => props.paddingBottom = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+              <TextInput id='gap' label='Gap' isValid errorMessage='' value={gap} onChange={val => setProp((props: any) => props.gap = val)} />
+            </>
+          ) : null
+        }
+      </Accordion>
 
-            <IonItem>
-              <IonInput type='text' label='Padding Left' value={paddingLeft} onIonInput={(ev) => setProp((props: any) => props.paddingLeft = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+      <Accordion id='spacing' title='Spacing' isOpen={openAccordion === 4} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 4 : -1)}>
+        <TextInput id='margin-top' label='Margin Top' value={marginTop} onChange={val => setProp((props: any) => props.marginTop = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput type='text' label='Width' value={width} onIonInput={(ev) => setProp((props: any) => props.width = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+        <TextInput id='margin-right' label='Margin Right' value={marginRight} onChange={val => setProp((props: any) => props.marginRight = val)} isValid errorMessage='' />
+          
+        <TextInput id='margin-bottom' label='Margin Bottom' value={marginBottom} onChange={val => setProp((props: any) => props.marginBottom = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput type='text' label='Height' value={height} onIonInput={(ev) => setProp((props: any) => props.height = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+        <TextInput id='margin-left' label='Margin Left' value={marginLeft} onChange={val => setProp((props: any) => props.marginLeft = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput type='text' label='Max Width' value={maxWidth} onIonInput={(ev) => setProp((props: any) => props.maxWidth = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+        <TextInput id='padding-top' label='Padding Top' value={paddingTop} onChange={val => setProp((props: any) => props.paddingTop = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput type='text' label='Max Height' value={maxHeight} onIonInput={(ev) => setProp((props: any) => props.maxHeight = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+        <TextInput id='padding-right' label='Padding Right' value={paddingRight} onChange={val => setProp((props: any) => props.paddingRight = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput type='text' label='Min Width' value={minWidth} onIonInput={(ev) => setProp((props: any) => props.minWidth = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+        <TextInput id='padding-bottom' label='Padding Bottom' value={paddingBottom} onChange={val => setProp((props: any) => props.paddingBottom = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput type='text' label='Min Height' value={minHeight} onIonInput={(ev) => setProp((props: any) => props.minHeight = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-          </IonList>
-        </div>
-      </IonAccordion>
+        <TextInput id='padding-left' label='Padding Left' value={paddingLeft} onChange={val => setProp((props: any) => props.paddingLeft = val)} isValid errorMessage='' />
 
-      <IonAccordion value='border'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Border</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              Border Width
-            </IonItem>
+        <TextInput id='width' label='Width' value={width} onChange={val => setProp((props: any) => props.width = val)} isValid errorMessage='' />
 
-            <IonItem>
-              Border Style
-            </IonItem>
+        <TextInput id='height' label='Height' value={height} onChange={val => setProp((props: any) => props.height = val)} isValid errorMessage='' />
 
-            <IonItem>
-              Border Color
-            </IonItem>
+        <TextInput id='max-width' label='Max Width' value={maxWidth} onChange={val => setProp((props: any) => props.maxWidth = val)} isValid errorMessage='' />
 
-            <IonItem>
-              Border Radius
-            </IonItem>
-          </IonList>
-        </div>
-      </IonAccordion>
+        <TextInput id='max-height' label='Max Height' value={maxHeight} onChange={val => setProp((props: any) => props.maxHeight = val)} isValid errorMessage='' />
 
-      <IonAccordion value='background'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Background</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              <IonInput type='text' label='Background Color' labelPlacement='floating' value={background} onIonInput={(ev) => setProp((props: any) => props.background = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
+        <TextInput id='min-width' label='Min Width' value={minWidth} onChange={val => setProp((props: any) => props.minWidth = val)} isValid errorMessage='' />
 
-            <IonItem>
-              Background Image
-            </IonItem>
+        <TextInput id='min-height' label='Min Height' value={minHeight} onChange={val => setProp((props: any) => props.minHeight = val)} isValid errorMessage='' />
+      </Accordion>
+      
+      <Accordion id='border' title='Border' isOpen={openAccordion === 5} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 5 : -1)}>
+        TODO:(Cosmic) gotta do this soon
+      </Accordion>
 
-            <IonItem>
-              Background Size
-            </IonItem>
-
-            <IonItem>
-              Background Repeat
-            </IonItem>
-
-            <IonItem>
-              Background Position
-            </IonItem>
-          </IonList>
-        </div>
-      </IonAccordion>
-    </IonAccordionGroup>
+      <Accordion id='background' title='Background' isOpen={openAccordion === 6} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 6 : -1)}>
+        <TextInput id='background' label='Background' value={background} onChange={val => setProp((props: any) => props.background = val)} isValid errorMessage='' />
+      </Accordion>
+    </AccordionGroup>
   )
 }
 

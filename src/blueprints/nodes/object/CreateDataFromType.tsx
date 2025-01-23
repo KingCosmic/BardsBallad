@@ -8,9 +8,10 @@ import {
   useReactFlow
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonText } from '@ionic/react'
 import { systemState } from '../../../state/system'
 import { SystemType } from '../../../state/systems'
+import Card from '../../../components/Card'
+import Select from '../../../components/inputs/Select'
  
 function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ spreadType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()
@@ -18,11 +19,7 @@ function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ sprea
   const system = systemState.useValue()
 
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Create Object From Type</IonCardTitle>
-      </IonCardHeader>
-
+    <Card title='Create Object From Type'>
       <Handle type='target' id='from-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -30,28 +27,19 @@ function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ sprea
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <IonSelect aria-label='Type' interface='popover' placeholder='Select Type'
-          value={spreadType}
-          onIonChange={(e) => updateNodeData(id, { spreadType: e.detail.value })}
-        >
-          {
-            system?.types.map(type => (
-              <IonSelectOption value={type}>{type.name}</IonSelectOption>
-            ))
-          }
-        </IonSelect>
+      <Select id={`type-${id}`} label='Type' value={spreadType.name} onChange={type => updateNodeData(id, { spreadType: system?.types.find(t => t.name === type) })}>
+        {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+      </Select>
 
-        {
-          spreadType.properties.map(prop => (
-            <p key={prop.key} style={{ marginTop: 5 }}>
-              ({prop.typeData.type}{prop.typeData.isArray ? '[]' : ''}) {prop.key}
-            </p>
-          ))
-        }
+      {
+        spreadType.properties.map(prop => (
+          <p key={prop.key} style={{ marginTop: 5 }}>
+            ({prop.typeData.type}{prop.typeData.isArray ? '[]' : ''}) {prop.key}
+          </p>
+        ))
+      }
 
-        <p style={{ textAlign: 'right' }}>({spreadType.name}) output</p>
-      </IonCardContent>
+      <p style={{ textAlign: 'right' }}>({spreadType.name}) output</p>
 
       {
         spreadType.properties.map((prop, i) => (
@@ -64,7 +52,7 @@ function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ sprea
       <Handle type='source' id={`output-${spreadType.name}`} position={Position.Right}
         style={{ top: 129 + (24 *  spreadType.properties.length), bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  

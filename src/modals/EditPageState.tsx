@@ -1,23 +1,16 @@
 import { useEffect, useState } from 'react'
 
-import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonInput,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-  IonCheckbox,
-} from '@ionic/react'
-
 import { systemState, updatePageState } from '../state/system'
 import { TypeData } from '../state/systems';
 import { editorState } from '../state/editor';
+import Modal from '../components/Modal';
+import ModalHeader from '../components/Modal/Header';
+import ModalBody from '../components/Modal/Body';
+import ModalFooter from '../components/Modal/Footer';
+import Button from '../components/inputs/Button';
+import TextInput from '../components/inputs/TextInput';
+import Select from '../components/inputs/Select';
+import Checkbox from '../components/inputs/Checkbox';
 
 type Props = {
   data: { name: string, type: TypeData } | null;
@@ -26,8 +19,7 @@ type Props = {
   requestClose(): void;
 }
 
-function EditPageStateModal(props: Props) {
-  const { data, requestClose } = props
+function EditPageStateModal({ data, isOpen, requestClose }: Props) {
 
   const system = systemState.useValue()
   const editor = editorState.useValue()
@@ -35,9 +27,6 @@ function EditPageStateModal(props: Props) {
   const [name, setName] = useState('')
   const [type, setType] = useState('')
   const [isArray, setIsArray] = useState(false)
-
-  if (!system) return
-
 
   useEffect(() => {
     if (!data) return
@@ -47,67 +36,46 @@ function EditPageStateModal(props: Props) {
     setIsArray(data.type.isArray || false)
   }, [data])
 
+  if (!system) return <></>
+
   return (
-    <IonModal isOpen={props.isOpen}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot='start'>
-            <IonButton onClick={() => requestClose()}>Cancel</IonButton>
-          </IonButtons>
-          <IonTitle>Add Page State</IonTitle>
-          <IonButtons slot='end'>
-            <IonButton color='primary' strong={true} onClick={() => {
-              if (!name) return requestClose()
-              if (!type) return requestClose()
-              if (!props.data) return requestClose()
+    <Modal isOpen={isOpen} onClose={requestClose}>
+      <ModalHeader title='Add Page State' onClose={requestClose} />
 
-              const newStateData: { name: string, type: TypeData } = {
-                name,
-                type: {
-                  type,
-                  isArray,
-                  useTextArea: false,
-                  options: []
-                }
-              }
+      <ModalBody>
+        <TextInput id='var-name' label='Variable Name' value={name} onChange={setName} isValid errorMessage='' />
 
-              updatePageState(editor.page, props.data.name, newStateData)
-              
-              requestClose()
-            }}>
-              Confirm
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className='ion-padding'>
-        <IonItem>
-          <IonInput
-            label='Variable Name'
-            labelPlacement='stacked'
-            type='text'
-            placeholder='filteredEquipment'
-            value={name}
-            onIonInput={(ev) => setName((ev.target as unknown as HTMLInputElement).value)}
-          />
-        </IonItem>
+        <Select id='var-type' label='Type' value={type} onChange={setType}>
+          {system.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+        </Select>
 
-        <IonItem>
-          <IonSelect label='System' labelPlacement='stacked'
-            value={type}
-            onIonChange={(e) => setType(e.detail.value)}
-          >
-            {
-              system.types.map((type) => <IonSelectOption key={type.name} value={type.name}>{type.name}</IonSelectOption>)
+        <Checkbox id='is-array' label='Is Array?' checked={isArray} onChange={setIsArray} />
+      </ModalBody>
+
+      <ModalFooter>
+        <Button color='primary' onClick={() => {
+          if (!name) return requestClose()
+          if (!type) return requestClose()
+          if (!data) return requestClose()
+
+          const newStateData: { name: string, type: TypeData } = {
+            name,
+            type: {
+              type,
+              isArray,
+              useTextArea: false,
+              options: []
             }
-          </IonSelect>
-        </IonItem>
+          }
 
-        <IonItem>
-          <IonCheckbox value={isArray} onIonChange={() => setIsArray(!isArray)}>is Array?</IonCheckbox>
-        </IonItem>
-      </IonContent>
-    </IonModal>
+          updatePageState(editor.page, data.name, newStateData)
+          
+          requestClose()
+        }}>
+          Confirm
+        </Button>
+      </ModalFooter>
+    </Modal>
   )
 }
 

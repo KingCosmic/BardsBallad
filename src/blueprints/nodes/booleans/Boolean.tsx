@@ -8,16 +8,14 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCheckbox, IonInput } from '@ionic/react'
+import Card from '../../../components/Card'
+import Checkbox from '../../../components/inputs/Checkbox'
  
-function String({ id, data: { value }}: NodeProps<Node<{ value: boolean }>>) {
+function Boolean({ id, data: { value }}: NodeProps<Node<{ value: boolean }>>) {
   const { updateNodeData } = useReactFlow()
-  
+
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Boolean</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Boolean'>
       <Handle type='target' id='prev-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -25,15 +23,13 @@ function String({ id, data: { value }}: NodeProps<Node<{ value: boolean }>>) {
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <IonCheckbox checked={value} onIonChange={() => updateNodeData(id, { value: !value })}>Value</IonCheckbox>
-      </IonCardContent>
-      
+      <Checkbox id={`boolean-${id}`} label='Value' checked={value} onChange={value => updateNodeData(id, { value })} />
+
       <Handle type='source' id='output-boolean' position={Position.Right}
         style={{ top: 100, bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  
-export default memo(String)
+export default memo(Boolean)

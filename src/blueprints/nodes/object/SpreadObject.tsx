@@ -10,9 +10,9 @@ import {
   useHandleConnections
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonText } from '@ionic/react'
 import { systemState } from '../../../state/system'
 import { SystemType } from '../../../state/systems'
+import Card from '../../../components/Card'
  
 function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
@@ -58,11 +58,7 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: st
   }, [system, inputType])
 
   return (
-    <IonCard style={{ width: 250 }}>
-      <IonCardHeader>
-        <IonCardTitle>Spread Object</IonCardTitle>
-      </IonCardHeader>
-
+    <Card title='Spread Object'>
       <Handle type='source' id='next-node' position={Position.Right}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -70,20 +66,17 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: st
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <IonText>
-          <p style={{ textAlign: 'left' }}>Input Type {inputType}</p>
-          <p style={{ textAlign: 'right' }}>Spread</p>
+      <p style={{ textAlign: 'left' }}>Input Type {inputType}</p>
+      <p style={{ textAlign: 'right' }}>Spread</p>
 
-          {
-            spreadType.properties.map(prop => (
-              <p key={prop.key} style={{ textAlign: 'right', marginTop: 5 }}>
-                ({prop.typeData.type}{prop.typeData.isArray ? '[]' : ''}) {prop.key}
-              </p>
-            ))
-          }
-        </IonText>
-      </IonCardContent>
+      {
+        spreadType.properties.map(prop => (
+          <p key={prop.key} style={{ textAlign: 'right', marginTop: 5 }}>
+            ({prop.typeData.type}{prop.typeData.isArray ? '[]' : ''}) {prop.key}
+          </p>
+        ))
+      }
+
       <Handle type='target' id='input-object' position={Position.Left}
         style={{ top: 80, bottom: 'auto' }}
       />
@@ -95,8 +88,8 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: st
           />
         ))
       }
-    </IonCard>
+    </Card>
   )
 }
  
-export default memo(SpeadObject);
+export default memo(SpeadObject)

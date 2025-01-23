@@ -6,15 +6,11 @@ import {
   type Node,
   Position,
 } from '@xyflow/react'
-
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react'
+import Card from '../../../components/Card';
  
 function Floor(_props: NodeProps<Node<{ number: number; }>>) {
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Floor</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Floor'>
       <Handle type='target' id='prev-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -22,15 +18,13 @@ function Floor(_props: NodeProps<Node<{ number: number; }>>) {
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <p style={{ marginTop: 5 }}>
-          number
-        </p>
+      <p style={{ marginTop: 5 }}>
+        number
+      </p>
 
-        <p style={{ marginTop: 5 }}>
-          output
-        </p>
-      </IonCardContent>
+      <p style={{ marginTop: 5 }}>
+        output
+      </p>
 
       <Handle type='target' id='input-number' position={Position.Left}
         style={{ top: 85, bottom: 'auto' }}
@@ -39,7 +33,7 @@ function Floor(_props: NodeProps<Node<{ number: number; }>>) {
       <Handle type='source' id='output-number' position={Position.Right}
         style={{ top: 110, bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  

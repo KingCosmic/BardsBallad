@@ -1,6 +1,5 @@
-import { useCallback, useMemo } from 'react';
-import { useReactFlow } from '@xyflow/react';
-import { IonItem, IonList } from '@ionic/react';
+import { useCallback, useMemo } from 'react'
+import { useReactFlow } from '@xyflow/react'
 
 type NodeMenuProps = {
   id: string;
@@ -49,23 +48,23 @@ export default function NodeContextMenu({
   return (
     <div
       style={{ position: 'absolute', top, left, right, bottom, zIndex: 9999 }}
-      className="context-menu"
+      className='context-menu'
       {...props}
     >
-      <IonList>
-        <IonItem>node: {id}</IonItem>
+      <div>
+        <p>node: {id}</p>
 
         {
           (['entry', 'output'].includes(nodeType)) ? (
             <></>
           ) : (
             <>
-              <IonItem button={true} color='medium' onClick={duplicateNode}>duplicate</IonItem>
-              <IonItem button={true} color='danger' onClick={deleteNode}>delete</IonItem>
+              <p color='medium' onClick={duplicateNode}>duplicate</p>
+              <p color='danger' onClick={deleteNode}>delete</p>
             </>
           )
         }
-      </IonList>
+      </div>
     </div>
   );
 }

@@ -1,20 +1,28 @@
-import { IonBackButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react'
-import './Page.css'
 import { useEffect } from 'react'
 
 import { useParams } from 'react-router'
 
-import { informationCircleOutline } from 'ionicons/icons'
-
 import { systemsState } from '../state/systems'
-import { setSystem, systemState } from '../state/system'
+import { setSystem, systemState, updatePageLexical } from '../state/system'
 
 import { editorState, setPage, setTab } from '../state/editor'
+
 import Character from '../tabs/System/Character'
 import Data from '../tabs/System/Data'
 import Types from '../tabs/System/Types'
 import Editor from '../tabs/System/Editor'
 import Functions from '../tabs/System/Functions'
+import Header from '../components/Header'
+import Select from '../components/inputs/Select'
+import SystemMenu from '../components/SystemMenu'
+
+import { Editor as EditorContext } from '@craftjs/core'
+
+import Container from '../designer/components/Container'
+import Text from '../designer/components/Text'
+import FAB from '../designer/FloatingActionButton'
+import DesignerDivider from '../designer/components/Divider'
+import Searchbar from '../designer/Searchbar'
 
 const System: React.FC = () => {
   const systems = systemsState.useValue()
@@ -36,49 +44,37 @@ const System: React.FC = () => {
   if (!system) return <>loading...</>
 
   return (
-    <IonPage className='page-container'>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot='start'>
-            <IonBackButton />
-          </IonButtons>
-          <IonTitle>{system.name}</IonTitle>
-          <IonButtons slot='end'>
-            <IonMenuButton menu='info-menu'>
-              <IonIcon icon={informationCircleOutline} />
-            </IonMenuButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className='ion-padding' fullscreen>
+    <EditorContext resolver={{ Container, Text, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updatePageLexical(query.serialize())}>
+      <div className='flex flex-col h-full'>
+        <Header title={system.name} />
 
-        <IonSelect color='light' interface='popover' fill='outline'
-          value={editor.tab}
-          onIonChange={(e) => setTab(e.detail.value)}
-        >
-          <IonSelectOption value='character'>Character</IonSelectOption>
-          <IonSelectOption value='data'>Data</IonSelectOption>
-          <IonSelectOption value='types'>Types</IonSelectOption>
-          <IonSelectOption value='functions'>Functions</IonSelectOption>
-          <IonSelectOption value='editor'>Editor</IonSelectOption>
-        </IonSelect>
+        <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
+          <Select id='tab-selector' label='' value={editor.tab} onChange={val => setTab(val)}>
+            <option value='character'>Character</option>
+            <option value='data'>Data</option>
+            <option value='types'>Types</option>
+            <option value='functions'>Functions</option>
+            <option value='editor'>Editor</option>
+          </Select>
 
-        {
-          (editor.tab === 'character') ? (
-            <Character />
-          ) : (editor.tab === 'data') ? (
-            <Data />
-          ) : (editor.tab === 'types') ? (
-            <Types />
-          ) : (editor.tab === 'functions') ? (
-            <Functions />
-          ) : (editor.tab === 'editor') && (
-            <Editor />
-          )
-        }
+          {
+            (editor.tab === 'character') ? (
+              <Character />
+            ) : (editor.tab === 'data') ? (
+              <Data />
+            ) : (editor.tab === 'types') ? (
+              <Types />
+            ) : (editor.tab === 'functions') ? (
+              <Functions />
+            ) : (editor.tab === 'editor') && (
+              <Editor />
+            )
+          }
+        </div>
 
-      </IonContent>
-    </IonPage>
+        <SystemMenu />
+      </div>
+    </EditorContext>
   )
 }
 

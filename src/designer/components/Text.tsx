@@ -1,39 +1,49 @@
-import { IonAccordion, IonAccordionGroup, IonCheckbox, IonInput, IonItem, IonLabel, IonList } from '@ionic/react'
-
-import { useNode } from '@craftjs/core'
+import { useNode, UserComponentConfig } from '@craftjs/core'
 import { useLocalState } from '../hooks/useLocalState'
 import { getDefaultNodes, updateParams } from '../../blueprints/utils'
 import { openModal } from '../../state/modals'
 import { BlueprintData } from '../../state/systems'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BlueprintProcessor from '../../utils/Blueprints/processBlueprint'
 import { useLocalData } from '../renderer/Context'
+import AccordionGroup from '../../components/AccordionGroup'
+import Accordion from '../../components/Accordion'
+import Checkbox from '../../components/inputs/Checkbox'
+import TextInput from '../../components/inputs/TextInput'
+import Button from '../../components/inputs/Button'
 
-interface Props {
-  useBlueprintValue?: boolean,
-  blueprint?: BlueprintData,
-  text?: string;
-  fontSize?: number;
+interface TextProps {
+  useBlueprintValue: boolean;
+  blueprint: BlueprintData;
 
-  marginTop?: string;
-  marginRight?: string;
-  marginBottom?: string;
-  marginLeft?: string;
-  paddingTop?: string;
-  paddingRight?: string;
-  paddingBottom?: string;
-  paddingLeft?: string;
+  text: string;
+  color: string;
+  fontSize: string;
+  fontWeight: string;
+  textAlign: string;
+  textDecoration: string;
+  textTransform: string;
+  marginTop: string;
+  marginRight: string;
+  marginBottom: string;
+  marginLeft: string;
+
+  paddingTop: string;
+  paddingRight: string;
+  paddingBottom: string;
+  paddingLeft: string;
 }
 
-function Text(props: Props) {
+function Text(props: TextProps) {
   const { connectors: { connect, drag } } = useNode()
 
   return (
+    // @ts-ignore
     <p ref={ref => connect(drag(ref!))} style={{ ...props }}>{props.text}</p>
   )
 }
 
-export function TextPreview(props: Props) {
+export function TextPreview(props: TextProps) {
   const localData = useLocalData()
 
   const text = useMemo(() => {
@@ -46,6 +56,7 @@ export function TextPreview(props: Props) {
     return output || ''
   }, [props.blueprint, localData, props.useBlueprintValue, props.text])
 
+  // @ts-ignore
   return <p style={{ ...props }}>{text}</p>
 }
 
@@ -59,7 +70,6 @@ function TextSettings() {
     marginTop, marginRight, marginBottom, marginLeft,
     paddingTop, paddingRight, paddingBottom, paddingLeft,
   } = useNode(node => ({
-
     useBlueprintValue: node.data.props.useBlueprintValue || false,
     blueprint: node.data.props.blueprint,
 
@@ -85,6 +95,7 @@ function TextSettings() {
   }))
 
   const localParams = useLocalState(id)
+  const [openAccordion, setOpenAccordion] = useState(-1)
 
   useEffect(() => {
     setProp((props: any) => {
@@ -107,179 +118,97 @@ function TextSettings() {
       return props
     })
   }, [])
-
+  
   return (
-    <IonAccordionGroup>
-      <IonAccordion value='Content'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Content</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              <IonCheckbox labelPlacement='start' checked={useBlueprintValue} onIonChange={() => setProp((props: any) => props.useBlueprintValue = !useBlueprintValue)}>Use blueprint value?</IonCheckbox>
-            </IonItem>
+    <AccordionGroup>
+      <Accordion id='content' title='Content' isOpen={openAccordion === 0} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 0 : -1)}>
+        <Checkbox id='use-blueprint-value' label='Use Blueprint Value?' checked={useBlueprintValue} onChange={(value) => setProp((props: any) => props.useBlueprintValue = value)} />
 
-            {
-              useBlueprintValue ? (
-                <IonItem button={true} onClick={() => openModal({
-                  type: 'blueprint',
-                  title: '',
-                  data: blueprint,
-                  onSave: (blueprint) => setProp((props: any) => props.blueprint = Object.assign({}, blueprint))
-                })}>
-                  Blueprint Value
-                </IonItem>
-              ) : (
-                <IonItem>
-                  <IonInput label='text' placeholder='lorem ipsum' value={text} onIonChange={(ev: Event) => {
-                    const val = (ev.target as HTMLIonInputElement).value as string
+        {
+          useBlueprintValue ? (
+            <Button color='primary' onClick={() => openModal({
+              type: 'blueprint',
+              title: 'Text Value',
+              data: blueprint,
+              onSave: (blueprint) => setProp((props: any) => props.blueprint = Object.assign({}, blueprint))
+            })}>
+              Edit Blueprint Value
+            </Button>
+          ) : (
+            <TextInput id='text' label='Text' placeholder='lorem ipsum' value={text} onChange={val => setProp((props: any) => props.text = val)} isValid errorMessage='' />
+          )
+        }
+      </Accordion>
+      <Accordion id='content-styling' title='Content Styling' isOpen={openAccordion === 1} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 1 : -1)}>
+        <TextInput id='color' label='Color' placeholder='#232323' value={color} onChange={val => setProp((props: any) => props.color = val)} isValid errorMessage='' />
 
-                    setProp((props: any) => props.text = val)
-                  }} />
-                </IonItem>
-              )
-            }
-          </IonList>
-        </div>
-      </IonAccordion>
-      <IonAccordion value='ContentStyling'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Content Styling</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              <IonInput label='Color' placeholder='#232323' value={color} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
+        <TextInput id='font-family' label='Font Family' placeholder='Arial, Times New Roman' value={fontFamily} onChange={val => setProp((props: any) => props.fontFamily = val)} isValid errorMessage='' />
 
-                setProp((props: any) => props.color = val)
-              }} />
-            </IonItem>
+        <TextInput id='font-size' label='Font Size' placeholder='23px' value={fontSize} onChange={val => setProp((props: any) => props.fontSize = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput label='Font Family' placeholder='Arial, Times New Roman' value={fontFamily} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
+        <TextInput id='font-weight' label='Font Weight' placeholder='bold | 400' value={fontWeight} onChange={val => setProp((props: any) => props.fontWeight = val)} isValid errorMessage='' />
 
-                setProp((props: any) => props.fontFamily = val)
-              }} />
-            </IonItem>
+        <TextInput id='font-style' label='Font Style' placeholder='normal | italic' value={fontStyle} onChange={val => setProp((props: any) => props.fontStyle = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput label='Font Size' placeholder='23px' value={fontSize} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
+        <TextInput id='letter-spacing' label='Letter Spacing' placeholder='2px' value={letterSpacing} onChange={val => setProp((props: any) => props.letterSpacing = val)} isValid errorMessage='' />
 
-                setProp((props: any) => props.fontSize = val)
-              }} />
-            </IonItem>
+        <TextInput id='line-height' label='Line Height' placeholder='1.5' value={lineHeight} onChange={val => setProp((props: any) => props.lineHeight = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput label='Font Weight' placeholder='bold / 400' value={fontWeight} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
+        <TextInput id='text-align' label='Align' placeholder='left | center | right' value={textAlign} onChange={val => setProp((props: any) => props.textAlign = val)} isValid errorMessage='' />
 
-                setProp((props: any) => props.fontWeight = val)
-              }} />
-            </IonItem>
+        <TextInput id='text-decoration' label='Decoration' placeholder='underline | line-through | none' value={textDecoration} onChange={val => setProp((props: any) => props.textDecoration = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput label='Font Style' placeholder='normal / italic' value={fontStyle} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
+        <TextInput id='text-transform' label='Transform' placeholder='none | uppercase | lowercase' value={textTransform} onChange={val => setProp((props: any) => props.textTransform = val)} isValid errorMessage='' />
+      </Accordion>
 
-                setProp((props: any) => props.fontStyle = val)
-              }} />
-            </IonItem>
+      <Accordion id='spacing' title='Spacing' isOpen={openAccordion === 2} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 2 : -1)}>
+        <TextInput id='margin-top' label='Margin Top' value={marginTop} onChange={val => setProp((props: any) => props.marginTop = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput label='Letter Spacing' placeholder='2px' value={letterSpacing} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
+        <TextInput id='margin-right' label='Margin Right' value={marginRight} onChange={val => setProp((props: any) => props.marginRight = val)} isValid errorMessage='' />
+          
+        <TextInput id='margin-bottom' label='Margin Bottom' value={marginBottom} onChange={val => setProp((props: any) => props.marginBottom = val)} isValid errorMessage='' />
 
-                setProp((props: any) => props.letterSpacing = val)
-              }} />
-            </IonItem>
+        <TextInput id='margin-left' label='Margin Left' value={marginLeft} onChange={val => setProp((props: any) => props.marginLeft = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput label='Line Height' placeholder='1.5' value={lineHeight} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
+        <TextInput id='padding-top' label='Padding Top' value={paddingTop} onChange={val => setProp((props: any) => props.paddingTop = val)} isValid errorMessage='' />
 
-                setProp((props: any) => props.lineHeight = val)
-              }} />
-            </IonItem>
+        <TextInput id='padding-right' label='Padding Right' value={paddingRight} onChange={val => setProp((props: any) => props.paddingRight = val)} isValid errorMessage='' />
 
-            <IonItem>
-              <IonInput label='Align' placeholder='left / center / right / justify' value={textAlign} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
+        <TextInput id='padding-bottom' label='Padding Bottom' value={paddingBottom} onChange={val => setProp((props: any) => props.paddingBottom = val)} isValid errorMessage='' />
 
-                setProp((props: any) => props.textAlign = val)
-              }} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput label='Decoration' placeholder='underline / line-through / none' value={textDecoration} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
-
-                setProp((props: any) => props.textDecoration = val)
-              }} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput label='Transform' placeholder='none / uppercsae / lowercase / capitalize' value={textTransform} onIonChange={(ev: Event) => {
-                const val = (ev.target as HTMLIonInputElement).value as string
-
-                setProp((props: any) => props.textTransform = val)
-              }} />
-            </IonItem>
-          </IonList>
-        </div>
-      </IonAccordion>
-      <IonAccordion value='spacing'>
-        <IonItem slot='header' color='light'>
-          <IonLabel>Spacing</IonLabel>
-        </IonItem>
-        <div className='ion-padding' slot='content'>
-          <IonList>
-            <IonItem>
-              <IonInput type='text' label='Margin Top' value={marginTop} onIonInput={(ev) => setProp((props: any) => props.marginTop = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput type='text' label='Margin Right' value={marginRight} onIonInput={(ev) => setProp((props: any) => props.marginRight = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput type='text' label='Margin Bottom' value={marginBottom} onIonInput={(ev) => setProp((props: any) => props.marginBottom = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput type='text' label='Margin Left' value={marginLeft} onIonInput={(ev) => setProp((props: any) => props.marginLeft = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput type='text' label='Padding Top' value={paddingTop} onIonInput={(ev) => setProp((props: any) => props.paddingTop = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput type='text' label='Padding Right' value={paddingRight} onIonInput={(ev) => setProp((props: any) => props.paddingRight = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput type='text' label='Padding Bottom' value={paddingBottom} onIonInput={(ev) => setProp((props: any) => props.paddingBottom = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-
-            <IonItem>
-              <IonInput type='text' label='Padding Left' value={paddingLeft} onIonInput={(ev) => setProp((props: any) => props.paddingLeft = (ev.target as unknown as HTMLInputElement).value)} />
-            </IonItem>
-          </IonList>
-        </div>
-      </IonAccordion>
-    </IonAccordionGroup>
+        <TextInput id='padding-left' label='Padding Left' value={paddingLeft} onChange={val => setProp((props: any) => props.paddingLeft = val)} isValid errorMessage='' />
+      </Accordion>
+    </AccordionGroup>
   )
 }
 
-Text.craft = {
+const CraftSettings: Partial<UserComponentConfig<TextProps>> = {
+  defaultProps: {
+    useBlueprintValue: false,
+    blueprint: { nodes: getDefaultNodes([], { name: 'output', type: 'string', isArray: false }), edges: [] },
+
+    text: 'text',
+    color: 'white',
+    fontSize: '1rem',
+    fontWeight: 'normal',
+    textAlign: 'left',
+    textDecoration: 'none',
+    textTransform: 'none',
+    marginTop: '0px',
+    marginRight: '0px',
+    marginBottom: '0px',
+    marginLeft: '0px',
+    paddingTop: '0px',
+    paddingRight: '0px',
+    paddingBottom: '0px',
+    paddingLeft: '0px',
+  },
   rules: {},
   related: {
     settings: TextSettings
   }
 }
+
+Text.craft = CraftSettings
 
 export default Text

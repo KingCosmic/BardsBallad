@@ -1,3 +1,79 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --background: #111;
+
+  --brand-50: #111;
+  --brand-100: #111;
+  --brand-200: #111;
+  --brand-300: #111;
+  --brand-400: #111;
+  --brand-500: #111;
+  --brand-600: #111;
+  --brand-700: #111;
+  --brand-800: #111;
+  --brand-900: #111;
+  --brand-950: #111;
+
+  --neutral-50: #111;
+  --neutral-100: #111;
+  --neutral-200: #111;
+  --neutral-300: #111;
+  --neutral-400: #111;
+  --neutral-500: #111;
+  --neutral-600: #111;
+  --neutral-700: #111;
+  --neutral-800: #111;
+  --neutral-900: #111;
+  --neutral-950: #111;
+
+  --orange-50: #111;
+  --orange-100: #111;
+  --orange-200: #111;
+  --orange-300: #111;
+  --orange-400: #111;
+  --orange-500: #111;
+  --orange-600: #111;
+  --orange-700: #111;
+  --orange-800: #111;
+  --orange-900: #111;
+  --orange-950: #111;
+
+  --red-50: #111;
+  --red-100: #111;
+  --red-200: #111;
+  --red-300: #111;
+  --red-400: #111;
+  --red-500: #111;
+  --red-600: #111;
+  --red-700: #111;
+  --red-800: #111;
+  --red-900: #111;
+  --red-950: #111;
+
+  --blue-50: #111;
+  --blue-100: #111;
+  --blue-200: #111;
+  --blue-300: #111;
+  --blue-400: #111;
+  --blue-500: #111;
+  --blue-600: #111;
+  --blue-700: #111;
+  --blue-800: #111;
+  --blue-900: #111;
+  --blue-950: #111;
+
+  --green-50: #111;
+  --green-100: #111;
+  --green-200: #111;
+  --green-300: #111;
+  --green-400: #111;
+  --green-500: #111;
+  --green-600: #111;
+  --green-700: #111;
+  --green-800: #111;
+  --green-900: #111;
+  --green-950: #111;
+}

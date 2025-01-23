@@ -1,11 +1,11 @@
-import { IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonSearchbar } from '@ionic/react'
 import { setDefaultCharacterData, systemState } from '../../state/system'
-import EditObject from '../../modals/EditObject'
+
 import { useState } from 'react'
 import { DataType, SystemType, TypeData } from '../../state/systems'
-import { add } from 'ionicons/icons'
+
 import { produce } from 'immer'
 import EditSystemData from '../../modals/EditSystemData'
+import FloatingActionButton from '../../components/FloatingActionButton'
 
 function Character() {
   const system = systemState.useValue()
@@ -14,26 +14,6 @@ function Character() {
 
   return (
     <>
-      {/* <EditObject
-        title={`Edit ${editData?.key}`}
-        types={system?.types || []}
-        onDelete={() => {
-          const newCopy = produce(dataCopy, (draft: any) => {
-            delete draft[editData?.key]
-
-            draft._type.properties = draft._type.properties.filter((prop: any) => prop.key !== editData?.key)
-          })
-
-          setDataCopy(newCopy)
-        }}
-        onSave={(data) => setNestedProperty(dataCopy, editData?.key, data)}
-        isVisible={(editData?.data !== null)}
-        requestClose={() => setEditData(null)}
-        data={editData?.data}
-        type={editData?.type}
-        typeData={editData?.typeData}
-      /> */}
-
       <EditSystemData
         types={system?.types || []}
         onDelete={() => {
@@ -49,8 +29,6 @@ function Character() {
           const key = newData.name
           const typeData = newData.typeData
           const value = newData.data
-
-          console.log(newData)
 
           const newCopy = produce(system?.defaultCharacterData, (draft: any) => {
             delete draft[editData?.name || '']
@@ -74,30 +52,30 @@ function Character() {
         data={editData!}
       />
 
-      <IonSearchbar color='light' />
+      {/* TODO: Searchbar */}
 
-      {
-        (system?.defaultCharacterData._type as SystemType).properties.map((prop) => {
-          const key = prop.key
-          const data = system?.defaultCharacterData[key]
+      <div className='flex flex-col gap-1'>
+        {
+          (system?.defaultCharacterData._type as SystemType).properties.map((prop) => {
+            const key = prop.key
+            const data = system?.defaultCharacterData[key]
 
-          const def = prop.typeData
+            const def = prop.typeData
 
-          let type = data._type ? undefined : def.type
+            let type = data._type ? undefined : def.type
 
-          return (
-            <IonItem key={key} color='light' onClick={() => {
-              // setEditData({ type, typeData: prop.typeData, key, data })
-              setEditData({ name: key, typeData: def, data })
-            }} button>
-              <IonLabel>{key}</IonLabel>
-            </IonItem>
-          )
-        })
-      }
+            return (
+              <div key={key} className='p-4 bg-neutral-900 hover:bg-neutral-800 cursor-pointer'
+                onClick={() => setEditData({ name: key, typeData: def, data })}
+              >
+                <p>{key} - {type}{def.isArray ? '(Array)' : ''}</p>
+              </div>
+            )
+          })
+        }
+      </div>
 
-      <IonFab slot='fixed' vertical='bottom' horizontal='end'>
-        <IonFabButton onClick={() => {
+      <FloatingActionButton onClick={() => {
           const newCopy = {
             ...system?.defaultCharacterData,
             newKey: 'new value',
@@ -118,10 +96,8 @@ function Character() {
           }
 
           setDefaultCharacterData(newCopy)
-        }}>
-          <IonIcon icon={add} />
-        </IonFabButton>
-      </IonFab>
+        }}
+      />
     </>
   )
 }

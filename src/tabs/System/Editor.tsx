@@ -1,41 +1,35 @@
+import { useEffect } from 'react'
+
 import { Frame, Element, useEditor } from '@craftjs/core'
+
+import Container from '../../designer/components/Container'
 import Text from '../../designer/components/Text'
+
 import { systemState } from '../../state/system'
 import { editorState } from '../../state/editor'
-import { useEffect } from 'react'
-import Container from '../../designer/components/Container'
+
 import { getDefaultNodes } from '../../blueprints/utils'
 
 import lz from 'lzutf8'
 
-function Editor() {
+function EditorTab() {
   const system = systemState.useValue()
   const editor = editorState.useValue()
 
-  const { actions, query } = useEditor()
-
-  if (!system) return <></>
+  const { actions } = useEditor()
 
   useEffect(() => {
-    const pageData = system.pages.find(p => p.name === editor.page)?.lexical
-    
-    let lexical = pageData
+    const lexical = system?.pages.find(p => p.name === editor.page)?.lexical
 
-    if (!lexical) {
-
-      return
-    }
+    if (!lexical) return
 
     actions.deserialize(lz.decompress(lz.decodeBase64(lexical)))
   }, [editor.page])
 
+  if (!system) return <></>
+
   return (
-    <div style={{
-      marginTop: 10,
-      borderRadius: '4px',
-      borderColor: 'gray',
-      borderWidth: '1px'
-    }}>
+    <div className='mt-3 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700'>
       <Frame>
         <Element is={Container} canvas>
           <Text text='Testing the world' fontSize={32}
@@ -57,4 +51,4 @@ function Editor() {
   )
 }
 
-export default Editor
+export default EditorTab
