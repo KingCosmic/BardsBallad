@@ -1,29 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonCheckbox,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSelectOption,
-  IonList,
-  IonItem,
-  IonLabel
-} from '@ionic/react'
+import React, { useEffect, useState } from 'react'
 
 import { produce } from 'immer'
 
-import setNestedProperty from '../utils/setNestedProperty';
-import generateObject from '../utils/generateObject';
-import { systemState } from '../state/system';
-import { DataType, SystemType, TypeData } from '../state/systems';
-import EditObject from './EditObject';
+import setNestedProperty from '../utils/setNestedProperty'
+import generateObject from '../utils/generateObject'
+import { systemState } from '../state/system'
+import { DataType, SystemType, TypeData } from '../state/systems'
+
+import EditObject from './EditObject'
+import Modal from '../components/Modal'
+import ModalHeader from '../components/Modal/Header'
+import ModalBody from '../components/Modal/Body'
+import ModalFooter from '../components/Modal/Footer'
+import TextInput from '../components/inputs/TextInput'
+import Select from '../components/inputs/Select'
+import Button from '../components/inputs/Button'
+import Checkbox from '../components/inputs/Checkbox'
+import Textarea from '../components/inputs/Textarea'
 
 type ModalProps = {
   onDelete?(): void;
@@ -60,72 +53,46 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
   if (!data) return <></>
 
   return (
-    <IonModal isOpen={isVisible}>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Edit {data.name}</IonTitle>
-          <IonButtons slot='end'>
-            <IonButton onClick={requestClose}>Close</IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className='ion-padding'>
+    <Modal isOpen={isVisible} onClose={requestClose}>
+      <ModalHeader title={`Edit ${data.name}`} onClose={requestClose} />
 
-        <IonItem color='light'>
-          <IonInput label='Name' labelPlacement='floating' value={dataCopy.name} onIonInput={(ev) => setDataCopy({ ...dataCopy, name: (ev.target as unknown as HTMLInputElement).value})} />
-        </IonItem>
+      <ModalBody>
+        <TextInput id='data-name' label='Name' isValid errorMessage='' value={dataCopy.name} onChange={val => setDataCopy({...dataCopy, name: val })} />
 
-        <div style={{ height: 15 }} />
+        {/* <div className='h-4' /> */}
 
-        <IonItem color='light'>
-          <IonSelect label='Type' labelPlacement='floating' interface='popover'
-            value={dataCopy.typeData.type}
-            onIonChange={(e) => {
-              const t = system?.types.find(type => type.name === e.detail.value) || null
-              setType(t)
-              setDataCopy({ ...dataCopy, data: dataCopy.typeData.isArray ? [] : generateObject(t || e.detail.value), typeData: { ...dataCopy.typeData, type: e.detail.value }})
-            }}
-          >
-            <IonSelectOption value='string'>
-              string
-            </IonSelectOption>
-            <IonSelectOption value='number'>
-              number
-            </IonSelectOption>
-            <IonSelectOption value='boolean'>
-              boolean
-            </IonSelectOption>
-            <IonSelectOption value='enum'>
-              enum
-            </IonSelectOption>
+        <Select id='data-type' label='Type' value={type?.name || ''} onChange={val => {
+          const t = system?.types.find(type => type.name === val) || null
 
-            {
-              system?.types.map((type) => {
-                return (
-                  <IonSelectOption key={type.name} value={type.name}>
-                    {type.name}
-                  </IonSelectOption>
-                )
-              })
-            }
-          </IonSelect>
-        </IonItem>
+          setType(t)
+          setDataCopy({ ...dataCopy, data: dataCopy.typeData.isArray ? [] : generateObject(t || val), typeData: { ...dataCopy.typeData, type: val } })
+        }}>
+          <option value='string'>string</option>
+          
+          <option value='number'>number</option>
+          
+          <option value='boolean'>boolean</option>
+          
+          <option value='enum'>enum</option>
+
+          {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+        </Select>
 
         {
-          (type) && (
-            <IonItem color='light'>
-              <IonCheckbox labelPlacement='start' checked={dataCopy.typeData.isArray} onIonChange={() => {
-                if (!dataCopy.typeData.isArray) {
-                  setDataCopy({ ...dataCopy, data: [], typeData: { ...dataCopy.typeData, isArray: true }})
+          type && (
+            <div>
+              <Checkbox id='is-array' label='Is Array?' checked={dataCopy.typeData.isArray} onChange={isArray => {
+                if (isArray) {
+                  setDataCopy({ ...dataCopy, data: [], typeData: { ...dataCopy.typeData, isArray }})
                 } else {
-                  setDataCopy({ ...dataCopy, data: generateObject(dataCopy.typeData.type), typeData: { ...dataCopy.typeData, isArray: false }})
+                  setDataCopy({ ...dataCopy, data: generateObject(dataCopy.typeData.type), typeData: { ...dataCopy.typeData, isArray }})
                 }
-              }}>Is Array?</IonCheckbox>
-            </IonItem>
+              }} />
+            </div>
           )
         }
 
-        <div style={{ height: 15 }} />
+        <div className='h-2' />
 
         {
           (type && dataCopy.typeData.isArray) ? (
@@ -145,69 +112,44 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
             getComponentFromType(type || { name: dataCopy.typeData.type, properties: [] }, dataCopy.data || dataCopy, dataCopy, dataCopy.typeData, 'value', setProperty)
           )
         }
+      </ModalBody>
 
-        <div style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
-          <IonButton
-            color='danger'
-            onClick={() => {
-              if (onDelete) onDelete()
-              requestClose()
-            }}
-          >
-            {(onDelete) ? 'Delete' : 'Close'}
-          </IonButton>
+      <ModalFooter>
+        <Button color='danger'
+          onClick={() => {
+            if (onDelete) onDelete()
+            requestClose()
+          }}
+        >
+          {(onDelete) ? 'Delete' : 'Close'}
+        </Button>
 
-          <IonButton
-            color='success'
-            onClick={() => {
-              onSave(dataCopy)
-              requestClose()
-            }}
-          >
-            Save
-          </IonButton>
-        </div>
-      </IonContent>
-    </IonModal>
+        <Button color='primary' onClick={() => {         
+          onSave(dataCopy)
+          requestClose()
+        }}>Update</Button>
+      </ModalFooter>
+    </Modal>
   )
 }
 
 function getComponentFromType(type: SystemType, data: any, dataCopy: any, typeData: TypeData, label: string, setProperty: (path: string, obj: any, value: any) => void): React.ReactElement {
   switch (type.name) {
     case 'string':
-      return (
-        <IonItem color='light'>
-          <IonInput label={label} value={data} onIonInput={(ev) => setProperty('data', dataCopy, (ev.target as unknown as HTMLInputElement).value)} />
-        </IonItem>
-      )
+      return <TextInput id={label} label={label} isValid errorMessage='' value={data} onChange={val => setProperty('data', dataCopy, val)} />
     case 'number':
-      return (
-        <IonItem color='light'>
-          <IonInput type='number' label={label}  value={data} onIonInput={(ev) => setProperty('data', dataCopy, +(ev.target as unknown as HTMLInputElement).value)} />
-        </IonItem>
-      )
+      return <TextInput id={label} label={label} isValid errorMessage='' value={data} onChange={val => setProperty('data', dataCopy, +val)} />
     case 'textarea':
-      return (
-        <IonItem color='light'>
-          <IonTextarea label-placement='floating' rows={4} label={label}  value={data} onIonInput={(ev) => setProperty('data', dataCopy, (ev.target as unknown as HTMLInputElement).value)} />
-        </IonItem>
-      )
+      return <Textarea id={label} label={label} value={data} onChange={val => setProperty('data', dataCopy, val)} placeholder='lorem ipsum' />
     case 'boolean':
-      return (
-        <IonItem color='light'>
-          <IonCheckbox labelPlacement='start' checked={data} onIonChange={() => setProperty('data', dataCopy, !data)}>{label} </IonCheckbox>
-        </IonItem>
-      )
+      return <Checkbox id={label} label={label} checked={data} onChange={val => setProperty('data', dataCopy, val)} />
     case 'enum':
       return (
-        <IonSelect label={label} labelPlacement='floating' color='light' fill='solid' interface='popover'
-          value={data}
-          onIonChange={(e) => setProperty('data', dataCopy, e.detail.value)}
-        >
+        <Select id={label} label={label} value={data} onChange={val => setProperty('data', dataCopy, val)}>
           {
-            typeData.options.map((option: string) => <IonSelectOption key={option} value={option}>{option}</IonSelectOption>)
+            typeData.options.map((option: string) => <option key={option} value={option}>{option}</option>)
           }
-        </IonSelect>
+        </Select>
       )
     default:
       return (
@@ -240,24 +182,20 @@ function ArrayEdit({ types, title, data, type, onAdd, onChange, onDelete }: { ty
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <p>{title}</p>
 
-        <IonButton
-          onClick={() => onAdd(generateObject(type))}
-        >
-          Add
-        </IonButton>
+        <p onClick={() => onAdd(generateObject(type))}>Add</p>
       </div>
 
       <p style={{ height: 1, width: '100%', backgroundColor: 'white', marginTop: 4, marginBottom: 4 }} />
 
-      <IonList inset={true}>
-        {data.map((item, i) => {
+      <div>
+        {data.map((item) => {
           return (
-            <IonItem color='light' key={item.name} button={true} onClick={() => setEditData(item)}>
-              <IonLabel>{item.name}</IonLabel>
-            </IonItem>
+            <div key={item.name} onClick={() => setEditData(item)}>
+              <p>{item.name}</p>
+            </div>
           )
         })}
-      </IonList>
+      </div>
     </div>
   )
 }

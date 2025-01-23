@@ -8,16 +8,14 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonInput } from '@ionic/react'
+import Card from '../../../components/Card'
+import TextInput from '../../../components/inputs/TextInput'
  
 function Enum({ id, data: { value }}: NodeProps<Node<{ value: string }>>) {
   const { updateNodeData } = useReactFlow()
   
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Enum Value</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Enum'>
       <Handle type='target' id='prev-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -25,14 +23,12 @@ function Enum({ id, data: { value }}: NodeProps<Node<{ value: string }>>) {
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <IonInput type='text' fill='solid' placeholder='Enum Value Here' value={value} onIonChange={(ev) => updateNodeData(id, { value: (ev.target as HTMLIonInputElement).value })} />
-      </IonCardContent>
-      
+      <TextInput id={`enum-${id}`} label='String Value' value={value} onChange={value => updateNodeData(id, { value })} isValid errorMessage='' />
+
       <Handle type='source' id='output-enum' position={Position.Right}
         style={{ top: 100, bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  

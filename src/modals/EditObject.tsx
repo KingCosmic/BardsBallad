@@ -1,29 +1,20 @@
 import { useEffect, useState } from 'react';
 
-import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonCheckbox,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSelectOption,
-  IonList,
-  IonItem,
-  IonLabel
-} from '@ionic/react'
-
 import { produce } from 'immer'
 
 import setNestedProperty from '../utils/setNestedProperty'
 import generateObject from '../utils/generateObject'
 import { SystemType, TypeData } from '../state/systems'
 import Divider from '../components/Divider';
+import Modal from '../components/Modal';
+import ModalHeader from '../components/Modal/Header';
+import ModalBody from '../components/Modal/Body';
+import ModalFooter from '../components/Modal/Footer';
+import Button from '../components/inputs/Button';
+import TextInput from '../components/inputs/TextInput';
+import Textarea from '../components/inputs/Textarea';
+import Checkbox from '../components/inputs/Checkbox';
+import Select from '../components/inputs/Select';
 
 type ModalProps = {
   title: string;
@@ -62,45 +53,32 @@ function EditObject({ title, onDelete, onSave, isVisible, requestClose, data, ty
   if (!dataCopy) return <></>
 
   return (
-    <IonModal isOpen={isVisible}>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>{title}</IonTitle>
-          <IonButtons slot='end'>
-            <IonButton onClick={requestClose}>Close</IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className='ion-padding'>
+    <Modal isOpen={isVisible} onClose={requestClose}>
+      <ModalHeader title={title} onClose={requestClose} />
 
+      <ModalBody>
         {
           (type && typeData) ? RenderComponentFromType(types, type, dataCopy, dataCopy, typeData, '', setProperty)
           : GetComponentsFromTypeData(dataCopy, types, setProperty)
         }
+      </ModalBody>
 
-        <div style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
-          <IonButton
-            color='danger'
-            onClick={() => {
-              if (onDelete) onDelete()
-              requestClose()
-            }}
-          >
-            {(onDelete) ? 'Delete' : 'Close'}
-          </IonButton>
+      <ModalFooter>
+        <Button color='danger'
+          onClick={() => {
+            if (onDelete) onDelete()
+            requestClose()
+          }}
+        >
+          {(onDelete) ? 'Delete' : 'Close'}
+        </Button>
 
-          <IonButton
-            color='success'
-            onClick={() => {
-              onSave(dataCopy)
-              requestClose()
-            }}
-          >
-            Save
-          </IonButton>
-        </div>
-      </IonContent>
-    </IonModal>
+        <Button color='primary' onClick={() => {         
+          onSave(dataCopy)
+          requestClose()
+        }}>Update</Button>
+      </ModalFooter>
+    </Modal>
   )
 }
 
@@ -117,23 +95,12 @@ export function GetComponentsFromTypeData(dataCopy: any, types: SystemType[], se
 
           let type = def.type
 
-          // if (type === 'BasedOffTargetAndType') {
-          //   // TODO: arguably we can just check type.. cause we have addItem and removeItem specifically for arrays. Override would have to be checked for type since it goes to multiple.
-
-          //   const propertyDef = getDefFromProperty(character!, dataCopy.target)
-
-          //   if (propertyDef) {
-          //     type = propertyDef.type
-          //     options = propertyDef
-          //   }
-          // }
-
           return (
-            <>
+            <div key={key}>
               {
                 RenderComponentFromType(types, type, data, dataCopy, prop.typeData, key, setProperty)
               }
-            </>
+            </div>
           )
         })
       }
@@ -157,50 +124,26 @@ export function RenderComponentFromType(types: SystemType[], type: string, data:
       />
     )
   }
-  
+
   switch (type) {
     case 'string':
-      return (
-        <IonItem color='light' key={label}>
-          <IonInput label={label} value={data} onIonInput={(ev) => setProperty(label, dataCopy, (ev.target as unknown as HTMLInputElement).value)} />
-        </IonItem>
-      )
+      return <TextInput id={label} label={label} isValid errorMessage='' value={data} onChange={val => setProperty(label, dataCopy, val)} />
     case 'number':
-      return (
-        <IonItem color='light' key={label}>
-          <IonInput type='number' label={label}  value={data} onIonInput={(ev) => setProperty(label, dataCopy, +(ev.target as unknown as HTMLInputElement).value)} />
-        </IonItem>
-      )
+      return <TextInput id={label} label={label} isValid errorMessage='' value={data} onChange={val => setProperty(label, dataCopy, +val)} />
     case 'textarea':
-      return (
-        <IonItem color='light' key={label}>
-          <IonTextarea label-placement='floating' rows={4} label={label}  value={data} onIonInput={(ev) => setProperty(label, dataCopy, (ev.target as unknown as HTMLInputElement).value)} />
-        </IonItem>
-      )
+      return <Textarea id={label} label={label} value={data} onChange={val => setProperty(label, dataCopy, val)} placeholder='lorem ipsum' />
     case 'boolean':
-      return (
-        <IonItem color='light' key={label}>
-          <IonCheckbox labelPlacement='start' checked={data} onIonChange={() => setProperty(label, dataCopy, !data)}>{label}</IonCheckbox>
-        </IonItem>
-      )
+      return <Checkbox id={label} label={label} checked={data} onChange={val => setProperty(label, dataCopy, val)} />
     case 'enum':
       return (
-        <IonSelect labelPlacement='floating' color='light' key={label}
-          value={data}
-          onIonChange={(e) => setProperty(label, dataCopy, e.detail.value)}
-        >
+        <Select id={label} label={label} value={data} onChange={val => setProperty(label, dataCopy, val)}>
           {
-            typeData.options.map((option: string) => <IonSelectOption key={option} value={option}>{option}</IonSelectOption>)
+            typeData.options.map((option: string) => <option key={option} value={option}>{option}</option>)
           }
-        </IonSelect>
+        </Select>
       )
-
     default:
-      return (
-        <IonItem color='light' key={label} button>
-          <IonLabel>{label} ({type})</IonLabel>
-        </IonItem>
-      )
+      return <div key={label}><p>{label} ({type})</p></div>
   }
 }
 
@@ -231,24 +174,24 @@ function ArrayEdit({ title, data, type, types, onAdd, onChange, onDelete }: { ti
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <p>{title}</p>
 
-        <IonButton
+        <p
           onClick={() => onAdd(generateObject(type))}
         >
           Add
-        </IonButton>
+        </p>
       </div>
 
       <Divider />
 
-      <IonList inset={true}>
+      <div>
         {data.map((item, i) => {
           return (
-            <IonItem color='light' key={item.name} button={true} onClick={() => setEditData(item)}>
-              <IonLabel>{item.name}</IonLabel>
-            </IonItem>
+            <div key={item.name} onClick={() => setEditData(item)}>
+              <p>{item.name}</p>
+            </div>
           )
         })}
-      </IonList>
+      </div>
     </div>
   )
 }

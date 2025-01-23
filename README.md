@@ -1,13 +1,13 @@
 
 <h1 align="center">
   <br>
-  <a href="https://bardsballad.com"><img src="https://raw.githubusercontent.com/KingCosmic/BardsBallad/master/public/icon.webp" alt="BardsBallad" width="200"></a>
+  <a href="https://bardsballad.com"><img src="https://raw.githubusercontent.com/KingCosmic/BardsBallad/master/public/logo.png" alt="BardsBallad" width="200"></a>
   <br>
     BardsBallad
   <br>
 </h1>
 
-<h4 align="center">A Supercharged Tabletop Character Manager</a>.</h4>
+<h4 align="center">A Supercharged Tabletop Character Manager.</h4>
 
 <p align="center">
   <a href="https://ko-fi.com/bardsballad">

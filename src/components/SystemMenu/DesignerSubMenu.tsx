@@ -1,20 +1,21 @@
-import { useEditor, Element } from "@craftjs/core"
-import { IonSelect, IonSelectOption, IonButtons, IonButton, IonIcon, IonSegment, IonSegmentButton, IonNote, IonText, IonList, IonItem, IonLabel, IonAccordionGroup, IonAccordion } from "@ionic/react"
-import { addOutline, cubeOutline, hammerOutline, codeSlashOutline, chevronDownOutline } from "ionicons/icons"
-import React, { useState } from "react"
-import { getDefaultNodes } from "../../blueprints/utils"
-import FAB from "../../designer/FloatingActionButton"
+import { useEditor, Element } from '@craftjs/core'
+
+import React, { useState } from 'react'
+import { getDefaultNodes } from '../../blueprints/utils'
+import FAB from '../../designer/FloatingActionButton'
 import Text from '../../designer/components/Text'
-import Searchbar from "../../designer/Searchbar"
-import EditPageStateModal from "../../modals/EditPageState"
-import { editorState, setPage } from "../../state/editor"
-import { systemState, addPageState, addPage, updatePageName, deletePage } from "../../state/system"
-import { TypeData } from "../../state/systems"
-import Divider from "../Divider"
-import DesignerDivider from "../../designer/components/Divider"
-import EditStringModal from "../../modals/EditString"
-import Container from "../../designer/components/Container"
-import Layers from "../../designer/Layers/Layers"
+import Searchbar from '../../designer/Searchbar'
+import EditPageStateModal from '../../modals/EditPageState'
+import { editorState, setPage } from '../../state/editor'
+import { systemState, addPageState, addPage, updatePageName, deletePage } from '../../state/system'
+import { TypeData } from '../../state/systems'
+import Divider from '../Divider'
+import DesignerDivider from '../../designer/components/Divider'
+import EditStringModal from '../../modals/EditString'
+import Container from '../../designer/components/Container'
+import Layers from '../../designer/Layers/Layers'
+import Select from '../inputs/Select'
+import Button from '../inputs/Button'
 
 
 function DesignerMenu() {
@@ -50,122 +51,97 @@ function DesignerMenu() {
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IonSelect label='Page' labelPlacement='floating' fill='outline' value={editor.page} onIonChange={(e) => setPage(e.detail.value)} aria-label='page' interface='popover' placeholder='Select Page'>
-          {
-            system.pages.map((page) => (
-              <IonSelectOption key={page.name} value={page.name}>{page.name}</IonSelectOption>
-            ))
-          }
-        </IonSelect>
+        <Select id='page' label='Page' value={editor.page} onChange={setPage}>
+          {system.pages.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
+        </Select>
 
-        <div>
-          <IonButtons>
-            <IonButton onClick={() => addPage()}>
-              <IonIcon slot='icon-only' icon={addOutline} />
-            </IonButton>
-          </IonButtons>
-        </div>
+        <button type='button' onClick={addPage} className='ml-2 text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500'>
+          <svg
+            className='w-5 h-5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
+            <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />
+          </svg>
+          <span className='sr-only'>Add Page</span>
+        </button>
       </div>
 
-      <IonSegment value={tab} onIonChange={(e) => setTab(e.target.value?.toString() || '???')}>
-        <IonSegmentButton value='components'>
-          <IonIcon icon={cubeOutline} />
-        </IonSegmentButton>
-        <IonSegmentButton value='details'>
-          <IonIcon icon={hammerOutline} />
-        </IonSegmentButton>
-        <IonSegmentButton value='state'>
-          <IonIcon icon={codeSlashOutline} />
-        </IonSegmentButton>
-      </IonSegment>
+      <Select id='designer-tab' label='' value={tab} onChange={setTab}>
+        <option value='components'>Components</option>
+        <option value='details'>Details</option>
+        <option value='state'>Page Info</option>
+      </Select>
 
-      <IonNote style={{ marginTop: 20, marginBottom: 10 }}>
-        This Tooling is still under heavy development. Please post any bugs found on github issues.
-      </IonNote>
+      <p className='mb-3'>
+        This Tooling is still under heavy development, Please post any bugs on github or discord.
+      </p>
 
       {
         (tab === 'components') ? (
           <>
-            <IonText>
-              <h4>Components</h4>
-            </IonText>
+            <h4>Components</h4>
             <Divider />
-            <ul className='space-y-1'>
-              <li>
-                <a
-                  href=''
-                  className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                  ref={ref => connectors.create(ref!, <Element is={Container} canvas />)}
-                >
-                  Container
-                </a>
-              </li>
+            <div className='flex flex-wrap justify-center mx-auto lg:w-full md:w-5/6 xl:shadow-small-blue'>
+              <div className='block w-1/2 py-5 text-center border' ref={ref => connectors.create(ref!, <Element is={Container} canvas />)}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 block mx-auto" viewBox="0 0 512 512"><path d="M448 341.37V170.61A32 32 0 00432.11 143l-152-88.46a47.94 47.94 0 00-48.24 0L79.89 143A32 32 0 0064 170.61v170.76A32 32 0 0079.89 369l152 88.46a48 48 0 0048.24 0l152-88.46A32 32 0 00448 341.37z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32"/><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M69 153.99l187 110 187-110M256 463.99v-200"/></svg>
 
-              <li>
-                <a
-                  href=''
-                  className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                  ref={ref => connectors.create(ref!, <Text text='Hi World' fontSize={24} blueprint={{ nodes: getDefaultNodes([], {
+                <p className='pt-2 text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base md:pt-4'>
+                  Container
+                </p>
+              </div>
+
+              <div className='block w-1/2 py-5 text-center border' ref={ref => connectors.create(ref!, <Text text='Hi World' fontSize={24} blueprint={{ nodes: getDefaultNodes([], {
                     name: 'text',
                     type: 'string',
                     isArray: false
-                  }), edges: [] }} />)}
-                >
-                  Text
-                </a>
-              </li>
+                  }), edges: [] }} />)}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 block mx-auto" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M32 415.5l120-320 120 320M230 303.5H74M326 239.5c12.19-28.69 41-48 74-48h0c46 0 80 32 80 80v144"/><path d="M320 358.5c0 36 26.86 58 60 58 54 0 100-27 100-106v-15c-20 0-58 1-92 5-32.77 3.86-68 19-68 58z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32"/></svg>
 
-              <li>
-                <a
-                  href="#"
-                  className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                  ref={ref => connectors.create(ref!, <Searchbar placeholder='Search...' blueprint={{ nodes: getDefaultNodes([
+                <p className='pt-2 text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base md:pt-4'>
+                  Text
+                </p>
+              </div>
+
+              <div className='block w-1/2 py-5 text-center border' ref={ref => connectors.create(ref!, <Searchbar placeholder='Search...' blueprint={{ nodes: getDefaultNodes([
                     {
                       name: 'searchText',
                       type: 'string',
                       isArray: false
                     }
-                  ]), edges: [] }} />)}
-                >
+                  ]), edges: [] }} />)}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 block mx-auto" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/><path fill="none" stroke="currentColor" strokeLinecap="round" strokeMiterlimit="10" strokeWidth="32" d="M338.29 338.29L448 448"/></svg>
+
+                <p className='pt-2 text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base md:pt-4'>
                   Searchbar
-                </a>
-              </li>
+                </p>
+              </div>
 
-              <li>
-                <a
-                  href="#"
-                  className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                  ref={ref => connectors.create(ref!, <DesignerDivider />)}
-                >
+              <div className='block w-1/2 py-5 text-center border' ref={ref => connectors.create(ref!, <DesignerDivider />)}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 block mx-auto" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M400 256H112"/></svg>
+
+                <p className='pt-2 text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base md:pt-4'>
                   Divider
-                </a>
-              </li>
+                </p>
+              </div>
 
-              <li>
-                <a
-                  href="#"
-                  className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                  ref={ref => connectors.create(ref!, <FAB isList={false} buttons={[]} blueprint={{ nodes: getDefaultNodes(), edges: [] }} />)}
-                >
-                  Floating Action Button
-                </a>
-              </li>
-            </ul>
+              <div className='block w-1/2 py-5 text-center border' ref={ref => connectors.create(ref!, <FAB isList={false} buttons={[]} blueprint={{ nodes: getDefaultNodes(), edges: [] }} />)}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 block mx-auto" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M256 176v160M336 256H176"/></svg>
+
+                <p className='pt-2 text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base md:pt-4'>
+                  FaB
+                </p>
+              </div>
+            </div>
           </>
         ) : (tab === 'details' && selected) ? (
           <>
-            {
-              selected.settings && React.createElement(selected.settings)
-            }
-            {
-              selected.isDeletable ? (
-                <IonButton color='danger' onClick={() => {
-                  actions.delete(selected.id)
-                }}>
-                  Delete
-                </IonButton>
-              ) : null
-            }
+            {selected.settings && React.createElement(selected.settings)}
+
+            {selected.isDeletable ? (
+              <Button className='mt-4' color='danger' onClick={() => {
+                actions.delete(selected.id)
+              }}>
+                Delete
+              </Button>
+            ) : null}
           </>
         ) : (tab === 'state') ? (
           <>
@@ -177,53 +153,49 @@ function DesignerMenu() {
               }}
             />
 
-            <IonButtons>
-              <IonButton fill='solid' color='primary' onClick={() => setEditName(editor.page)}>Rename Page</IonButton>
-              <IonButton fill='solid' color='danger' disabled={system.pages.length <= 1} onClick={() => {
+            <div className='inline-flex rounded-md shadow-sm my-2'>
+              <Button color='danger' disabled={system.pages.length <= 1} onClick={() => {
                 deletePage(editor.page)
-              }}>Delete Page</IonButton>
-            </IonButtons>
+              }}>
+                Delete
+              </Button>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Button color='primary' onClick={() => setEditName(editor.page)}>Rename</Button>
+            </div>
+
+            <div className='flex items-center justify-between my-2 px-2'>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <h5 style={{ marginRight: 5 }}>Page State</h5>
-
-                <IonIcon slot='icon-only' color='' icon={chevronDownOutline} />
               </div>
 
-              <div>
-                <IonButtons>
-                  <IonButton id='add-page-state' onClick={() => addPageState(editor.page, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [] })}>
-                    <IonIcon slot='icon-only' icon={addOutline} />
-                  </IonButton>
-                </IonButtons>
-              </div>
+              <button onClick={() => addPageState(editor.page, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [] })}
+                type='button'
+                className='text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500'
+              >
+                <svg
+                  className='w-4 h-4' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
+                  <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />
+                </svg>
+                <span className='sr-only'>Add Page State</span>
+              </button>
             </div>
 
             <Divider />
 
-            <IonList>
-              {
-                system.pages.find(p => p.name === editor.page)?.state.map((state) => (
-                  <IonItem key={state.name} button={true} onClick={() => setEditingState(state)}>
-                    <IonLabel>{state.name} | {state.type.type}{state.type.isArray ? '[]': ''}</IonLabel>
-                  </IonItem>
-                ))
-              }
-            </IonList>
+            <div>
+              {system.pages.find(p => p.name === editor.page)?.state.map((state) => (
+                <div key={state.name} onClick={() => setEditingState(state)}>
+                  <p>{state.name} | {state.type.type}{state.type.isArray ? '[]': ''}</p>
+                </div>
+              ))}
+            </div>
 
             <EditPageStateModal isOpen={editingState !== null} requestClose={() => setEditingState(null)} data={editingState} />
           </>
         ) : null
       }
 
-      {
-        (tab !== 'state') ? (
-          <>
-            <Layers />
-          </>
-        ) : null
-      }
+      {(tab !== 'state') ? <Layers /> : null}
     </>
   )
 }

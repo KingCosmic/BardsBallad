@@ -1,50 +1,46 @@
-import { IonContent, IonHeader, IonMenu, IonNote, IonTitle, IonToolbar } from "@ionic/react"
-import { editorState } from "../../state/editor"
-import { systemState } from "../../state/system"
-import useBreakpoint from "../../utils/useBreakpoint"
-import DesignerMenu from "./DesignerSubMenu"
-import { useLocation } from "react-router"
+
+import DesignerMenu from './DesignerSubMenu'
+
+import { editorState } from '../../state/editor'
+import { systemState } from '../../state/system'
 
 function SystemMenu() {
   const system = systemState.useValue()
   const editor = editorState.useValue()
 
-  let location = useLocation()
-
-  const isLargeScreen = useBreakpoint('md', 'more')
-
   if (!system) return <></>
-  if (!location.pathname.startsWith('/systems/')) return <></>
 
   return (
-    <IonMenu menuId='info-menu' side='end' contentId='main' type='overlay' style={{ maxWidth: isLargeScreen ? '10%' : '' }}>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Details</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className='ion-padding'>
+    <aside
+      className='fixed top-0 right-0 z-40 w-64 h-screen transition-transform translate-x-full sm:-translate-x-0'
+      aria-label='Editor Sidebar'
+    >
+      <div className='h-full flex flex-col px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-neutral-950'>
+        <div className='py-4 mb-4 border-b border-neutral-200 dark:border-neutral-700'>
+          <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
+            Details
+          </span>
+        </div>
 
         {
           (editor.tab === 'character') ? (
-            <IonNote>
-              Default Character data, used for types in GetCharacterData blueprints and such.
-            </IonNote>
+            <p>
+              Default Character data, used for types in GetCharacterData nodes and such.
+            </p>
           ) : (editor.tab === 'data') ? (
-            <IonNote>
+            <p>
               Custom data for the system (Items, classes, etc.)
-            </IonNote>
+            </p>
           ) : (editor.tab === 'types') ? (
-            <IonNote>
+            <p>
               The data types for everything in this system.
-            </IonNote>
+            </p>
           ) : (editor.tab === 'editor') && (
             <DesignerMenu />
           )
         }
-
-      </IonContent>
-    </IonMenu>
+      </div>
+    </aside>
   )
 }
 

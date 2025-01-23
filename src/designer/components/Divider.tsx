@@ -1,5 +1,3 @@
-import { IonList } from '@ionic/react'
-
 import { useNode } from '@craftjs/core'
 
 function Divider() {
@@ -20,9 +18,9 @@ function DividerSettings() {
   const { actions: { setProp }, } = useNode(node => ({}))
 
   return (
-    <IonList>
+    <div>
       
-    </IonList>
+    </div>
   )
 }
 

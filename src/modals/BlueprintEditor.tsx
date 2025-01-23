@@ -1,19 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-} from '@ionic/react'
-
-import { Background, Connection, Controls, Edge, MiniMap, OnBeforeDelete, ReactFlow } from '@xyflow/react'
+import { Background, Connection, Controls, Edge, MiniMap, OnBeforeDelete, Panel, ReactFlow } from '@xyflow/react'
  
 import '@xyflow/react/dist/style.css'
-import './BlueprintEditor.css'
 
 import NodeContextMenu from '../blueprints/NodeContextMenu'
 import { BlueprintData } from '../state/systems'
@@ -22,6 +11,11 @@ import ContextMenu from '../blueprints/ContextMenu'
 import { blueprintState, onConnect, onEdgesChange, onNodesChange, setEdges, setNodes } from '../state/blueprint'
 
 import nodeTypes from '../blueprints/nodeTypes'
+import Modal from '../components/Modal'
+import ModalHeader from '../components/Modal/Header'
+import ModalBody from '../components/Modal/Body'
+import ModalFooter from '../components/Modal/Footer'
+import Button from '../components/inputs/Button'
 
 type ModalProps = {
   title: string;
@@ -47,7 +41,7 @@ const isValidConnection = (conn: Connection | Edge) => {
   return (sourceType === targetType)
 }
 
-function BlueprintEditor({ isVisible, requestClose, data, onSave }: ModalProps) {
+const BlueprintEditor: React.FC<ModalProps> = ({ title, isVisible, requestClose, data, onSave }) => {
   const [nodeMenu, setNodeMenu] = useState<any | null>(null)
   const [contextMenu, setContextMenu] = useState<any | null>(null)
   const ref = useRef<any>(null)
@@ -118,50 +112,43 @@ function BlueprintEditor({ isVisible, requestClose, data, onSave }: ModalProps) 
   }, [setNodeMenu, setContextMenu])
 
   return (
-    <IonModal className='blueprint-modal' isOpen={isVisible}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot='start'>
-            <IonButton onClick={requestClose}>Cancel</IonButton>
-          </IonButtons>
-          <IonTitle>Action Flow</IonTitle>
-          <IonButtons slot='end'>
-            <IonButton color='primary' strong={true} onClick={() => {
-              onSave({ nodes, edges })
-              console.log({ nodes, edges })
-              requestClose()
-            }}>
-              Confirm
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <div style={{ width: '100%', height: '100%' }}>
-          <ReactFlow
-            ref={ref}
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onBeforeDelete={onBeforeDelete}
-            isValidConnection={isValidConnection}
-            onPaneClick={onPaneClick}
-            onNodeContextMenu={onNodeContextMenu}
-            onPaneContextMenu={onContextMenu}
-            nodeTypes={nodeTypes}
-            colorMode='system'
-          >
-            <MiniMap />
-            <Background />
-            <Controls />
-            {nodeMenu && <NodeContextMenu onClick={onPaneClick} {...nodeMenu} />}
-            {contextMenu && <ContextMenu onClick={onPaneClick} {...contextMenu} />}
-          </ReactFlow>
-        </div>
-      </IonContent>
-    </IonModal>
+    <div className={`${isVisible ? 'flex' : 'hidden'} z-50 absolute top-0 left-0 w-screen h-screen`}>
+      <ReactFlow
+        ref={ref}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onBeforeDelete={onBeforeDelete}
+        isValidConnection={isValidConnection}
+        onPaneClick={onPaneClick}
+        onNodeContextMenu={onNodeContextMenu}
+        onPaneContextMenu={onContextMenu}
+        nodeTypes={nodeTypes}
+        colorMode='system'
+      >
+        <MiniMap />
+        <Background />
+        <Controls />
+        {nodeMenu && <NodeContextMenu onClick={onPaneClick} {...nodeMenu} />}
+        {contextMenu && <ContextMenu onClick={onPaneClick} {...contextMenu} />}
+
+        <Panel position='bottom-right'>
+          <Button color='danger' onClick={requestClose}>
+            Close
+          </Button>
+
+          <Button color='primary' onClick={() => {
+            onSave({ nodes, edges })
+            console.log({ nodes, edges })
+            requestClose()
+          }}>
+            Confirm
+          </Button>
+        </Panel>
+      </ReactFlow>
+    </div>
   )
 }
 

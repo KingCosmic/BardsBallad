@@ -36,7 +36,7 @@ const LayersPanel = () => {
     const isSelected = isActive.has(nodeId)
 
     return (
-      <div key={nodeId} className="select-none">
+      <div key={nodeId} className='select-none'>
         <div
           // @ts-ignore
           ref={ref => select(ref, nodeId)}
@@ -54,16 +54,16 @@ const LayersPanel = () => {
                 e.stopPropagation();
                 toggleExpanded(nodeId);
               }}
-              className="w-4 h-4 flex items-center justify-center hover:bg-secondary/80 rounded"
+              className='w-4 h-4 flex items-center justify-center hover:bg-secondary/80 rounded'
             >
               {isExpanded ? (
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className='w-4 h-4' />
               ) : (
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className='w-4 h-4' />
               )}
             </button>
           ) : (
-            <div className="w-4" />
+            <div className='w-4' />
           )}
           
           <button 
@@ -71,22 +71,22 @@ const LayersPanel = () => {
               e.stopPropagation();
               actions.setHidden(nodeId, !node.data.hidden);
             }}
-            className="text-foreground/80 hover:text-foreground"
+            className='text-foreground/80 hover:text-foreground'
           >
             {node.data.hidden ? (
-              <EyeOff className="w-4 h-4" />
+              <EyeOff className='w-4 h-4' />
             ) : (
-              <Eye className="w-4 h-4" />
+              <Eye className='w-4 h-4' />
             )}
           </button>
           
-          <span className="text-sm font-medium">
+          <span className='text-sm font-medium'>
             {node.data.custom?.displayName || node.data.displayName || node.data.name}
           </span>
         </div>
 
         {hasChildren && isExpanded && (
-          <div className="ml-1.5 border-l border-border/50 pl-2 mt-1">
+          <div className='ml-1.5 border-l border-border/50 pl-2 mt-1'>
             {node.data.nodes.map(childId => renderNode(childId))}
           </div>
         )}
@@ -97,16 +97,16 @@ const LayersPanel = () => {
   const rootNodes = Object.keys(nodes).filter(id => !nodes[id].data.parent);
 
   return (
-    <div className="w-64 p-4 space-y-2">
-      <div className="text-sm font-medium flex items-center gap-2 px-2">
-        <Layers className="w-4 h-4" />
+    <div className='p-4 space-y-2'>
+      <div className='text-sm font-medium flex items-center gap-2 px-2'>
+        <Layers className='w-4 h-4' />
         Layers
       </div>
-      <div className="space-y-1">
+      <div className='space-y-1'>
         {rootNodes.map(rootNodeId => renderNode(rootNodeId))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default LayersPanel;

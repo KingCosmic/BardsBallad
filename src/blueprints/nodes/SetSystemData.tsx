@@ -8,7 +8,8 @@ import {
   useReactFlow
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonInput, IonText } from '@ionic/react'
+import Card from '../../components/Card'
+import TextInput from '../../components/inputs/TextInput'
  
 function SetSystemDataNode({ id, data }: NodeProps<Node<{ path: string }>>) {
   const { updateNodeData } = useReactFlow()
@@ -16,25 +17,15 @@ function SetSystemDataNode({ id, data }: NodeProps<Node<{ path: string }>>) {
   const type = 'unknown'
 
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Set System Data</IonCardTitle>
-      </IonCardHeader>
-      <IonCardContent>
-        <IonInput label='path' labelPlacement='floating' fill='outline' placeholder='path/to/data/from/system' value={data.path} onIonChange={(ev: Event) => {
-          const val = (ev.target as HTMLIonInputElement).value as string
+    <Card title='Set System Data'>
+      <TextInput id='path' label='Path' placeholder='path/to/data' value={data.path} onChange={path => updateNodeData(id, { path })} isValid errorMessage='' />
 
-          updateNodeData(id, { path: val })
-        }} />
+      <p>Calculated type {type}</p>
 
-        <IonText>
-          <p>Calculated type {type}</p>
-        </IonText>
-      </IonCardContent>
       <Handle type='target' position={Position.Left} />
       <Handle type='source' position={Position.Right} />
-    </IonCard>
+    </Card>
   )
 }
  
-export default memo(SetSystemDataNode);
+export default memo(SetSystemDataNode)

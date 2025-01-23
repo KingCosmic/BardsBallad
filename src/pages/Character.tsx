@@ -1,16 +1,16 @@
-import { IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react'
-import './Page.css'
 import { characterState, setCurrentCharacter } from '../state/character'
 import { useEffect, useState } from 'react'
 
 import { useParams } from 'react-router'
 import { charactersState } from '../state/characters'
 
-import { informationCircleOutline } from 'ionicons/icons'
 import { PageData } from '../state/systems'
 import RenderEditorData from '../designer/RenderEditorData'
 
+import Header from '../components/Header'
+
 import lz from 'lzutf8'
+import Select from '../components/inputs/Select'
 
 const Character: React.FC = () => {
   const characters = charactersState.useValue()
@@ -32,38 +32,21 @@ const Character: React.FC = () => {
   if (!character) return <>loading...</>
 
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot='start'>
-            <IonMenuButton menu='nav-menu' />
-          </IonButtons>
-          <IonTitle>{character.name}</IonTitle>
-          <IonButtons slot='end'>
-            <IonMenuButton menu='info-menu'>
-              <IonIcon icon={informationCircleOutline} />
-            </IonMenuButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
+    <div>
+      <Header title={name || 'loading'} />
 
-      <IonContent className='ion-padding' fullscreen>
-        <IonSelect className='ion-margin-bottom' label='Tab'
-          interface='popover'
-          fill='outline'
-          value={tab}
-          onIonChange={(e) => setTab(e.detail.value)}
-        >
+      <div className='p-4'>
+        <Select id='tab-selector' label='' value={tab} onChange={setTab}>
           {
-            character.system.pages.map((page) => <IonSelectOption key={page.name} value={page.name}>{page.name}</IonSelectOption>)
+            character.system.pages.map((page) => <option key={page.name} value={page.name}>{page.name}</option>)
           }
-        </IonSelect>
+        </Select>
 
         {
           character.system.pages.map((page) => <RenderTab key={page.name} page={page} hidden={page.name !== tab} />)
         }
-      </IonContent>
-    </IonPage>
+      </div>
+    </div>
   )
 }
 

@@ -10,8 +10,8 @@ import {
   useHandleConnections
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonText } from '@ionic/react'
 import { systemState } from '../../../state/system'
+import Card from '../../../components/Card'
  
 function Remove({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
@@ -54,11 +54,7 @@ function Remove({ id, data: { inputType } }: NodeProps<Node<{ inputType: string 
   }, [system, inputType])
 
   return (
-    <IonCard style={{ width: 250 }}>
-      <IonCardHeader>
-        <IonCardTitle>Remove Item In Array</IonCardTitle>
-      </IonCardHeader>
-
+    <Card title='Remove Item In Array'>
       <Handle type='target' id='from-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -66,20 +62,16 @@ function Remove({ id, data: { inputType } }: NodeProps<Node<{ inputType: string 
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <IonText>
-          <p style={{ textAlign: 'left' }}>Type {inputType}(Array)</p>
+      <p style={{ textAlign: 'left' }}>Type {inputType}(Array)</p>
 
-          {
-            (inputType !== 'unknown') && (
-              <>
-                <p style={{ marginTop: 5 }}>name (string)</p>
-                <p style={{ textAlign: 'right', marginTop: 5 }}>{inputType}(Array) New Array</p>
-              </>
-            )
-          }
-        </IonText>
-      </IonCardContent>
+      {
+        (inputType !== 'unknown') && (
+          <>
+            <p style={{ marginTop: 5 }}>name (string)</p>
+            <p style={{ textAlign: 'right', marginTop: 5 }}>{inputType}(Array) New Array</p>
+          </>
+        )
+      }
 
       <Handle type='target' id='base-array' position={Position.Left}
         style={{ top: 80, bottom: 'auto' }}
@@ -100,7 +92,7 @@ function Remove({ id, data: { inputType } }: NodeProps<Node<{ inputType: string 
           </>
         )
       }
-    </IonCard>
+    </Card>
   )
 }
  

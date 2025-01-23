@@ -1,10 +1,9 @@
-import { IonAccordion, IonAccordionGroup, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonNote, IonSearchbar, IonText } from '@ionic/react'
-import { add } from 'ionicons/icons'
+
 import { addSystemData, deleteSystemData, systemState, updateSystemData } from '../../state/system'
 import { useState } from 'react'
 import { DataType } from '../../state/systems'
 import EditSystemData from '../../modals/EditSystemData'
-import EditObject from '../../modals/EditObject'
+import FloatingActionButton from '../../components/FloatingActionButton'
 
 function Data() {
   const system = systemState.useValue()
@@ -22,25 +21,19 @@ function Data() {
         data={editData!}
       />
       
-      <IonSearchbar color='light' />
+      {/* TODO: Searchbar */}
 
-      <IonAccordionGroup>
-        {
-          system?.data.map((data) => {
-            return (
-              <IonItem key={data.name} color='light' onClick={() => setEditData(data)} button>
-                <IonLabel>{data.name}</IonLabel>
-              </IonItem>
-            )
-          })
-        }
-      </IonAccordionGroup>
+      {
+        system?.data.map((data) => {
+          return (
+            <div key={data.name} onClick={() => setEditData(data)}>
+              <p>{data.name}</p>
+            </div>
+          )
+        })
+      }
 
-      <IonFab slot='fixed' vertical='bottom' horizontal='end'>
-        <IonFabButton onClick={addSystemData}>
-          <IonIcon icon={add} />
-        </IonFabButton>
-      </IonFab>
+      <FloatingActionButton onClick={addSystemData} />
     </>
   )
 }

@@ -1,10 +1,13 @@
-import { IonAccordion, IonAccordionGroup, IonButton, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonNote, IonSearchbar } from '@ionic/react'
-import { add } from 'ionicons/icons'
+
 import { addType, addTypeProperty, deleteType, deleteTypeProperty, systemState, updateTypeName, updateTypeProperty } from '../../state/system'
 import EditTypeModal from '../../modals/EditType'
-import { SystemType, TypeData } from '../../state/systems'
+import { TypeData } from '../../state/systems'
 import { useState } from 'react'
 import EditStringModal from '../../modals/EditString'
+import AccordionGroup from '../../components/AccordionGroup'
+import FloatingActionButton from '../../components/FloatingActionButton'
+import Button from '../../components/inputs/Button'
+import Accordion from '../../components/Accordion'
 
 function Types() {
   const system = systemState.useValue()
@@ -16,6 +19,8 @@ function Types() {
   } | null>(null)
 
   const [editName, setEditName] = useState<string | null>(null)
+
+  const [openAccordion, setOpenAccordion] = useState(-1)
 
   return (
     <>
@@ -30,54 +35,47 @@ function Types() {
         onSave={(data) => updateTypeName(editName || '', data)}
       />
       
-      <IonSearchbar color='light' />
+      {/* TODO: Searchbar */}
 
-      <IonAccordionGroup>
-        {
-          system?.types.map((type) => {
-            return (
-              <IonAccordion key={type.name} value={type.name}>
-                <IonItem slot='header' color='light'>
-                  <IonLabel>{type.name}</IonLabel>
-                </IonItem>
-                <div className='ion-padding' slot='content'>
-                  <div>
-                    <IonButton color='light' onClick={() => setEditName(type.name)}>Edit Name</IonButton>
-                    <IonButton color='light' onClick={() => {
-                      const propertyType = addTypeProperty(type.name)
+      <AccordionGroup>
+        {system?.types.map((type, i) => (
+          <Accordion key={type.name} id={type.name} title={type.name} isOpen={openAccordion === i} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? i : -1)}>
+            <div>
+              <Button color='light' onClick={() => setEditName(type.name)}>Edit Name</Button>
 
-                      if (!propertyType) return
+              <Button color='light' onClick={() => {
+                const propertyType = addTypeProperty(type.name)
 
-                      setEditData({ ...propertyType, typeName: type.name })
-                    }}>Add Property</IonButton>
-                    <IonButton color='danger' onClick={() => deleteType(type.name)}>Delete Type</IonButton>
+                if (!propertyType) return
+
+                setEditData({ ...propertyType, typeName: type.name })
+              }}>Add Property</Button>
+
+              <Button color='danger' onClick={() => deleteType(type.name)}>Delete Type</Button>
+            </div>
+
+            <div className='flex flex-col gap-1 mt-3'>
+              {
+                type.properties.map((t) => (
+                  <div key={t.key}
+                    className='p-3 bg-neutral-900 hover:bg-neutral-800 cursor-pointer'
+                    onClick={() => setEditData({ ...t, typeName: type.name })}
+                  >
+                    <p>
+                      {t.key} - {t.typeData.type} {t.typeData.isArray ? '(Array)' : ''} {t.typeData.options.join(',')}
+                    </p>
                   </div>
-                  <IonList>
-                    {
-                      type.properties.map((t) => (
-                        <IonItem key={t.key} button onClick={() => setEditData({ ...t, typeName: type.name })}>
-                          <IonLabel>
-                            {t.key} - {t.typeData.type} {t.typeData.isArray ? '(Array)' : ''} {t.typeData.options.join(',')}
-                          </IonLabel>
-                        </IonItem>
-                      ))
-                    }
-                  </IonList>
-                </div>
-              </IonAccordion>
-            )
-          })
-        }
-      </IonAccordionGroup>
+                ))
+              }
+            </div>
+          </Accordion>
+        ))}
+      </AccordionGroup>
 
-      <IonFab slot='fixed' vertical='bottom' horizontal='end'>
-        <IonFabButton onClick={() => {
-          addType()
-          setEditName('New Type')
-        }}>
-          <IonIcon icon={add} />
-        </IonFabButton>
-      </IonFab>
+      <FloatingActionButton onClick={() => {
+        addType()
+        setEditName('New Type')
+      }} />
     </>
   )
 }

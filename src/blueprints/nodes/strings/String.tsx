@@ -8,31 +8,27 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonInput } from '@ionic/react'
+import TextInput from '../../../components/inputs/TextInput'
+import Card from '../../../components/Card'
  
 function String({ id, data: { value }}: NodeProps<Node<{ value: string }>>) {
   const { updateNodeData } = useReactFlow()
-  
+
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>String</IonCardTitle>
-      </IonCardHeader>
+    <Card title='String'>
       <Handle type='target' id='prev-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
       <Handle type='source' id='next-node' position={Position.Right}
         style={{ top: 30, bottom: 'auto' }}
       />
-
-      <IonCardContent>
-        <IonInput type='text' fill='solid' placeholder='String Value Here' value={value} onIonChange={(ev) => updateNodeData(id, { value: (ev.target as HTMLIonInputElement).value })} />
-      </IonCardContent>
       
+      <TextInput id={`string-${id}`} label='String Value' value={value} onChange={value => updateNodeData(id, { value })} isValid errorMessage='' />
+
       <Handle type='source' id='output-string' position={Position.Right}
         style={{ top: 100, bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  

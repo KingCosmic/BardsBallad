@@ -9,9 +9,11 @@ import {
   useUpdateNodeInternals
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonInput, IonText } from '@ionic/react'
-import { systemState } from '../../../state/system'
 import getTypeFromProperty from '../../../utils/getTypeOfProperty'
+import { systemState } from '../../../state/system'
+
+import TextInput from '../../../components/inputs/TextInput'
+import Card from '../../../components/Card'
  
 function SetCharacterDataNode({ id, data: { path, type } }: NodeProps<Node<{ path: string; type: string; }>>) {
   const { updateNodeData } = useReactFlow()
@@ -19,9 +21,7 @@ function SetCharacterDataNode({ id, data: { path, type } }: NodeProps<Node<{ pat
   
   const system = systemState.useValue()
 
-  const updateTypeFromPath = useCallback((ev: Event) => {
-    const path = (ev.target as HTMLIonInputElement).value as string
-
+  const updateTypeFromPath = useCallback((path: string) => {
     const type = getTypeFromProperty(system?.defaultCharacterData || {}, path)
 
     updateNodeData(id, { path, type })
@@ -29,10 +29,7 @@ function SetCharacterDataNode({ id, data: { path, type } }: NodeProps<Node<{ pat
   }, [id, updateNodeData, updateNodeInternals])
 
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Set Character Data</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Set Character Data'>
       <Handle type='target' id='from-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -40,19 +37,16 @@ function SetCharacterDataNode({ id, data: { path, type } }: NodeProps<Node<{ pat
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <IonInput label='path' labelPlacement='floating' fill='outline' placeholder='path/to/data/from/system' value={path} onIonChange={updateTypeFromPath} />
+      <TextInput id={`set-character-${id}`} label='Path' value={path} onChange={updateTypeFromPath} isValid errorMessage='' />
 
-        <IonText>
-          <p>Calculated type {type}</p>
-        </IonText>
-      </IonCardContent>
+      <p>Calculated type {type}</p>
+
       {
         (type !== 'unknown') ? (
           <Handle type='target' id={`input-${type}`} position={Position.Left} style={{ bottom: 20, top: 'auto'}} />
         ) : null
       }
-    </IonCard>
+    </Card>
   )
 }
  

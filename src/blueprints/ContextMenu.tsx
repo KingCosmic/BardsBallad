@@ -1,7 +1,6 @@
-import { useCallback, useState } from 'react';
-import { useReactFlow } from '@xyflow/react';
-import { IonItem, IonList } from '@ionic/react';
-import { getDefaultDataForType } from './utils';
+import { useCallback, useState } from 'react'
+import { useReactFlow } from '@xyflow/react'
+import { getDefaultDataForType } from './utils'
 
 type MenuProps = {
   id: string;
@@ -65,189 +64,189 @@ export default function ContextMenu({
     >
       <ul>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(1)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           Character
           {(submenuVisible === 1) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('get_character_data')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('get_character_data')}>
                 Get Character Data
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('set_character_data')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('set_character_data')}>
                 Set Character Data
               </li>
             </ul>
           )}
         </li>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(2)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           Page
           {(submenuVisible === 2) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('get_page_data')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('get_page_data')}>
                 Get Page Data
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('set_page_data')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('set_page_data')}>
                 Set Page Data
               </li>
             </ul>
           )}
         </li>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(3)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           System
           {(submenuVisible === 3) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('get_system_data')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('get_system_data')}>
                 Get System Data
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('set_system_data')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('set_system_data')}>
                 Set System Data
               </li>
             </ul>
           )}
         </li>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(4)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           Array
           {(submenuVisible === 4) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('array_get')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('array_get')}>
                 Get Item
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('add_to_array')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('add_to_array')}>
                 Add Item
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('array_remove')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('array_remove')}>
                 Remove Item
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('array_update')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('array_update')}>
                 Update Item
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('filter')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('filter')}>
                 Filter
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('map')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('map')}>
                 Map
               </li>
             </ul>
           )}
         </li>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(5)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           Object
           {(submenuVisible === 5) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('spread_object')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('spread_object')}>
                 Spread Object
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('create_data_from_type')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('create_data_from_type')}>
                 Create Object From Type
               </li>
             </ul>
           )}
         </li>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(6)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           String
           {(submenuVisible === 6) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('string_new')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('string_new')}>
                 New String
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('string_includes')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('string_includes')}>
                 Includes
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('string_compare')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('string_compare')}>
                 Compare
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('string_concat')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('string_concat')}>
                 Concat
               </li>
             </ul>
           )}
         </li>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(7)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           Numbers
           {(submenuVisible === 7) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('new_number')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('new_number')}>
                 New Number
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('divide')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('divide')}>
                 Divide
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('add')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('add')}>
                 Add
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('subtract')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('subtract')}>
                 Subtract
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('multiply')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('multiply')}>
                 Multiply
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('floor')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('floor')}>
                 Floor
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('number_to_string')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('number_to_string')}>
                 Number To String
               </li>
             </ul>
           )}
         </li>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(8)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           Enums
           {(submenuVisible === 8) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('new_enum')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('new_enum')}>
                 New Enum
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('enum_compare')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('enum_compare')}>
                 Compare Enum
               </li>
             </ul>
           )}
         </li>
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onMouseEnter={() => setSubmenuVisible(9)}
           onMouseLeave={() => setSubmenuVisible(-1)}
         >
           Booleans
           {(submenuVisible === 9) && (
-            <ul className="absolute left-full top-0 bg-black shadow-lg rounded-md p-2">
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('boolean_new')}>
+            <ul className='absolute left-full top-0 bg-black shadow-lg rounded-md p-2'>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('boolean_new')}>
                 New Boolean
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('boolean_branch')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('boolean_branch')}>
                 Branch
               </li>
-              <li className="hover:bg-gray-700 p-2 cursor-pointer" onClick={() => createNode('boolean_inverse')}>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('boolean_inverse')}>
                 Inverse
               </li>
             </ul>
@@ -255,7 +254,7 @@ export default function ContextMenu({
         </li>
 
         <li
-          className="hover:bg-gray-700 p-2 cursor-pointer relative"
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
           onClick={() => createNode('open_modal')}
         >
           Open Modal

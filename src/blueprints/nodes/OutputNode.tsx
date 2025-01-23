@@ -10,8 +10,8 @@ import {
   useUpdateNodeInternals
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react'
 import { Param } from '../utils'
+import Card from '../../components/Card'
  
 function OutputNode({ id, data: { param, inputType } }: NodeProps<Node<{ param: Param, inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
@@ -47,26 +47,22 @@ function OutputNode({ id, data: { param, inputType } }: NodeProps<Node<{ param: 
   })
 
   return (
-    <IonCard style={{ width: 200}}>
-      <IonCardHeader>
-        <IonCardTitle>Output</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Output'>
       <Handle type='target' id='end-node' position={Position.Left}
         style={{ top: 28, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <p style={{ textAlign: 'left', marginTop: 5 }}>
-          {
-            (param.isArray) ? `${inputType}${param.isArray ? '(Array)' : ''}` : param.type
-          }
-        </p>
-      </IonCardContent>
+      <p style={{ textAlign: 'left', marginTop: 5 }}>
+        {
+          (param.isArray) ? `${inputType}${param.isArray ? '(Array)' : ''}` : param.type
+        }
+      </p>
+
       <Handle type='target' id={inputID} position={Position.Left}
         style={{ top: 85, bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  
-export default memo(OutputNode);
+export default memo(OutputNode)

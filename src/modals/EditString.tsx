@@ -1,25 +1,10 @@
 import { useEffect, useState } from 'react'
-
-import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonInput,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-  IonLabel,
-  IonCheckbox,
-  IonNote,
-} from '@ionic/react'
-
-import { BlueprintData, TypeData } from '../state/systems'
-import { openModal } from '../state/modals'
-import { systemState } from '../state/system'
+import Modal from '../components/Modal';
+import ModalHeader from '../components/Modal/Header';
+import ModalBody from '../components/Modal/Body';
+import ModalFooter from '../components/Modal/Footer';
+import Button from '../components/inputs/Button';
+import TextInput from '../components/inputs/TextInput';
 
 type Props = {
   data: string | null;
@@ -30,8 +15,7 @@ type Props = {
   onDelete?(): void;
 }
 
-function EditStringModal(props: Props) {
-  const { data, requestClose, onSave, onDelete } = props
+function EditStringModal({ data, isOpen, requestClose, onSave, onDelete } : Props) {
 
   const [string, setString] = useState('')
 
@@ -42,39 +26,31 @@ function EditStringModal(props: Props) {
   }, [data])
 
   return (
-    <IonModal isOpen={props.isOpen}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot='start'>
-            <IonButton onClick={() => requestClose()}>Cancel</IonButton>
-          </IonButtons>
-          <IonTitle>Edit Type Property</IonTitle>
-          <IonButtons slot='end'>
-            <IonButton color='primary' strong={true} onClick={() => {
-              if (!string) return requestClose()
-              if (!data) return requestClose()
-              
-              onSave(string)
-              requestClose()
-            }}>
-              Confirm
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className='ion-padding'>
-        <IonItem>
-          <IonInput
-            label='Name'
-            labelPlacement='stacked'
-            type='text'
-            placeholder='baba yaga'
-            value={string}
-            onIonInput={(ev) => setString((ev.target as unknown as HTMLInputElement).value)}
-          />
-        </IonItem>
-      </IonContent>
-    </IonModal>
+    <Modal isOpen={isOpen} onClose={requestClose}>
+      <ModalHeader title='Edit Type Property' onClose={requestClose} />
+
+      <ModalBody>
+        <TextInput id='name' label='Name' placeholder='baba yaga' value={string} onChange={setString} isValid errorMessage='' />
+      </ModalBody>
+
+      <ModalFooter>
+        <Button color='danger'
+          onClick={() => {
+            if (onDelete) onDelete()
+            requestClose()
+          }}
+        >
+          {(onDelete) ? 'Delete' : 'Close'}
+        </Button>
+
+        <Button color='primary' onClick={() => {
+          if (!string) return requestClose()
+
+          onSave(string)
+          requestClose()
+        }}>Update</Button>
+      </ModalFooter>
+    </Modal>
   )
 }
 

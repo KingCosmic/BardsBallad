@@ -8,7 +8,8 @@ import {
   useReactFlow
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonInput, IonText } from '@ionic/react'
+import TextInput from '../../components/inputs/TextInput'
+import Card from '../../components/Card'
  
 function GetPageDataNode({ id, data }: NodeProps<Node<{ path: string }>>) {
   const { updateNodeData } = useReactFlow()
@@ -16,24 +17,14 @@ function GetPageDataNode({ id, data }: NodeProps<Node<{ path: string }>>) {
   const type = 'unknown'
 
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Get Page Data</IonCardTitle>
-      </IonCardHeader>
-      <IonCardContent>
-        <IonInput label='path' labelPlacement='floating' fill='outline' placeholder='path/to/data/from/page' value={data.path} onIonChange={(ev: Event) => {
-          const val = (ev.target as HTMLIonInputElement).value as string
+    <Card title='Get System Data'>
+      <TextInput id='path' label='Path' placeholder='path/to/data' value={data.path} onChange={path => updateNodeData(id, { path })} isValid errorMessage='' />
 
-          updateNodeData(id, { path: val })
-        }} />
+      <p>Calculated type {type}</p>
 
-        <IonText>
-          <p>Calculated type {type}</p>
-        </IonText>
-      </IonCardContent>
       <Handle type='target' position={Position.Left} />
       <Handle type='source' position={Position.Right} />
-    </IonCard>
+    </Card>
   )
 }
  

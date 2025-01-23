@@ -1,24 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import {
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonInput,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-  IonLabel,
-} from '@ionic/react'
+import { BlueprintData,  } from '../state/systems'
 
-import { systemState, updatePageState } from '../state/system'
-import { BlueprintData, TypeData } from '../state/systems';
-import { editorState } from '../state/editor';
-import { openModal } from '../state/modals';
+import { openModal } from '../state/modals'
+import Modal from '../components/Modal';
+import ModalHeader from '../components/Modal/Header';
+import ModalBody from '../components/Modal/Body';
+import ModalFooter from '../components/Modal/Footer';
+import TextInput from '../components/inputs/TextInput';
+import Button from '../components/inputs/Button';
 
 type Props = {
   data: { name: string; icon: string; blueprint: BlueprintData } | null;
@@ -29,13 +19,10 @@ type Props = {
   onDelete(): void;
 }
 
-function EditButtonModal(props: Props) {
-  const { data, requestClose, onSave, onDelete } = props
-
+function EditButtonModal({ data, isOpen, requestClose, onSave, onDelete }: Props) {
   const [name, setName] = useState('')
   const [icon, setIcon] = useState('')
   const [blueprint, setBlueprint] = useState<BlueprintData>({ nodes: [], edges: [] })
-
 
   useEffect(() => {
     if (!data) return
@@ -46,74 +33,37 @@ function EditButtonModal(props: Props) {
   }, [data])
 
   return (
-    <IonModal isOpen={props.isOpen}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot='start'>
-            <IonButton onClick={() => requestClose()}>Cancel</IonButton>
-          </IonButtons>
-          <IonTitle>Edit Button State</IonTitle>
-          <IonButtons slot='end'>
-            <IonButton color='primary' strong={true} onClick={() => {
-              const newButtonData = {
-                name,
-                icon,
-                blueprint
-              }
-              
-              onSave(newButtonData)
-              requestClose()
-            }}>
-              Confirm
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className='ion-padding'>
-        <IonItem>
-          <IonInput
-            label='Button Name'
-            labelPlacement='stacked'
-            type='text'
-            placeholder='baba yaga'
-            value={name}
-            onIonInput={(ev) => setName((ev.target as unknown as HTMLInputElement).value)}
-          />
-        </IonItem>
+    <Modal isOpen={isOpen} onClose={requestClose}>
+      <ModalHeader title='Edit Button State' onClose={requestClose} />
 
-        <IonItem>
-          <IonSelect label='Icon' labelPlacement='stacked'
-            value={icon}
-            onIonChange={(e) => setIcon(e.detail.value)}
-          >
-            <IonSelectOption value='test'>
-              test
-            </IonSelectOption>
-          </IonSelect>
-        </IonItem>
+      <ModalBody>
+        <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={name} onChange={(name) => setName(name)} isValid errorMessage='Names must be unique' />
 
-        <IonItem button={true} onClick={() => openModal({
-            type: 'blueprint',
-            title: '',
-            data: blueprint,
-            onSave: (bp) => setBlueprint(bp)
-          })}>
-          <IonLabel>On Click Action</IonLabel>
-        </IonItem>
+        {/* TODO: Icon Select. */}
 
-        <div style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
-          <IonButton
-            color='danger'
-            onClick={() => {
-              onDelete()
-              requestClose()
-            }}
-          >
-            Delete
-          </IonButton>
-        </div>
-      </IonContent>
-    </IonModal>
+        <p onClick={() => openModal({
+          type: 'blueprint',
+          title: '',
+          data: blueprint,
+          onSave: (bp) => setBlueprint(bp)
+        })}>
+          On Click Action
+        </p>
+
+      </ModalBody>
+
+      <ModalFooter>
+        <Button color='danger' onClick={() => {
+          onDelete()
+          requestClose()
+        }}>Delete</Button>
+
+        <Button color='primary' onClick={() => {         
+          onSave({ name, icon, blueprint })
+          requestClose()
+        }}>Update</Button>
+      </ModalFooter>
+    </Modal>
   )
 }
 

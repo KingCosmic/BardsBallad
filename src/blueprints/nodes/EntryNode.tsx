@@ -1,5 +1,7 @@
 import { memo } from 'react'
 
+import Card from '../../components/Card'
+
 import {
   Handle,
   type NodeProps,
@@ -7,29 +9,23 @@ import {
   Position
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react'
-import { Param } from '../utils';
- 
-function EntryNode({ id, data: { params } }: NodeProps<Node<{ params: Param[] }>>) {
-  
+import { Param } from '../utils'
+
+const EntryNode: React.FC<NodeProps<Node<{ params: Param[] }>>> = ({ id, data: { params } }) => {
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Entry</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Entry'>
       <Handle type='source' id='start-node' position={Position.Right}
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        {
-          params.map(p => (
-            <p key={p.name} style={{ textAlign: 'right', marginTop: 5 }}>
-              ({p.type}{p.isArray ? '[]' : ''}) {p.name}
-            </p>
-          ))
-        }
-      </IonCardContent>
+      {
+        params.map(p => (
+          <p key={p.name} style={{ textAlign: 'right', marginTop: 5 }}>
+            ({p.type}{p.isArray ? '[]' : ''}) {p.name}
+          </p>
+        ))
+      }
+
       {
         params.map((p, i) => (
           <Handle key={p.name} type='source' id={`${p.name}-${p.type}`} position={Position.Right}
@@ -37,8 +33,8 @@ function EntryNode({ id, data: { params } }: NodeProps<Node<{ params: Param[] }>
           />
         ))
       }
-    </IonCard>
+    </Card>
   )
 }
  
-export default memo(EntryNode);
+export default memo(EntryNode)

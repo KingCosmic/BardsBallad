@@ -7,14 +7,11 @@ import {
   Position,
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react'
+import Card from '../../../components/Card'
  
 function ToString(_props: NodeProps<Node<{ number: number; }>>) {
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Number To String</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Number To String'>
       <Handle type='target' id='prev-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -22,15 +19,13 @@ function ToString(_props: NodeProps<Node<{ number: number; }>>) {
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <p style={{ marginTop: 5 }}>
-          number
-        </p>
+      <p style={{ marginTop: 5 }}>
+        number
+      </p>
 
-        <p style={{ marginTop: 5, textAlign: 'right' }}>
-          string
-        </p>
-      </IonCardContent>
+      <p style={{ marginTop: 5, textAlign: 'right' }}>
+        string
+      </p>
 
       <Handle type='target' id='input-number' position={Position.Left}
         style={{ top: 85, bottom: 'auto' }}
@@ -39,7 +34,7 @@ function ToString(_props: NodeProps<Node<{ number: number; }>>) {
       <Handle type='source' id='output-string' position={Position.Right}
         style={{ top: 110, bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  

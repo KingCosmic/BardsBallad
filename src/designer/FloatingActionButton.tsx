@@ -1,15 +1,18 @@
-import { IonButton, IonButtons, IonCheckbox, IonFab, IonFabButton, IonFabList, IonIcon, IonInput, IonItem, IonLabel, IonList, IonNote, IonSelect, IonSelectOption, IonText } from '@ionic/react'
 
-import { Node, NodeHelpersType, useNode, UserComponentConfig } from '@craftjs/core'
-import { add, addOutline, chevronDownOutline, chevronUp } from 'ionicons/icons'
+import { useNode, UserComponentConfig } from '@craftjs/core'
 import { BlueprintData } from '../state/systems'
 import { openModal } from '../state/modals'
 import Divider from '../components/Divider'
 import { getDefaultNodes } from '../blueprints/utils'
 import EditButtonModal from '../modals/EditButton'
-import { useCallback, useState } from 'react'
+
+import {  useState } from 'react'
+
 import BlueprintProcessor from '../utils/Blueprints/processBlueprint'
-import { LocalData, useLocalData } from './renderer/Context'
+
+import { useLocalData } from './renderer/Context'
+import FloatingActionButton from '../components/FloatingActionButton'
+import Checkbox from '../components/inputs/Checkbox'
 
 type Button = {
   name: string;
@@ -23,73 +26,23 @@ type FABProps = {
   blueprint?: BlueprintData;
 }
 
-function FAB({ isList, buttons }: FABProps) {
+function FAB({ buttons }: FABProps) {
   const { connectors: { connect, drag } } = useNode()
 
   return (
-    <IonFab ref={ref => connect(drag(ref!))} vertical='bottom' horizontal='end'>
-      <IonFabButton>
-        <IonIcon icon={isList ? chevronUp : add} />
-      </IonFabButton>
-      {
-        isList && (
-          <IonFabList side='top'>
-            {
-              buttons!.map((button) => (
-                <IonButton key={button.name}
-                  style={{ alignSelf: 'right', marginRight: '100%' }}
-                >
-                  <IonText>{button.name}</IonText>
-                </IonButton>
-              ))
-            }
-          </IonFabList>
-        )
-      }
-    </IonFab>
+    // @ts-ignore
+    <FloatingActionButton ref={ref => connect(drag(ref!))} buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => {} }))} />
   )
 }
 
 export function FABPreview({ blueprint, isList, buttons }: FABProps) {
   const localData = useLocalData()
 
-  const onClick = useCallback(() => {
-    const processor = new BlueprintProcessor(blueprint!)
-
-    processor.processBlueprint(localData)
-  }, [blueprint, localData])
-
   return (
-    <IonFab slot='fixed' vertical='bottom' horizontal='end'>
-      <IonFabButton onClick={isList ? undefined : onClick}>
-        <IonIcon icon={isList ? chevronUp : add} />
-      </IonFabButton>
-      {
-        isList && (
-          <IonFabList side='top'>
-            {
-              buttons!.map((button) => <FABButtonPreview key={button.name} button={button} localData={localData} />)
-            }
-          </IonFabList>
-        )
-      }
-    </IonFab>
-  )
-}
-
-function FABButtonPreview({ button, localData }: { button: Button, localData: LocalData }) {
-  const onClick = useCallback(() => {
-    const processor = new BlueprintProcessor(button.blueprint!)
-
-    processor.processBlueprint(localData)
-  }, [button.blueprint, localData])
-
-  return (
-    <IonButton onClick={onClick}
-      style={{ alignSelf: 'right', marginRight: '100%' }}
-    >
-      <IonText>{button.name}</IonText>
-    </IonButton>
+    <FloatingActionButton
+      onClick={isList ? undefined : () => new BlueprintProcessor(blueprint!).processBlueprint(localData)}
+      buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => new BlueprintProcessor(btn.blueprint!).processBlueprint(localData) }))}
+    />
   )
 }
 
@@ -103,10 +56,8 @@ function FABSettings() {
   const [editData, setEditData] = useState<any | null>(null)
 
   return (
-    <IonList>
-      <IonItem>
-        <IonCheckbox value={isList} onIonChange={() => setProp((props: any) => props.isList = !isList)}>is List?</IonCheckbox>
-      </IonItem>
+    <div>
+      <Checkbox id='isList' label='is List?' checked={isList} onChange={(value) => setProp((props: any) => props.isList = value)} />
 
       {
         isList ? (
@@ -115,17 +66,33 @@ function FABSettings() {
               <h5 style={{ marginLeft: 10 }}>Buttons</h5>
 
               <div>
-                <IonButtons>
-                  <IonButton onClick={() => setProp((props: any) => {
+                <button type='button'
+                  className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+                  onClick={() => setProp((props: any) => {
                     if (!props.buttons.find((b: Button) => b.name === 'new button'))
 
                     props.buttons.push({ name: 'new button', icon: '', blueprint: { nodes: getDefaultNodes(), edges: [] } })
 
                     return props
-                  })} >
-                    <IonIcon slot='icon-only' icon={addOutline} />
-                  </IonButton>
-                </IonButtons>
+                  })}
+                >
+                  <svg
+                    className='group-hover:rotate-45 transition-transform w-5 h-5'
+                    aria-hidden='true'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 18 18'
+                  >
+                    <path
+                      stroke='currentColor'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth='2'
+                      d='M9 1v16M1 9h16'
+                    />
+                  </svg>
+                  <span className='sr-only'>Icon description</span>
+                </button>
               </div>
             </div>
 
@@ -133,9 +100,9 @@ function FABSettings() {
 
             {
               buttons.map((button: Button) => (
-                <IonItem key={button.name} button={true} onClick={() => setEditData(button)}>
+                <p key={button.name} onClick={() => setEditData(button)}>
                   {button.name}
-                </IonItem>
+                </p>
               ))
             }
 
@@ -150,17 +117,17 @@ function FABSettings() {
             })} onDelete={() => setProp((props: any) => props.buttons = props.buttons.filter((b: any) => b.name !== editData!.name))} />
           </>
         ) : (
-          <IonItem button={true} onClick={() => openModal({
+          <p onClick={() => openModal({
             type: 'blueprint',
             title: '',
             data: blueprint,
             onSave: (blueprint) => setProp((props: any) => props.blueprint = blueprint)
           })}>
             On Click
-          </IonItem>
+          </p>
         )
       }
-    </IonList>
+    </div>
   )
 }
 

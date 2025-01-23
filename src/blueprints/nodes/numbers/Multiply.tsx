@@ -6,15 +6,13 @@ import {
   type Node,
   Position,
 } from '@xyflow/react'
+import Card from '../../../components/Card';
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react'
  
 function Multiply(_props: NodeProps<Node<{ number1: number; number2: number; }>>) {
+
   return (
-    <IonCard>
-      <IonCardHeader>
-        <IonCardTitle>Multiply</IonCardTitle>
-      </IonCardHeader>
+    <Card title='Multiply'>
       <Handle type='target' id='prev-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -22,19 +20,17 @@ function Multiply(_props: NodeProps<Node<{ number1: number; number2: number; }>>
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <IonCardContent>
-        <p style={{ marginTop: 5 }}>
-          number 1
-        </p>
+      <p style={{ marginTop: 5 }}>
+        number 1
+      </p>
 
-        <p style={{ marginTop: 5 }}>
-          number 2
-        </p>
+      <p style={{ marginTop: 5 }}>
+        number 2
+      </p>
 
-        <p style={{ marginTop: 5 }}>
-          output
-        </p>
-      </IonCardContent>
+      <p style={{ marginTop: 5 }}>
+        output
+      </p>
 
       <Handle type='target' id='number1-number' position={Position.Left}
         style={{ top: 85, bottom: 'auto' }}
@@ -47,7 +43,7 @@ function Multiply(_props: NodeProps<Node<{ number1: number; number2: number; }>>
       <Handle type='source' id='output-number' position={Position.Right}
         style={{ top: 135, bottom: 'auto' }}
       />
-    </IonCard>
+    </Card>
   )
 }
  

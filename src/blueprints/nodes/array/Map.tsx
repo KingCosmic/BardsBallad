@@ -10,14 +10,11 @@ import {
   useHandleConnections
 } from '@xyflow/react'
 
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonText } from '@ionic/react'
-import { systemState } from '../../../state/system'
+import Card from '../../../components/Card'
  
 function Map({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
-
-  const system = systemState.useValue()
 
   useHandleConnections({
     type: 'target',
@@ -48,37 +45,31 @@ function Map({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>
   })
 
   return (
-    <IonCard style={{ width: 250 }}>
-      <IonCardHeader>
-        <IonCardTitle>Map Array</IonCardTitle>
-      </IonCardHeader>
-      <IonCardContent>
-        <IonText>
-          <p style={{ textAlign: 'left' }}>Input Type {inputType}</p>
-          <p style={{ textAlign: 'right' }}>Loop Body</p>
+    <Card title='Map Array'>
+      <p style={{ textAlign: 'left' }}>Input Type {inputType}</p>
+      <p style={{ textAlign: 'right' }}>Loop Body</p>
 
-          {
-            (inputType !== 'unknown') && (
-              <>
-                <p style={{ textAlign: 'left', marginTop: 15 }}>Loop Completed</p>
-                <p style={{ textAlign: 'left', marginTop: 5 }}>item ({inputType})</p>
-                <p style={{ textAlign: 'right', marginTop: 15 }}>
-                  ({inputType}) item
-                </p>
-              </>
-            )
-          }
+      {
+        (inputType !== 'unknown') && (
+          <>
+            <p style={{ textAlign: 'left', marginTop: 15 }}>Loop Completed</p>
+            <p style={{ textAlign: 'left', marginTop: 5 }}>item ({inputType})</p>
+            <p style={{ textAlign: 'right', marginTop: 15 }}>
+              ({inputType}) item
+            </p>
+          </>
+        )
+      }
 
-          {
-            (inputType !== 'unknown') && (
-              <>
-                <p style={{ textAlign: 'right', marginTop: 20 }}>Completed</p>
-                <p style={{ textAlign: 'right', marginTop: 5 }}>Filtered Array</p>
-              </>
-            )
-          }
-        </IonText>
-      </IonCardContent>
+      {
+        (inputType !== 'unknown') && (
+          <>
+            <p style={{ textAlign: 'right', marginTop: 20 }}>Completed</p>
+            <p style={{ textAlign: 'right', marginTop: 5 }}>Filtered Array</p>
+          </>
+        )
+      }
+
       <Handle type='target' id='from-node' position={Position.Left}
         style={{ top: 30, bottom: 'auto' }}
       />
@@ -113,7 +104,7 @@ function Map({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>
           </>
         )
       }
-    </IonCard>
+    </Card>
   )
 }
  
