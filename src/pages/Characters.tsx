@@ -1,10 +1,8 @@
-// import { IonActionSheet, IonButtons, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonPage, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react'
 import { charactersState, deleteCharacter } from '../state/characters'
 import { type CharacterData } from '../state/character'
-// import { add } from 'ionicons/icons'
+
 import CharacterCreatorModal from '../modals/CharacterCreator'
 
-import Pressable from '../components/Pressable'
 import { useState } from 'react'
 import Header from '../components/Header'
 import { NavLink } from 'react-router'

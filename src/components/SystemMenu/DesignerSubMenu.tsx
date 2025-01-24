@@ -88,11 +88,7 @@ function DesignerMenu() {
                 </p>
               </div>
 
-              <div className='block w-1/2 py-5 text-center border' ref={ref => connectors.create(ref!, <Text text='Hi World' fontSize={24} blueprint={{ nodes: getDefaultNodes([], {
-                    name: 'text',
-                    type: 'string',
-                    isArray: false
-                  }), edges: [] }} />)}>
+              <div className='block w-1/2 py-5 text-center border' ref={ref => connectors.create(ref!, <Text text='Hi World' />)}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 block mx-auto" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M32 415.5l120-320 120 320M230 303.5H74M326 239.5c12.19-28.69 41-48 74-48h0c46 0 80 32 80 80v144"/><path d="M320 358.5c0 36 26.86 58 60 58 54 0 100-27 100-106v-15c-20 0-58 1-92 5-32.77 3.86-68 19-68 58z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32"/></svg>
 
                 <p className='pt-2 text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base md:pt-4'>

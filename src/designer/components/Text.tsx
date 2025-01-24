@@ -13,25 +13,25 @@ import TextInput from '../../components/inputs/TextInput'
 import Button from '../../components/inputs/Button'
 
 interface TextProps {
-  useBlueprintValue: boolean;
-  blueprint: BlueprintData;
+  useBlueprintValue?: boolean;
+  blueprint?: BlueprintData;
 
-  text: string;
-  color: string;
-  fontSize: string;
-  fontWeight: string;
-  textAlign: string;
-  textDecoration: string;
-  textTransform: string;
-  marginTop: string;
-  marginRight: string;
-  marginBottom: string;
-  marginLeft: string;
+  text?: string;
+  color?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  textAlign?: string;
+  textDecoration?: string;
+  textTransform?: string;
+  marginTop?: string;
+  marginRight?: string;
+  marginBottom?: string;
+  marginLeft?: string;
 
-  paddingTop: string;
-  paddingRight: string;
-  paddingBottom: string;
-  paddingLeft: string;
+  paddingTop?: string;
+  paddingRight?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
 }
 
 function Text(props: TextProps) {

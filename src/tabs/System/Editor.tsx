@@ -32,19 +32,7 @@ function EditorTab() {
     <div className='mt-3 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700'>
       <Frame>
         <Element is={Container} canvas>
-          <Text text='Testing the world' fontSize={32}
-            blueprint={{
-              nodes: getDefaultNodes(
-                [],
-                {
-                  name: 'text',
-                  type: 'string',
-                  isArray: false
-                }
-              ),
-              edges: []
-            }}
-          />
+          <Text text='Testing the world' />
         </Element>
       </Frame>
     </div>

@@ -1,8 +1,5 @@
-// import { IonActionSheet, IonButtons, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonNote, IonPage, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react'
-
 import { createSystem, deleteSystem, SystemData, systemsState } from '../state/systems'
 
-import Pressable from '../components/Pressable'
 import { useState } from 'react'
 
 import { NavLink } from 'react-router'
@@ -17,8 +14,6 @@ const Library: React.FC = () => {
   return (
     <div>
       <Header title='Library' />
-
-      {/* <CharacterCreatorModal isOpen={isCreating} setIsOpen={setIsCreating} /> */}
 
       <div className='p-4'>
         {/* TODO: Searchbar */}
