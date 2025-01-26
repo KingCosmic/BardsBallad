@@ -45,6 +45,7 @@
     "@vitejs/plugin-legacy": "^5.0.0",
     "@vitejs/plugin-react": "^4.0.1",
     "autoprefixer": "^10.4.20",
+    "cssnano": "^7.0.6",
     "cypress": "^13.5.0",
     "eslint-plugin-react": "^7.32.2",
     "jsdom": "^22.1.0",
