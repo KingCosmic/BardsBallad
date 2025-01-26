@@ -25,7 +25,7 @@ const Characters: React.FC = () => {
 
         {characters.length ? (
           characters.map(char => (
-            <NavLink key={char.name} to={char.name} className='mb-4 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700'>
+            <NavLink key={char.name} to={char.name} className='mb-4 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700'>
               <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>{char.name}</h5>
               <p className='font-normal text-gray-700 dark:text-gray-400'>{char.system.name} - {char.system.version}</p>
             </NavLink>

@@ -1,149 +1,45 @@
-import { NodeHelpersType, Node, useNode, UserComponentConfig } from '@craftjs/core'
-import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
-import { openModal } from '../../state/modals'
-import { getReturnTypeOfBlueprint } from '../../utils/Blueprints/getReturnTypeOfBlueprint'
-import { BlueprintData } from '../../state/systems'
-import { getDefaultNodes, updateParams } from '../../blueprints/utils';
-import { useLocalState } from '../hooks/useLocalState'
-import BlueprintProcessor from '../../utils/Blueprints/processBlueprint'
-import { AddData, useLocalData } from '../renderer/Context'
-import { characterState } from '../../state/character'
-import AccordionGroup from '../../components/AccordionGroup'
-import Accordion from '../../components/Accordion'
-import Checkbox from '../../components/inputs/Checkbox'
-import TextInput from '../../components/inputs/TextInput'
-import Select from '../../components/inputs/Select'
+import { useNode } from '@craftjs/core'
+import { useState, useEffect } from 'react'
+import { updateParams } from '../../../blueprints/utils'
+import AccordionGroup from '../../../components/AccordionGroup'
+import Accordion from '../../../components/Accordion'
+import Checkbox from '../../../components/inputs/Checkbox'
+import Select from '../../../components/inputs/Select'
+import TextInput from '../../../components/inputs/TextInput'
+import { openModal } from '../../../state/modals'
+import { getReturnTypeOfBlueprint } from '../../../utils/Blueprints/getReturnTypeOfBlueprint'
+import { useLocalState } from '../../hooks/useLocalState'
+import styles from './styles'
+import Button from '../../../components/inputs/Button'
+import globalStyles from '../../styles'
 
-type ContainerProps = {
-  showPlaceholder?: boolean;
-  dynamicVisibility?: boolean;
-  visibilityBlueprint?: BlueprintData;
-  isVisible?: boolean;
-  isList?: boolean;
-  dataName?: string;
-  blueprint?: BlueprintData;
-  onPress?: BlueprintData;
-  background?: string;
-  display?: string;
-  position?: string;
-  top?: string;
-  right?: string;
-  bottom?: string;
-  left?: string;
-  flexDirection?: string;
-  alignItems?: string;
-  justifyContent?: string;
-  gap?: string;
-  rows?: number;
-  columns?: number;
-  marginTop?: string;
-  marginRight?: string;
-  marginBottom?: string;
-  marginLeft?: string;
-  paddingTop?: string;
-  paddingRight?: string;
-  paddingBottom?: string;
-  paddingLeft?: string;
-  height?: string;
-  width?: string;
-  maxHeight?: string;
-  maxWidth?: string;
-  minHeight?: string;
-  minWidth?: string;
-
-  local?: any;
-}
-
-function Container(props: PropsWithChildren<ContainerProps>) {
-  const { connectors: { connect, drag } } = useNode()
-
-  return (
-    <div ref={ref => connect(drag(ref!))}
-      // @ts-ignore
-      style={{ ...props }}
-    >
-      {
-        props.children ? props.children : (props.showPlaceholder) ? (
-          <div>
-            Add An Item!
-          </div>
-        ) : null
-      }
-    </div>
-  )
-}
-
-export function ContainerPreview(props: PropsWithChildren<ContainerProps>) {
-  const localData = useLocalData()
-
-  const character = characterState.useValue()
-
-  const items = useMemo(() => {
-    const processor = new BlueprintProcessor(props.blueprint!)
-
-    const output = processor.processBlueprint(localData) || []
-
-    return output
-  }, [localData, character])
-
-  const isVisible = useMemo(() => {
-    if (!props.dynamicVisibility) return props.isVisible
-
-    const processor = new BlueprintProcessor(props.visibilityBlueprint!)
-
-    const isVisible = processor.processBlueprint(localData) || false
-
-    return isVisible
-  }, [localData, character])
-
-  const onClick = useCallback(() => {
-    const processor = new BlueprintProcessor(props.onPress!)
-
-    processor.processBlueprint(localData)
-  }, [props.onPress, localData])
-
-  return (
-    <div
-      // @ts-ignore
-      style={{ ...props, display: isVisible ? props.display : 'none' }}
-      onClick={onClick}
-    >
-      {
-        props.isList ? (
-          items.map((item: any) => (
-            <AddData key={item.name} localData={{ [props.dataName!]: item }}>
-              {/* @ts-ignore */}
-              {props.children}
-            </AddData>
-          ))
-        ) : props.children
-      }
-    </div>
-  )
-}
-
-function ContainerSettings() {
+export function ContainerSettings() {
   const { id, actions: { setProp },
     showPlaceholder,
     isVisible, dynamicVisibility, visibilityBlueprint,
     isList, dataName, blueprint,
-    onPress,
+    isInteractive, onPress,
     display, position, top, right, bottom, left,
     flexDirection, alignItems, justifyContent, gap,
     rows, columns,
     marginTop, marginRight, marginBottom, marginLeft,
     paddingTop, paddingRight, paddingBottom, paddingLeft,
     height, width, maxHeight, maxWidth, minHeight, minWidth,
-    background
+    background, border, hover
   } = useNode(node => ({
     showPlaceholder: node.data.props.showPlaceholder,
     isVisible: node.data.props.isVisible,
+
     dynamicVisibility: node.data.props.dynamicVisibility,
     visibilityBlueprint: node.data.props.visibilityBlueprint,
+
     isList: node.data.props.isList,
     dataName: node.data.props.dataName,
     blueprint: node.data.props.blueprint,
+    
+    isInteractive: node.data.props.isInteractive,
     onPress: node.data.props.onPress,
+
     display: node.data.props.display,
     position: node.data.props.position,
     top: node.data.props.top,
@@ -170,7 +66,10 @@ function ContainerSettings() {
     maxWidth: node.data.props.maxWidth,
     minHeight: node.data.props.minHeight,
     minWidth: node.data.props.minWidth,
-    background: node.data.props.background
+
+    background: node.data.props.background,
+    border: node.data.props.border,
+    hover: node.data.props.hover
   }))
 
   const localParams = useLocalState(id)
@@ -241,7 +140,7 @@ function ContainerSettings() {
           })
         }} />
 
-        <p onClick={() => openModal({
+        <Button color='light' onClick={() => openModal({
           type: 'blueprint',
           title: '',
           data: blueprint,
@@ -260,10 +159,12 @@ function ContainerSettings() {
           }
         })}>
           List Data Blueprint
-        </p>
+        </Button>
       </Accordion>
       <Accordion id='input' title='Input' isOpen={openAccordion === 2} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 2 : -1)}>
-        <p onClick={() => openModal({
+        <Checkbox id='is-interactive' label='Is Interactive?' checked={isInteractive} onChange={interactive => setProp((props: any) => props.isInteractive = interactive)} />
+
+        <Button color='light' onClick={() => openModal({
           type: 'blueprint',
           title: '',
           data: onPress,
@@ -272,7 +173,7 @@ function ContainerSettings() {
           }
         })}>
           On Press Blueprint
-        </p>
+        </Button>
       </Accordion>
 
       <Accordion id='layout' title='Layout' isOpen={openAccordion === 3} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 3 : -1)}>
@@ -349,130 +250,85 @@ function ContainerSettings() {
                 <option value='space-evenly'>Space-Evenly</option>
               </Select>
 
-              <TextInput id='gap' label='Gap' isValid errorMessage='' value={gap} onChange={val => setProp((props: any) => props.gap = val)} />
+              <Select id='container-gap' label='Gap' value={gap} onChange={gap => setProp((props: any) => props.gap = gap)}>
+                {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+              </Select>
             </>
           ) : null
         }
       </Accordion>
 
       <Accordion id='spacing' title='Spacing' isOpen={openAccordion === 4} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 4 : -1)}>
-        <TextInput id='margin-top' label='Margin Top' value={marginTop} onChange={val => setProp((props: any) => props.marginTop = val)} isValid errorMessage='' />
+        <Select id='margin-top' label='Margin Top' value={marginTop} onChange={mt => setProp((props: any) => props.marginTop = mt)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='margin-right' label='Margin Right' value={marginRight} onChange={val => setProp((props: any) => props.marginRight = val)} isValid errorMessage='' />
-          
-        <TextInput id='margin-bottom' label='Margin Bottom' value={marginBottom} onChange={val => setProp((props: any) => props.marginBottom = val)} isValid errorMessage='' />
+        <Select id='margin-right' label='Margin Right' value={marginRight} onChange={mr => setProp((props: any) => props.marginRight = mr)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='margin-left' label='Margin Left' value={marginLeft} onChange={val => setProp((props: any) => props.marginLeft = val)} isValid errorMessage='' />
+        <Select id='margin-bottom' label='Margin Bottom' value={marginBottom} onChange={mb => setProp((props: any) => props.marginBottom = mb)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='padding-top' label='Padding Top' value={paddingTop} onChange={val => setProp((props: any) => props.paddingTop = val)} isValid errorMessage='' />
+        <Select id='margin-left' label='Margin Left' value={marginLeft} onChange={ml => setProp((props: any) => props.marginTop = ml)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='padding-right' label='Padding Right' value={paddingRight} onChange={val => setProp((props: any) => props.paddingRight = val)} isValid errorMessage='' />
+        <Select id='padding-top' label='Padding Top' value={paddingTop} onChange={pt => setProp((props: any) => props.paddingTop = pt)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='padding-bottom' label='Padding Bottom' value={paddingBottom} onChange={val => setProp((props: any) => props.paddingBottom = val)} isValid errorMessage='' />
+        <Select id='padding-right' label='Padding Right' value={paddingRight} onChange={pr => setProp((props: any) => props.paddingRight = pr)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='padding-left' label='Padding Left' value={paddingLeft} onChange={val => setProp((props: any) => props.paddingLeft = val)} isValid errorMessage='' />
+        <Select id='padding-bottom' label='Padding Bottom' value={paddingBottom} onChange={pb => setProp((props: any) => props.paddingBottom = pb)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='width' label='Width' value={width} onChange={val => setProp((props: any) => props.width = val)} isValid errorMessage='' />
+        <Select id='padding-left' label='Padding Left' value={paddingLeft} onChange={pl => setProp((props: any) => props.paddingLeft = pl)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='height' label='Height' value={height} onChange={val => setProp((props: any) => props.height = val)} isValid errorMessage='' />
+        <Select id='width' label='Width' value={width} onChange={w => setProp((props: any) => props.width = w)}>
+          {Object.keys(globalStyles.size).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='max-width' label='Max Width' value={maxWidth} onChange={val => setProp((props: any) => props.maxWidth = val)} isValid errorMessage='' />
+        <Select id='height' label='Height' value={height} onChange={h => setProp((props: any) => props.height = h)}>
+          {Object.keys(globalStyles.size).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='max-height' label='Max Height' value={maxHeight} onChange={val => setProp((props: any) => props.maxHeight = val)} isValid errorMessage='' />
+        <Select id='max-width' label='Max Width' value={maxWidth} onChange={mw => setProp((props: any) => props.maxWidth = mw)}>
+          {Object.keys(globalStyles.size).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='min-width' label='Min Width' value={minWidth} onChange={val => setProp((props: any) => props.minWidth = val)} isValid errorMessage='' />
+        <Select id='max-height' label='Max Height' value={maxHeight} onChange={mh => setProp((props: any) => props.maxHeight = mh)}>
+          {Object.keys(globalStyles.size).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='min-height' label='Min Height' value={minHeight} onChange={val => setProp((props: any) => props.minHeight = val)} isValid errorMessage='' />
+        <Select id='min-width' label='Min Width' value={minWidth} onChange={mw => setProp((props: any) => props.minWidth = mw)}>
+          {Object.keys(globalStyles.size).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
+
+        <Select id='min-height' label='Min Height' value={minHeight} onChange={mh => setProp((props: any) => props.minHeight = mh)}>
+          {Object.keys(globalStyles.size).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
       </Accordion>
       
-      <Accordion id='border' title='Border' isOpen={openAccordion === 5} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 5 : -1)}>
-        TODO:(Cosmic) gotta do this soon
-      </Accordion>
+      <Accordion id='styling' title='Styling' isOpen={openAccordion === 5} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 5 : -1)}>
+        <Select id='container-background' label='Background' value={background} onChange={b => setProp((props: any) => props.background = b)}>
+          {Object.keys(styles).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-      <Accordion id='background' title='Background' isOpen={openAccordion === 6} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 6 : -1)}>
-        <TextInput id='background' label='Background' value={background} onChange={val => setProp((props: any) => props.background = val)} isValid errorMessage='' />
+        <Select id='container-border' label='Border' value={border} onChange={b => setProp((props: any) => props.border = b)}>
+          {Object.keys(styles).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
+
+        <Select id='container-hover' label='Hover' value={hover} onChange={b => setProp((props: any) => props.hover = b)}>
+          {Object.keys(styles).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
       </Accordion>
     </AccordionGroup>
   )
 }
-
-const CraftSettings: Partial<UserComponentConfig<PropsWithChildren<ContainerProps>>> = {
-  defaultProps: {
-    showPlaceholder: true,
-    dynamicVisibility: false,
-    visibilityBlueprint: {
-      nodes: getDefaultNodes(
-        [],
-        {
-          name: 'isVisible',
-          type: 'boolean',
-          isArray: false
-        }
-      ),
-      edges: []
-    },
-    isVisible: true,
-    isList: false,
-    dataName: 'listItem',
-    blueprint: {
-      nodes: getDefaultNodes(
-        [],
-        {
-          name: 'listItem',
-          type: 'any',
-          isArray: true
-        }
-      ),
-      edges: []
-    },
-
-    local: [],
-
-    onPress: {
-      nodes: getDefaultNodes([]),
-      edges: [],
-    },
-
-    display: 'flex',
-    position: 'static',
-    top: '0px',
-    right: '0px',
-    bottom: '0px',
-    left: '0px',
-    flexDirection: 'column',
-    alignItems: 'normal',
-    justifyContent: 'initial',
-    gap: '0px',
-    rows: 0,
-    columns: 0,
-
-    marginTop: '0px',
-    marginRight: '0px',
-    marginBottom: '0px',
-    marginLeft: '0px',
-    paddingTop: '5px',
-    paddingRight: '5px',
-    paddingBottom: '5px',
-    paddingLeft: '5px',
-    height: 'auto',
-    width: 'auto',
-    maxHeight: 'none',
-    maxWidth: 'none',
-    minHeight: 'none',
-    minWidth: 'none',
-
-    background: 'none',
-  },
-  rules: {
-    canMoveIn: (incoming: Node[], current: Node, helpers: NodeHelpersType) => {
-      return (current.data.props.isList) ? (current.data.nodes.length === 0) : true
-    }
-  },
-  related: {
-    settings: ContainerSettings
-  }
-}
-
-Container.craft = CraftSettings
-
-export default Container

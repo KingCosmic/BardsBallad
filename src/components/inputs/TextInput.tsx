@@ -17,7 +17,7 @@ const TextInput: React.FC<TextInputProps> = ({ id, label, placeholder, value, on
   return (
     <div className='mb-6'>
       <label htmlFor={id} className={`${labelClasses} block mb-2 text-sm font-medium`}>{label}</label>
-      <input type='text' value={value} onChange={(ev) => onChange(ev.target.value)} placeholder={placeholder} id={id} className={`${inputClasses} text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700`} />
+      <input type='text' value={value} onChange={(ev) => onChange(ev.target.value)} placeholder={placeholder} id={id} className={`${inputClasses} text-sm rounded-lg block w-full p-2.5 dark:bg-neutral-700 dark:placeholder:text-neutral-300`} />
       <p className={`${messageClasses} mt-2 text-sm`}>{isValid ? '' : errorMessage}</p>
     </div>
   )

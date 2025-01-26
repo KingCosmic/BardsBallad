@@ -65,7 +65,7 @@ function Character() {
             let type = data._type ? undefined : def.type
 
             return (
-              <div key={key} className='p-4 bg-neutral-900 hover:bg-neutral-800 cursor-pointer'
+              <div key={key} className='mb-4 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700 cursor-pointer'
                 onClick={() => setEditData({ name: key, typeData: def, data })}
               >
                 <p>{key} - {type}{def.isArray ? '(Array)' : ''}</p>

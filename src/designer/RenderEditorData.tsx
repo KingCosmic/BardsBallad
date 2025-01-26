@@ -1,5 +1,5 @@
-import { ContainerPreview as Container } from './components/Container'
-import { TextPreview as Text } from './components/Text'
+import ContainerPreview from './components/Container/Preview'
+import TextPreview from './components/Text/Preview'
 import { DividerPreview as Divider } from './components/Divider'
 
 import { AddData } from './renderer/Context'
@@ -22,9 +22,9 @@ const NodeRenderer = ({ node, data }: any) => {
 
   switch (type) {
     case 'Container':
-      return <Container {...node.props}>{Children}</Container>
+      return <ContainerPreview {...node.props}>{Children}</ContainerPreview>
     case 'Text':
-      return <Text {...node.props} />
+      return <TextPreview {...node.props} />
     case 'DesignerDivider':
       return <Divider {...node.props} />
     case 'FAB':

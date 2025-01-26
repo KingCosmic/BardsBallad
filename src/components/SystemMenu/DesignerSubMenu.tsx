@@ -3,7 +3,7 @@ import { useEditor, Element } from '@craftjs/core'
 import React, { useState } from 'react'
 import { getDefaultNodes } from '../../blueprints/utils'
 import FAB from '../../designer/FloatingActionButton'
-import Text from '../../designer/components/Text'
+import Text from '../../designer/components/Text/Editor'
 import Searchbar from '../../designer/Searchbar'
 import EditPageStateModal from '../../modals/EditPageState'
 import { editorState, setPage } from '../../state/editor'
@@ -12,7 +12,7 @@ import { TypeData } from '../../state/systems'
 import Divider from '../Divider'
 import DesignerDivider from '../../designer/components/Divider'
 import EditStringModal from '../../modals/EditString'
-import Container from '../../designer/components/Container'
+import Container from '../../designer/components/Container/Editor'
 import Layers from '../../designer/Layers/Layers'
 import Select from '../inputs/Select'
 import Button from '../inputs/Button'
@@ -55,7 +55,7 @@ function DesignerMenu() {
           {system.pages.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
         </Select>
 
-        <button type='button' onClick={addPage} className='ml-2 text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500'>
+        <button type='button' onClick={addPage} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
           <svg
             className='w-5 h-5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
             <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />
@@ -161,12 +161,12 @@ function DesignerMenu() {
 
             <div className='flex items-center justify-between my-2 px-2'>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <h5 style={{ marginRight: 5 }}>Page State</h5>
+                <h5>Page State</h5>
               </div>
 
               <button onClick={() => addPageState(editor.page, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [] })}
                 type='button'
-                className='text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500'
+                className='text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'
               >
                 <svg
                   className='w-4 h-4' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>

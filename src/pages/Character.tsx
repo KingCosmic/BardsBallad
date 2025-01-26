@@ -32,10 +32,10 @@ const Character: React.FC = () => {
   if (!character) return <>loading...</>
 
   return (
-    <div>
-      <Header title={name || 'loading'} />
+    <div className='flex flex-col relative h-full'>
+      <Header title={character.name} />
 
-      <div className='p-4'>
+      <div className='p-4 overflow-y-scroll'>
         <Select id='tab-selector' label='' value={tab} onChange={setTab}>
           {
             character.system.pages.map((page) => <option key={page.name} value={page.name}>{page.name}</option>)

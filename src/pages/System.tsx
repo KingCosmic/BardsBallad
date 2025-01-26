@@ -18,8 +18,8 @@ import SystemMenu from '../components/SystemMenu'
 
 import { Editor as EditorContext } from '@craftjs/core'
 
-import Container from '../designer/components/Container'
-import Text from '../designer/components/Text'
+import Container from '../designer/components/Container/Editor'
+import Text from '../designer/components/Text/Editor'
 import FAB from '../designer/FloatingActionButton'
 import DesignerDivider from '../designer/components/Divider'
 import Searchbar from '../designer/Searchbar'

@@ -12,7 +12,7 @@ function SystemMenu() {
 
   return (
     <aside
-      className='fixed top-0 right-0 z-40 w-64 h-screen transition-transform translate-x-full sm:-translate-x-0'
+      className='border-l border-neutral-500 dark:border-neutral-700 fixed top-0 right-0 z-40 w-64 h-screen transition-transform translate-x-full sm:-translate-x-0'
       aria-label='Editor Sidebar'
     >
       <div className='h-full flex flex-col px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-neutral-950'>

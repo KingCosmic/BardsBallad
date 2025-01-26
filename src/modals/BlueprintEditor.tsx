@@ -134,7 +134,7 @@ const BlueprintEditor: React.FC<ModalProps> = ({ title, isVisible, requestClose,
         {nodeMenu && <NodeContextMenu onClick={onPaneClick} {...nodeMenu} />}
         {contextMenu && <ContextMenu onClick={onPaneClick} {...contextMenu} />}
 
-        <Panel position='bottom-right'>
+        <Panel position='top-right'>
           <Button color='danger' onClick={requestClose}>
             Close
           </Button>

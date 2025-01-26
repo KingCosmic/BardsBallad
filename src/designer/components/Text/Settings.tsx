@@ -1,66 +1,15 @@
-import { useNode, UserComponentConfig } from '@craftjs/core'
-import { useLocalState } from '../hooks/useLocalState'
-import { getDefaultNodes, updateParams } from '../../blueprints/utils'
-import { openModal } from '../../state/modals'
-import { BlueprintData } from '../../state/systems'
-import { useEffect, useMemo, useState } from 'react'
-import BlueprintProcessor from '../../utils/Blueprints/processBlueprint'
-import { useLocalData } from '../renderer/Context'
-import AccordionGroup from '../../components/AccordionGroup'
-import Accordion from '../../components/Accordion'
-import Checkbox from '../../components/inputs/Checkbox'
-import TextInput from '../../components/inputs/TextInput'
-import Button from '../../components/inputs/Button'
+import { useEffect, useState } from 'react'
+import { getDefaultNodes, updateParams } from '../../../blueprints/utils'
+import Accordion from '../../../components/Accordion'
+import AccordionGroup from '../../../components/AccordionGroup'
+import Button from '../../../components/inputs/Button'
+import Checkbox from '../../../components/inputs/Checkbox'
+import TextInput from '../../../components/inputs/TextInput'
+import { openModal } from '../../../state/modals'
+import { useNode } from '@craftjs/core'
+import { useLocalState } from '../../hooks/useLocalState'
 
-interface TextProps {
-  useBlueprintValue?: boolean;
-  blueprint?: BlueprintData;
-
-  text?: string;
-  color?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  textAlign?: string;
-  textDecoration?: string;
-  textTransform?: string;
-  marginTop?: string;
-  marginRight?: string;
-  marginBottom?: string;
-  marginLeft?: string;
-
-  paddingTop?: string;
-  paddingRight?: string;
-  paddingBottom?: string;
-  paddingLeft?: string;
-}
-
-function Text(props: TextProps) {
-  const { connectors: { connect, drag } } = useNode()
-
-  return (
-    // @ts-ignore
-    <p ref={ref => connect(drag(ref!))} style={{ ...props }}>{props.text}</p>
-  )
-}
-
-export function TextPreview(props: TextProps) {
-  const localData = useLocalData()
-
-  const text = useMemo(() => {
-    if (!props.useBlueprintValue) return props.text
-
-    const processor = new BlueprintProcessor(props.blueprint!)
-
-    const output = processor.processBlueprint(localData)
-
-    return output || ''
-  }, [props.blueprint, localData, props.useBlueprintValue, props.text])
-
-  // @ts-ignore
-  return <p style={{ ...props }}>{text}</p>
-}
-
-function TextSettings() {
+export default function TextSettings() {
   const { id, actions: { setProp },
     useBlueprintValue, blueprint,
     text, color,
@@ -181,34 +130,3 @@ function TextSettings() {
     </AccordionGroup>
   )
 }
-
-const CraftSettings: Partial<UserComponentConfig<TextProps>> = {
-  defaultProps: {
-    useBlueprintValue: false,
-    blueprint: { nodes: getDefaultNodes([], { name: 'output', type: 'string', isArray: false }), edges: [] },
-
-    text: 'text',
-    color: 'white',
-    fontSize: '1rem',
-    fontWeight: 'normal',
-    textAlign: 'left',
-    textDecoration: 'none',
-    textTransform: 'none',
-    marginTop: '0px',
-    marginRight: '0px',
-    marginBottom: '0px',
-    marginLeft: '0px',
-    paddingTop: '0px',
-    paddingRight: '0px',
-    paddingBottom: '0px',
-    paddingLeft: '0px',
-  },
-  rules: {},
-  related: {
-    settings: TextSettings
-  }
-}
-
-Text.craft = CraftSettings
-
-export default Text

@@ -37,17 +37,17 @@ export const themesState = newRidgeState<Theme[]>([
       "background": "#121217",
   
       "brand": {
-        "50": "#faf3ff", // Soft lilac
-        "100": "#f4e8ff", // Light lavender
-        "200": "#e6cfff", // Pastel purple
-        "300": "#d0a9ff", // Lush purple
-        "400": "#b97aff", // Vibrant amethyst
-        "500": "#9d4fff", // Deep royal purple
-        "600": "#832fe6", // Velvet purple
-        "700": "#6925b5", // Majestic plum
-        "800": "#501c89", // Dark grape
-        "900": "#3d166b", // Midnight violet
-        "950": "#270c4a"  // Deep shadowy purple
+        "50": "#fefee8", // Soft lilac
+        "100": "#fffec2", // Light lavender
+        "200": "#fffa88", // Pastel purple
+        "300": "#fff045", // Lush purple
+        "400": "#fddf12", // Vibrant amethyst
+        "500": "#edc605", // Deep royal purple
+        "600": "#cd9a01", // Velvet purple
+        "700": "#a36d05", // Majestic plum
+        "800": "#87560c", // Dark grape
+        "900": "#724611", // Midnight violet
+        "950": "#5a3107"  // Deep shadowy purple
       },
       "neutral": {
         "50": "#f8f9fb", // Light parchment
@@ -119,7 +119,7 @@ export const themesState = newRidgeState<Theme[]>([
   {
     "name": "ValentinesDay",
     "light": {
-      "background": "#FFF5F7", // Soft pink
+      "background": "#442835", // Soft pink
   
       "brand": {
         "50": "#fff7f9", // Barely pink

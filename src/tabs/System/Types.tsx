@@ -58,7 +58,7 @@ function Types() {
               {
                 type.properties.map((t) => (
                   <div key={t.key}
-                    className='p-3 bg-neutral-900 hover:bg-neutral-800 cursor-pointer'
+                    className='p-3 border border-neutral-600 dark:bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
                     onClick={() => setEditData({ ...t, typeName: type.name })}
                   >
                     <p>
