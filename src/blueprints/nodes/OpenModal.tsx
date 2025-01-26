@@ -7,7 +7,7 @@ import {
   Position,
   useReactFlow,
   useUpdateNodeInternals,
-  useHandleConnections
+  useNodeConnections
 } from '@xyflow/react'
 import Card from '../../components/Card'
 import Select from '../../components/inputs/Select'
@@ -17,9 +17,9 @@ const OpenModal: React.FC<NodeProps<Node<{ type: string, title: string, inputTyp
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  useHandleConnections({
-    type: 'target',
-    id: 'data-object',
+  useNodeConnections({
+    handleType: 'target',
+    handleId: 'data-object',
     onConnect: (conns) => {
       const conn = conns[0]
 

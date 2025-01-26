@@ -7,7 +7,7 @@ import {
   Position,
   useReactFlow,
   useUpdateNodeInternals,
-  useHandleConnections
+  useNodeConnections
 } from '@xyflow/react'
 
 import Card from '../../../components/Card'
@@ -16,9 +16,9 @@ function Map({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  useHandleConnections({
-    type: 'target',
-    id: 'input-array',
+  useNodeConnections({
+    handleType: 'target',
+    handleId: 'input-array',
     onConnect: (conns) => {
       const conn = conns[0]
 

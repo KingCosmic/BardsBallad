@@ -5,7 +5,7 @@ import {
   type NodeProps,
   type Node,
   Position,
-  useHandleConnections,
+  useNodeConnections,
   useReactFlow,
   useUpdateNodeInternals
 } from '@xyflow/react'
@@ -19,9 +19,9 @@ function OutputNode({ id, data: { param, inputType } }: NodeProps<Node<{ param: 
 
   const inputID = `${param.name}-${param.isArray ? 'array' : param.type}`
 
-  useHandleConnections({
-    type: 'target',
-    id: inputID,
+  useNodeConnections({
+    handleType: 'target',
+    handleId: inputID,
     onConnect: (conns) => {
       const conn = conns[0]
 

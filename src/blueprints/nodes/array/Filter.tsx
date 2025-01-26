@@ -7,7 +7,7 @@ import {
   Position,
   useReactFlow,
   useUpdateNodeInternals,
-  useHandleConnections
+  useNodeConnections
 } from '@xyflow/react'
 
 import { systemState } from '../../../state/system'
@@ -19,9 +19,9 @@ function Filter({ id, data: { inputType } }: NodeProps<Node<{ inputType: string 
 
   const system = systemState.useValue()
 
-  useHandleConnections({
-    type: 'target',
-    id: 'input-array',
+  useNodeConnections({
+    handleType: 'target',
+    handleId: 'input-array',
     onConnect: (conns) => {
       const conn = conns[0]
 

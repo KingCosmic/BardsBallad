@@ -7,7 +7,7 @@ import {
   Position,
   useReactFlow,
   useUpdateNodeInternals,
-  useHandleConnections
+  useNodeConnections
 } from '@xyflow/react'
 
 import { systemState } from '../../../state/system'
@@ -22,9 +22,9 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: st
 
   const system = systemState.useValue()
 
-  useHandleConnections({
-    type: 'target',
-    id: 'input-object',
+  useNodeConnections({
+    handleType: 'target',
+    handleId: 'input-object',
     onConnect: (conns) => {
       const conn = conns[0]
 
