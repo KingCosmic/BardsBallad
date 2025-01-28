@@ -1,6 +1,6 @@
 import { newRidgeState } from 'react-ridge-state'
 
-import { DataType, SystemData, TypeData } from './systems'
+import { BlueprintData, DataType, SystemData, TypeData } from './systems'
 
 import { produce } from 'immer'
 import { getDefaultNodes } from '../blueprints/utils'
@@ -43,6 +43,24 @@ export function setDefaultCharacterData(newDefaultData: { [key:string]: any }) {
 
   systemState.set(newState)
 }
+
+export function updatePageBlueprint(blueprint: BlueprintData) {
+  const system = systemState.get()
+  const editor = editorState.get()
+
+  if (!system || !blueprint) return
+
+  const newState = produce(system, (draft) => {
+    const index = draft.pages.findIndex((data => data.name === editor.page))
+
+    if (index === -1) return
+    
+    draft.pages[index].blueprint = blueprint
+  })
+
+  systemState.set(newState)
+}
+
 
 export function updatePageLexical(lexical: string) {
   const system = systemState.get()

@@ -1,13 +1,13 @@
 import { useEditor, Element } from '@craftjs/core'
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { getDefaultNodes } from '../../blueprints/utils'
 import FAB from '../../designer/FloatingActionButton'
 import Text from '../../designer/components/Text/Editor'
 import Searchbar from '../../designer/Searchbar'
 import EditPageStateModal from '../../modals/EditPageState'
 import { editorState, setPage } from '../../state/editor'
-import { systemState, addPageState, addPage, updatePageName, deletePage } from '../../state/system'
+import { systemState, addPageState, addPage, updatePageName, deletePage, updatePageBlueprint } from '../../state/system'
 import { TypeData } from '../../state/systems'
 import Divider from '../Divider'
 import DesignerDivider from '../../designer/components/Divider'
@@ -16,11 +16,14 @@ import Container from '../../designer/components/Container/Editor'
 import Layers from '../../designer/Layers/Layers'
 import Select from '../inputs/Select'
 import Button from '../inputs/Button'
+import { openModal } from '../../state/modals'
 
 
 function DesignerMenu() {
   const system = systemState.useValue()
   const editor = editorState.useValue()
+
+  const page = useMemo(() => system?.pages.find(p => p.name === editor.page), [system, editor.page])
 
   const [tab, setTab] = useState('components')
 
@@ -159,6 +162,17 @@ function DesignerMenu() {
               <Button color='primary' onClick={() => setEditName(editor.page)}>Rename</Button>
             </div>
 
+            <Button color='light' onClick={() => 
+              openModal({
+                type: 'blueprint',
+                title: 'Page Blueprint',
+                data: page?.blueprint,
+                onSave: updatePageBlueprint
+              })
+            }>
+              Edit Page Blueprint
+            </Button>
+
             <div className='flex items-center justify-between my-2 px-2'>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <h5>Page State</h5>
@@ -179,7 +193,7 @@ function DesignerMenu() {
             <Divider />
 
             <div>
-              {system.pages.find(p => p.name === editor.page)?.state.map((state) => (
+              {page?.state.map((state) => (
                 <div key={state.name} onClick={() => setEditingState(state)}>
                   <p>{state.name} | {state.type.type}{state.type.isArray ? '[]': ''}</p>
                 </div>

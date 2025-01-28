@@ -16,7 +16,8 @@ const Character: React.FC = () => {
   const characters = charactersState.useValue()
   const character = characterState.useValue()
 
-  const [tab, setTab] = useState(character ? character.system.pages[0].name : 'test')
+  const [tab1, setTab1] = useState(character ? character.system.pages[0].name : 'test')
+  const [tab2, setTab2] = useState(character ? character.system.pages[1].name : 'test')
 
   const { name } = useParams<{ name: string; }>()
 
@@ -26,25 +27,44 @@ const Character: React.FC = () => {
 
     if (!character) return
 
-    setTab(character.system.pages[0].name)
+    setTab1(character.system.pages[0].name)
+    setTab2(character.system.pages[1].name)
   }, [name])
 
   if (!character) return <>loading...</>
 
   return (
-    <div className='flex flex-col relative h-full'>
+    <div className='flex flex-col h-full w-full'>
       <Header title={character.name} />
 
-      <div className='p-4 overflow-y-scroll'>
-        <Select id='tab-selector' label='' value={tab} onChange={setTab}>
-          {
-            character.system.pages.map((page) => <option key={page.name} value={page.name}>{page.name}</option>)
-          }
-        </Select>
+      <div className='flex flex-row flex-grow'>
+        <div className='relative w-full lg:w-1/2'>
+          <div className='p-4 overflow-y-scroll flex flex-col'>
+            <Select id='tab-selector' label='' value={tab1} onChange={setTab1}>
+              {
+                character.system.pages.map((page) => <option key={page.name} value={page.name}>{page.name}</option>)
+              }
+            </Select>
 
-        {
-          character.system.pages.map((page) => <RenderTab key={page.name} page={page} hidden={page.name !== tab} />)
-        }
+            {
+              character.system.pages.map((page) => <RenderTab key={page.name} page={page} hidden={page.name !== tab1} />)
+            }
+          </div>
+        </div>
+
+        <div className='relative w-1/2 hidden flex-col lg:flex'>
+          <div className='p-4 overflow-y-scroll'>
+            <Select id='tab-selector' label='' value={tab2} onChange={setTab2}>
+              {
+                character.system.pages.map((page) => <option key={page.name} value={page.name}>{page.name}</option>)
+              }
+            </Select>
+
+            {
+              character.system.pages.map((page) => <RenderTab key={page.name} page={page} hidden={page.name !== tab2} />)
+            }
+          </div>
+        </div>
       </div>
     </div>
   )

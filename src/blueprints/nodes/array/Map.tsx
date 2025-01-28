@@ -11,10 +11,14 @@ import {
 } from '@xyflow/react'
 
 import Card from '../../../components/Card'
+import Select from '../../../components/inputs/Select'
+import { systemState } from '../../../state/system'
  
-function Map({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
+function Map({ id, data: { inputType, mapType } }: NodeProps<Node<{ inputType: string, mapType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
+
+  const system = systemState.useValue()
 
   useNodeConnections({
     handleType: 'target',
@@ -49,11 +53,18 @@ function Map({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>
       <p style={{ textAlign: 'left' }}>Input Type {inputType}</p>
       <p style={{ textAlign: 'right' }}>Loop Body</p>
 
+      <Select id={`map-type-${id}`} label='Input Type' value={mapType} onChange={mt => {
+        updateNodeData(id, { mapType: mt })
+        updateNodeInternals(id)
+      }}>
+        {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+      </Select>
+
       {
         (inputType !== 'unknown') && (
           <>
             <p style={{ textAlign: 'left', marginTop: 15 }}>Loop Completed</p>
-            <p style={{ textAlign: 'left', marginTop: 5 }}>item ({inputType})</p>
+            <p style={{ textAlign: 'left', marginTop: 5 }}>item ({mapType})</p>
             <p style={{ textAlign: 'right', marginTop: 15 }}>
               ({inputType}) item
             </p>
@@ -65,7 +76,7 @@ function Map({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>
         (inputType !== 'unknown') && (
           <>
             <p style={{ textAlign: 'right', marginTop: 20 }}>Completed</p>
-            <p style={{ textAlign: 'right', marginTop: 5 }}>Filtered Array</p>
+            <p style={{ textAlign: 'right', marginTop: 5 }}>New Array</p>
           </>
         )
       }
@@ -98,7 +109,7 @@ function Map({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>
             <Handle type='source' id='completed-node' position={Position.Right}
               style={{ top: 228, bottom: 'auto' }}
             />
-            <Handle type='source' id={`filterd-${inputType}(Array)`} position={Position.Right}
+            <Handle type='source' id={`filterd-${mapType}(Array)`} position={Position.Right}
               style={{ top: 255, bottom: 'auto' }}
             />
           </>

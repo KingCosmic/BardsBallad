@@ -8,6 +8,9 @@ import TextInput from '../../../components/inputs/TextInput'
 import { openModal } from '../../../state/modals'
 import { useNode } from '@craftjs/core'
 import { useLocalState } from '../../hooks/useLocalState'
+import Select from '../../../components/inputs/Select'
+import styles from './styles'
+import globalStyles from '../../styles'
 
 export default function TextSettings() {
   const { id, actions: { setProp },
@@ -89,43 +92,69 @@ export default function TextSettings() {
         }
       </Accordion>
       <Accordion id='content-styling' title='Content Styling' isOpen={openAccordion === 1} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 1 : -1)}>
-        <TextInput id='color' label='Color' placeholder='#232323' value={color} onChange={val => setProp((props: any) => props.color = val)} isValid errorMessage='' />
+        <Select id='color' label='Color' value={color} onChange={c => setProp((props: any) => props.color = c)}>
+          {Object.keys(styles.colors).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='font-family' label='Font Family' placeholder='Arial, Times New Roman' value={fontFamily} onChange={val => setProp((props: any) => props.fontFamily = val)} isValid errorMessage='' />
+        <Select id='font-size' label='Font Size' value={fontSize} onChange={fs => setProp((props: any) => props.fontSize = fs)}>
+          {Object.keys(styles.sizes).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='font-size' label='Font Size' placeholder='23px' value={fontSize} onChange={val => setProp((props: any) => props.fontSize = val)} isValid errorMessage='' />
+        <Select id='font-weight' label='Font Weight' value={fontWeight} onChange={fw => setProp((props: any) => props.fontWeight = fw)}>
+          {Object.keys(styles.weight).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='font-weight' label='Font Weight' placeholder='bold | 400' value={fontWeight} onChange={val => setProp((props: any) => props.fontWeight = val)} isValid errorMessage='' />
+        <Select id='text-align' label='Text Align' value={textAlign} onChange={tl => setProp((props: any) => props.textAlign = tl)}>
+          <option value='left'>Left</option>
+          <option value='center'>Center</option>
+          <option value='right'>Right</option>
+        </Select>
 
-        <TextInput id='font-style' label='Font Style' placeholder='normal | italic' value={fontStyle} onChange={val => setProp((props: any) => props.fontStyle = val)} isValid errorMessage='' />
+        <Select id='text-decoration' label='Text Decoration' value={textDecoration} onChange={td => setProp((props: any) => props.textDecoration = td)}>
+          <option value='none'>None</option>
+          <option value='underline'>Underline</option>
+          <option value='line-through'>Line-Through</option>
+        </Select>
 
-        <TextInput id='letter-spacing' label='Letter Spacing' placeholder='2px' value={letterSpacing} onChange={val => setProp((props: any) => props.letterSpacing = val)} isValid errorMessage='' />
-
-        <TextInput id='line-height' label='Line Height' placeholder='1.5' value={lineHeight} onChange={val => setProp((props: any) => props.lineHeight = val)} isValid errorMessage='' />
-
-        <TextInput id='text-align' label='Align' placeholder='left | center | right' value={textAlign} onChange={val => setProp((props: any) => props.textAlign = val)} isValid errorMessage='' />
-
-        <TextInput id='text-decoration' label='Decoration' placeholder='underline | line-through | none' value={textDecoration} onChange={val => setProp((props: any) => props.textDecoration = val)} isValid errorMessage='' />
-
-        <TextInput id='text-transform' label='Transform' placeholder='none | uppercase | lowercase' value={textTransform} onChange={val => setProp((props: any) => props.textTransform = val)} isValid errorMessage='' />
+        <Select id='text-transform' label='Text Transform' value={textTransform} onChange={tf => setProp((props: any) => props.textTransform = tf)}>
+          <option value='none'>None</option>
+          <option value='uppercase'>Uppercase</option>
+          <option value='lowercase'>Lowercase</option>
+        </Select>
       </Accordion>
 
       <Accordion id='spacing' title='Spacing' isOpen={openAccordion === 2} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 2 : -1)}>
-        <TextInput id='margin-top' label='Margin Top' value={marginTop} onChange={val => setProp((props: any) => props.marginTop = val)} isValid errorMessage='' />
+      <Select id='margin-top' label='Margin Top' value={marginTop} onChange={mt => setProp((props: any) => props.marginTop = mt)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='margin-right' label='Margin Right' value={marginRight} onChange={val => setProp((props: any) => props.marginRight = val)} isValid errorMessage='' />
-          
-        <TextInput id='margin-bottom' label='Margin Bottom' value={marginBottom} onChange={val => setProp((props: any) => props.marginBottom = val)} isValid errorMessage='' />
+        <Select id='margin-right' label='Margin Right' value={marginRight} onChange={mr => setProp((props: any) => props.marginRight = mr)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='margin-left' label='Margin Left' value={marginLeft} onChange={val => setProp((props: any) => props.marginLeft = val)} isValid errorMessage='' />
+        <Select id='margin-bottom' label='Margin Bottom' value={marginBottom} onChange={mb => setProp((props: any) => props.marginBottom = mb)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='padding-top' label='Padding Top' value={paddingTop} onChange={val => setProp((props: any) => props.paddingTop = val)} isValid errorMessage='' />
+        <Select id='margin-left' label='Margin Left' value={marginLeft} onChange={ml => setProp((props: any) => props.marginTop = ml)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='padding-right' label='Padding Right' value={paddingRight} onChange={val => setProp((props: any) => props.paddingRight = val)} isValid errorMessage='' />
+        <Select id='padding-top' label='Padding Top' value={paddingTop} onChange={pt => setProp((props: any) => props.paddingTop = pt)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='padding-bottom' label='Padding Bottom' value={paddingBottom} onChange={val => setProp((props: any) => props.paddingBottom = val)} isValid errorMessage='' />
+        <Select id='padding-right' label='Padding Right' value={paddingRight} onChange={pr => setProp((props: any) => props.paddingRight = pr)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
 
-        <TextInput id='padding-left' label='Padding Left' value={paddingLeft} onChange={val => setProp((props: any) => props.paddingLeft = val)} isValid errorMessage='' />
+        <Select id='padding-bottom' label='Padding Bottom' value={paddingBottom} onChange={pb => setProp((props: any) => props.paddingBottom = pb)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
+
+        <Select id='padding-left' label='Padding Left' value={paddingLeft} onChange={pl => setProp((props: any) => props.paddingLeft = pl)}>
+          {Object.keys(globalStyles.spacing).map(style => (<option key={style} value={style}>{style}</option>))}
+        </Select>
       </Accordion>
     </AccordionGroup>
   )

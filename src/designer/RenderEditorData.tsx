@@ -6,6 +6,8 @@ import { AddData } from './renderer/Context'
 import { FABPreview } from './FloatingActionButton'
 
 const RenderEditorData = ({ data, style }: any) => {
+  // TODO: process page blueprint.
+
   return (
     <div style={style}>
       <AddData localData={[]}>
