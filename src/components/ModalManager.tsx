@@ -4,6 +4,7 @@ import BlueprintEditor from '../modals/BlueprintEditor'
 import EditObject from '../modals/EditObject'
 import { systemState } from '../state/system'
 import { characterState } from '../state/character'
+import EditBlueprintParamModal from '../modals/EditBlueprintParam'
 
 const ModalManager = () => {
   const modals = modalState.useValue()
@@ -34,6 +35,15 @@ const ModalManager = () => {
               onSave={modal.onSave}
               onDelete={modal.onDelete}
               types={system?.types || character?.system.types || []}
+            />
+          ) : (modal.type === 'edit_blueprint_param') ? (
+            <EditBlueprintParamModal
+              key={id}
+              data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+              onDelete={modal.onDelete}
             />
           ) : <h1>{modal.type} is un supported.</h1>
         })

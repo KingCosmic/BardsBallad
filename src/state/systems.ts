@@ -1,17 +1,28 @@
 import { Edge, Node } from '@xyflow/react';
 import { produce } from 'immer';
 import { newRidgeState } from 'react-ridge-state'
-import { getDefaultNodes } from '../blueprints/utils';
+import { getDefaultNodes, Param } from '../blueprints/utils';
 import { SystemStorage } from '../lib/storage'
 
 import DND5EBackup from '../lib/backup-dnd5e.json'
 
 export type TypeData = {
   type: string;
-  useTextArea: boolean;
-  isArray: boolean;
-  options: string[];
   gen?: any;
+
+  /* String Specific */
+  useTextArea: boolean;
+
+  /* Array Specific */
+  isArray: boolean;
+
+  /* Enum Specific */
+  options: string[];
+
+  /* Blueprint Specfic */
+  outputType: string;
+  isOutputAnArray: boolean;
+  inputs: Param[]
 }
 
 export type SystemType = {
@@ -34,7 +45,7 @@ export type PageData = {
   name: string;
   blueprint: BlueprintData;
   lexical: string;
-  state: { name: string, type: TypeData }[];
+  state: { name: string, type: TypeData, value: any }[];
 }
 
 export type SystemData = {
@@ -53,7 +64,6 @@ export type SystemData = {
   types: SystemType[];
 }
 
-
 export const systemsState = newRidgeState<SystemData[]>([])
 
 export async function loadSystems() {
@@ -69,6 +79,7 @@ export async function loadSystems() {
     }
 
     if (systems.length === 0) {
+      // @ts-expect-error
       systems.push(DND5EBackup)
     }
 

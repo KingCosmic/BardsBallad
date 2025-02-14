@@ -32,7 +32,6 @@ export type CharacterData = {
   data: { [key:string]: any };
 
   ownerID: string;
-  version: string;
   system: SystemData;
   
   createdAt: string;

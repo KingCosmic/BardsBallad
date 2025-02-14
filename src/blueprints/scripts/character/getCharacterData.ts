@@ -5,7 +5,8 @@ import { characterState } from '../../../state/character'
 
 export default {
   process: (processor: BlueprintProcessor, node: Node) => {
-    const characterData = characterState.get()!
+    const characterData = processor.getCharacter()
+    
     const val = getNestedProperty(characterData, `data/${(node.data.path as string)}`)
     
     processor.setParam(node.id, 'output',  val)

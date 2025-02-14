@@ -7,8 +7,13 @@ import { getDefaultNodes } from '../../../blueprints/utils'
 import { ContainerSettings } from './Settings'
 import styles from './styles'
 import globalStyles from '../../styles'
+import { BlueprintProcessorState } from '../../../utils/Blueprints/processBlueprint'
 
 export type ContainerProps = {
+  /* props that are only used in preview when processing blueprints */
+  state?: BlueprintProcessorState;
+  updateState?(newState: BlueprintProcessorState): void;
+
   showPlaceholder?: boolean;
 
   dynamicVisibility?: boolean;

@@ -68,7 +68,7 @@ function Character() {
               <div key={key} className='mb-4 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700 cursor-pointer'
                 onClick={() => setEditData({ name: key, typeData: def, data })}
               >
-                <p>{key} - {type}{def.isArray ? '(Array)' : ''}</p>
+                <p>{key} - {type} {def.isArray ? '(Array)' : ''}</p>
               </div>
             )
           })

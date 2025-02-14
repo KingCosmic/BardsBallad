@@ -1,13 +1,17 @@
 import { newRidgeState } from 'react-ridge-state'
 
-type EditorState = {
-  page: string;
+export type EditorState = {
+  characterPage: string;
+  modalsPage: string;
+  creatorPage: string;
   tab: string;
 }
 
 const defaultState: EditorState = {
-  page: 'Info',
-  tab: 'character'
+  characterPage: 'Info',
+  modalsPage: 'Start',
+  creatorPage: 'Start',
+  tab: 'character',
 }
 
 export const editorState = newRidgeState<EditorState>(defaultState)
@@ -16,8 +20,12 @@ export function resetEditor() {
   editorState.set(defaultState)
 }
 
-export function setPage(page: string) {
-  editorState.set((prev) => ({ ...prev, page }))
+export function setCreatorPage(creatorPage: string) {
+  editorState.set((prev) => ({ ...prev, creatorPage }))
+}
+
+export function setCharacterPage(characterPage: string) {
+  editorState.set((prev) => ({ ...prev, characterPage }))
 }
 
 export function setTab(tab: string) {

@@ -31,7 +31,7 @@ type ModalProps = {
 function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data }: ModalProps) {
   const system = systemState.useValue()
 
-  const [dataCopy, setDataCopy] = useState<DataType>({ name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [] }, data: 'test' })
+  const [dataCopy, setDataCopy] = useState<DataType>({ name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' })
 
   const [type, setType] = useState<SystemType | null>(system?.types.find(type => type.name === dataCopy.typeData.type) || null)
 
@@ -44,7 +44,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
   }
 
   useEffect(() => {
-    const dc = data ? data : { name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [] }, data: 'test' }
+    const dc = data ? data : { name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' }
 
     setDataCopy(dc)
     setType(system?.types.find(type => type.name === dc.typeData.type) || null)
@@ -65,7 +65,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
           const t = system?.types.find(type => type.name === val) || null
 
           setType(t)
-          setDataCopy({ ...dataCopy, data: dataCopy.typeData.isArray ? [] : generateObject(t || val), typeData: { ...dataCopy.typeData, type: val } })
+          setDataCopy({ ...dataCopy, data: dataCopy.typeData.isArray ? [] : generateObject(types, t || val), typeData: { ...dataCopy.typeData, type: val } })
         }}>
           <option value='string'>string</option>
           
@@ -85,7 +85,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
                 if (isArray) {
                   setDataCopy({ ...dataCopy, data: [], typeData: { ...dataCopy.typeData, isArray }})
                 } else {
-                  setDataCopy({ ...dataCopy, data: generateObject(dataCopy.typeData.type), typeData: { ...dataCopy.typeData, isArray }})
+                  setDataCopy({ ...dataCopy, data: generateObject(types, dataCopy.typeData.type), typeData: { ...dataCopy.typeData, isArray }})
                 }
               }} />
             </div>
@@ -136,11 +136,10 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
 function getComponentFromType(type: SystemType, data: any, dataCopy: any, typeData: TypeData, label: string, setProperty: (path: string, obj: any, value: any) => void): React.ReactElement {
   switch (type.name) {
     case 'string':
+      if (typeData.useTextArea) return <Textarea id={label} label={label} value={data} onChange={val => setProperty('data', dataCopy, val)} />
       return <TextInput id={label} label={label} isValid errorMessage='' value={data} onChange={val => setProperty('data', dataCopy, val)} />
     case 'number':
       return <TextInput id={label} label={label} isValid errorMessage='' value={data} onChange={val => setProperty('data', dataCopy, +val)} />
-    case 'textarea':
-      return <Textarea id={label} label={label} value={data} onChange={val => setProperty('data', dataCopy, val)} placeholder='lorem ipsum' />
     case 'boolean':
       return <Checkbox id={label} label={label} checked={data} onChange={val => setProperty('data', dataCopy, val)} />
     case 'enum':
@@ -150,6 +149,12 @@ function getComponentFromType(type: SystemType, data: any, dataCopy: any, typeDa
             typeData.options.map((option: string) => <option key={option} value={option}>{option}</option>)
           }
         </Select>
+      )
+    case 'blueprint':
+      return (
+        <div>
+          TODO
+        </div>
       )
     default:
       return (
@@ -182,15 +187,18 @@ function ArrayEdit({ types, title, data, type, onAdd, onChange, onDelete }: { ty
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <p>{title}</p>
 
-        <p onClick={() => onAdd(generateObject(type))}>Add</p>
+        <p onClick={() => onAdd(generateObject(types, type))}>Add</p>
       </div>
 
       <p style={{ height: 1, width: '100%', backgroundColor: 'white', marginTop: 4, marginBottom: 4 }} />
 
-      <div>
+      <div className='flex flex-col gap-1 mt-3'>
         {data.map((item) => {
           return (
-            <div key={item.name} onClick={() => setEditData(item)}>
+            <div key={item.name}
+              className='p-3 border border-neutral-600 dark:bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
+              onClick={() => setEditData(item)}
+            >
               <p>{item.name}</p>
             </div>
           )

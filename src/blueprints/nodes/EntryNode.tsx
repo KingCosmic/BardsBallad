@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 
 import Card from '../../components/Card'
 
@@ -6,12 +6,34 @@ import {
   Handle,
   type NodeProps,
   type Node,
-  Position
+  Position,
+  useReactFlow,
+  useUpdateNodeInternals
 } from '@xyflow/react'
 
 import { Param } from '../utils'
+import { systemState } from '../../state/system'
+import { SystemType } from '../../state/systems'
 
-const EntryNode: React.FC<NodeProps<Node<{ params: Param[] }>>> = ({ id, data: { params } }) => {
+const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:string]: any }, outputs: { [key:string]: SystemType | null } }>>> = ({ id, data: { params } }) => {
+  const { updateNodeData } = useReactFlow()
+  const updateNodeInternals = useUpdateNodeInternals()
+
+  const system = systemState.useValue()
+
+  useEffect(() => {
+    let outputs: { [key:string]: SystemType | null } = {}
+
+    for (let p = 0; p < params.length; p++) {
+      const param = params[p]
+
+      outputs[`${param.name}-${param.type}`] = system?.types.find(t => t.name === param.type)!
+    }
+
+    updateNodeData(id, { outputs })
+    updateNodeInternals(id)
+  }, [params, system])
+
   return (
     <Card title='Entry'>
       <Handle type='source' id='start-node' position={Position.Right}

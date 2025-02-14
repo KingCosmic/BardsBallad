@@ -11,7 +11,7 @@ export default function TextPreview(props: TextProps) {
 
     const processor = new BlueprintProcessor(props.blueprint!)
 
-    const output = processor.processBlueprint(localData)
+    const output = processor.processBlueprint(localData, props.state!, props.updateState!)
 
     return output || ''
   }, [props.blueprint, localData, props.useBlueprintValue, props.text])

@@ -1,12 +1,21 @@
-import { BlueprintData } from '../../state/systems'
+import { BlueprintData, PageData, SystemData } from '../../state/systems'
 import { findEntryNode } from './findEntryNode'
 
 import { Node } from '@xyflow/react'
 import { getNode } from './getNode'
 import { getNodeScript } from './getNodeScript'
+import { CharacterData } from '../../state/character'
+
+export type BlueprintProcessorState = {
+  system: SystemData;
+  character: CharacterData;
+  page: PageData;
+}
 
 class BlueprintProcessor {
-  blueprint: BlueprintData
+  blueprint: BlueprintData;
+
+  state!: BlueprintProcessorState
 
   input: { [key: string]: any } = {}
   nodeState: Map<string, Map<string, any>> = new Map()
@@ -19,12 +28,16 @@ class BlueprintProcessor {
     this.blueprint = bp
   }
 
-  processBlueprint(input: { [key: string]: any }) {
+  processBlueprint(input: { [key: string]: any }, state: BlueprintProcessorState, cb: (updatedState: BlueprintProcessorState) => void) {
     const entryNode = findEntryNode(this.blueprint)
 
+    this.state = structuredClone(state)
     this.input = input
 
-    return this.processNodes(entryNode)
+    const val = this.processNodes(entryNode)
+    cb(this.state)
+
+    return val
   }
 
   processNodes(node: Node | undefined): any {
@@ -104,12 +117,36 @@ class BlueprintProcessor {
     return this.params
   }
 
-  setOutput(value: any) {
-    this.output = value
+  getCharacter() {
+    return this.state.character
+  }
+
+  setCharacter(value: any) {
+    this.state.character = value
+  }
+
+  getSystem() {
+    return this.state.system
+  }
+
+  setSystem(value: any) {
+    this.state.system = value
+  }
+
+  getPage() {
+    return this.state.page
+  }
+
+  setPage(value: any) {
+    this.state.page = value
   }
 
   getOutput() {
     return this.output
+  }
+
+  setOutput(value: any) {
+    this.output = value
   }
 }
 

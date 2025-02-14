@@ -1,15 +1,18 @@
-import { PropsWithChildren } from 'react';
+import { forwardRef, HTMLAttributes, PropsWithChildren, StyleHTMLAttributes } from 'react';
 
 type SelectProps = {
   id: string;
   label: string;
   value: string;
   onChange(val: string): void;
+
+  style?: React.CSSProperties;
 }
 
-const Select: React.FC<PropsWithChildren<SelectProps>> = ({ id, label, value, onChange, children, }) => {
+const Select: React.FC<PropsWithChildren<SelectProps>> = forwardRef(({ id, label, value, onChange, children, style }, ref) => {
   return (
-    <div className='mb-6'>
+    // @ts-ignore
+    <div className='mb-6' style={style} ref={ref}>
       <label
         htmlFor={id}
         className='block mb-2 text-sm font-medium text-neutral-900 dark:text-white'
@@ -26,6 +29,6 @@ const Select: React.FC<PropsWithChildren<SelectProps>> = ({ id, label, value, on
       </select>
     </div>
   )
-}
+})
 
 export default Select

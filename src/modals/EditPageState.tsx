@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { systemState, updatePageState } from '../state/system'
+import { systemState } from '../state/system'
 import { TypeData } from '../state/systems';
 import { editorState } from '../state/editor';
 import Modal from '../components/Modal';
@@ -17,10 +17,12 @@ type Props = {
 
   isOpen: boolean;
   requestClose(): void;
+
+  onSave(newData: { name: string, type: TypeData }): void;
+  onDelete(): void;
 }
 
-function EditPageStateModal({ data, isOpen, requestClose }: Props) {
-
+function EditPageStateModal({ data, isOpen, requestClose, onSave, onDelete }: Props) {
   const system = systemState.useValue()
   const editor = editorState.useValue()
 
@@ -46,6 +48,11 @@ function EditPageStateModal({ data, isOpen, requestClose }: Props) {
         <TextInput id='var-name' label='Variable Name' value={name} onChange={setName} isValid errorMessage='' />
 
         <Select id='var-type' label='Type' value={type} onChange={setType}>
+          <option value='string'>string</option>
+          <option value='number'>number</option>
+          <option value='boolean'>boolean</option>
+          <option value='enum'>enum</option>
+
           {system.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
         </Select>
 
@@ -53,6 +60,12 @@ function EditPageStateModal({ data, isOpen, requestClose }: Props) {
       </ModalBody>
 
       <ModalFooter>
+        <Button color='danger' onClick={() => {
+          onDelete()
+          requestClose()
+        }}>
+          Delete
+        </Button>
         <Button color='primary' onClick={() => {
           if (!name) return requestClose()
           if (!type) return requestClose()
@@ -68,7 +81,7 @@ function EditPageStateModal({ data, isOpen, requestClose }: Props) {
             }
           }
 
-          updatePageState(editor.page, data.name, newStateData)
+          onSave(newStateData)
           
           requestClose()
         }}>

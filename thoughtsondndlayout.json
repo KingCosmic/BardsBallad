@@ -1,0 +1,70 @@
+{
+  "name": "Half-Elf",
+  "heightAndWeight": {
+    "baseHeight": 57,
+    "heightMod": "2d8",
+    "baseWeight": 110,
+    "weightMod": "2d4"
+  },
+  "age": {
+    "mature": 20,
+    "max": 180
+  },
+  "levelBenefits": [
+    {
+      "name": "1",
+      "modifications": [
+        {
+          "name": "Size",
+          "description": "Half-elves are about the same size as humans, ranging from 5 to 6 feet tall. Your size is Medium.",
+          "blueprint": { "nodes": [], "edges": [] }
+        },
+        {
+          "name": "Speed",
+          "blueprint": { "nodes": [], "edges": [] }
+        },
+        {
+          "name": "ASI",
+          "blueprint": { "nodes": [], "edges": [] }
+        },
+        {
+          "name": "Darkvision",
+          "description": "Thanks to your elf blood, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray.",
+          "blueprint": { "nodes": [], "edges": [] }
+        },
+        {
+          "name": "Languages",
+          "blueprint": { "nodes": [], "edges": [] }
+        },
+        {
+          "name": "Fey Ancestry",
+          "description": "You have advantage on saving throws against being {@condition charmed}, and magic can't put you to sleep.",
+          "blueprint": { "nodes": [], "edges": [] }
+        }
+      ],
+      "choices": [
+        {
+          "name": "Ability Score Increase",
+          "description": "",
+          "optionsBlueprint": { "nodes": [], "edges": [] },
+          "count": 2,
+          "blueprint": { "nodes": [], "edges": [] }
+        },
+        {
+          "name": "Skill Versatility",
+          "description": "You gain proficiency in two skills of your choice.",
+          "optionsBlueprint": { "nodes": [], "edges": [] },
+          "count": 2,
+          "blueprint": { "nodes": [], "edges": [] }
+        },
+        {
+          "name": "Additional Language",
+          "description": "You can speak, read, and write Common, Elvish, and one extra language of your choice.",
+          "optionsBlueprint": { "nodes": [], "edges": [] },
+          "count": 1,
+          "blueprint": { "nodes": [], "edges": [] }
+        }
+      ]
+    }
+  ]
+}

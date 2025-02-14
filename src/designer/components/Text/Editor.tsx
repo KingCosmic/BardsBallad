@@ -6,8 +6,13 @@ import TextSettings from './Settings'
 import styles from './styles'
 import { useMemo } from 'react'
 import globalStyles from '../../styles'
+import { BlueprintProcessorState } from '../../../utils/Blueprints/processBlueprint'
 
 export interface TextProps {
+  /* props that are only used in preview when processing blueprints */
+  state?: BlueprintProcessorState;
+  updateState?(newState: BlueprintProcessorState): void;
+  
   useBlueprintValue?: boolean;
   blueprint?: BlueprintData;
 

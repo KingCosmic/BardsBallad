@@ -1,8 +1,8 @@
 import { SystemType } from '../state/systems'
 import getRandomDataFromType from './getRandomDataFromType'
 
-export default function generateObject(typeDef: SystemType | string) {
-  if (typeof typeDef === 'string') return getRandomDataFromType({ type: typeDef })
+export default function generateObject(types: SystemType[], typeDef: SystemType | string) {
+  if (typeof typeDef === 'string') return getRandomDataFromType(types, { type: typeDef, useTextArea: false, isArray: false, options: [], isOutputAnArray: false, inputs: [], outputType: 'none', })
 
   let exampleData: { [key:string]: any } = {
     _type: {
@@ -15,7 +15,7 @@ export default function generateObject(typeDef: SystemType | string) {
 
     let options = prop.typeData
 
-    exampleData[prop.key] = getRandomDataFromType(options)
+    exampleData[prop.key] = getRandomDataFromType(types, options)
   }
 
   return exampleData
