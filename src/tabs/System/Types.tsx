@@ -1,17 +1,19 @@
 
-import { addType, addTypeProperty, deleteType, deleteTypeProperty, systemState, updateTypeName, updateTypeProperty } from '../../state/system'
 import EditTypeModal from '../../modals/EditType'
-import { TypeData } from '../../state/systems'
 import { useState } from 'react'
 import EditStringModal from '../../modals/EditString'
 import AccordionGroup from '../../components/AccordionGroup'
 import FloatingActionButton from '../../components/FloatingActionButton'
 import Button from '../../components/inputs/Button'
 import Accordion from '../../components/Accordion'
+import { SystemData, TypeData } from '../../types/system'
+import { addSystemType, addTypeProperty, deleteSystemType, deleteTypeProperty, renameSystemType, updateTypeProperty } from '../../storage/utils/systems'
 
-function Types() {
-  const system = systemState.useValue()
+type TypesProps = {
+  system: SystemData
+}
 
+const Types: React.FC<TypesProps> = ({ system }) => {
   const [editData, setEditData] = useState<{
     key: string;
     typeData: TypeData;
@@ -26,13 +28,13 @@ function Types() {
     <>
       <EditTypeModal data={editData} isOpen={editData !== null}
         requestClose={() => setEditData(null)}
-        onSave={(data) => updateTypeProperty(editData?.typeName || '', editData?.key || '', data)}
-        onDelete={() => deleteTypeProperty(editData?.typeName || '', editData?.key || '')}
+        onSave={(data) => updateTypeProperty(system.id, editData?.typeName || '', editData?.key || '', data)}
+        onDelete={() => deleteTypeProperty(system.id, editData?.typeName || '', editData?.key || '')}
       />
 
       <EditStringModal data={editName} isOpen={editName !== null}
         requestClose={() => setEditName(null)}
-        onSave={(data) => updateTypeName(editName || '', data)}
+        onSave={(data) => renameSystemType(system.id, editName || '', data)}
       />
       
       {/* TODO: Searchbar */}
@@ -43,15 +45,15 @@ function Types() {
             <div>
               <Button color='light' onClick={() => setEditName(type.name)}>Edit Name</Button>
 
-              <Button color='light' onClick={() => {
-                const propertyType = addTypeProperty(type.name)
+              <Button color='light' onClick={async () => {
+                const propertyType = await addTypeProperty(system.id, type.name)
 
                 if (!propertyType) return
 
                 setEditData({ ...propertyType, typeName: type.name })
               }}>Add Property</Button>
 
-              <Button color='danger' onClick={() => deleteType(type.name)}>Delete Type</Button>
+              <Button color='danger' onClick={() => deleteSystemType(system.id, type.name)}>Delete Type</Button>
             </div>
 
             <div className='flex flex-col gap-1 mt-3'>
@@ -72,8 +74,8 @@ function Types() {
         ))}
       </AccordionGroup>
 
-      <FloatingActionButton onClick={() => {
-        addType()
+      <FloatingActionButton onClick={async () => {
+        await addSystemType(system.id, 'New Type')
         setEditName('New Type')
       }} />
     </>

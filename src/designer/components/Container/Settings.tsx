@@ -1,5 +1,5 @@
 import { useNode } from '@craftjs/core'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { updateParams } from '../../../blueprints/utils'
 import AccordionGroup from '../../../components/AccordionGroup'
 import Accordion from '../../../components/Accordion'
@@ -72,14 +72,25 @@ export function ContainerSettings() {
     hover: node.data.props.hover
   }))
 
-  const localParams = useLocalState(id)
   const [openAccordion, setOpenAccordion] = useState(-1)
 
+  const localParams = useLocalState(id)
   useEffect(() => {
     setProp((props: any) => {
-      props.blueprint.nodes = updateParams(props.blueprint.nodes, localParams)
-      props.visibilityBlueprint.nodes = updateParams(props.visibilityBlueprint.nodes, localParams)
-      props.onPress.nodes = updateParams(props.onPress.nodes, localParams)
+      props.blueprint = {
+        edges: props.blueprint.edges,
+        nodes: updateParams(props.blueprint.nodes, localParams)
+      }
+
+      props.visibilityBlueprint = { 
+        edges: props.visibilityBlueprint.edges,
+        nodes: updateParams(props.visibilityBlueprint.nodes, localParams)
+      }
+      
+      props.onPress = {
+        edges: props.onPress.edges,
+        nodes: updateParams(props.onPress.nodes, localParams)
+      }
     
       return props
     })

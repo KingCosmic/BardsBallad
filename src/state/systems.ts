@@ -1,136 +1,147 @@
-import { Edge, Node } from '@xyflow/react';
-import { produce } from 'immer';
-import { newRidgeState } from 'react-ridge-state'
-import { getDefaultNodes } from '../blueprints/utils';
-import { SystemStorage } from '../lib/storage'
+// import { Edge, Node } from '@xyflow/react';
+// import { produce } from 'immer';
+// import { newRidgeState } from 'react-ridge-state'
+// import { getDefaultNodes, Param } from '../blueprints/utils';
+// import { SystemStorage } from '../lib/storage'
 
-import DND5EBackup from '../lib/backup-dnd5e.json'
+// import DND5EBackup from '../lib/backup-dnd5e.json'
 
-export type TypeData = {
-  type: string;
-  useTextArea: boolean;
-  isArray: boolean;
-  options: string[];
-  gen?: any;
-}
+// export type TypeData = {
+//   type: string;
+//   gen?: any;
 
-export type SystemType = {
-  name: string;
-  properties: { key: string; typeData: TypeData }[]
-}
+//   /* String Specific */
+//   useTextArea: boolean;
 
-export type DataType = {
-  name: string;
-  typeData: TypeData;
-  data: any;
-}
+//   /* Array Specific */
+//   isArray: boolean;
 
-export type BlueprintData = {
-  nodes: Node[];
-  edges: Edge[];
-}
+//   /* Enum Specific */
+//   options: string[];
 
-export type PageData = {
-  name: string;
-  blueprint: BlueprintData;
-  lexical: string;
-  state: { name: string, type: TypeData }[];
-}
+//   /* Blueprint Specfic */
+//   outputType: string;
+//   isOutputAnArray: boolean;
+//   inputs: Param[]
+// }
 
-export type SystemData = {
-  name: string;
+// export type SystemType = {
+//   name: string;
+//   properties: { key: string; typeData: TypeData }[]
+// }
 
-  creator: PageData[];
-  modals: PageData[];
-  pages: PageData[];
+// export type DataType = {
+//   name: string;
+//   typeData: TypeData;
+//   data: any;
+// }
 
-  version: string;
+// export type BlueprintData = {
+//   nodes: Node[];
+//   edges: Edge[];
+// }
 
-  data: DataType[];
+// export type PageData = {
+//   name: string;
+//   blueprint: BlueprintData;
+//   lexical: string;
+//   state: { name: string, type: TypeData, value: any }[];
+// }
 
-  defaultCharacterData: { [key: string]: any };
+// export type SystemData = {
+//   name: string;
 
-  types: SystemType[];
-}
+//   creator: PageData[];
+//   modals: PageData[];
+//   pages: PageData[];
 
+//   version: string;
 
-export const systemsState = newRidgeState<SystemData[]>([])
+//   data: DataType[];
 
-export async function loadSystems() {
-  try {
-    let systems: SystemData[] = []
+//   defaultCharacterData: { [key: string]: any };
 
-    const names = await SystemStorage.keys()
+//   types: SystemType[];
+// }
 
-    for (let n = 0; n < names.length; n++) {
-      const sys = await SystemStorage.get(names[n])
+// export const systemsState = newRidgeState<SystemData[]>([])
 
-      systems.push(sys)
-    }
+// export async function loadSystems() {
+//   try {
+//     let systems: SystemData[] = []
 
-    if (systems.length === 0) {
-      systems.push(DND5EBackup)
-    }
+//     const names = await SystemStorage.keys()
 
-    systemsState.set(systems)
-  } catch(e) {
-    // TODO: show error message to user.
-    systemsState.set([])
-  }
-}
+//     for (let n = 0; n < names.length; n++) {
+//       const sys = await SystemStorage.get(names[n])
 
-loadSystems()
+//       systems.push(sys)
+//     }
 
-export function getDefaultSystemData(): SystemData {
-  return {
-    name: 'New System',
+//     if (systems.length === 0) {
+//       // @ts-expect-error
+//       systems.push(DND5EBackup)
+//     }
 
-    creator: [],
-    modals: [],
-    pages: [
-      {
-        name: 'Info',
-        blueprint: { nodes: getDefaultNodes(), edges: [] },
-        lexical: '',
-        state: []
-      }
-    ],
+//     systemsState.set(systems)
+//   } catch(e) {
+//     // TODO: show error message to user.
+//     systemsState.set([])
+//   }
+// }
 
-    version: '0.0.1',
+// loadSystems()
 
-    data: [],
+// export function getDefaultSystemData(): SystemData {
+//   return {
+//     name: 'New System',
 
-    defaultCharacterData: {
-      _type: {
-        name: 'DefaultCharacterData',
-        properties: []
-      }
-    },
+//     creator: [],
+//     modals: [],
+//     pages: [
+//       {
+//         name: 'Info',
+//         blueprint: { nodes: getDefaultNodes(), edges: [] },
+//         lexical: '',
+//         state: []
+//       }
+//     ],
 
-    types: []
-  }
-}
+//     version: '0.0.1',
 
-export function createSystem() {
-  const systems = systemsState.get()
+//     data: [],
 
-  const index = systems.findIndex(s => s.name === 'New System')
+//     defaultCharacterData: {
+//       _type: {
+//         name: 'DefaultCharacterData',
+//         properties: []
+//       }
+//     },
 
-  if (index !== -1) return
+//     types: []
+//   }
+// }
 
-  const newData = getDefaultSystemData()
+// export function createSystem() {
+//   const systems = systemsState.get()
 
-  const newSystems = produce(systems, draft => {
-    draft.push(newData)
+//   const index = systems.findIndex(s => s.name === 'New System')
 
-    return draft
-  })
+//   if (index !== -1) return
 
-  systemsState.set(newSystems)
-  SystemStorage.set(newData.name, newData)
-}
+//   const newData = getDefaultSystemData()
 
-export function deleteSystem(name: string) {
-  systemsState.set((prevState) => prevState.filter((sys) => sys.name !== name))
-  SystemStorage.remove(name)
-}
+//   const newSystems = produce(systems, draft => {
+//     draft.push(newData)
+
+//     return draft
+//   })
+
+//   systemsState.set(newSystems)
+//   SystemStorage.set(newData.name, newData)
+// }
+
+// export function deleteSystem(name: string) {
+//   systemsState.set((prevState) => prevState.filter((sys) => sys.name !== name))
+//   SystemStorage.remove(name)
+// }

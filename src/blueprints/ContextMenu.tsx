@@ -259,6 +259,12 @@ export default function ContextMenu({
         >
           Open Modal
         </li>
+        <li
+          className='hover:bg-gray-700 p-2 cursor-pointer relative'
+          onClick={() => createNode('blueprint_run')}
+        >
+          Run Blueprint
+        </li>
       </ul>
     </div>
   );

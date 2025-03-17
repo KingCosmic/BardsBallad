@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { BlueprintData,  } from '../state/systems'
+import { BlueprintData } from '../types/blueprint'
 
 import { openModal } from '../state/modals'
 import Modal from '../components/Modal';

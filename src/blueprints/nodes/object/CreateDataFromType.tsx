@@ -8,15 +8,18 @@ import {
   useReactFlow
 } from '@xyflow/react'
 
-import { systemState } from '../../../state/system'
-import { SystemType } from '../../../state/systems'
+import { editorState } from '../../../state/editor'
+import { SystemType } from '../../../types/system'
 import Card from '../../../components/Card'
 import Select from '../../../components/inputs/Select'
+import { useSystem } from '../../../hooks/useSystem'
  
 function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ spreadType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+
+  const {system} = useSystem(editor.systemId)
 
   return (
     <Card title='Create Object From Type'>

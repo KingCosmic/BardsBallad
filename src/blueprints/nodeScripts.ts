@@ -15,8 +15,6 @@ import Get from './scripts/arrays/get'
 
 import SpreadObject from './scripts/object/spread'
 
-import SetPageState from './scripts/setPageState'
-
 import NewString from './scripts/strings/string'
 import StringIncludes from './scripts/strings/includes'
 import StringCompare from './scripts/strings/compare'
@@ -41,6 +39,10 @@ import Branch from './scripts/booleans/branch'
 import Inverse from './scripts/booleans/inverse'
 
 import openModal from './scripts/openModal'
+import getSystemData from './scripts/system/getSystemData'
+
+import setPageState from './scripts/page/setPageState'
+import getPageState from './scripts/page/getPageState'
 
 export interface NodeScript {
   init?(processor: BlueprintProcessor, node: Node): void
@@ -54,9 +56,13 @@ export const nodeScripts: { [key:string]: NodeScript } = {
 
   get_character_data: GetCharacterData,
   set_character_data: SetCharacterData,
+
+  get_system_data: getSystemData,
+
+  get_page_data: getPageState,
+  set_page_data: setPageState,
   
   number_to_string: numberToString,
-  set_page_state: SetPageState,
 
   /* Array Scripts */
   add_to_array: AddItemToArray,

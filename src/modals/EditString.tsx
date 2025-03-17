@@ -8,6 +8,7 @@ import TextInput from '../components/inputs/TextInput';
 
 type Props = {
   data: string | null;
+  title?: string;
 
   isOpen: boolean;
   requestClose(): void;
@@ -15,8 +16,7 @@ type Props = {
   onDelete?(): void;
 }
 
-function EditStringModal({ data, isOpen, requestClose, onSave, onDelete } : Props) {
-
+function EditStringModal({ data, title = 'Edit string', isOpen, requestClose, onSave, onDelete } : Props) {
   const [string, setString] = useState('')
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function EditStringModal({ data, isOpen, requestClose, onSave, onDelete } : Prop
 
   return (
     <Modal isOpen={isOpen} onClose={requestClose}>
-      <ModalHeader title='Edit Type Property' onClose={requestClose} />
+      <ModalHeader title={title}onClose={requestClose} />
 
       <ModalBody>
         <TextInput id='name' label='Name' placeholder='baba yaga' value={string} onChange={setString} isValid errorMessage='' />

@@ -1,68 +1,76 @@
-import { characterState, setCurrentCharacter } from '../state/character'
-import { useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'react-router'
-import { charactersState } from '../state/characters'
 
-import { PageData } from '../state/systems'
+import { PageData, SystemData } from '../types/system'
 import RenderEditorData from '../designer/RenderEditorData'
 
 import Header from '../components/Header'
 
-import lz from 'lzutf8'
 import Select from '../components/inputs/Select'
+import { useCharacter } from '../hooks/useCharacter'
+
+import lz from 'lzutf8'
+import { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
+import { deepEqual } from 'fast-equals'
+import { useSystems } from '../hooks/useSystems'
+import { updateCharacterData } from '../storage/utils/characters'
+
+import { CharacterData } from '../types/character'
 
 const Character: React.FC = () => {
-  const characters = charactersState.useValue()
-  const character = characterState.useValue()
+  const { id } = useParams<{ id: string; }>()
 
-  const [tab1, setTab1] = useState(character ? character.system.pages[0].name : 'test')
-  const [tab2, setTab2] = useState(character ? character.system.pages[1].name : 'test')
+  const { systems } = useSystems()
 
-  const { name } = useParams<{ name: string; }>()
+  const character = useCharacter(id)
+
+  const [system, setSystem] = useState<SystemData | null>(null)
+
+  const updateState = useCallback((state: BlueprintProcessorState) => {
+    if (!character || !system) return
+
+    const index = state.system.pages.findIndex(c => c.name === state.page.name)
+
+    if (
+      deepEqual(character, state.character) &&
+      deepEqual(system, state.system) &&
+      deepEqual(state.system.pages[index], state.page)
+    ) return
+
+    updateCharacterData(character.id, state.character)
+    setSystem({ ...state.system, pages: state.system.pages.map(c => c.name === state.page.name ? state.page : c )})
+  }, [character, system])
 
   useEffect(() => {
-    const character = characters.find(c => c.name === name)
-    setCurrentCharacter(character)
+    if (!systems) return
 
-    if (!character) return
+    const newSystem = systems.find(s => s.id === character?.system.id)
+    if (!newSystem) return
 
-    setTab1(character.system.pages[0].name)
-    setTab2(character.system.pages[1].name)
-  }, [name])
+    if (deepEqual(system, newSystem)) return
 
-  if (!character) return <>loading...</>
+    setSystem(newSystem)
+  }, [systems])
+
+  if (!character || !system) return <p id='loading-text' className='text-center text-2xl'>loading...</p>
 
   return (
     <div className='flex flex-col h-full w-full'>
+      <p id='loading-text' className='hidden'>loading...</p>
       <Header title={character.name} />
 
-      <div className='flex flex-row flex-grow'>
-        <div className='relative w-full lg:w-1/2'>
-          <div className='p-4 overflow-y-scroll flex flex-col'>
-            <Select id='tab-selector' label='' value={tab1} onChange={setTab1}>
-              {
-                character.system.pages.map((page) => <option key={page.name} value={page.name}>{page.name}</option>)
-              }
-            </Select>
+      <div className='flex flex-row flex-grow overflow-hidden'>
 
-            {
-              character.system.pages.map((page) => <RenderTab key={page.name} page={page} hidden={page.name !== tab1} />)
-            }
+        <div className='relative w-full lg:w-1/2 max-h-full flex flex-col'>
+          <div className='overflow-y-scroll p-4'>
+            <RenderTab className='first-tab-selector' system={system} character={character} updateState={updateState} />
           </div>
         </div>
 
-        <div className='relative w-1/2 hidden flex-col lg:flex'>
-          <div className='p-4 overflow-y-scroll'>
-            <Select id='tab-selector' label='' value={tab2} onChange={setTab2}>
-              {
-                character.system.pages.map((page) => <option key={page.name} value={page.name}>{page.name}</option>)
-              }
-            </Select>
-
-            {
-              character.system.pages.map((page) => <RenderTab key={page.name} page={page} hidden={page.name !== tab2} />)
-            }
+        <div className='relative w-1/2 hidden flex-col lg:flex max-h-full'>
+          <div className='overflow-y-scroll p-4'>
+            <RenderTab className='second-tab-selector' system={system} character={character} updateState={updateState} />
           </div>
         </div>
       </div>
@@ -70,9 +78,35 @@ const Character: React.FC = () => {
   )
 }
 
-function RenderTab({ page, hidden }: { page: PageData, hidden: boolean }) {
+const RenderTab = ({ system, character, updateState, className }: { system: SystemData, character: CharacterData, updateState(state: BlueprintProcessorState): void, className: string }) => {
+  const [tab, setTab] = useState(system.pages[0].name)
+
   return (
-    <RenderEditorData style={{ display: hidden ? 'none': 'block' }} data={JSON.parse(lz.decompress(lz.decodeBase64(page.lexical)))} />
+    <>
+      <Select className={className} id='tab-selector' label='' value={tab} onChange={setTab}>
+        {
+          system.pages.map(page => <option key={page.name} value={page.name}>{page.name}</option>)
+        }
+      </Select>
+
+      {
+        system.pages.map(page => <RenderPage key={page.name} character={character} system={system} page={page} currentTab={tab} updateState={updateState} />)
+      }
+    </>
+  )
+}
+
+function RenderPage({ page, character, system, currentTab, updateState }: { page: PageData, character: CharacterData, system: SystemData, currentTab: string, updateState(state: BlueprintProcessorState): void }) {
+  const data = useMemo(() => {
+    if (!page.lexical) return {}
+
+    return JSON.parse(lz.decompress(lz.decodeBase64(page.lexical)))
+  }, [page.lexical])
+
+  if ((currentTab !== page.name)) return <></>
+
+  return (
+    <RenderEditorData data={data} state={{ character, system, page }} updateState={updateState} />
   )
 }
 

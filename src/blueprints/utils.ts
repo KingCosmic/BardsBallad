@@ -63,7 +63,7 @@ export function getDefaultNodes(params: Param[] = [], outputParam?: Param): MyNo
   return nodes
 }
 
-export function updateParams(nodes: MyNodes[] = [], params: Param[] = []): MyNodes[] {
+export function updateParams(nodes: MyNodes[] = [], params: Param[] = [], output?: Param): MyNodes[] {
   const index = nodes.findIndex(n => n.type === 'entry')
 
   if (index === -1) {
@@ -71,6 +71,18 @@ export function updateParams(nodes: MyNodes[] = [], params: Param[] = []): MyNod
   }
 
   (nodes[index] as EntryNode).data.params = params
+
+  if (!output) {
+    return nodes
+  }
+
+  const outputIndex = nodes.findIndex(n => n.type === 'output')
+
+  if (outputIndex === -1) {
+    return nodes
+  }
+
+  (nodes[outputIndex] as OutputNode).data.param = output
 
   return nodes
 }
@@ -139,6 +151,8 @@ export function getDefaultDataForType(type: string) {
       return { boolean: false }
     case 'boolean_inverse':
       return {}
+    case 'blueprint_run':
+      return { params: [], returnType: 'none', inputs: {}, outputs: {} }
     default:
       return null
   }

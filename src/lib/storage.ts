@@ -47,10 +47,6 @@ class Storage {
   }
 }
 
-export const CharacterStorage = new Storage('characters')
-
-export const SystemStorage = new Storage('systems')
-
 export const SettingsStorage = new Storage('settings')
 
 export default Storage

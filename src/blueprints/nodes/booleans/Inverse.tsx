@@ -24,7 +24,7 @@ function BooleanBranch(_props: NodeProps<Node<{ boolean: boolean; }>>) {
         input (boolean)
       </p>
       <Handle type='target' id='input-boolean' position={Position.Left}
-        style={{ top: 30, bottom: 'auto' }}
+        style={{ top: 80, bottom: 'auto' }}
       />
 
       <p style={{ textAlign: 'right', marginTop: 5 }}>

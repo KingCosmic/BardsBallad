@@ -2,13 +2,18 @@ import { PropsWithChildren, useMemo } from 'react'
 import { NodeHelpersType, Node, useNode, UserComponentConfig } from '@craftjs/core'
 
 
-import { BlueprintData } from '../../../state/systems'
 import { getDefaultNodes } from '../../../blueprints/utils'
 import { ContainerSettings } from './Settings'
 import styles from './styles'
 import globalStyles from '../../styles'
+import { BlueprintProcessorState } from '../../../utils/Blueprints/processBlueprint'
+import { BlueprintData } from '../../../types/blueprint'
 
 export type ContainerProps = {
+  /* props that are only used in preview when processing blueprints */
+  state?: BlueprintProcessorState;
+  updateState?(newState: BlueprintProcessorState): void;
+
   showPlaceholder?: boolean;
 
   dynamicVisibility?: boolean;
@@ -53,7 +58,10 @@ export type ContainerProps = {
   minHeight?: string;
   minWidth?: string;
 
+  // Local state this component will pass to its children.
   local?: any;
+  // calculated local state based off the parent components.
+  calculateLocalState?: any;
 }
 
 function Container(props: PropsWithChildren<ContainerProps>) {

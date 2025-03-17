@@ -10,7 +10,7 @@ function Divider() {
 
 export function DividerPreview(props: any) {
   return (
-    <div {...props} style={{ height: 1, width: '100%', backgroundColor: 'white' }} />
+    <div style={{ height: 1, width: '100%', backgroundColor: 'white' }} />
   )
 }
 

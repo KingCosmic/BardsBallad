@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 
 import {
   Handle,
@@ -7,45 +7,84 @@ import {
   Position,
   useReactFlow,
   useUpdateNodeInternals,
-  useNodeConnections
+  useNodeConnections,
+  useNodesData
 } from '@xyflow/react'
 
-import { systemState } from '../../../state/system'
+import { editorState } from '../../../state/editor'
 import Card from '../../../components/Card'
+import { useSystem } from '../../../hooks/useSystem'
+import { SystemType } from '../../../types/system'
  
 function Add({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
-  useNodeConnections({
-    handleType: 'target',
-    handleId: 'base-array',
-    onConnect: (conns) => {
-      const conn = conns[0]
+  const connections = useNodeConnections()
+  const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])
+  const nodes = useNodesData(nodeIds)
 
-      if (!conn) return
+  useEffect(() => {
+    let input: { [key:string]: SystemType | null } = {}
 
-      if (!conn.sourceHandle) return
+    for (let c = 0; c < connections.length; c++) {
+      const conn = connections[c]
 
-      const sourceType = conn.sourceHandle.split('-')[1]
-    
-      if (!sourceType) return
+      const type = (conn.source === id) ? 'output' : 'input'
 
+      if (type === 'output') continue
 
-      const inputType = sourceType.split('(')[0]
+      const node = nodes.find(n => n.id === conn.source)
 
-      if (!inputType) return
+      if (!node?.data || !node?.data.outputs) continue
 
-      updateNodeData(id, { inputType })
-      updateNodeInternals(id)
-    },
-    onDisconnect: () => {
-      updateNodeData(id, { inputType: 'unknown' })
-      updateNodeInternals(id)
+      console.log(conn.sourceHandle)
+
+      const nodeData = (node?.data?.outputs as { [key:string]: SystemType | null })[conn.sourceHandle ?? '']
+
+      console.log(nodeData)
+
+      input[conn.targetHandle ?? ''] = nodeData
     }
-  })
+
+    console.log(input)
+
+    const inputType = (input['base-array'] ?? { name: 'unknown', properties: [] }).name
+
+    updateNodeData(id, { inputs: input, inputType, outputs: { [`output-${inputType}`]: system?.types.find(t => t.name === inputType) } })
+    updateNodeInternals(id)
+  }, [connections, nodes, system])
+
+  // useNodeConnections({
+  //   handleType: 'target',
+  //   handleId: 'base-array',
+  //   onConnect: (conns) => {
+  //     const conn = conns[0]
+
+  //     if (!conn) return
+
+  //     if (!conn.sourceHandle) return
+
+  //     const sourceType = conn.sourceHandle.split('-')[1]
+    
+  //     if (!sourceType) return
+
+
+  //     const inputType = sourceType.split('(')[0]
+
+  //     if (!inputType) return
+
+  //     updateNodeData(id, { inputType })
+  //     updateNodeInternals(id)
+  //   },
+  //   onDisconnect: () => {
+  //     updateNodeData(id, { inputType: 'unknown' })
+  //     updateNodeInternals(id)
+  //   }
+  // })
 
   useEffect(() => {
     if (!system) return

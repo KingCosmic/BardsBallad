@@ -1,6 +1,6 @@
 import { Node } from '@xyflow/react'
 import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import { SystemType } from '../../../state/systems'
+import { SystemType } from '../../../types/system'
 import getRandomDataFromType from '../../../utils/getRandomDataFromType'
 
 export default {
@@ -14,7 +14,7 @@ export default {
 
       let propData = processor.getParam(node.id, prop.key)
 
-      if (propData === undefined) propData = getRandomDataFromType(prop.typeData)
+      if (propData === undefined) propData = getRandomDataFromType(processor.getSystem().types, prop.typeData)
 
       data[prop.key] = propData
     }

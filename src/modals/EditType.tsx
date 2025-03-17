@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from 'react'
 import EditStringModal from './EditString'
 import Modal from '../components/Modal'
 
-import { systemState } from '../state/system'
-import { TypeData } from '../state/systems'
 import ModalHeader from '../components/Modal/Header'
 import ModalBody from '../components/Modal/Body'
 import ModalFooter from '../components/Modal/Footer'
@@ -12,6 +10,11 @@ import Button from '../components/inputs/Button'
 import TextInput from '../components/inputs/TextInput'
 import Select from '../components/inputs/Select'
 import Checkbox from '../components/inputs/Checkbox'
+import { openModal } from '../state/modals'
+import { Param } from '../blueprints/utils'
+import { editorState } from '../state/editor'
+import { useSystem } from '../hooks/useSystem'
+import { TypeData } from '../types/system'
 
 type Props = {
   data: { key: string; typeData: TypeData, typeName: string } | null;
@@ -24,11 +27,13 @@ type Props = {
 
 const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, onDelete }) => {
   const [key, setKey] = useState('')
-  const [propertyData, setPropertyData] = useState<TypeData>({ type: '', useTextArea: false, isArray: false, options: [] })
+  const [propertyData, setPropertyData] = useState<TypeData>({ type: '', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] })
 
   const [editOption, setEditOption] = useState<string | null>(null)
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+
+  const {system} = useSystem(editor.systemId)
 
   const parentType = useMemo(() => system?.types.find(t => t.name === data?.typeName), [data, system])
 
@@ -36,7 +41,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
     if (!data) return
   
     setKey(data.key)
-    setPropertyData({ ...{ useTextArea: false, isArray: false }, ...data.typeData })
+    setPropertyData({ ...{ useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, ...data.typeData })
   }, [data])
 
   return (
@@ -54,6 +59,8 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
           <option value='boolean'>boolean</option>
           
           <option value='enum'>enum</option>
+
+          <option value='blueprint'>blueprint</option>
 
           {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
         </Select>
@@ -92,6 +99,80 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
                   return (
                     <div key={item} onClick={() => setEditOption(item)}>
                       <p>{item}</p>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        }
+
+        {
+          (propertyData.type === 'blueprint') && (
+            <div className='mt-4'>
+              <div className='flex flex-col'>
+                <Select id='output-type' label='Output Type' value={propertyData.outputType} onChange={outputType => setPropertyData({ ...propertyData, outputType })}>
+                  <option value='none'>none</option>
+
+                  <option value='string'>string</option>
+                  
+                  <option value='number'>number</option>
+                  
+                  <option value='boolean'>boolean</option>
+                  
+                  <option value='enum'>enum</option>
+
+                  <option value='blueprint'>blueprint</option>
+                  {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+                </Select>
+
+                <Checkbox id='is-output-an-array' label='Is Array?' checked={propertyData.isOutputAnArray} onChange={isOutputAnArray => setPropertyData({ ...propertyData, isOutputAnArray })} />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p>Inputs</p>
+
+                <div
+                  onClick={() => {
+                    const index = propertyData.inputs?.findIndex(o => o.name === 'New Input')
+
+                    if (index !== -1) return
+
+                    setPropertyData({ ...propertyData, inputs: [ ...(propertyData.inputs || []), { name: 'New Input', type: 'string', isArray: false } ] })
+                  }}
+                >
+                  <p>Add</p>
+                </div>
+              </div>
+
+              <p style={{ height: 1, width: '100%', backgroundColor: 'white', marginTop: 4, marginBottom: 4 }} />
+
+              <div>
+                {propertyData.inputs?.map((param) => {
+                  return (
+                    <div key={param.name}
+                      className='bg-neutral-50 border border-neutral-300 text-neutral-900 p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:text-white'
+                      onClick={() => openModal({
+                        type: 'edit_blueprint_param',
+                        title: 'Edit Blueprint Param',
+                        data: param,
+                        onSave: (value: Param) => {
+                          let newInputs = [ ...propertyData.inputs ]
+              
+                          const index = newInputs.findIndex(p => p.name === param.name)
+              
+                          if (index === -1) return
+              
+                          newInputs[index] = value
+              
+                          setPropertyData({ ...propertyData, inputs: newInputs })
+                        },
+                        onDelete: () => {
+                          const newInputs = propertyData.inputs.filter(p => p.name !== param.name)
+                          setPropertyData({ ...propertyData, inputs: newInputs })
+                        }
+                      })}>
+                      <p>{param.name} - {param.type}{param.isArray ? '(Array)' : ''}</p>
                     </div>
                   )
                 })}

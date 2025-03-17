@@ -4,13 +4,14 @@ import CreateDataFromType from './nodes/object/CreateDataFromType'
 import EntryNode from './nodes/EntryNode'
 
 import GetCharacterData from './nodes/character/GetCharacterData'
-import GetPageData from './nodes/GetPageData'
-import GetSystemData from './nodes/GetSystemData'
+import GetPageData from './nodes/page/GetPageData'
+
+import GetSystemData from './nodes/system/GetSystemData'
 import OpenModal from './nodes/OpenModal'
 import OutputNode from './nodes/OutputNode'
 import SetCharacterData from './nodes/character/SetCharacterData'
-import SetPageData from './nodes/SetPageData'
-import SetSystemData from './nodes/SetSystemData'
+import SetPageData from './nodes/page/SetPageData'
+import SetSystemData from './nodes/system/SetSystemData'
 import SpreadObject from './nodes/object/SpreadObject'
 import StringIncludes from './nodes/strings/Include'
 import StringCompare from './nodes/strings/Compare'
@@ -39,6 +40,7 @@ import Branch from './nodes/booleans/Branch'
 import Inverse from './nodes/booleans/Inverse'
 import String from './nodes/strings/String'
 import Boolean from './nodes/booleans/Boolean'
+import RunBlueprint from './nodes/RunBlueprint'
 
 const nodeTypes: NodeTypes = {
   /* entry and exit nodes */
@@ -95,6 +97,7 @@ const nodeTypes: NodeTypes = {
 
   /* No Categories */
   open_modal: OpenModal,
+  blueprint_run: RunBlueprint
 }
 
 export default nodeTypes

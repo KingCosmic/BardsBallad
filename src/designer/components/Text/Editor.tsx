@@ -1,13 +1,18 @@
 import { useNode, UserComponentConfig } from '@craftjs/core'
 import { getDefaultNodes } from '../../../blueprints/utils'
-import { BlueprintData } from '../../../state/systems'
+import { BlueprintData } from '../../../types/blueprint'
 import TextSettings from './Settings'
 
 import styles from './styles'
 import { useMemo } from 'react'
 import globalStyles from '../../styles'
+import { BlueprintProcessorState } from '../../../utils/Blueprints/processBlueprint'
 
 export interface TextProps {
+  /* props that are only used in preview when processing blueprints */
+  state?: BlueprintProcessorState;
+  updateState?(newState: BlueprintProcessorState): void;
+  
   useBlueprintValue?: boolean;
   blueprint?: BlueprintData;
 
@@ -30,6 +35,11 @@ export interface TextProps {
   paddingRight?: string;
   paddingBottom?: string;
   paddingLeft?: string;
+
+  // Local state this component will pass to its children.
+  local?: any;
+  // calculated local state based off the parent components.
+  calculateLocalState?: any;
 }
 
 function Text(props: TextProps) {

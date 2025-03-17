@@ -1,6 +1,6 @@
 
 import { useNode } from '@craftjs/core'
-import { BlueprintData } from '../state/systems'
+import { BlueprintData } from '../types/blueprint'
 
 type SearchbarProps = {
   placeholder: string;
