@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 
-import { PageData, SystemData, systemsState } from '../state/systems'
+import { PageData, SystemData } from '../types/system'
 import TextInput from '../components/inputs/TextInput'
 import Select from '../components/inputs/Select'
 import Modal from '../components/Modal'
@@ -11,13 +11,19 @@ import Button from '../components/inputs/Button'
 import RenderEditorData from '../designer/RenderEditorData'
 
 import lz from 'lzutf8'
-import { CharacterData } from '../state/character'
+import { CharacterData } from '../types/character'
 import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 
+import { useSystems } from '../hooks/useSystems'
+
 import { deepEqual } from 'fast-equals'
+import { useCharacters } from '../hooks/useCharacters'
+
+import { createCharacter } from '../storage/utils/characters'
 
 function CharacterCreatorModal(props: any) {
-  const systems = systemsState.useValue()
+  const { systems } = useSystems()
+  const { characters } = useCharacters()
 
   const [system, setSystem] = useState<SystemData | undefined>(systems[0])
 
@@ -25,46 +31,51 @@ function CharacterCreatorModal(props: any) {
 
   const [characterData, setCharacterData] = useState<CharacterData>({
     id: '',
-    ownerID: '',
+    ownerID: 'none',
   
     name: 'Aliza Cartwight',
-    data: {},
+    data: system?.defaultCharacterData ?? {},
 
-    system: systems[0],
+    system: { id: '', name: '', version: '' },
   
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   })
 
-  const updateState = useCallback((state: BlueprintProcessorState) => {
-    const index = state.system.creator.findIndex(c => c.name === state.page.name)
+  // const updateState = useCallback((state: BlueprintProcessorState) => {
+  //   const index = state.system.creator.findIndex(c => c.name === state.page.name)
     
-    if (
-      deepEqual(characterData, state.character) &&
-      deepEqual(system, state.system) &&
-      deepEqual(state.system.creator[index], state.page)
-    ) return
+  //   if (
+  //     deepEqual(characterData, state.character) &&
+  //     deepEqual(system, state.system) &&
+  //     deepEqual(state.system.creator[index], state.page)
+  //   ) return
 
-    setCharacterData(state.character)
-    setSystem({ ...state.system, creator: state.system.creator.map(c => c.name === state.page.name ? state.page : c )})
-  }, [characterData, system, setSystem, setCharacterData])
+  //   setCharacterData(state.character)
+  //   setSystem({ ...state.system, creator: state.system.creator.map(c => c.name === state.page.name ? state.page : c )})
+  // }, [characterData, system, setSystem, setCharacterData])
 
-  const checkIfCanMoveOn = useCallback(() => {
-    if (!system) return false
+  // const checkIfCanMoveOn = useCallback(() => {
+  //   if (!system) return false
 
-    const creatorPage = system.creator[tab - 1]
+  //   const creatorPage = system.creator[tab - 1]
 
-    if (!creatorPage) return false
+  //   if (!creatorPage) return false
 
-    const processor = new BlueprintProcessor(creatorPage.blueprint)
+  //   const processor = new BlueprintProcessor(creatorPage.blueprint)
 
-    const canMoveOn = processor.processBlueprint({}, { character: characterData, system, page: creatorPage }, () => {})
+  //   const canMoveOn = processor.processBlueprint({}, { character: characterData, system, page: creatorPage }, () => {})
 
-    return !canMoveOn
-  }, [system, characterData, tab])
+  //   return !canMoveOn
+  // }, [system, characterData, tab])
 
   useEffect(() => {
-    setSystem(systems[0])
+    const sys = systems[0]
+
+    if (!sys) return
+
+    setSystem(sys)
+    setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.id, name: sys.name, version: sys.version } })
   }, [systems])
 
   if (!props.isOpen) return <></>
@@ -92,17 +103,23 @@ function CharacterCreatorModal(props: any) {
       <ModalBody>
         {tab === 0 && (
           <>
-            <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid errorMessage='Names must be unique' />
+            <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={!characters.find(c => c.name === characterData.name)} errorMessage='Names must be unique' />
 
-            <Select id='character-system' label='Tabletop System' value={system.name} onChange={(name) => setSystem(systems.find(s => s.name === name))}>
+            <Select id='character-system' label='Tabletop System' value={system.name} onChange={(name) => {
+              const sys = systems.find(s => s.name === name)
+              if (!sys) return
+
+              setSystem(sys)
+              setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.id, name: sys.name, version: sys.version } })
+            }}>
               {systems.map((sys) => <option key={sys.name} value={sys.name}>{sys.name}</option>)}
             </Select>
           </>
         )}
 
-        {
+        {/* {
           system.creator.map((page, i) => <RenderTab key={page.name} page={page} hidden={(i + 1) !== tab} state={{ character: characterData, system, page }} updateState={updateState} />)
-        }
+        } */}
       </ModalBody>
 
       <ModalFooter>
@@ -133,7 +150,7 @@ function CharacterCreatorModal(props: any) {
           </ol>
         </nav>
         
-        {(tab > 0) && (
+        {/* {(tab > 0) && (
           <Button color='light' onClick={() => setTab(tab - 1)}>
             Back
           </Button>
@@ -151,14 +168,27 @@ function CharacterCreatorModal(props: any) {
           }} disabled={checkIfCanMoveOn()}>
             Create
           </Button>
-        )}
+        )} */}
+
+        <Button id='create-character-button' color='primary' onClick={() => {
+          createCharacter(characterData)
+          setSystem(systems[0])
+          props.setIsOpen(false)
+        }}>
+          Create
+        </Button>
       </ModalFooter>
     </Modal>
   )
 }
 
 function RenderTab({ page, hidden, state, updateState }: { page: PageData, hidden: boolean, state: BlueprintProcessorState, updateState(state: BlueprintProcessorState): void }) {
-  const data = useMemo(() => JSON.parse(lz.decompress(lz.decodeBase64(page.lexical))), [page.lexical])
+  const data = useMemo(() => {
+    if (!page.lexical) return {}
+
+    return JSON.parse(lz.decompress(lz.decodeBase64(page.lexical)))
+  }, [page.lexical])
+
   const display = useMemo(() => ({ display: hidden ? 'none' : 'block' }), [hidden])
 
   return (

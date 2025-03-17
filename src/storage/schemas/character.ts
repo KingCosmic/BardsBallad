@@ -2,20 +2,6 @@ import { RxCollectionCreator } from 'rxdb'
 
 // Don't forget to increment the version number on updates.
 
-// {
-//   id: string;
-//   name: string;
-
-//   data: { [key:string]: any };
-
-//   ownerID: string;
-//   version: string;
-//   system: SystemData;
-  
-//   createdAt: string;
-//   updatedAt: string;
-// }
-
 const characterSchema: RxCollectionCreator = {
   schema: {
     version: 0,
@@ -35,13 +21,11 @@ const characterSchema: RxCollectionCreator = {
       ownerID: {
         type: 'string'
       },
-      version: {
-        type: 'string'
-      },
 
       system: {
         type: 'object',
         properties: {
+          id: { type: 'string' },
           name: { type: 'string' },
           version: { type: 'string' }
         }
@@ -56,8 +40,9 @@ const characterSchema: RxCollectionCreator = {
         format: 'date-time'
       }
     },
-    required: ['id', 'name', 'data', 'ownerID', 'version', 'system', 'createdAt', 'updatedAt']
+    required: ['id', 'name', 'data', 'ownerID', 'system', 'createdAt', 'updatedAt']
   }
 }
+
 
 export default characterSchema

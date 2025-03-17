@@ -6,17 +6,13 @@ import { SelectSettings } from './Settings'
 
 import globalStyles from '../../styles'
 import { BlueprintProcessorState } from '../../../utils/Blueprints/processBlueprint'
-import Select from '../../../components/inputs/Select'
-import { BlueprintData } from '../../../state/systems'
+import { BlueprintData } from '../../../types/blueprint'
 import TextInput from '../../../components/inputs/TextInput'
 
 export type InputProps = {
   /* props that are only used in preview when processing blueprints */
   state?: BlueprintProcessorState;
   updateState?(newState: BlueprintProcessorState): void;
-
-  /* Used to pass data down to child components */
-  local?: any;
 
   /* Component Props */
   label?: string;
@@ -35,6 +31,11 @@ export type InputProps = {
   width?: string;
   maxWidth?: string;
   minWidth?: string;
+
+  // Local state this component will pass to its children.
+  local?: any;
+  // calculated local state based off the parent components.
+  calculateLocalState?: any;
 }
 
 function EditorInput(props: InputProps) {

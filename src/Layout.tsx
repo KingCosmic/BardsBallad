@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router'
 import ModalManager from './components/ModalManager'
 import { sidebarState, closeSidebar } from './state/sidebar'
+import { authState } from './state/auth'
 
 const topItems = [
   {
@@ -25,36 +26,6 @@ const bottomItems = [
         aria-hidden='true'
         xmlns='http://www.w3.org/2000/svg'
         fill='currentColor'
-        viewBox='0 0 17 20'
-      >
-        <path d='M7.958 19.393a7.7 7.7 0 0 1-6.715-3.439c-2.868-4.832 0-9.376.944-10.654l.091-.122a3.286 3.286 0 0 0 .765-3.288A1 1 0 0 1 4.6.8c.133.1.313.212.525.347A10.451 10.451 0 0 1 10.6 9.3c.5-1.06.772-2.213.8-3.385a1 1 0 0 1 1.592-.758c1.636 1.205 4.638 6.081 2.019 10.441a8.177 8.177 0 0 1-7.053 3.795Z' />
-      </svg>
-    ),
-    name: 'Donate',
-    path: 'donate'
-  },
-  {
-    icon: () => (
-      <svg
-        className='flex-shrink-0 w-5 h-5 text-neutral-500 transition duration-75 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'
-        aria-hidden='true'
-        xmlns='http://www.w3.org/2000/svg'
-        fill='currentColor'
-        viewBox='0 0 16 20'
-      >
-        <path d='M16 14V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 0 0 0-2h-1v-2a2 2 0 0 0 2-2ZM4 2h2v12H4V2Zm8 16H3a1 1 0 0 1 0-2h9v2Z' />
-      </svg>
-    ),
-    name: 'Documentation',
-    path: 'documentation'
-  },
-  {
-    icon: () => (
-      <svg
-        className='flex-shrink-0 w-5 h-5 text-neutral-500 transition duration-75 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'
-        aria-hidden='true'
-        xmlns='http://www.w3.org/2000/svg'
-        fill='currentColor'
         viewBox='0 0 21 21'
       >
         <path d='m5.4 2.736 3.429 3.429A5.046 5.046 0 0 1 10.134 6c.356.01.71.06 1.056.147l3.41-3.412c.136-.133.287-.248.45-.344A9.889 9.889 0 0 0 10.269 1c-1.87-.041-3.713.44-5.322 1.392a2.3 2.3 0 0 1 .454.344Zm11.45 1.54-.126-.127a.5.5 0 0 0-.706 0l-2.932 2.932c.029.023.049.054.078.077.236.194.454.41.65.645.034.038.078.067.11.107l2.927-2.927a.5.5 0 0 0 0-.707Zm-2.931 9.81c-.024.03-.057.052-.081.082a4.963 4.963 0 0 1-.633.639c-.041.036-.072.083-.115.117l2.927 2.927a.5.5 0 0 0 .707 0l.127-.127a.5.5 0 0 0 0-.707l-2.932-2.931Zm-1.442-4.763a3.036 3.036 0 0 0-1.383-1.1l-.012-.007a2.955 2.955 0 0 0-1-.213H10a2.964 2.964 0 0 0-2.122.893c-.285.29-.509.634-.657 1.013l-.01.016a2.96 2.96 0 0 0-.21 1 2.99 2.99 0 0 0 .489 1.716c.009.014.022.026.032.04a3.04 3.04 0 0 0 1.384 1.1l.012.007c.318.129.657.2 1 .213.392.015.784-.05 1.15-.192.012-.005.02-.013.033-.018a3.011 3.011 0 0 0 1.676-1.7v-.007a2.89 2.89 0 0 0 0-2.207 2.868 2.868 0 0 0-.27-.515c-.007-.012-.02-.025-.03-.039Zm6.137-3.373a2.53 2.53 0 0 1-.35.447L14.84 9.823c.112.428.166.869.16 1.311-.01.356-.06.709-.147 1.054l3.413 3.412c.132.134.249.283.347.444A9.88 9.88 0 0 0 20 11.269a9.912 9.912 0 0 0-1.386-5.319ZM14.6 19.264l-3.421-3.421c-.385.1-.781.152-1.18.157h-.134c-.356-.01-.71-.06-1.056-.147l-3.41 3.412a2.503 2.503 0 0 1-.443.347A9.884 9.884 0 0 0 9.732 21H10a9.9 9.9 0 0 0 5.044-1.388 2.519 2.519 0 0 1-.444-.348ZM1.735 15.6l3.426-3.426a4.608 4.608 0 0 1-.013-2.367L1.735 6.4a2.507 2.507 0 0 1-.35-.447 9.889 9.889 0 0 0 0 10.1c.1-.164.217-.316.35-.453Zm5.101-.758a4.957 4.957 0 0 1-.651-.645c-.033-.038-.077-.067-.11-.107L3.15 17.017a.5.5 0 0 0 0 .707l.127.127a.5.5 0 0 0 .706 0l2.932-2.933c-.03-.018-.05-.053-.078-.076ZM6.08 7.914c.03-.037.07-.063.1-.1.183-.22.384-.423.6-.609.047-.04.082-.092.129-.13L3.983 4.149a.5.5 0 0 0-.707 0l-.127.127a.5.5 0 0 0 0 .707L6.08 7.914Z' />
@@ -68,8 +39,10 @@ const bottomItems = [
 const Layout: React.FC = () => {
   const isOpen = sidebarState.useValue()
 
+  const auth = authState.useValue()
+
   return (
-    <div className='w-screen h-screen bg-background text-primary transition-colors overflow-x-hidden'>
+    <div className='w-screen h-screen bg-neutral-50 dark:bg-neutral-900 text-primary transition-colors overflow-x-hidden'>
       <div onClick={closeSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen sm:translate-x-0`} />
       <aside
         onClick={closeSidebar}
@@ -101,7 +74,7 @@ const Layout: React.FC = () => {
             <ul className='pt-4 mt-4 space-y-2 font-medium border-t border-neutral-200 dark:border-neutral-700'>
               {topItems.map((item) => (
                 <li key={item.name}>
-                  <NavLink to={item.path} className=''>
+                  <NavLink to={item.path} onClick={closeSidebar}>
                     <div className='flex items-center p-2 text-neutral-900 rounded-lg dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 group'>
                       <svg
                         className='w-5 h-5 text-neutral-500 transition duration-75 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'
@@ -124,29 +97,47 @@ const Layout: React.FC = () => {
           <div>
             <div
               id='dropdown-cta'
-              className='p-4 mt-6 rounded-lg bg-brand-50 dark:bg-brand-900'
+              className='p-4 mt-6 rounded-lg bg-brand-50 bg-gradient-to-r dark:from-brand-500 dark:to-brand-700'
               role='alert'
             >
               <div className='flex items-center mb-3'>
-                <span className='bg-orange-100 text-orange-800 text-sm font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-orange-200 dark:text-orange-900'>
+                <span className='bg-brand-100 text-brand-800 text-sm font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-brand-200 dark:text-brand-900'>
                   Beta
                 </span>
               </div>
-              <p className='mb-3 text-sm text-brand-800 dark:text-brand-400'>
+              <p className='mb-3 text-sm text-brand-800 dark:text-brand-100'>
                 We're happy you're using the BardsBallad Beta! If you run into any problems please reach out to us through one of the platforms below!
               </p>
             </div>
 
             <div className='flex mt-3 gap-2 px-2'>
-              <svg xmlns="http://www.w3.org/2000/svg" className='w-8 h-8 fill-neutral-300' viewBox="0 0 512 512"><path d="M464 66.52A50 50 0 00414.12 17L97.64 16A49.65 49.65 0 0048 65.52V392c0 27.3 22.28 48 49.64 48H368l-13-44 109 100zM324.65 329.81s-8.72-10.39-16-19.32C340.39 301.55 352.5 282 352.5 282a139 139 0 01-27.85 14.25 173.31 173.31 0 01-35.11 10.39 170.05 170.05 0 01-62.72-.24 184.45 184.45 0 01-35.59-10.4 141.46 141.46 0 01-17.68-8.21c-.73-.48-1.45-.72-2.18-1.21-.49-.24-.73-.48-1-.48-4.36-2.42-6.78-4.11-6.78-4.11s11.62 19.09 42.38 28.26c-7.27 9.18-16.23 19.81-16.23 19.81-53.51-1.69-73.85-36.47-73.85-36.47 0-77.06 34.87-139.62 34.87-139.62 34.87-25.85 67.8-25.12 67.8-25.12l2.42 2.9c-43.59 12.32-63.44 31.4-63.44 31.4s5.32-2.9 14.28-6.77c25.91-11.35 46.5-14.25 55-15.21a24 24 0 014.12-.49 205.62 205.62 0 0148.91-.48 201.62 201.62 0 0172.89 22.95s-19.13-18.15-60.3-30.45l3.39-3.86s33.17-.73 67.81 25.16c0 0 34.87 62.56 34.87 139.62 0-.28-20.35 34.5-73.86 36.19z"/><path d="M212.05 218c-13.8 0-24.7 11.84-24.7 26.57s11.14 26.57 24.7 26.57c13.8 0 24.7-11.83 24.7-26.57.25-14.76-10.9-26.57-24.7-26.57zM300.43 218c-13.8 0-24.7 11.84-24.7 26.57s11.14 26.57 24.7 26.57c13.81 0 24.7-11.83 24.7-26.57S314 218 300.43 218z"/></svg>
-
-              <svg xmlns="http://www.w3.org/2000/svg" className='w-8 h-8 fill-neutral-300' viewBox="0 0 512 512"><path d="M256 32C132.3 32 32 134.9 32 261.7c0 101.5 64.2 187.5 153.2 217.9a17.56 17.56 0 003.8.4c8.3 0 11.5-6.1 11.5-11.4 0-5.5-.2-19.9-.3-39.1a102.4 102.4 0 01-22.6 2.7c-43.1 0-52.9-33.5-52.9-33.5-10.2-26.5-24.9-33.6-24.9-33.6-19.5-13.7-.1-14.1 1.4-14.1h.1c22.5 2 34.3 23.8 34.3 23.8 11.2 19.6 26.2 25.1 39.6 25.1a63 63 0 0025.6-6c2-14.8 7.8-24.9 14.2-30.7-49.7-5.8-102-25.5-102-113.5 0-25.1 8.7-45.6 23-61.6-2.3-5.8-10-29.2 2.2-60.8a18.64 18.64 0 015-.5c8.1 0 26.4 3.1 56.6 24.1a208.21 208.21 0 01112.2 0c30.2-21 48.5-24.1 56.6-24.1a18.64 18.64 0 015 .5c12.2 31.6 4.5 55 2.2 60.8 14.3 16.1 23 36.6 23 61.6 0 88.2-52.4 107.6-102.3 113.3 8 7.1 15.2 21.1 15.2 42.5 0 30.7-.3 55.5-.3 63 0 5.4 3.1 11.5 11.4 11.5a19.35 19.35 0 004-.4C415.9 449.2 480 363.1 480 261.7 480 134.9 379.7 32 256 32z"/></svg>
+              <a href='https://discord.gg/a5qSfxv' target='_blank'>
+                <svg xmlns="http://www.w3.org/2000/svg" className='w-8 h-8 fill-neutral-300 hover:fill-brand-400 transition-colors' viewBox="0 0 512 512"><path d="M464 66.52A50 50 0 00414.12 17L97.64 16A49.65 49.65 0 0048 65.52V392c0 27.3 22.28 48 49.64 48H368l-13-44 109 100zM324.65 329.81s-8.72-10.39-16-19.32C340.39 301.55 352.5 282 352.5 282a139 139 0 01-27.85 14.25 173.31 173.31 0 01-35.11 10.39 170.05 170.05 0 01-62.72-.24 184.45 184.45 0 01-35.59-10.4 141.46 141.46 0 01-17.68-8.21c-.73-.48-1.45-.72-2.18-1.21-.49-.24-.73-.48-1-.48-4.36-2.42-6.78-4.11-6.78-4.11s11.62 19.09 42.38 28.26c-7.27 9.18-16.23 19.81-16.23 19.81-53.51-1.69-73.85-36.47-73.85-36.47 0-77.06 34.87-139.62 34.87-139.62 34.87-25.85 67.8-25.12 67.8-25.12l2.42 2.9c-43.59 12.32-63.44 31.4-63.44 31.4s5.32-2.9 14.28-6.77c25.91-11.35 46.5-14.25 55-15.21a24 24 0 014.12-.49 205.62 205.62 0 0148.91-.48 201.62 201.62 0 0172.89 22.95s-19.13-18.15-60.3-30.45l3.39-3.86s33.17-.73 67.81 25.16c0 0 34.87 62.56 34.87 139.62 0-.28-20.35 34.5-73.86 36.19z"/><path d="M212.05 218c-13.8 0-24.7 11.84-24.7 26.57s11.14 26.57 24.7 26.57c13.8 0 24.7-11.83 24.7-26.57.25-14.76-10.9-26.57-24.7-26.57zM300.43 218c-13.8 0-24.7 11.84-24.7 26.57s11.14 26.57 24.7 26.57c13.81 0 24.7-11.83 24.7-26.57S314 218 300.43 218z"/></svg>
+              </a>
+              
+              <a href='https://github.com/KingCosmic/BardsBallad' target='_blank'>
+                <svg xmlns="http://www.w3.org/2000/svg" className='w-8 h-8 fill-neutral-300 hover:fill-brand-400 transition-colors' viewBox="0 0 512 512"><path d="M256 32C132.3 32 32 134.9 32 261.7c0 101.5 64.2 187.5 153.2 217.9a17.56 17.56 0 003.8.4c8.3 0 11.5-6.1 11.5-11.4 0-5.5-.2-19.9-.3-39.1a102.4 102.4 0 01-22.6 2.7c-43.1 0-52.9-33.5-52.9-33.5-10.2-26.5-24.9-33.6-24.9-33.6-19.5-13.7-.1-14.1 1.4-14.1h.1c22.5 2 34.3 23.8 34.3 23.8 11.2 19.6 26.2 25.1 39.6 25.1a63 63 0 0025.6-6c2-14.8 7.8-24.9 14.2-30.7-49.7-5.8-102-25.5-102-113.5 0-25.1 8.7-45.6 23-61.6-2.3-5.8-10-29.2 2.2-60.8a18.64 18.64 0 015-.5c8.1 0 26.4 3.1 56.6 24.1a208.21 208.21 0 01112.2 0c30.2-21 48.5-24.1 56.6-24.1a18.64 18.64 0 015 .5c12.2 31.6 4.5 55 2.2 60.8 14.3 16.1 23 36.6 23 61.6 0 88.2-52.4 107.6-102.3 113.3 8 7.1 15.2 21.1 15.2 42.5 0 30.7-.3 55.5-.3 63 0 5.4 3.1 11.5 11.4 11.5a19.35 19.35 0 004-.4C415.9 449.2 480 363.1 480 261.7 480 134.9 379.7 32 256 32z"/></svg>
+              </a>
             </div>
-            <p className='text-neutral-300 px-2 mt-1'>support@bardsballad.com</p>
+            <a href='mailto:support@bardsballad.com' className='text-neutral-300 px-2 mt-1 hover:text-brand-400 transition-colors'>support@bardsballad.com</a>
             <ul className='pt-4 mt-4 space-y-2 font-medium border-t border-neutral-200 dark:border-neutral-700'>
+              <li>
+                <NavLink to={auth.isLoggedIn ? '/account' : '/auth'} onClick={closeSidebar}>
+                  <div className='flex items-center p-2 text-neutral-900 rounded-lg dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 group'>
+                    {auth.isLoggedIn ? (
+                    <div className="flex items-center justify-center w-5 h-5 rounded-full bg-brand-500 text-white">
+                      {auth.user?.username.charAt(0).toUpperCase()}
+                    </div>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className='flex-shrink-0 w-5 h-5 text-neutral-500 transition duration-75 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white' fill='currentColor' viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.31 0-10 1.67-10 5v2h20v-2c0-3.33-6.69-5-10-5z"/></svg>
+                    )}
+                    <span className='ms-3'>Account</span>
+                  </div>
+                </NavLink>
+              </li>
               {bottomItems.map((item) => (
                 <li key={item.name}>
-                  <NavLink to={item.path} className=''>
+                  <NavLink to={item.path} onClick={closeSidebar}>
                     <div className='flex items-center p-2 text-neutral-900 rounded-lg dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 group'>
                       {item.icon()}
                       <span className='ms-3'>{item.name}</span>

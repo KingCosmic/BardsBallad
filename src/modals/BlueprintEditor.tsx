@@ -5,17 +5,12 @@ import { Background, Connection, Controls, Edge, MiniMap, OnBeforeDelete, Panel,
 import '@xyflow/react/dist/style.css'
 
 import NodeContextMenu from '../blueprints/NodeContextMenu'
-import { BlueprintData } from '../state/systems'
+import { BlueprintData } from '../types/blueprint'
 import ContextMenu from '../blueprints/ContextMenu'
 
-import { blueprintState, onConnect, onEdgesChange, onNodesChange, setEdges, setNodes } from '../state/blueprint'
-
 import nodeTypes from '../blueprints/nodeTypes'
-import Modal from '../components/Modal'
-import ModalHeader from '../components/Modal/Header'
-import ModalBody from '../components/Modal/Body'
-import ModalFooter from '../components/Modal/Footer'
 import Button from '../components/inputs/Button'
+import { useBlueprint } from '../hooks/useBlueprint'
 
 type ModalProps = {
   title: string;
@@ -37,6 +32,7 @@ const isValidConnection = (conn: Connection | Edge) => {
 
   if ((targetType === 'object') && !['string', 'number', 'boolean', 'enum', 'blueprint'].includes(sourceType)) return true
   if ((targetType === 'array') && sourceType.endsWith('(Array)')) return true
+  if ((targetType === 'any') || (sourceType === 'any')) return true
 
   return (sourceType === targetType)
 }
@@ -46,12 +42,7 @@ const BlueprintEditor: React.FC<ModalProps> = ({ title, isVisible, requestClose,
   const [contextMenu, setContextMenu] = useState<any | null>(null)
   const ref = useRef<any>(null)
 
-  const { nodes, edges } = blueprintState.useValue()
-
-  useEffect(() => {
-    setNodes(data.nodes)
-    setEdges(data.edges)
-  }, [data])
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useBlueprint(data)
 
   const onNodeContextMenu = useCallback(
     (event: any, node: any) => {

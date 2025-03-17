@@ -4,8 +4,7 @@ import { produce } from 'immer'
 
 import setNestedProperty from '../utils/setNestedProperty'
 import generateObject from '../utils/generateObject'
-import { systemState } from '../state/system'
-import { DataType, SystemType, TypeData } from '../state/systems'
+import { DataType, SystemType, TypeData } from '../types/system'
 
 import EditObject from './EditObject'
 import Modal from '../components/Modal'
@@ -17,6 +16,8 @@ import Select from '../components/inputs/Select'
 import Button from '../components/inputs/Button'
 import Checkbox from '../components/inputs/Checkbox'
 import Textarea from '../components/inputs/Textarea'
+import { editorState } from '../state/editor'
+import { useSystem } from '../hooks/useSystem'
 
 type ModalProps = {
   onDelete?(): void;
@@ -29,14 +30,15 @@ type ModalProps = {
 }
 
 function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data }: ModalProps) {
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+  const { system } = useSystem(editor.systemId)
 
   const [dataCopy, setDataCopy] = useState<DataType>({ name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' })
 
   const [type, setType] = useState<SystemType | null>(system?.types.find(type => type.name === dataCopy.typeData.type) || null)
 
   const setProperty = (key:string, obj: DataType, value:any) => {
-    setDataCopy(produce(obj, draft => {
+    setDataCopy(produce(obj, (draft: DataType) => {
       setNestedProperty(draft, key, value)
 
       return draft

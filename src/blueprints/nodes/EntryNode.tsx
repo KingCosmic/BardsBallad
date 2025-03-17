@@ -12,14 +12,17 @@ import {
 } from '@xyflow/react'
 
 import { Param } from '../utils'
-import { systemState } from '../../state/system'
-import { SystemType } from '../../state/systems'
+
+import { SystemType } from '../../types/system'
+import { editorState } from '../../state/editor'
+import { useSystem } from '../../hooks/useSystem'
 
 const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:string]: any }, outputs: { [key:string]: SystemType | null } }>>> = ({ id, data: { params } }) => {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+  const { system } = useSystem(editor.systemId)
 
   useEffect(() => {
     let outputs: { [key:string]: SystemType | null } = {}

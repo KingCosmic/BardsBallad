@@ -1,6 +1,6 @@
 import { Node } from '@xyflow/react'
 import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import { SystemData, TypeData } from '../../../state/systems'
+import { SystemData, TypeData } from '../../../types/system'
 import getRandomDataFromType from '../../../utils/getRandomDataFromType'
 
 function generateDefaultData(system: SystemData, typeDef: TypeData) {

@@ -10,23 +10,25 @@ import {
 } from '@xyflow/react'
 
 import getTypeFromProperty from '../../../utils/getTypeOfProperty'
-import { systemState } from '../../../state/system'
 
 import TextInput from '../../../components/inputs/TextInput'
 import Card from '../../../components/Card'
+import { editorState } from '../../../state/editor'
+import { useSystem } from '../../../hooks/useSystem'
  
 function SetCharacterDataNode({ id, data: { path, type } }: NodeProps<Node<{ path: string; type: string; }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
-  
-  const system = systemState.useValue()
+
+  const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   const updateTypeFromPath = useCallback((path: string) => {
     const type = getTypeFromProperty(system?.defaultCharacterData || {}, path)
 
     updateNodeData(id, { path, type })
     updateNodeInternals(id)
-  }, [id, updateNodeData, updateNodeInternals])
+  }, [id, updateNodeData, updateNodeInternals, system])
 
   return (
     <Card title='Set Character Data'>

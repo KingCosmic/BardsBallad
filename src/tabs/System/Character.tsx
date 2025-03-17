@@ -1,29 +1,30 @@
-import { setDefaultCharacterData, systemState } from '../../state/system'
-
 import { useState } from 'react'
-import { DataType, SystemType, TypeData } from '../../state/systems'
+import { DataType, SystemData, SystemType, TypeData } from '../../types/system'
 
 import { produce } from 'immer'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
+import { setDefaultCharacterData } from '../../storage/utils/systems'
 
-function Character() {
-  const system = systemState.useValue()
+type CharacterProps = {
+  system: SystemData
+}
 
+const Character: React.FC<CharacterProps> = ({ system }) => {
   const [editData, setEditData] = useState<DataType | null>(null)
 
   return (
     <>
       <EditSystemData
-        types={system?.types || []}
+        types={system.types}
         onDelete={() => {
-          const newCopy = produce(system?.defaultCharacterData, (draft: any) => {
+          const newCopy = produce(system.defaultCharacterData, (draft: any) => {
             delete draft[editData?.name || '']
 
             draft._type.properties = draft._type.properties.filter((prop: any) => prop.key !== editData?.name)
           })
 
-          setDefaultCharacterData(newCopy!)
+          setDefaultCharacterData(system.id, newCopy!)
         }}
         onSave={(newData) => {
           const key = newData.name
@@ -45,7 +46,7 @@ function Character() {
             }
           })
 
-          setDefaultCharacterData(newCopy!)
+          setDefaultCharacterData(system.id, newCopy!)
         }}
         isVisible={(editData !== null)}
         requestClose={() => setEditData(null)}
@@ -95,7 +96,7 @@ function Character() {
             }
           }
 
-          setDefaultCharacterData(newCopy)
+          setDefaultCharacterData(system.id, newCopy)
         }}
       />
     </>

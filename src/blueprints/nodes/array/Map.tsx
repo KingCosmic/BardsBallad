@@ -12,13 +12,15 @@ import {
 
 import Card from '../../../components/Card'
 import Select from '../../../components/inputs/Select'
-import { systemState } from '../../../state/system'
+import { editorState } from '../../../state/editor'
+import { useSystem } from '../../../hooks/useSystem'
  
 function Map({ id, data: { inputType, mapType } }: NodeProps<Node<{ inputType: string, mapType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   useNodeConnections({
     handleType: 'target',

@@ -1,10 +1,11 @@
-import { BlueprintData, PageData, SystemData } from '../../state/systems'
+import { PageData, SystemData } from '../../types/system'
 import { findEntryNode } from './findEntryNode'
 
 import { Node } from '@xyflow/react'
 import { getNode } from './getNode'
 import { getNodeScript } from './getNodeScript'
-import { CharacterData } from '../../state/character'
+import { CharacterData } from '../../types/character'
+import { BlueprintData } from '../../types/blueprint'
 
 export type BlueprintProcessorState = {
   system: SystemData;
@@ -22,7 +23,7 @@ class BlueprintProcessor {
   params: Map<string, any> = new Map()
   output: any = null
 
-  enumOptions: Map<string, string[]> = new Map()
+  callback: (updatedState: BlueprintProcessorState) => void = () => {}
 
   constructor(bp: BlueprintData) {
     this.blueprint = bp
@@ -31,11 +32,12 @@ class BlueprintProcessor {
   processBlueprint(input: { [key: string]: any }, state: BlueprintProcessorState, cb: (updatedState: BlueprintProcessorState) => void) {
     const entryNode = findEntryNode(this.blueprint)
 
-    this.state = structuredClone(state)
+    this.state = state
     this.input = input
 
+    this.callback = cb
+
     const val = this.processNodes(entryNode)
-    cb(this.state)
 
     return val
   }
@@ -43,7 +45,10 @@ class BlueprintProcessor {
   processNodes(node: Node | undefined): any {
     const nextNode = this.processNode(node)
 
-    if (!nextNode) return this.getOutput()
+    if (!nextNode) {
+      this.callback(this.state)
+      return this.getOutput()
+    }
   
     return this.processNodes(nextNode)
   }
@@ -51,6 +56,7 @@ class BlueprintProcessor {
   processNode(node: Node | undefined) {
     if (!node) return
 
+    // console.log('node type', node.type)
     const script = getNodeScript(node.type || '')
 
     if (!this.nodeState.get(node.id) && script.init) {
@@ -58,6 +64,7 @@ class BlueprintProcessor {
       script.init(this, node)
     }
 
+    // console.log('processing')
     const nextNode = script.process(this, node)
 
     return nextNode
@@ -102,16 +109,6 @@ class BlueprintProcessor {
 
     for (let e = 0; e < edges.length; e++) {
       this.params.set(edges[e].id, value)
-    }
-
-    return this.params
-  }
-
-  setEnumOptions(nodeID: string, paramName: string, options: string[]) {
-    const edges = this.blueprint.edges.filter(e => (e.source === nodeID) && (e.sourceHandle?.split('-')[0] === paramName))
-
-    for (let e = 0; e < edges.length; e++) {
-      this.enumOptions.set(edges[e].id, options)
     }
 
     return this.params

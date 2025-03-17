@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react'
+import { memo, useCallback, useEffect, useMemo } from 'react'
 
 import {
   Handle,
@@ -6,27 +6,34 @@ import {
   type Node,
   Position,
   useReactFlow,
-  useUpdateNodeInternals
+  useUpdateNodeInternals,
+  useNodeConnections,
+  useNodesData
 } from '@xyflow/react'
 
 import getTypeFromProperty from '../../../utils/getTypeOfProperty'
-import { systemState } from '../../../state/system'
 
 import TextInput from '../../../components/inputs/TextInput'
 import Card from '../../../components/Card'
+import { editorState } from '../../../state/editor'
+import { useSystem } from '../../../hooks/useSystem'
+import { SystemType } from '../../../types/system'
  
-function GetCharacterDataNode({ id, data: { path, type }, }: NodeProps<Node<{ path: string; type: string; pathData: any; }>>) {
+function GetCharacterDataNode({ id, data: { path, type, outputs }, }: NodeProps<Node<{ path: string; type: string; outputs: { [key:string]: SystemType | null } }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+  const { system } = useSystem(editor.systemId)
 
   const updateTypeFromPath = useCallback((path: string) => {
     const type = getTypeFromProperty(system?.defaultCharacterData || {}, path)
 
-    updateNodeData(id, { path, type })
+    const typeName = type.split('(')[0]
+
+    updateNodeData(id, { path, type, outputs: { [`output-${type}`]: system?.types.find(t => t.name === typeName) } })
     updateNodeInternals(id)
-  }, [id, updateNodeData, updateNodeInternals])
+  }, [id, updateNodeData, updateNodeInternals, system])
 
   return (
     <Card title='Get Character Data'>

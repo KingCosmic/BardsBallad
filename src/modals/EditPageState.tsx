@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { systemState } from '../state/system'
-import { TypeData } from '../state/systems';
+import { TypeData } from '../types/system';
 import { editorState } from '../state/editor';
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';
@@ -11,6 +10,7 @@ import Button from '../components/inputs/Button';
 import TextInput from '../components/inputs/TextInput';
 import Select from '../components/inputs/Select';
 import Checkbox from '../components/inputs/Checkbox';
+import { useSystem } from '../hooks/useSystem';
 
 type Props = {
   data: { name: string, type: TypeData } | null;
@@ -23,8 +23,8 @@ type Props = {
 }
 
 function EditPageStateModal({ data, isOpen, requestClose, onSave, onDelete }: Props) {
-  const system = systemState.useValue()
   const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   const [name, setName] = useState('')
   const [type, setType] = useState('')
@@ -77,7 +77,10 @@ function EditPageStateModal({ data, isOpen, requestClose, onSave, onDelete }: Pr
               type,
               isArray,
               useTextArea: false,
-              options: []
+              options: [],
+              outputType: 'none',
+              isOutputAnArray: false,
+              inputs: []
             }
           }
 

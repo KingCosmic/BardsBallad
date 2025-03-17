@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 
 import { useLocalData } from '../../renderer/Context'
 import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
@@ -7,7 +7,7 @@ import { InputProps } from './Editor'
 import globalStyles from '../../styles'
 import TextInput from '../../../components/inputs/TextInput'
 
-export default function SelectPreview(props: InputProps) {
+export default (props: InputProps) => {
   const localData = useLocalData()
 
   const value = useMemo(() => {
@@ -19,7 +19,7 @@ export default function SelectPreview(props: InputProps) {
   const onChange = useCallback((value: any) => {
     const processor = new BlueprintProcessor(props.onChange!)
 
-    processor.processBlueprint({ ...localData, ['selectedValue']: value }, props.state!, props.updateState!)
+    processor.processBlueprint({ ...localData, ['field value']: value }, props.state!, props.updateState!)
   }, [props.onChange, localData, props.state, props.updateState])
 
   return (

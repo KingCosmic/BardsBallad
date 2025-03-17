@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { editorState, setCreatorPage } from '../../state/editor'
-import { addCreatorPage, deleteCreatorPage, systemState, updateCreatorPageName, updateCreatorPageState, addCreatorPageState, updateCreatorPageBlueprint } from '../../state/system'
-import { TypeData } from '../../state/systems'
+import { TypeData } from '../../types/system'
 import { useEditor, Element } from '@craftjs/core'
 import Select from '../inputs/Select'
 import React from 'react'
@@ -21,10 +20,14 @@ import Text from '../../designer/components/Text/Editor'
 import Layers from '../../designer/Layers/Layers'
 import EditorSelect from '../../designer/components/Select/Editor'
 import InputEditor from '../../designer/components/Input/Editor'
+import { useSystem } from '../../hooks/useSystem'
+import { addCreatorPage, addCreatorPageState, deleteCreatorPage, renameCreatorPage, updateCreatorPageBlueprint, updateCreatorPageState } from '../../storage/utils/systems'
+
 
 const CreatorMenu: React.FC = () => {
-  const system = systemState.useValue()
   const editor = editorState.useValue()
+
+  const { system } = useSystem(editor.systemId)
 
   const page = useMemo(() => system?.creator.find(p => p.name === editor.creatorPage), [system, editor.creatorPage])
 
@@ -51,16 +54,6 @@ const CreatorMenu: React.FC = () => {
 
     return { selected }
   })
-
-  useEffect(() => {
-    let page = system?.creator.find(p => p.name === editor.creatorPage)
-
-    if (!page) page = system?.creator[0]
-
-    if (!page) return
-
-    setCreatorPage(page.name)
-  }, [system, editor])
 
   if (!system) return <></>
 
@@ -175,7 +168,7 @@ const CreatorMenu: React.FC = () => {
             <EditStringModal data={editName} isOpen={editName !== null}
               requestClose={() => setEditName(null)}
               onSave={(newName) => {
-                updateCreatorPageName(editName, newName)
+                renameCreatorPage(editName, newName)
                 setCreatorPage(newName)
               }}
             />
@@ -233,7 +226,7 @@ const CreatorMenu: React.FC = () => {
 
             <EditPageStateModal isOpen={editingState !== null}
               requestClose={() => setEditingState(null)} data={editingState}
-              onSave={(newState) => updateCreatorPageState(editor.creatorPage, editingState!.name, newState)}
+              onSave={(newState) => updateCreatorPageState(editor.creatorPage, editingState!.name, { ...newState, value: undefined })}
               onDelete={() => {}}
             />
           </>

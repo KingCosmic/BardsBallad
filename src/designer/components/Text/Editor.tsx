@@ -1,6 +1,6 @@
 import { useNode, UserComponentConfig } from '@craftjs/core'
 import { getDefaultNodes } from '../../../blueprints/utils'
-import { BlueprintData } from '../../../state/systems'
+import { BlueprintData } from '../../../types/blueprint'
 import TextSettings from './Settings'
 
 import styles from './styles'
@@ -35,6 +35,11 @@ export interface TextProps {
   paddingRight?: string;
   paddingBottom?: string;
   paddingLeft?: string;
+
+  // Local state this component will pass to its children.
+  local?: any;
+  // calculated local state based off the parent components.
+  calculateLocalState?: any;
 }
 
 function Text(props: TextProps) {

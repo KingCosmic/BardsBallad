@@ -1,5 +1,5 @@
-import { useNode } from '@craftjs/core'
-import { useState, useEffect } from 'react'
+import { useEditor, useNode } from '@craftjs/core'
+import { useEffect, useState } from 'react'
 import { updateParams } from '../../../blueprints/utils'
 import AccordionGroup from '../../../components/AccordionGroup'
 import Accordion from '../../../components/Accordion'
@@ -15,7 +15,7 @@ import { getReturnTypeOfBlueprint } from '../../../utils/Blueprints/getReturnTyp
 export function SelectSettings() {
   const { id, actions: { setProp },
     label,
-    dynamicOptions, optionsBlueprint, options, onChange,
+    dynamicOptions, optionsBlueprint, onChange,
 
     marginTop, marginRight, marginBottom, marginLeft,
     width, maxWidth, minWidth
@@ -36,18 +36,21 @@ export function SelectSettings() {
     minWidth: node.data.props.minWidth
   }))
 
-  const localParams = useLocalState(id)
   const [openAccordion, setOpenAccordion] = useState(-1)
 
+  const localParams = useLocalState(id)
   useEffect(() => {
     setProp((props: any) => {
-      props.optionsBlueprint.nodes = updateParams(props.optionsBlueprint.nodes, localParams)
-      props.onChange.nodes = updateParams(props.onChange.nodes, [ {
-        name: 'selectedValue',
-        type: getReturnTypeOfBlueprint(props.optionsBlueprint),
-        isArray: false
-      }, ...localParams ])
-    
+      props.optionsBlueprint = {
+        edges: props.optionsBlueprint.edges,
+        nodes: updateParams(props.optionsBlueprint.nodes, localParams)
+      }
+
+      props.onChange = {
+        edges: props.onChange.edges,
+        nodes: updateParams(props.onChange.nodes, localParams)
+      }
+
       return props
     })
   }, [localParams])
@@ -69,11 +72,15 @@ export function SelectSettings() {
               onSave: (blueprint) => {
                 setProp((props: any) => {
                   props.optionsBlueprint = blueprint
-                  props.onChange.nodes = updateParams(props.onChange.nodes, [ {
-                    name: 'selectedValue',
-                    type: getReturnTypeOfBlueprint(blueprint),
-                    isArray: false
-                  }, ...localParams ])
+
+                  props.onChange = {
+                    edges: props.onChange.edges,
+                    nodes: updateParams(props.onChange.nodes, [ ...localParams, {
+                      name: 'selectedValue',
+                      type: getReturnTypeOfBlueprint(blueprint),
+                      isArray: false
+                    } ])
+                  }
 
                   return props
                 })

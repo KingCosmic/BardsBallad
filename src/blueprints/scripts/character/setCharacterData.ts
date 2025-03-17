@@ -2,7 +2,7 @@ import { Node } from '@xyflow/react'
 import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
 import setNestedProperty from '../../../utils/setNestedProperty'
 
-import { CharacterData } from '../../../state/character'
+import { CharacterData } from '../../../types/character'
 import { produce } from 'immer'
 
 export default {

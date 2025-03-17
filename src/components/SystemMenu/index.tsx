@@ -2,12 +2,12 @@
 import DesignerMenu from './EditorMenu'
 
 import { editorState } from '../../state/editor'
-import { systemState } from '../../state/system'
+import { useSystem } from '../../hooks/useSystem'
 import CreatorMenu from './CreatorMenu'
 
 function SystemMenu() {
-  const system = systemState.useValue()
   const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   if (!system) return <></>
 

@@ -1,4 +1,4 @@
-import { SystemType } from '../state/systems'
+import { SystemType } from '../types/system'
 import getRandomDataFromType from './getRandomDataFromType'
 
 export default function generateObject(types: SystemType[], typeDef: SystemType | string) {

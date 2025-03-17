@@ -12,18 +12,18 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { systemState } from '../../../state/system'
-import { SystemType, TypeData } from '../../../state/systems'
+import { SystemType, TypeData } from '../../../types/system'
 
 import Select from '../../../components/inputs/Select'
 import Card from '../../../components/Card'
+import { useSystem } from '../../../hooks/useSystem'
  
 function SetPageDataNode({ id, data: { chosenState } }: NodeProps<Node<{ chosenState: { name: string, type: TypeData } | null }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
   const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   const connections = useNodeConnections()
   const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])

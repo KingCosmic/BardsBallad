@@ -1,5 +1,5 @@
 import { useNode } from '@craftjs/core'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { updateParams } from '../../../blueprints/utils'
 import AccordionGroup from '../../../components/AccordionGroup'
 import Accordion from '../../../components/Accordion'
@@ -40,15 +40,20 @@ export function SelectSettings() {
     minWidth: node.data.props.minWidth
   }))
 
-  const localParams = useLocalState(id)
   const [openAccordion, setOpenAccordion] = useState(-1)
 
+  const localParams = useLocalState(id)
   useEffect(() => {
     setProp((props: any) => {
-      props.getValue.nodes = updateParams(props.getValue.nodes, localParams)
-      props.onChange.nodes = updateParams(props.onChange.nodes, [ ...localParams, { name: 'field value', type: (type === 'text') ? 'string' : 'number', isArray: false } ])
-    
-      return props
+      props.getValue = {
+        edges: props.getValue.edges,
+        nodes: updateParams(props.getValue.nodes, localParams, { name: 'value', type: (type === 'text') ? 'string' : 'number', isArray: false })
+      }
+
+      props.onChange = {
+        edges: props.onChange.edges,
+        nodes: updateParams(props.onChange.nodes, [ ...localParams, { name: 'field value', type: (type === 'text') ? 'string' : 'number', isArray: false } ])
+      }
     })
   }, [localParams])
 
@@ -62,6 +67,7 @@ export function SelectSettings() {
         <Select id='input-type' label='Type' value={type} onChange={t => {
           setProp((props: any) => {
             props.type = t
+
             props.getValue.nodes = updateParams(props.getValue.nodes, localParams, { name: 'value', type: (t === 'text') ? 'string' : 'number', isArray: false })
             props.onChange.nodes = updateParams(props.onChange.nodes, [ ...localParams, { name: 'field value', type: (t === 'text') ? 'string' : 'number', isArray: false } ])
 

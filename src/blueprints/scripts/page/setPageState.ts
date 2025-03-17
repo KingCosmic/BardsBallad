@@ -1,8 +1,7 @@
 import { Node } from '@xyflow/react'
 import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import { PageData, TypeData } from '../../../state/systems'
+import { TypeData } from '../../../types/system'
 import { produce } from 'immer'
-import setNestedProperty from '../../../utils/setNestedProperty'
 
 export default {
   process: (processor: BlueprintProcessor, node: Node) => {

@@ -7,8 +7,7 @@ import Text from '../../designer/components/Text/Editor'
 import Searchbar from '../../designer/Searchbar'
 import EditPageStateModal from '../../modals/EditPageState'
 import { editorState, setCharacterPage } from '../../state/editor'
-import { systemState, addCharacterPageState, addCharacterPage, updateCharacterPageName, deleteCharacterPage, updateCharacterPageState, updateCharacterPageBlueprint } from '../../state/system'
-import { TypeData } from '../../state/systems'
+import { TypeData } from '../../types/system'
 import Divider from '../Divider'
 import DesignerDivider from '../../designer/components/Divider'
 import EditStringModal from '../../modals/EditString'
@@ -17,11 +16,13 @@ import Layers from '../../designer/Layers/Layers'
 import Select from '../inputs/Select'
 import Button from '../inputs/Button'
 import { openModal } from '../../state/modals'
+import { useSystem } from '../../hooks/useSystem'
+import { addCharacterPage, addCharacterPageState, deleteCharacterPage, renameCharacterPage, updateCharacterPageBlueprint, updateCharacterPageState } from '../../storage/utils/systems'
 
 
 function EditorMenu() {
-  const system = systemState.useValue()
   const editor = editorState.useValue()
+  const { system } = useSystem(editor.systemId)
 
   const page = useMemo(() => system?.pages.find(p => p.name === editor.characterPage), [system, editor.characterPage])
 
@@ -146,7 +147,7 @@ function EditorMenu() {
             <EditStringModal data={editName} isOpen={editName !== null}
               requestClose={() => setEditName(null)}
               onSave={(newName) => {
-                updateCharacterPageName(editName, newName)
+                renameCharacterPage(editName, newName)
                 setCharacterPage(newName)
               }}
             />
@@ -177,7 +178,7 @@ function EditorMenu() {
                 <h5>Page State</h5>
               </div>
 
-              <button onClick={() => addCharacterPageState(editor.characterPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [] })}
+              <button onClick={() => addCharacterPageState(editor.characterPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], outputType: 'string', isOutputAnArray: false, inputs: [] })}
                 type='button'
                 className='text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'
               >
@@ -201,8 +202,8 @@ function EditorMenu() {
 
             <EditPageStateModal isOpen={editingState !== null}
               requestClose={() => setEditingState(null)} data={editingState}
-              onSave={(newState) => updateCharacterPageState(editor.characterPage, editingState!.name, newState)}
-              onDelete={() => {}}
+              onSave={(newState) => updateCharacterPageState(editor.characterPage, editingState!.name, { ...newState, value: undefined })}
+              onDelete={() => {}} // TODO:(Cosmic) Implement
             />
           </>
         ) : null

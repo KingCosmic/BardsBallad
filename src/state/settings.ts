@@ -57,6 +57,7 @@ export const setScheme = (scheme: ThemeEnum) => {
   settingsState.set(prevState => ({ ...prevState, scheme }))
 }
 
+// update this to pull from storage or something so the colors don't change when the page loads.
 export const applyTheme = () => {
   const themes = themesState.get()
   const currentSettings = settingsState.get()

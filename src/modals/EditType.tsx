@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from 'react'
 import EditStringModal from './EditString'
 import Modal from '../components/Modal'
 
-import { systemState } from '../state/system'
-import { TypeData } from '../state/systems'
 import ModalHeader from '../components/Modal/Header'
 import ModalBody from '../components/Modal/Body'
 import ModalFooter from '../components/Modal/Footer'
@@ -14,6 +12,9 @@ import Select from '../components/inputs/Select'
 import Checkbox from '../components/inputs/Checkbox'
 import { openModal } from '../state/modals'
 import { Param } from '../blueprints/utils'
+import { editorState } from '../state/editor'
+import { useSystem } from '../hooks/useSystem'
+import { TypeData } from '../types/system'
 
 type Props = {
   data: { key: string; typeData: TypeData, typeName: string } | null;
@@ -30,7 +31,9 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
 
   const [editOption, setEditOption] = useState<string | null>(null)
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+
+  const {system} = useSystem(editor.systemId)
 
   const parentType = useMemo(() => system?.types.find(t => t.name === data?.typeName), [data, system])
 

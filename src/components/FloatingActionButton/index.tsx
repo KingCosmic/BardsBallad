@@ -1,17 +1,17 @@
 import { forwardRef } from 'react'
 
 type FABProps = {
+  isOpen?: boolean;
   buttons?: { name: string, icon: string, onClick(): void }[]
   onClick?(): void
 }
 
-const FloatingActionButton: React.FC<FABProps> = forwardRef(({ buttons, onClick }, ref) => {
+const FloatingActionButton: React.FC<FABProps> = forwardRef(({ buttons, onClick, isOpen = false }, ref) => {
   return (
     // @ts-ignore
-    <div data-dial-init className='absolute right-6 bottom-6 group' ref={ref}>
+    <div className='absolute right-6 bottom-6 group' ref={ref}>
       <div
-        id='floating-action-button'
-        className='flex flex-col items-center mb-4 space-y-2'
+        className={`${isOpen ? 'flex' : 'hidden'} flex-col items-center mb-4 space-y-2`}
       >
         {buttons?.map(btn => (
           <button
@@ -37,11 +37,9 @@ const FloatingActionButton: React.FC<FABProps> = forwardRef(({ buttons, onClick 
         ))}
       </div>
       <button
-        onClick={() => (onClick) ? onClick() : null}
+        id='floating-action-button'
+        onClick={() => ((onClick) ? onClick() : null)}
         type='button'
-        data-dial-toggle='floating-action-button'
-        aria-controls='floating-action-button'
-        aria-expanded='false'
         className='flex items-center justify-center text-white bg-brand-700 rounded-lg w-14 h-14 hover:bg-brand-800 dark:bg-brand-600 dark:hover:bg-brand-700'
       >
         <svg

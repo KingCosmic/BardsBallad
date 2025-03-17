@@ -1,11 +1,6 @@
-import { useEffect } from 'react'
-
 import { useParams } from 'react-router'
 
-import { systemsState } from '../state/systems'
-import { setSystem, systemState, updateLexical } from '../state/system'
-
-import { editorState, setCharacterPage, setTab } from '../state/editor'
+import { editorState, setTab } from '../state/editor'
 
 import Character from '../tabs/System/Character'
 import Data from '../tabs/System/Data'
@@ -26,28 +21,26 @@ import Searchbar from '../designer/Searchbar'
 import Creator from '../tabs/System/Creator'
 import EditorSelect from '../designer/components/Select/Editor'
 import TextInput from '../designer/components/Input/Editor'
+import { useSystem } from '../hooks/useSystem'
+import { updateLexical } from '../storage/utils/systems'
+import { useEffect } from 'react'
 
 const System: React.FC = () => {
-  const systems = systemsState.useValue()
-  const system = systemState.useValue()
+  const { id } = useParams<{ id: string; }>()
+
+  const { system, loading } = useSystem(id)
 
   const editor = editorState.useValue()
 
-  const { name } = useParams<{ name: string; }>()
-
   useEffect(() => {
-    const system = systems.find(s => s.name === name)
-    setSystem(system)
+    editorState.set((prev) => ({ ...prev, systemId: id ?? '' }))
+  }, [id])
 
-    if (!system) return
-
-    setCharacterPage(system.pages[0].name)
-  }, [name, systems])
-
-  if (!system) return <>loading...</>
+  if (!system || !id) return <>loading...</>
+  if (loading) return <>loading...</>
 
   return (
-    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updateLexical(query.serialize())}>
+    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updateLexical(id, query.serialize())}>
       <div className='flex flex-col h-full'>
         <Header title={system.name} />
 
@@ -63,17 +56,17 @@ const System: React.FC = () => {
 
           {
             (editor.tab === 'character') ? (
-              <Character />
+              <Character system={system} />
             ) : (editor.tab === 'data') ? (
-              <Data />
+              <Data system={system} />
             ) : (editor.tab === 'types') ? (
-              <Types />
+              <Types system={system} />
             ) : (editor.tab === 'functions') ? (
-              <Functions />
+              <Functions system={system} />
             ) : (editor.tab === 'editor') ? (
-              <Editor />
+              <Editor system={system} />
             ) : (editor.tab === 'creator') && (
-              <Creator />
+              <Creator system={system} />
             )
           }
         </div>

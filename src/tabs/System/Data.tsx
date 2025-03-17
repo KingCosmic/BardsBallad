@@ -1,21 +1,24 @@
 
-import { addSystemData, deleteSystemData, systemState, updateSystemData } from '../../state/system'
 import { useState } from 'react'
-import { DataType } from '../../state/systems'
+import { DataType, SystemData } from '../../types/system'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
+import { updateSystemData, deleteSystemData, addSystemData } from '../../storage/utils/systems'
 
-function Data() {
-  const system = systemState.useValue()
+type DataProps = {
+  system: SystemData
+}
+
+const Data: React.FC<DataProps> = ({ system }) => {
 
   const [editData, setEditData] = useState<DataType | null>(null)
 
   return (
     <>
       <EditSystemData
-        types={system?.types || []}
-        onDelete={() => deleteSystemData(editData!.name)}
-        onSave={(newData) => updateSystemData(editData!.name, newData)}
+        types={system.types}
+        onDelete={() => deleteSystemData(system.id, editData!.name)}
+        onSave={(newData) => updateSystemData(system.id, editData!.name, newData)}
         isVisible={(editData !== null)}
         requestClose={() => setEditData(null)}
         data={editData!}
@@ -37,7 +40,7 @@ function Data() {
         }
       </div>
 
-      <FloatingActionButton onClick={addSystemData} />
+      <FloatingActionButton onClick={() => addSystemData(system.id)} />
     </>
   )
 }

@@ -11,15 +11,18 @@ import {
   useNodesData
 } from '@xyflow/react'
 
-import { systemState } from '../../../state/system'
-import { SystemType } from '../../../state/systems'
 import Card from '../../../components/Card'
+import { editorState } from '../../../state/editor'
+import { SystemType } from '../../../types/system'
+import { useSystem } from '../../../hooks/useSystem'
  
 function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+
+  const {system} = useSystem(editor.systemId)
 
   const connections = useNodeConnections()
   const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])
@@ -46,7 +49,14 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: Sy
 
     const typeInput = input['input-object'] ?? { name: 'unknown', properties: [] }
 
-    updateNodeData(id, { inputs: input, inputType: typeInput })
+    let outputs: { [key:string]: any } = {}
+    for (let p = 0; p < inputType?.properties?.length; p++) {
+      const prop = inputType.properties[p]
+
+      outputs[`${prop.key}-${prop.typeData.type}${prop.typeData.isArray? '(Array)' : ''}`] = { name: prop.typeData.type }
+    }
+
+    updateNodeData(id, { inputs: input, inputType: typeInput, outputs })
     updateNodeInternals(id)
   }, [connections, nodes, system])
 

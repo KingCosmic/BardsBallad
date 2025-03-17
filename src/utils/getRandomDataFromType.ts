@@ -1,5 +1,5 @@
 import { getDefaultNodes } from '../blueprints/utils';
-import { SystemType, TypeData } from '../state/systems';
+import { SystemType, TypeData } from '../types/system';
 import generateObject from './generateObject';
 
 export default function getRandomDataFromType(types: SystemType[], options: TypeData): any {

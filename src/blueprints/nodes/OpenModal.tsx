@@ -19,7 +19,7 @@ const OpenModal: React.FC<NodeProps<Node<{ type: string, title: string, inputTyp
 
   useNodeConnections({
     handleType: 'target',
-    handleId: 'data-object',
+    handleId: 'data-any',
     onConnect: (conns) => {
       const conn = conns[0]
 
@@ -48,12 +48,14 @@ const OpenModal: React.FC<NodeProps<Node<{ type: string, title: string, inputTyp
 
       <Select id='modal-type' label='Modal Type' value={type} onChange={type => updateNodeData(id, { type })}>
         <option value='edit_object'>Edit Object</option>
+        <option value='edit_number'>Edit Number</option>
+        <option value='edit_string'>Edit String</option>
       </Select>
 
       <TextInput id='modal-title' label='Modal Title' value={title} onChange={title => updateNodeData(id, { title })} isValid errorMessage='' />
 
       <p style={{ marginTop: 10 }}>input data ({inputType})</p>
-      <Handle type='target' id='data-object' position={Position.Left}
+      <Handle type='target' id='data-any' position={Position.Left}
         style={{ top: 145, bottom: 'auto' }}
       />
 

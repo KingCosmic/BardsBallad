@@ -9,16 +9,19 @@ import {
   useUpdateNodeInternals
 } from '@xyflow/react'
 
-import { systemState } from '../../../state/system'
+import { editorState } from '../../../state/editor'
 
 import Card from '../../../components/Card'
 import Select from '../../../components/inputs/Select'
+import { useSystem } from '../../../hooks/useSystem'
  
 function GetSystemDataNode({ id, data: { path, type }, }: NodeProps<Node<{ path: string; type: string; pathData: any; }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+
+  const {system} = useSystem(editor.systemId)
 
   const updateTypeFromSelection = useCallback((name: string) => {
     const typeData = system?.data.find(d => d.name === name)?.typeData

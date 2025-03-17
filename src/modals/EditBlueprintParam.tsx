@@ -7,7 +7,8 @@ import Button from '../components/inputs/Button';
 import TextInput from '../components/inputs/TextInput';
 import Select from '../components/inputs/Select';
 import Checkbox from '../components/inputs/Checkbox';
-import { systemState } from '../state/system';
+import { editorState } from '../state/editor';
+import { useSystem } from '../hooks/useSystem';
 import { Param } from '../blueprints/utils';
 
 type Props = {
@@ -20,7 +21,8 @@ type Props = {
 }
 
 function EditBlueprintParamModal({ data, isOpen, requestClose, onSave, onDelete } : Props) {
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   const [param, setParam] = useState<Param>({ name: 'New Param', type: 'string', isArray: false })
 

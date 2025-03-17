@@ -4,7 +4,7 @@ import { produce } from 'immer'
 
 import setNestedProperty from '../utils/setNestedProperty'
 import generateObject from '../utils/generateObject'
-import { SystemType, TypeData } from '../state/systems'
+import { SystemType, TypeData } from '../types/system'
 import Divider from '../components/Divider';
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';

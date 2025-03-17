@@ -10,8 +10,8 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { systemState } from '../../../state/system'
-import { TypeData } from '../../../state/systems'
+import { TypeData } from '../../../types/system'
+import { useSystem } from '../../../hooks/useSystem'
 
 import Select from '../../../components/inputs/Select'
 import Card from '../../../components/Card'
@@ -20,8 +20,8 @@ function GetPageDataNode({ id, data: { chosenState } }: NodeProps<Node<{ chosenS
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
   const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   const page = useMemo(() => {
     if (editor.tab === 'editor') {
