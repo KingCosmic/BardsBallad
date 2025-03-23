@@ -1,432 +1,582 @@
-import { newRidgeState } from 'react-ridge-state'
+// import { newRidgeState } from 'react-ridge-state'
 
-import { BlueprintData, DataType, SystemData, TypeData } from './systems'
+// import { BlueprintData, DataType, SystemData, TypeData } from './systems'
 
-import { produce } from 'immer'
-import { getDefaultNodes } from '../blueprints/utils'
-import { editorState, setPage } from './editor'
+// import { produce } from 'immer'
+// import { getDefaultNodes } from '../blueprints/utils'
+// import { EditorState, editorState, setCharacterPage, setCreatorPage } from './editor'
 
-import { SystemStorage } from '../lib/storage'
+// import { SystemStorage } from '../lib/storage'
 
-import lz from 'lzutf8'
+// import lz from 'lzutf8'
 
-let saveTimeout: NodeJS.Timeout | null = null
-export const systemState = newRidgeState<SystemData | null>(null, {
-  onSet: async (sys) => {
-    if (sys === null) return
+// let saveTimeout: NodeJS.Timeout | null = null
+// export const systemState = newRidgeState<SystemData | null>(null, {
+//   onSet: async (sys) => {
+//     if (sys === null) return
 
-    if (saveTimeout) clearTimeout(saveTimeout)
+//     if (saveTimeout) clearTimeout(saveTimeout)
 
-    saveTimeout = setTimeout(async () => {
-      try {
-        console.log(sys)
-        await SystemStorage.set(sys.name, sys)
-      } catch (e) {
-        // TODO: show error message to user.
-      }
-    }, 5000)
-  }
-})
+//     saveTimeout = setTimeout(async () => {
+//       try {
+//         console.log(sys)
+//         await SystemStorage.set(sys.name, sys)
+//       } catch (e) {
+//         // TODO: show error message to user.
+//       }
+//     }, 5000)
+//   }
+// })
 
-export function setSystem(char: SystemData | null = null) {
-  systemState.set(char)
-}
+// export function setSystem(char: SystemData | null = null) {
+//   systemState.set(char)
+// }
 
-export function setDefaultCharacterData(newDefaultData: { [key:string]: any }) {
-  const system = systemState.get()
+// export function setDefaultCharacterData(newDefaultData: { [key:string]: any }) {
+//   const system = systemState.get()
 
-  if (!system) return
+//   if (!system) return
 
-  const newState = produce(system, (draft) => {
-    draft.defaultCharacterData = newDefaultData
-  })
+//   const newState = produce(system, (draft) => {
+//     draft.defaultCharacterData = newDefaultData
+//   })
 
-  systemState.set(newState)
-}
+//   systemState.set(newState)
+// }
 
-export function updatePageBlueprint(blueprint: BlueprintData) {
-  const system = systemState.get()
-  const editor = editorState.get()
+// export function updateLexical(lexical: string) {
+//   const system = systemState.get()
+//   const editor = editorState.get()
 
-  if (!system || !blueprint) return
+//   if (!system || lexical === '{}') return
 
-  const newState = produce(system, (draft) => {
-    const index = draft.pages.findIndex((data => data.name === editor.page))
+//   switch (editor.tab) {
+//     case 'editor':
+//       return updateCharacterLexical(lexical, system, editor)
+//     case 'creator':
+//       return updateCreatorLexical(lexical, system, editor)
+//   }
+// }
 
-    if (index === -1) return
+// export function updateCreatorPageBlueprint(blueprint: BlueprintData) {
+//   const system = systemState.get()
+//   const editor = editorState.get()
+
+//   if (!system || !blueprint) return
+
+//   const newState = produce(system, (draft) => {
+//     const index = draft.creator.findIndex((data => data.name === editor.creatorPage))
+
+//     if (index === -1) return
     
-    draft.pages[index].blueprint = blueprint
-  })
+//     draft.creator[index].blueprint = blueprint
+//   })
 
-  systemState.set(newState)
-}
+//   systemState.set(newState)
+// }
 
+// export function updateCreatorLexical(lexical: string, system: SystemData, editor: EditorState) {
+//   const newState = produce(system, (draft) => {
+//     const index = draft.creator.findIndex((data => data.name === editor.creatorPage))
 
-export function updatePageLexical(lexical: string) {
-  const system = systemState.get()
-  const editor = editorState.get()
-
-  if (!system || lexical === '{}') return
-
-  const newState = produce(system, (draft) => {
-    const index = draft.pages.findIndex((data => data.name === editor.page))
-
-    if (index === -1) return
+//     if (index === -1) return
     
-    draft.pages[index].lexical = lz.encodeBase64(lz.compress(lexical))
-  })
+//     draft.creator[index].lexical = lz.encodeBase64(lz.compress(lexical))
+//   })
 
-  systemState.set(newState)
-}
+//   systemState.set(newState)
+// }
 
-export function addPage() {
-  const system = systemState.get()
+// export function addCreatorPage() {
+//   const system = systemState.get()
 
-  if (!system) return
+//   if (!system) return
 
-  const newState = produce(system, (draft) => {
-    const index = draft.pages.findIndex((data => data.name === 'New Page'))
+//   const newState = produce(system, (draft) => {
+//     const index = draft.creator.findIndex((data => data.name === 'New Page'))
 
-    if (index !== -1) return
+//     if (index !== -1) return
 
-    draft.pages.push({
-      name: 'New Page',
-      blueprint: { nodes: getDefaultNodes(), edges: [] },
-      lexical: '',
-      state: []
-    })
-  })
+//     draft.creator.push({
+//       name: 'New Page',
+//       blueprint: { nodes: getDefaultNodes([], { name: 'can move on', type: 'boolean', isArray: false }), edges: [] },
+//       lexical: '',
+//       state: []
+//     })
+//   })
 
-  systemState.set(newState)
-}
+//   systemState.set(newState)
+// }
 
-export function updatePageName(oldName: string, newName: string) {
-  const system = systemState.get()
+// export function updateCreatorPageName(oldName: string, newName: string) {
+//   const system = systemState.get()
 
-  if (!system) return
+//   if (!system) return
 
-  const newState = produce(system, (draft) => {
-    const index = draft.pages.findIndex((data => data.name === oldName))
+//   const newState = produce(system, (draft) => {
+//     const index = draft.creator.findIndex((data => data.name === oldName))
 
-    if (index === -1) return
+//     if (index === -1) return
 
-    draft.pages[index].name = newName
-  })
+//     draft.creator[index].name = newName
+//   })
 
-  systemState.set(newState)
-}
+//   systemState.set(newState)
+// }
 
-export function deletePage(name: string) {
-  const system = systemState.get()
+// export function deleteCreatorPage(name: string) {
+//   const system = systemState.get()
 
-  if (!system) return
+//   if (!system) return
 
-  const newState = produce(system, (draft) => {
-    draft.pages = draft.pages.filter(d => d.name !== name)
-  })
+//   const newState = produce(system, (draft) => {
+//     draft.creator = draft.creator.filter(d => d.name !== name)
+//   })
 
-  setPage(newState.pages[0].name)
-  systemState.set(newState)
-}
+//   setCreatorPage(newState.creator[0].name)
+//   systemState.set(newState)
+// }
 
-export function addSystemData() {
-  const system = systemState.get()
+// export function addCreatorPageState(pageName: string, key: string, type: TypeData) {
+//   const system = systemState.get()
 
-  if (!system) return
+//   if (!system) return
 
-  const newState = produce(system, (draft) => {
-    const index = draft.data.findIndex((data => data.name === 'New Data'))
+//   const newState = produce(system, (draft) => {
+//     for (let i = 0; i < draft.creator.length; i++) {
+//       const page = draft.creator[i]
 
-    if (index !== -1) return
+//       if (page.name !== pageName) continue
 
-    draft.data.push({
-      name: 'New Data',
-      typeData: {
-        type: 'string',
-        options: [],
-        isArray: false,
-        useTextArea: false
-      },
-      data: 'lorem ipsum'
-    })
-  })
+//       if (page.state.find(state => state.name === key)) return
 
-  systemState.set(newState)
-}
+//       page.state.push({
+//         name: key,
+//         type,
+//         value: undefined
+//       })
+//     }
+//   })
 
-export function updateSystemData(oldName: string, newData: DataType) {
-  const system = systemState.get()
+//   systemState.set(newState)
+// }
 
-  if (!system) return
+// export function updateCreatorPageState(pageName: string, oldName: string, state: { name: string, type: TypeData, value: any }) {
+//   const system = systemState.get()
 
-  const newState = produce(system, (draft) => {
-    const index = draft.data.findIndex((data => data.name === oldName))
+//   if (!system) return
 
-    if (index === -1) return
+//   const newState = produce(system, (draft) => {
+//     for (let i = 0; i < draft.creator.length; i++) {
+//       const page = draft.creator[i]
 
-    if (oldName !== newData.name) {
-      draft.data.splice(index, 1)
-      draft.data.push(newData)
-    } else {
-      draft.data[index] = newData
-    }
-  })
+//       if (page.name !== pageName) continue
 
-  systemState.set(newState)
-}
+//       const index = page.state.findIndex((s => s.name === oldName))
 
-export function deleteSystemData(name: string) {
-  const system = systemState.get()
+//       if (index === -1) return
 
-  if (!system) return
+//       if (oldName !== state.name) {
+//         page.state.splice(index, 1)
+//         page.state.push(state)
+//       } else {
+//         page.state[index] = state
+//       }
+//     }
+//   })
 
-  const newState = produce(system, (draft) => {
-    const index = draft.data.findIndex((data => data.name === name))
+//   systemState.set(newState)
+// }
 
-    if (index === -1) return
+// export function removeCreatorPageState(pageName: string, key: string) {
+//   const system = systemState.get()
 
-    draft.data.splice(index, 1)
-  })
+//   if (!system) return
 
-  systemState.set(newState)
-}
+//   const newState = produce(system, (draft) => {
+//     for (let i = 0; i < draft.creator.length; i++) {
+//       const page = draft.creator[i]
 
-export function addType() {
-  const system = systemState.get()
+//       if (page.name !== pageName) continue
 
-  if (!system) return
+//       const index = page.state.findIndex(state => state.name === key)
 
-  const newState = produce(system, (draft) => {
-    const index = draft.types.findIndex((type => type.name === 'New Type'))
+//       if (index === -1) continue
 
-    if (index !== -1) return
+//       page.state.splice(index, 1)
+//     }
+//   })
 
-    draft.types.push({
-      name: 'New Type',
-      properties: [
-        {
-          key: 'name',
-          typeData: {
-            type: 'string',
-            options: [],
-            isArray: false,
-            useTextArea: false
-          }
-        }
-      ]
-    })
-  })
+//   systemState.set(newState)
+// }
 
-  systemState.set(newState)
-}
+// export function updateCharacterPageBlueprint(blueprint: BlueprintData) {
+//   const system = systemState.get()
+//   const editor = editorState.get()
 
-export function updateTypeName(oldName: string, newName: string) {
-  const system = systemState.get()
+//   if (!system || !blueprint) return
 
-  if (!system) return
+//   const newState = produce(system, (draft) => {
+//     const index = draft.pages.findIndex((data => data.name === editor.characterPage))
 
-  const newState = produce(system, (draft) => {
-    const index = draft.types.findIndex((type => type.name === oldName))
+//     if (index === -1) return
+    
+//     draft.pages[index].blueprint = blueprint
+//   })
 
-    if (index === -1) return
+//   systemState.set(newState)
+// }
 
-    draft.types[index].name = newName
-  })
+// export function updateCharacterLexical(lexical: string, system: SystemData, editor: EditorState) {
+//   const newState = produce(system, (draft) => {
+//     const index = draft.pages.findIndex((data => data.name === editor.characterPage))
 
-  systemState.set(newState)
-}
+//     if (index === -1) return
+    
+//     draft.pages[index].lexical = lz.encodeBase64(lz.compress(lexical))
+//   })
 
-export function deleteType(name: string) {
-  const system = systemState.get()
+//   systemState.set(newState)
+// }
 
-  if (!system) return
+// export function addCharacterPage() {
+//   const system = systemState.get()
 
-  const newState = produce(system, (draft) => {
-    const index = draft.types.findIndex((type => type.name === name))
+//   if (!system) return
 
-    if (index === -1) return
+//   const newState = produce(system, (draft) => {
+//     const index = draft.pages.findIndex((data => data.name === 'New Page'))
 
-    draft.types.splice(index, 1)
-  })
+//     if (index !== -1) return
 
-  systemState.set(newState)
-}
+//     draft.pages.push({
+//       name: 'New Page',
+//       blueprint: { nodes: getDefaultNodes(), edges: [] },
+//       lexical: '',
+//       state: []
+//     })
+//   })
 
-export function addTypeProperty(typeName: string) {
-  const system = systemState.get()
+//   systemState.set(newState)
+// }
 
-  if (!system) return
+// export function updateCharacterPageName(oldName: string, newName: string) {
+//   const system = systemState.get()
 
-  let newProperty: {
-    key: string;
-    typeData: TypeData;
-  } = {
-    key: 'newProperty',
-    typeData: {
-      type: 'string',
-      options: [],
-      isArray: false,
-      useTextArea: false
-    }
-  }
+//   if (!system) return
 
-  const newState = produce(system, (draft) => {
-    for (let t = 0; t < draft.types.length; t++) {
-      const type = draft.types[t]
+//   const newState = produce(system, (draft) => {
+//     const index = draft.pages.findIndex((data => data.name === oldName))
 
-      if (type.name !== typeName) continue
+//     if (index === -1) return
 
-      const index = type.properties.findIndex((prop => prop.key === 'newProperty'))
+//     draft.pages[index].name = newName
+//   })
 
-      if (index !== -1) return
+//   systemState.set(newState)
+// }
 
-      type.properties.push(newProperty)
-    }
-  })
+// export function deleteCharacterPage(name: string) {
+//   const system = systemState.get()
 
-  systemState.set(newState)
+//   if (!system) return
 
-  return newProperty
-}
+//   const newState = produce(system, (draft) => {
+//     draft.pages = draft.pages.filter(d => d.name !== name)
+//   })
 
-export function updateTypeProperty(typeName: string, oldKey: string, data: { key: string; typeData: TypeData }) {
-  const system = systemState.get()
+//   setCharacterPage(newState.pages[0].name)
+//   systemState.set(newState)
+// }
 
-  if (!system) return
+// export function addSystemData() {
+//   const system = systemState.get()
 
-  const newState = produce(system, (draft) => {
-    for (let t = 0; t < draft.types.length; t++) {
-      const type = draft.types[t]
+//   if (!system) return
 
-      if (type.name !== typeName) continue
+//   const newState = produce(system, (draft) => {
+//     const index = draft.data.findIndex((data => data.name === 'New Data'))
 
-      const index = type.properties.findIndex((prop => prop.key === oldKey))
+//     if (index !== -1) return
 
-      if (index === -1) return
+//     draft.data.push({
+//       name: 'New Data',
+//       typeData: {
+//         type: 'string',
+//         options: [],
+//         isArray: false,
+//         useTextArea: false,
+//         inputs: [],
+//         outputType: 'none',
+//         isOutputAnArray: false
+//       },
+//       data: 'lorem ipsum'
+//     })
+//   })
 
-      if (oldKey !== data.key) {
-        type.properties.splice(index, 1)
-        type.properties.push(data)
-      } else {
-        type.properties[index] = data
-      }
-    }
-  })
+//   systemState.set(newState)
+// }
 
-  systemState.set(newState)
-}
+// export function updateSystemData(oldName: string, newData: DataType) {
+//   const system = systemState.get()
 
-// TODO: check to see if any data relies on this type? and make a modal to ask if we should delete type and all related data or not.
-export function deleteTypeProperty(typeName: string, key: string) {
-  const system = systemState.get()
+//   if (!system) return
 
-  if (!system) return
+//   const newState = produce(system, (draft) => {
+//     const index = draft.data.findIndex((data => data.name === oldName))
 
-  const newState = produce(system, (draft) => {
-    for (let t = 0; t < draft.types.length; t++) {
-      const type = draft.types[t]
+//     if (index === -1) return
 
-      if (type.name !== typeName) continue
+//     if (oldName !== newData.name) {
+//       draft.data.splice(index, 1)
+//       draft.data.push(newData)
+//     } else {
+//       draft.data[index] = newData
+//     }
+//   })
 
-      const index = type.properties.findIndex(prop => prop.key === key)
+//   systemState.set(newState)
+// }
 
-      if (index === -1) continue
+// export function deleteSystemData(name: string) {
+//   const system = systemState.get()
 
-      type.properties.splice(index, 1)
-    }
-  })
+//   if (!system) return
 
-  systemState.set(newState)
-}
+//   const newState = produce(system, (draft) => {
+//     const index = draft.data.findIndex((data => data.name === name))
 
-export function addPageState(pageName: string, key: string, type: TypeData) {
-  const system = systemState.get()
+//     if (index === -1) return
 
-  if (!system) return
+//     draft.data.splice(index, 1)
+//   })
 
-  const newState = produce(system, (draft) => {
-    for (let i = 0; i < draft.pages.length; i++) {
-      const page = draft.pages[i]
+//   systemState.set(newState)
+// }
 
-      if (page.name !== pageName) continue
+// export function addType() {
+//   const system = systemState.get()
 
-      if (page.state.find(state => state.name === key)) return
+//   if (!system) return
 
-      page.state.push({
-        name: key,
-        type
-      })
-    }
-  })
+//   const newState = produce(system, (draft) => {
+//     const index = draft.types.findIndex((type => type.name === 'New Type'))
 
-  systemState.set(newState)
-}
+//     if (index !== -1) return
 
-export function removePageState(pageName: string, key: string) {
-  const system = systemState.get()
+//     draft.types.push({
+//       name: 'New Type',
+//       properties: [
+//         {
+//           key: 'name',
+//           typeData: {
+//             type: 'string',
+//             options: [],
+//             isArray: false,
+//             useTextArea: false,
+//             inputs: [],
+//             outputType: 'none',
+//             isOutputAnArray: false
+//           }
+//         }
+//       ]
+//     })
+//   })
 
-  if (!system) return
+//   systemState.set(newState)
+// }
 
-  const newState = produce(system, (draft) => {
-    for (let i = 0; i < draft.pages.length; i++) {
-      const page = draft.pages[i]
+// export function updateTypeName(oldName: string, newName: string) {
+//   const system = systemState.get()
 
-      if (page.name !== pageName) continue
+//   if (!system) return
 
-      const index = page.state.findIndex(state => state.name === key)
+//   const newState = produce(system, (draft) => {
+//     const index = draft.types.findIndex((type => type.name === oldName))
 
-      if (index === -1) continue
+//     if (index === -1) return
 
-      page.state.splice(index, 1)
-    }
-  })
+//     draft.types[index].name = newName
+//   })
 
-  systemState.set(newState)
-}
+//   systemState.set(newState)
+// }
 
-export function updatePageState(pageName: string, oldName: string, state: { name: string, type: TypeData }) {
-  const system = systemState.get()
+// export function deleteType(name: string) {
+//   const system = systemState.get()
 
-  if (!system) return
+//   if (!system) return
 
-  const newState = produce(system, (draft) => {
-    for (let i = 0; i < draft.pages.length; i++) {
-      const page = draft.pages[i]
+//   const newState = produce(system, (draft) => {
+//     const index = draft.types.findIndex((type => type.name === name))
 
-      if (page.name !== pageName) continue
+//     if (index === -1) return
 
-      const index = page.state.findIndex((s => s.name === oldName))
+//     draft.types.splice(index, 1)
+//   })
 
-      if (index === -1) return
+//   systemState.set(newState)
+// }
 
-      if (oldName !== state.name) {
-        page.state.splice(index, 1)
-        page.state.push(state)
-      } else {
-        page.state[index] = state
-      }
-    }
-  })
+// export function addTypeProperty(typeName: string) {
+//   const system = systemState.get()
 
-  systemState.set(newState)
-}
+//   if (!system) return
 
+//   let newProperty: {
+//     key: string;
+//     typeData: TypeData;
+//   } = {
+//     key: 'newProperty',
+//     typeData: {
+//       type: 'string',
+//       options: [],
+//       isArray: false,
+//       useTextArea: false,
+//       inputs: [],
+//       outputType: 'none',
+//       isOutputAnArray: false
+//     }
+//   }
 
+//   const newState = produce(system, (draft) => {
+//     for (let t = 0; t < draft.types.length; t++) {
+//       const type = draft.types[t]
 
-export function savePage(pageName: string, ) {
-  const system = systemState.get()
+//       if (type.name !== typeName) continue
 
-  if (!system) return
+//       const index = type.properties.findIndex((prop => prop.key === 'newProperty'))
 
-  const newState = produce(system, (draft) => {
-    for (let i = 0; i < draft.pages.length; i++) {
-      const page = draft.pages[i]
+//       if (index !== -1) return
 
-      if (page.name !== pageName) continue
+//       type.properties.push(newProperty)
+//     }
+//   })
 
-      // TODO: save page.
-    }
-  })
+//   systemState.set(newState)
 
-  systemState.set(newState)
-}
+//   return newProperty
+// }
+
+// export function updateTypeProperty(typeName: string, oldKey: string, data: { key: string; typeData: TypeData }) {
+//   const system = systemState.get()
+
+//   if (!system) return
+
+//   const newState = produce(system, (draft) => {
+//     for (let t = 0; t < draft.types.length; t++) {
+//       const type = draft.types[t]
+
+//       if (type.name !== typeName) continue
+
+//       const index = type.properties.findIndex((prop => prop.key === oldKey))
+
+//       if (index === -1) return
+
+//       if (oldKey !== data.key) {
+//         type.properties.splice(index, 1)
+//         type.properties.push(data)
+//       } else {
+//         type.properties[index] = data
+//       }
+//     }
+//   })
+
+//   systemState.set(newState)
+// }
+
+// // TODO: check to see if any data relies on this type? and make a modal to ask if we should delete type and all related data or not.
+// export function deleteTypeProperty(typeName: string, key: string) {
+//   const system = systemState.get()
+
+//   if (!system) return
+
+//   const newState = produce(system, (draft) => {
+//     for (let t = 0; t < draft.types.length; t++) {
+//       const type = draft.types[t]
+
+//       if (type.name !== typeName) continue
+
+//       const index = type.properties.findIndex(prop => prop.key === key)
+
+//       if (index === -1) continue
+
+//       type.properties.splice(index, 1)
+//     }
+//   })
+
+//   systemState.set(newState)
+// }
+
+// export function addCharacterPageState(pageName: string, key: string, type: TypeData) {
+//   const system = systemState.get()
+
+//   if (!system) return
+
+//   const newState = produce(system, (draft) => {
+//     for (let i = 0; i < draft.pages.length; i++) {
+//       const page = draft.pages[i]
+
+//       if (page.name !== pageName) continue
+
+//       if (page.state.find(state => state.name === key)) return
+
+//       page.state.push({
+//         name: key,
+//         type,
+//         value: undefined
+//       })
+//     }
+//   })
+
+//   systemState.set(newState)
+// }
+
+// export function removeCharacterPageState(pageName: string, key: string) {
+//   const system = systemState.get()
+
+//   if (!system) return
+
+//   const newState = produce(system, (draft) => {
+//     for (let i = 0; i < draft.pages.length; i++) {
+//       const page = draft.pages[i]
+
+//       if (page.name !== pageName) continue
+
+//       const index = page.state.findIndex(state => state.name === key)
+
+//       if (index === -1) continue
+
+//       page.state.splice(index, 1)
+//     }
+//   })
+
+//   systemState.set(newState)
+// }
+
+// export function updateCharacterPageState(pageName: string, oldName: string, state: { name: string, type: TypeData, value: any }) {
+//   const system = systemState.get()
+
+//   if (!system) return
+
+//   const newState = produce(system, (draft) => {
+//     for (let i = 0; i < draft.pages.length; i++) {
+//       const page = draft.pages[i]
+
+//       if (page.name !== pageName) continue
+
+//       const index = page.state.findIndex((s => s.name === oldName))
+
+//       if (index === -1) return
+
+//       if (oldName !== state.name) {
+//         page.state.splice(index, 1)
+//         page.state.push(state)
+//       } else {
+//         page.state[index] = state
+//       }
+//     }
+//   })
+
+//   systemState.set(newState)
+// }

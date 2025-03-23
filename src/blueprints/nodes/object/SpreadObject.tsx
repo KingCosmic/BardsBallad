@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 
 import {
   Handle,
@@ -7,55 +7,58 @@ import {
   Position,
   useReactFlow,
   useUpdateNodeInternals,
-  useNodeConnections
+  useNodeConnections,
+  useNodesData
 } from '@xyflow/react'
 
-import { systemState } from '../../../state/system'
-import { SystemType } from '../../../state/systems'
 import Card from '../../../components/Card'
+import { editorState } from '../../../state/editor'
+import { SystemType } from '../../../types/system'
+import { useSystem } from '../../../hooks/useSystem'
  
-function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
+function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const [spreadType, setSpreadType] = useState<SystemType>({ name: '', properties: [] })
+  const editor = editorState.useValue()
 
-  const system = systemState.useValue()
+  const {system} = useSystem(editor.systemId)
 
-  useNodeConnections({
-    handleType: 'target',
-    handleId: 'input-object',
-    onConnect: (conns) => {
-      const conn = conns[0]
-
-      if (!conn) return
-
-      if (!conn.sourceHandle) return
-
-      const sourceType = conn.sourceHandle.split('-')[1]
-    
-      if (!sourceType) return
-
-      updateNodeData(id, { inputType: sourceType })
-
-      if (system) {
-        setSpreadType(system.types.find(type => type.name === inputType) || { name: '', properties: [] })
-      }
-
-      updateNodeInternals(id)
-    },
-    onDisconnect: () => {
-      updateNodeData(id, { inputType: 'unknown' })
-      updateNodeInternals(id)
-    }
-  })
+  const connections = useNodeConnections()
+  const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])
+  const nodes = useNodesData(nodeIds)
 
   useEffect(() => {
-    if (!system) return
+    let input: { [key:string]: SystemType | null } = {}
 
-    setSpreadType(system.types.find(type => type.name === inputType) || { name: '', properties: [] })
+    for (let c = 0; c < connections.length; c++) {
+      const conn = connections[c]
+
+      const type = (conn.source === id) ? 'output' : 'input'
+
+      if (type === 'output') continue
+
+      const node = nodes.find(n => n.id === conn.source)
+
+      if (!node?.data || !node?.data.outputs) continue
+
+      const nodeData = (node?.data?.outputs as { [key:string]: SystemType | null })[conn.sourceHandle ?? '']
+
+      input[conn.targetHandle ?? ''] = nodeData
+    }
+
+    const typeInput = input['input-object'] ?? { name: 'unknown', properties: [] }
+
+    let outputs: { [key:string]: any } = {}
+    for (let p = 0; p < inputType?.properties?.length; p++) {
+      const prop = inputType.properties[p]
+
+      outputs[`${prop.key}-${prop.typeData.type}${prop.typeData.isArray? '(Array)' : ''}`] = { name: prop.typeData.type }
+    }
+
+    updateNodeData(id, { inputs: input, inputType: typeInput, outputs })
     updateNodeInternals(id)
-  }, [system, inputType])
+  }, [connections, nodes, system])
 
   return (
     <Card title='Spread Object'>
@@ -66,11 +69,11 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: st
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <p style={{ textAlign: 'left' }}>Input Type {inputType}</p>
+      <p style={{ textAlign: 'left' }}>Input Type {inputType?.name}</p>
       <p style={{ textAlign: 'right' }}>Spread</p>
 
       {
-        spreadType.properties.map(prop => (
+        inputType?.properties?.map(prop => (
           <p key={prop.key} style={{ textAlign: 'right', marginTop: 5 }}>
             ({prop.typeData.type}{prop.typeData.isArray ? '[]' : ''}) {prop.key}
           </p>
@@ -81,13 +84,11 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: st
         style={{ top: 80, bottom: 'auto' }}
       />
 
-      {
-        spreadType.properties.map((prop, i) => (
-          <Handle key={prop.key} type='source' id={`${prop.key}-${prop.typeData.type}${prop.typeData.isArray ? '(Array)' : ''}`} position={Position.Right}
-            style={{ top: 130 + (26 * i), bottom: 'auto' }}
-          />
-        ))
-      }
+      {inputType?.properties?.map((prop, i) => (
+        <Handle key={prop.key} type='source' id={`${prop.key}-${prop.typeData.type}${prop.typeData.isArray ? '(Array)' : ''}`} position={Position.Right}
+          style={{ top: 130 + (26 * i), bottom: 'auto' }}
+        />
+      ))}
     </Card>
   )
 }

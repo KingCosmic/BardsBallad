@@ -1,11 +1,6 @@
-import { useEffect } from 'react'
-
 import { useParams } from 'react-router'
 
-import { systemsState } from '../state/systems'
-import { setSystem, systemState, updatePageLexical } from '../state/system'
-
-import { editorState, setPage, setTab } from '../state/editor'
+import { editorState, setTab } from '../state/editor'
 
 import Character from '../tabs/System/Character'
 import Data from '../tabs/System/Data'
@@ -23,51 +18,55 @@ import Text from '../designer/components/Text/Editor'
 import FAB from '../designer/FloatingActionButton'
 import DesignerDivider from '../designer/components/Divider'
 import Searchbar from '../designer/Searchbar'
+import Creator from '../tabs/System/Creator'
+import EditorSelect from '../designer/components/Select/Editor'
+import TextInput from '../designer/components/Input/Editor'
+import { useSystem } from '../hooks/useSystem'
+import { updateLexical } from '../storage/utils/systems'
+import { useEffect } from 'react'
 
 const System: React.FC = () => {
-  const systems = systemsState.useValue()
-  const system = systemState.useValue()
+  const { id } = useParams<{ id: string; }>()
+
+  const { system, loading } = useSystem(id)
 
   const editor = editorState.useValue()
 
-  const { name } = useParams<{ name: string; }>()
-
   useEffect(() => {
-    const system = systems.find(s => s.name === name)
-    setSystem(system)
+    editorState.set((prev) => ({ ...prev, systemId: id ?? '' }))
+  }, [id])
 
-    if (!system) return
-
-    setPage(system.pages[0].name)
-  }, [name, systems])
-
-  if (!system) return <>loading...</>
+  if (!system || !id) return <>loading...</>
+  if (loading) return <>loading...</>
 
   return (
-    <EditorContext resolver={{ Container, Text, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updatePageLexical(query.serialize())}>
+    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updateLexical(id, query.serialize())}>
       <div className='flex flex-col h-full'>
         <Header title={system.name} />
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
-          <Select id='tab-selector' label='' value={editor.tab} onChange={val => setTab(val)}>
+          <Select id='tab-selector' label='' value={editor.tab} onChange={setTab}>
             <option value='character'>Character</option>
             <option value='data'>Data</option>
             <option value='types'>Types</option>
             <option value='functions'>Functions</option>
             <option value='editor'>Editor</option>
+            <option value='creator'>Creator</option>
           </Select>
 
           {
             (editor.tab === 'character') ? (
-              <Character />
+              <Character system={system} />
             ) : (editor.tab === 'data') ? (
-              <Data />
+              <Data system={system} />
             ) : (editor.tab === 'types') ? (
-              <Types />
+              <Types system={system} />
             ) : (editor.tab === 'functions') ? (
-              <Functions />
-            ) : (editor.tab === 'editor') && (
-              <Editor />
+              <Functions system={system} />
+            ) : (editor.tab === 'editor') ? (
+              <Editor system={system} />
+            ) : (editor.tab === 'creator') && (
+              <Creator system={system} />
             )
           }
         </div>

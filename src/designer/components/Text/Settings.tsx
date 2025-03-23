@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getDefaultNodes, updateParams } from '../../../blueprints/utils'
+import { updateParams } from '../../../blueprints/utils'
 import Accordion from '../../../components/Accordion'
 import AccordionGroup from '../../../components/AccordionGroup'
 import Button from '../../../components/inputs/Button'
@@ -16,8 +16,7 @@ export default function TextSettings() {
   const { id, actions: { setProp },
     useBlueprintValue, blueprint,
     text, color,
-    fontFamily, fontSize, fontWeight, fontStyle,
-    letterSpacing, lineHeight,
+    fontSize, fontWeight,
     textAlign, textDecoration, textTransform,
     marginTop, marginRight, marginBottom, marginLeft,
     paddingTop, paddingRight, paddingBottom, paddingLeft,
@@ -46,25 +45,14 @@ export default function TextSettings() {
     paddingLeft: node.data.props.paddingLeft || '0px',
   }))
 
-  const localParams = useLocalState(id)
   const [openAccordion, setOpenAccordion] = useState(-1)
 
+  const localParams = useLocalState(id)
   useEffect(() => {
     setProp((props: any) => {
-      if (!props.blueprint) {
-        props.blueprint = {
-          nodes: getDefaultNodes(
-            localParams,
-            {
-              name: 'text',
-              type: 'string',
-              isArray: false
-            }
-          ),
-          edges: []
-        }
-      } else {
-        props.blueprint.nodes = updateParams(props.blueprint.nodes, localParams)
+      props.blueprint = {
+        edges: props.blueprint.edges,
+        nodes: updateParams(props.blueprint.nodes, localParams)
       }
     
       return props
@@ -82,7 +70,9 @@ export default function TextSettings() {
               type: 'blueprint',
               title: 'Text Value',
               data: blueprint,
-              onSave: (blueprint) => setProp((props: any) => props.blueprint = Object.assign({}, blueprint))
+              onSave: (blueprint) => setProp((props: any) => {
+                props.blueprint = blueprint
+              })
             })}>
               Edit Blueprint Value
             </Button>

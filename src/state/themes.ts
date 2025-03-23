@@ -37,17 +37,17 @@ export const themesState = newRidgeState<Theme[]>([
       "background": "#121217",
   
       "brand": {
-        "50": "#fefee8", // Soft lilac
-        "100": "#fffec2", // Light lavender
-        "200": "#fffa88", // Pastel purple
-        "300": "#fff045", // Lush purple
-        "400": "#fddf12", // Vibrant amethyst
-        "500": "#edc605", // Deep royal purple
-        "600": "#cd9a01", // Velvet purple
-        "700": "#a36d05", // Majestic plum
-        "800": "#87560c", // Dark grape
-        "900": "#724611", // Midnight violet
-        "950": "#5a3107"  // Deep shadowy purple
+        50: '#fcf9f0',
+        100: '#f9f2db',
+        200: '#f2e1b6',
+        300: '#eacc87',
+        400: '#e3b667',
+        500: '#d99736',
+        600: '#cb802b',
+        700: '#a86426',
+        800: '#875025',
+        900: '#6d4221',
+        950: '#3b210f',
       },
       "neutral": {
         "50": "#f8f9fb", // Light parchment

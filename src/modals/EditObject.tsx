@@ -4,7 +4,7 @@ import { produce } from 'immer'
 
 import setNestedProperty from '../utils/setNestedProperty'
 import generateObject from '../utils/generateObject'
-import { SystemType, TypeData } from '../state/systems'
+import { SystemType, TypeData } from '../types/system'
 import Divider from '../components/Divider';
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';
@@ -15,6 +15,7 @@ import TextInput from '../components/inputs/TextInput';
 import Textarea from '../components/inputs/Textarea';
 import Checkbox from '../components/inputs/Checkbox';
 import Select from '../components/inputs/Select';
+import { openModal } from '../state/modals';
 
 type ModalProps = {
   title: string;
@@ -111,11 +112,13 @@ export function GetComponentsFromTypeData(dataCopy: any, types: SystemType[], se
 
 export function RenderComponentFromType(types: SystemType[], type: string, data: any, dataCopy: any, typeData: TypeData, label: string, setProperty: (path: string, obj: any, value: any) => void): React.ReactElement {
   
+  const systemType = types.find(typeData => typeData.name === type)!
+
   if (type && typeData.isArray) {
     return (
       <ArrayEdit
         types={types}
-        type={types.find(typeData => typeData.name === type)!}
+        type={systemType}
         title={label}
         data={data}
         onAdd={(newItem) => setProperty(label, dataCopy, [ ...data, newItem ])}
@@ -127,11 +130,10 @@ export function RenderComponentFromType(types: SystemType[], type: string, data:
 
   switch (type) {
     case 'string':
+      if (typeData.useTextArea) return <Textarea id={label} label={label} value={data} onChange={val => setProperty(label, dataCopy, val)} />
       return <TextInput id={label} label={label} isValid errorMessage='' value={data} onChange={val => setProperty(label, dataCopy, val)} />
     case 'number':
       return <TextInput id={label} label={label} isValid errorMessage='' value={data} onChange={val => setProperty(label, dataCopy, +val)} />
-    case 'textarea':
-      return <Textarea id={label} label={label} value={data} onChange={val => setProperty(label, dataCopy, val)} placeholder='lorem ipsum' />
     case 'boolean':
       return <Checkbox id={label} label={label} checked={data} onChange={val => setProperty(label, dataCopy, val)} />
     case 'enum':
@@ -142,8 +144,30 @@ export function RenderComponentFromType(types: SystemType[], type: string, data:
           }
         </Select>
       )
+    case 'blueprint':
+      return (
+        <Button key={label} color='light' onClick={() => openModal({
+          title: 'Edit Blueprint',
+          type: 'blueprint',
+          data,
+          onSave: (val) => setProperty(label, dataCopy, val),
+        })}>Edit {label}</Button>
+      )
     default:
-      return <div key={label}><p>{label} ({type})</p></div>
+      return (
+        <div key={label} className='mb-2'>
+          <p className='my-2'>{label}</p>
+          <Divider />
+          <div className='h-2' />
+          {
+            systemType.properties.map(prop => RenderComponentFromType(types, prop.typeData.type, data[prop.key] ?? '', dataCopy, prop.typeData, prop.key, (p, o, v) => {
+              console.log(`${label}/${p}`)
+              console.table(o)
+              setProperty(`${label}/${p}`, o, v)
+            }))
+          }
+        </div>
+      )
   }
 }
 
@@ -151,7 +175,7 @@ function ArrayEdit({ title, data, type, types, onAdd, onChange, onDelete }: { ti
   const [editData, setEditData] = useState<any>(null)
 
   return (
-    <div key={editData?.name}>
+    <div key={editData?.name} className='mt-3'>
       <EditObject
         types={types}
         title={`Edit ${editData?.name}`}
@@ -174,23 +198,22 @@ function ArrayEdit({ title, data, type, types, onAdd, onChange, onDelete }: { ti
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <p>{title}</p>
 
-        <p
-          onClick={() => onAdd(generateObject(type))}
-        >
+        <p onClick={() => onAdd(generateObject(types, type))}>
           Add
         </p>
       </div>
 
       <Divider />
 
-      <div>
-        {data.map((item, i) => {
-          return (
-            <div key={item.name} onClick={() => setEditData(item)}>
-              <p>{item.name}</p>
-            </div>
-          )
-        })}
+      <div className='flex flex-col gap-1 mt-3'>
+        {data.map(item => (
+          <div key={item.name}
+            className='p-3 border border-neutral-600 dark:bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
+            onClick={() => setEditData(item)}
+          >
+            <p>{item.name}</p>
+          </div>
+        ))}
       </div>
     </div>
   )

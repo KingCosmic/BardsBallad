@@ -10,14 +10,16 @@ import {
   useNodeConnections
 } from '@xyflow/react'
 
-import { systemState } from '../../../state/system'
+import { editorState } from '../../../state/editor'
 import Card from '../../../components/Card'
+import { useSystem } from '../../../hooks/useSystem'
  
 function Update({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const system = systemState.useValue()
+  const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   useNodeConnections({
     handleType: 'target',

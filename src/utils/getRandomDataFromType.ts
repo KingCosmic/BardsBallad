@@ -1,35 +1,26 @@
+import { getDefaultNodes } from '../blueprints/utils';
+import { SystemType, TypeData } from '../types/system';
+import generateObject from './generateObject';
 
-
-
-type Options = {
-  type: string;
-  isArray?: boolean;
-  min?: number;
-  max?: number;
-  options?: string[];
-  genType?: string;
-}
-
-export default function getRandomDataFromType(options:Options) {
+export default function getRandomDataFromType(types: SystemType[], options: TypeData): any {
   if (options.isArray) return []
 
   switch (options.type) {
     case 'string':
       return 'Lorem Ipsum'
-    case 'textarea':
-      return 'Lorem Ipsum Dolor Set'
     case 'number':
       return 1
     case 'boolean':
       return false
     case 'enum':
       return (options.options ? [options.options[0]] : ['undefined options'])
-    case 'path':
-      return ''
-    case 'BasedOfTargetAndType':
-      return ''
+    case 'blueprint':
+      return { nodes: getDefaultNodes(options.inputs, options.outputType !== 'none' ? { name: 'output', type: options.outputType, isArray: options.isOutputAnArray } : undefined), edges: [] }
     default:
-      // TODO: do a check over our types to see if we have a custom type that fits.
-      return ''
+      const type = types.find(t => t.name === options.type)
+
+      if (!type) return `Type ${options.type} not found.`
+
+      return generateObject(types, type)
   }
 }

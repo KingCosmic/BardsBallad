@@ -3,6 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <title>BardsBallad</title>
+
+    <!-- React-Scan used for visualizing react rerenders, must be before any other scrips -->
+    <!-- <script
+      crossOrigin="anonymous"
+      src="//unpkg.com/react-scan/dist/auto.global.js"
+    ></script> -->
     
     <base href="/" />
     
@@ -25,7 +31,7 @@
   </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/node_modules/flowbite/dist/flowbite.min.js"></script>
     <script type="module" src="/src/main.tsx"></script>
-    <script src="/node_modules/flowbite/dist/flowbite.min.js"></script>
   </body>
 </html>

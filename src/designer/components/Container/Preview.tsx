@@ -1,45 +1,44 @@
-import { PropsWithChildren, useCallback, useMemo } from 'react'
+import { memo, PropsWithChildren, useCallback, useMemo } from 'react'
 
 import { AddData, useLocalData } from '../../renderer/Context'
-import { characterState } from '../../../state/character'
 import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
 
 import { ContainerProps } from './Editor'
 import styles from './styles'
 import globalStyles from '../../styles'
 
-export default function ContainerPreview(props: PropsWithChildren<ContainerProps>) {
+export default (props: PropsWithChildren<ContainerProps>) => {
   const localData = useLocalData()
-
-  const character = characterState.useValue()
 
   const items = useMemo(() => {
     const processor = new BlueprintProcessor(props.blueprint!)
 
-    const output = processor.processBlueprint(localData) || []
+    const output = processor.processBlueprint(localData, props.state!, () => {}) ?? []
 
     return output
-  }, [localData, character])
+  }, [localData, props.state])
 
   const isVisible = useMemo(() => {
     if (!props.dynamicVisibility) return props.isVisible
 
     const processor = new BlueprintProcessor(props.visibilityBlueprint!)
 
-    const isVisible = processor.processBlueprint(localData) || false
+    const isVisible = processor.processBlueprint(localData, props.state!, () => {}) || false
 
     return isVisible
-  }, [localData, character])
+  }, [localData, props.state])
+
+  const onClick = useCallback(() => {
+    if (!props.isInteractive) return
+
+    const processor = new BlueprintProcessor(props.onPress!)
+
+    processor.processBlueprint(localData, props.state!, props.updateState!)
+  }, [props.onPress, localData, props.state, props.updateState])
 
   const backgroundClass = useMemo(() => styles[props.background!] ? styles[props.background!]?.background : '', [props.background])
   const borderClass = useMemo(() => styles[props.border!] ? styles[props.border!]?.border : '', [props.border])
   const hoverClass = useMemo(() => props.isInteractive ? styles[props.hover!]?.hover : '', [props.isInteractive])
-
-  const onClick = useCallback(() => {
-    const processor = new BlueprintProcessor(props.onPress!)
-
-    processor.processBlueprint(localData)
-  }, [props.onPress, localData])
 
   return (
     <div

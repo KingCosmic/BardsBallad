@@ -1,14 +1,14 @@
 
 import { useNode, UserComponentConfig } from '@craftjs/core'
-import { BlueprintData } from '../state/systems'
+import { BlueprintData } from '../types/blueprint'
 import { openModal } from '../state/modals'
 import Divider from '../components/Divider'
 import { getDefaultNodes } from '../blueprints/utils'
 import EditButtonModal from '../modals/EditButton'
 
-import {  useState } from 'react'
+import {  useCallback, useState } from 'react'
 
-import BlueprintProcessor from '../utils/Blueprints/processBlueprint'
+import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 
 import { useLocalData } from './renderer/Context'
 import FloatingActionButton from '../components/FloatingActionButton'
@@ -21,9 +21,18 @@ type Button = {
 }
 
 type FABProps = {
+  /* props that are only used in preview when processing blueprints */
+  state?: BlueprintProcessorState;
+  updateState?(newState: BlueprintProcessorState): void;
+
   isList?: boolean;
   buttons?: Button[];
   blueprint?: BlueprintData;
+
+  // Local state this component will pass to its children.
+  local?: any;
+  // calculated local state based off the parent components.
+  calculateLocalState?: any;
 }
 
 function FAB({ buttons }: FABProps) {
@@ -31,17 +40,28 @@ function FAB({ buttons }: FABProps) {
 
   return (
     // @ts-ignore
-    <FloatingActionButton ref={ref => connect(drag(ref!))} buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => {} }))} />
+    <FloatingActionButton ref={ref => connect(drag(ref!))} buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => {} }))} isOpen={true} />
   )
 }
 
-export function FABPreview({ blueprint, isList, buttons }: FABProps) {
+export function FABPreview({ blueprint, isList, buttons, state, updateState }: FABProps) {
   const localData = useLocalData()
+
+  const [isOpen, setIsOpen] = useState(false)
+
+  const onClick = useCallback(() => {
+    if (isList) return setIsOpen(!isOpen)
+
+    const processor = new BlueprintProcessor(blueprint!)
+
+    processor.processBlueprint(localData, state!, updateState!)
+  }, [blueprint, localData, state, updateState, isOpen, isList])
 
   return (
     <FloatingActionButton
-      onClick={isList ? undefined : () => new BlueprintProcessor(blueprint!).processBlueprint(localData)}
-      buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => new BlueprintProcessor(btn.blueprint!).processBlueprint(localData) }))}
+      isOpen={isOpen}
+      onClick={onClick}
+      buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => new BlueprintProcessor(btn.blueprint!).processBlueprint(localData, state!, updateState!) }))}
     />
   )
 }

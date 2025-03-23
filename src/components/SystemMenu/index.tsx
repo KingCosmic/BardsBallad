@@ -1,12 +1,13 @@
 
-import DesignerMenu from './DesignerSubMenu'
+import DesignerMenu from './EditorMenu'
 
 import { editorState } from '../../state/editor'
-import { systemState } from '../../state/system'
+import { useSystem } from '../../hooks/useSystem'
+import CreatorMenu from './CreatorMenu'
 
 function SystemMenu() {
-  const system = systemState.useValue()
   const editor = editorState.useValue()
+  const {system} = useSystem(editor.systemId)
 
   if (!system) return <></>
 
@@ -35,8 +36,10 @@ function SystemMenu() {
             <p>
               The data types for everything in this system.
             </p>
-          ) : (editor.tab === 'editor') && (
+          ) : (editor.tab === 'editor') ? (
             <DesignerMenu />
+          ) : (editor.tab === 'creator') && (
+            <CreatorMenu />
           )
         }
       </div>

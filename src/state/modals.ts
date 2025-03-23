@@ -1,9 +1,11 @@
 import { newRidgeState } from 'react-ridge-state'
+import { SystemType } from '../types/system'
 
 type ModalData = {
   type: string;
   title: string;
   data: any;
+  types?: SystemType[];
   onSave(value: any): void;
   onDelete?(): void;
 }
