@@ -44,25 +44,25 @@ class Storage {
       })
     })
 
-    const replicationState = await replicateRxCollection({
-      collection: characterSchema,
-      replicationIdentifier: 'my-http-replication',
-      push: {
-        async handler(changeRows) {
-          return pushUpdatesForCharacters(changeRows)
-        }
-      },
-      pull: {
-        async handler(checkpointOrNull, batchSize) {
-          const data = await pullUpdatesForCharacters(checkpointOrNull as any, batchSize)
+    // const replicationState = await replicateRxCollection({
+    //   collection: characterSchema,
+    //   replicationIdentifier: 'my-http-replication',
+    //   push: {
+    //     async handler(changeRows) {
+    //       return pushUpdatesForCharacters(changeRows)
+    //     }
+    //   },
+    //   pull: {
+    //     async handler(checkpointOrNull, batchSize) {
+    //       const data = await pullUpdatesForCharacters(checkpointOrNull as any, batchSize)
 
-          return {
-            documents: data.documents,
-            checkpoint: data.checkpoint
-          }
-        }
-      }
-    })
+    //       return {
+    //         documents: data.documents,
+    //         checkpoint: data.checkpoint
+    //       }
+    //     }
+    //   }
+    // })
 
     await this.database.addCollections({
       characters: characterSchema,

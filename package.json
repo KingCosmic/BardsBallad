@@ -32,6 +32,7 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.469.0",
     "lzutf8": "^0.6.3",
+    "posthog-js": "^1.232.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ridge-state": "^4.2.9",

@@ -21,9 +21,13 @@ import { useCharacters } from '../hooks/useCharacters'
 
 import { createCharacter } from '../storage/utils/characters'
 
+import { usePostHog } from 'posthog-js/react'
+
 function CharacterCreatorModal(props: any) {
   const { systems } = useSystems()
   const { characters } = useCharacters()
+
+  const posthog = usePostHog()
 
   const [system, setSystem] = useState<SystemData | undefined>(systems[0])
 
@@ -174,6 +178,7 @@ function CharacterCreatorModal(props: any) {
           createCharacter(characterData)
           setSystem(systems[0])
           props.setIsOpen(false)
+          posthog.capture('character_created', { character_name: characterData.name })
         }}>
           Create
         </Button>

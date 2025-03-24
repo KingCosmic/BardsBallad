@@ -4,7 +4,7 @@ import { SystemData } from '../types/system'
 
 export function useSystems() {
   const [systems, setSystems] = useState<SystemData[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(database.loading$.value)
 
   useEffect(() => {
     const subscription = database.loading$.subscribe(setLoading)
