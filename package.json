@@ -26,7 +26,7 @@
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "@xyflow/react": "^12.4.2",
-    "axios": "^1.7.9",
+    "axios": "^1.8.2",
     "dexie": "^4.0.10",
     "dexie-react-hooks": "^1.1.7",
     "fast-equals": "^5.2.2",
