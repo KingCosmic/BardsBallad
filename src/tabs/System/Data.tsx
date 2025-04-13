@@ -2,9 +2,9 @@
 import { useState } from 'react'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
-import { updateSystemData, deleteSystemData, addSystemData } from '../../newstorage/methods/systems'
+import { updateSystemData, deleteSystemData, addSystemData } from '../../storage/methods/systems'
 
-import { type System, type DataType } from '../../newstorage/schemas/system'
+import { type System, type DataType } from '../../storage/schemas/system'
 
 type DataProps = {
   system: System

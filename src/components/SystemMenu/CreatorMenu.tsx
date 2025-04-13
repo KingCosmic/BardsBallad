@@ -20,8 +20,8 @@ import Layers from '../../designer/Layers/Layers'
 import EditorSelect from '../../designer/components/Select/Editor'
 import InputEditor from '../../designer/components/Input/Editor'
 import { useSystem } from '../../hooks/useSystem'
-import { addCreatorPage, addCreatorPageState, deleteCreatorPage, renameCreatorPage, updateCreatorPageBlueprint, updateCreatorPageState } from '../../newstorage/methods/systems'
-import { type TypeData } from '../../newstorage/schemas/system'
+import { addCreatorPage, addCreatorPageState, deleteCreatorPage, renameCreatorPage, updateCreatorPageBlueprint, updateCreatorPageState } from '../../storage/methods/systems'
+import { type TypeData } from '../../storage/schemas/system'
 
 
 const CreatorMenu: React.FC = () => {

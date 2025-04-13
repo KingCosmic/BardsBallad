@@ -18,7 +18,7 @@ import Textarea from '../components/inputs/Textarea'
 import { editorState } from '../state/editor'
 import { useSystem } from '../hooks/useSystem'
 
-import { type SystemType, type TypeData, type DataType } from '../newstorage/schemas/system'
+import { type SystemType, type TypeData, type DataType } from '../storage/schemas/system'
 
 type ModalProps = {
   onDelete?(): void;

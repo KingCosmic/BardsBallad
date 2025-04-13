@@ -10,7 +10,7 @@ import Button from '../components/inputs/Button'
 import RenderEditorData from '../designer/RenderEditorData'
 
 import lz from 'lzutf8'
-import { Character } from '../newstorage/schemas/character'
+import { Character } from '../storage/schemas/character'
 import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 
 import { useSystems } from '../hooks/useSystems'
@@ -18,8 +18,8 @@ import { useSystems } from '../hooks/useSystems'
 import { deepEqual } from 'fast-equals'
 import { useCharacters } from '../hooks/useCharacters'
 
-import { createCharacter } from '../newstorage/methods/characters'
-import { type System, type PageData } from '../newstorage/schemas/system'
+import { createCharacter } from '../storage/methods/characters'
+import { type System, type PageData } from '../storage/schemas/system'
 
 import { usePostHog } from 'posthog-js/react'
 

@@ -12,7 +12,7 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { type SystemType, type TypeData } from '../../../newstorage/schemas/system'
+import { type SystemType, type TypeData } from '../../../storage/schemas/system'
 
 import Select from '../../../components/inputs/Select'
 import Card from '../../../components/Card'

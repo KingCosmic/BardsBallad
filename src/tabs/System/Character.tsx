@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-import { type System } from '../../newstorage/schemas/system'
+import { type System } from '../../storage/schemas/system'
 
 import { produce } from 'immer'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
-import { setDefaultCharacterData } from '../../newstorage/methods/systems'
+import { setDefaultCharacterData } from '../../storage/methods/systems'
 
-import { type SystemType, type TypeData, type DataType } from '../../newstorage/schemas/system'
+import { type SystemType, type TypeData, type DataType } from '../../storage/schemas/system'
 
 type CharacterProps = {
   system: System

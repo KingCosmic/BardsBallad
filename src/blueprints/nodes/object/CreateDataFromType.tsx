@@ -9,7 +9,7 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { type SystemType } from '../../../newstorage/schemas/system'
+import { type SystemType } from '../../../storage/schemas/system'
 import Card from '../../../components/Card'
 import Select from '../../../components/inputs/Select'
 import { useSystem } from '../../../hooks/useSystem'

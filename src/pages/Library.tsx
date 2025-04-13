@@ -3,7 +3,7 @@ import Header from '../components/Header'
 
 import { useSystems } from '../hooks/useSystems'
 import { openModal } from '../state/modals'
-import { deleteSystem, renameSystem } from '../newstorage/methods/systems'
+import { deleteSystem, renameSystem } from '../storage/methods/systems'
 
 const Library: React.FC = () => {
   const { systems, isLoading } = useSystems()

@@ -5,7 +5,7 @@ import { Frame, Element, useEditor } from '@craftjs/core'
 import Container from '../../designer/components/Container/Editor'
 import Text from '../../designer/components/Text/Editor'
 
-import { type System } from '../../newstorage/schemas/system'
+import { type System } from '../../storage/schemas/system'
 import { editorState } from '../../state/editor'
 
 import lz from 'lzutf8'

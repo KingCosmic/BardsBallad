@@ -6,9 +6,9 @@ import AccordionGroup from '../../components/AccordionGroup'
 import FloatingActionButton from '../../components/FloatingActionButton'
 import Button from '../../components/inputs/Button'
 import Accordion from '../../components/Accordion'
-import { addSystemType, addTypeProperty, deleteSystemType, deleteTypeProperty, renameSystemType, updateTypeProperty } from '../../newstorage/methods/systems'
+import { addSystemType, addTypeProperty, deleteSystemType, deleteTypeProperty, renameSystemType, updateTypeProperty } from '../../storage/methods/systems'
 
-import { type System, type TypeData } from '../../newstorage/schemas/system'
+import { type System, type TypeData } from '../../storage/schemas/system'
 
 type TypesProps = {
   system: System

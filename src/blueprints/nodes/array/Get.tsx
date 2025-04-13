@@ -14,7 +14,7 @@ import {
 import { editorState } from '../../../state/editor'
 import Card from '../../../components/Card'
 import { useSystem } from '../../../hooks/useSystem'
-import { type SystemType } from '../../../newstorage/schemas/system'
+import { type SystemType } from '../../../storage/schemas/system'
 
  
 function Add({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {

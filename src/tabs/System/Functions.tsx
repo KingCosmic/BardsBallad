@@ -1,4 +1,4 @@
-import { type System } from '../../newstorage/schemas/system'
+import { type System } from '../../storage/schemas/system'
 
 type FunctionsProps = {
   system: System

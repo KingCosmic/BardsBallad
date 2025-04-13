@@ -13,7 +13,7 @@ import {
 
 import Card from '../../../components/Card'
 import { editorState } from '../../../state/editor'
-import { type SystemType } from '../../../newstorage/schemas/system'
+import { type SystemType } from '../../../storage/schemas/system'
 import { useSystem } from '../../../hooks/useSystem'
  
 function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: SystemType }>>) {

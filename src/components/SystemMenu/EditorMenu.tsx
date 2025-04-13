@@ -16,9 +16,9 @@ import Select from '../inputs/Select'
 import Button from '../inputs/Button'
 import { openModal } from '../../state/modals'
 import { useSystem } from '../../hooks/useSystem'
-import { addCharacterPage, addCharacterPageState, deleteCharacterPage, renameCharacterPage, updateCharacterPageBlueprint, updateCharacterPageState } from '../../newstorage/methods/systems'
+import { addCharacterPage, addCharacterPageState, deleteCharacterPage, renameCharacterPage, updateCharacterPageBlueprint, updateCharacterPageState } from '../../storage/methods/systems'
 
-import { type TypeData } from '../../newstorage/schemas/system'
+import { type TypeData } from '../../storage/schemas/system'
 
 function EditorMenu() {
   const editor = editorState.useValue()

@@ -1,5 +1,5 @@
 import { database } from '../index'
-import { type System, type TypeData } from '../../newstorage/schemas/system'
+import { type System, type TypeData } from '../../storage/schemas/system'
 import { v4 as uuidv4 } from 'uuid'
 import { produce } from 'immer'
 import { editorState } from '../../state/editor'

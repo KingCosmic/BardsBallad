@@ -10,7 +10,7 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { type TypeData } from '../../../newstorage/schemas/system'
+import { type TypeData } from '../../../storage/schemas/system'
 import { useSystem } from '../../../hooks/useSystem'
 
 import Select from '../../../components/inputs/Select'

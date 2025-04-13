@@ -14,7 +14,7 @@ import { openModal } from '../state/modals'
 import { Param } from '../blueprints/utils'
 import { editorState } from '../state/editor'
 import { useSystem } from '../hooks/useSystem'
-import { type TypeData } from '../newstorage/schemas/system'
+import { type TypeData } from '../storage/schemas/system'
 
 type Props = {
   data: { key: string; typeData: TypeData, typeName: string } | null;

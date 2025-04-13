@@ -8,7 +8,7 @@ import { useCharacters } from '../hooks/useCharacters'
 import { openModal } from '../state/modals'
 import { authState } from '../state/auth'
 
-import { renameCharacter, deleteCharacter } from '../newstorage/methods/characters'
+import { renameCharacter, deleteCharacter } from '../storage/methods/characters'
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters()

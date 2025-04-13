@@ -22,7 +22,7 @@ import Creator from '../tabs/System/Creator'
 import EditorSelect from '../designer/components/Select/Editor'
 import TextInput from '../designer/components/Input/Editor'
 import { useSystem } from '../hooks/useSystem'
-import { updateLexical } from '../newstorage/methods/systems'
+import { updateLexical } from '../storage/methods/systems'
 import { useEffect } from 'react'
 
 const System: React.FC = () => {

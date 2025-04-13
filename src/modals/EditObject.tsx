@@ -16,7 +16,7 @@ import Checkbox from '../components/inputs/Checkbox';
 import Select from '../components/inputs/Select';
 import { openModal } from '../state/modals';
 
-import { type SystemType, type TypeData } from '../newstorage/schemas/system'
+import { type SystemType, type TypeData } from '../storage/schemas/system'
 
 type ModalProps = {
   title: string;

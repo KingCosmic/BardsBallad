@@ -17,7 +17,7 @@ import TextInput from '../../../components/inputs/TextInput'
 import Card from '../../../components/Card'
 import { editorState } from '../../../state/editor'
 import { useSystem } from '../../../hooks/useSystem'
-import { type SystemType } from '../../../newstorage/schemas/system'
+import { type SystemType } from '../../../storage/schemas/system'
  
 function GetCharacterDataNode({ id, data: { path, type, outputs }, }: NodeProps<Node<{ path: string; type: string; outputs: { [key:string]: SystemType | null } }>>) {
   const { updateNodeData } = useReactFlow()

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { type TypeData } from '../newstorage/schemas/system'
+import { type TypeData } from '../storage/schemas/system'
 import { editorState } from '../state/editor';
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';

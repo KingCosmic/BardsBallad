@@ -15,7 +15,7 @@ import { Param } from '../utils'
 
 import { editorState } from '../../state/editor'
 import { useSystem } from '../../hooks/useSystem'
-import { type SystemType } from '../../newstorage/schemas/system'
+import { type SystemType } from '../../storage/schemas/system'
 
 const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:string]: any }, outputs: { [key:string]: SystemType | null } }>>> = ({ id, data: { params } }) => {
   const { updateNodeData } = useReactFlow()

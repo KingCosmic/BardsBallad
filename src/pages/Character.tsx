@@ -13,10 +13,10 @@ import lz from 'lzutf8'
 import { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 import { deepEqual } from 'fast-equals'
 import { useSystems } from '../hooks/useSystems'
-import { updateCharacterData } from '../newstorage/methods/characters'
-import { Character } from '../newstorage/schemas/character'
+import { updateCharacterData } from '../storage/methods/characters'
+import { Character } from '../storage/schemas/character'
 
-import { type System, type PageData } from '../newstorage/schemas/system'
+import { type System, type PageData } from '../storage/schemas/system'
 
 const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()

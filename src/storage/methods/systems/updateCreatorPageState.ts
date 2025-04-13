@@ -1,10 +1,10 @@
-import { type TypeData } from '../../../newstorage/schemas/system'
+import { type TypeData } from '../../schemas/system'
 import updateSystem from './updateSystem';
 
 export default async (local_id: string, pageName: string, oldName: string, state: { name: string, type: TypeData, value: any }) => {
   await updateSystem(local_id, (draft) => {
-    for (let i = 0; i < draft.pages.length; i++) {
-      const page = draft.pages[i]
+    for (let i = 0; i < draft.creator.length; i++) {
+      const page = draft.creator[i]
 
       if (page.name !== pageName) continue
 
