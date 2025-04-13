@@ -21,7 +21,7 @@ function GetSystemDataNode({ id, data: { path, type }, }: NodeProps<Node<{ path:
 
   const editor = editorState.useValue()
 
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const updateTypeFromSelection = useCallback((name: string) => {
     const typeData = system?.data.find(d => d.name === name)?.typeData

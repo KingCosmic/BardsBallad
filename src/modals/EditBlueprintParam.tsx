@@ -22,7 +22,7 @@ type Props = {
 
 function EditBlueprintParamModal({ data, isOpen, requestClose, onSave, onDelete } : Props) {
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const [param, setParam] = useState<Param>({ name: 'New Param', type: 'string', isArray: false })
 

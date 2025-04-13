@@ -19,7 +19,7 @@ function Remove({ id, data: { inputType } }: NodeProps<Node<{ inputType: string 
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   useNodeConnections({
     handleType: 'target',

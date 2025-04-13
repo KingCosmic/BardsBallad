@@ -20,7 +20,7 @@ function Map({ id, data: { inputType, mapType } }: NodeProps<Node<{ inputType: s
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   useNodeConnections({
     handleType: 'target',

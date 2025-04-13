@@ -21,7 +21,7 @@ function SetCharacterDataNode({ id, data: { path, type } }: NodeProps<Node<{ pat
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const updateTypeFromPath = useCallback((path: string) => {
     const type = getTypeFromProperty(system?.defaultCharacterData || {}, path)
