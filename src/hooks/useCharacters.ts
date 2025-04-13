@@ -1,30 +1,13 @@
-import { useEffect, useState } from 'react'
-import { database } from '../storage'
-import { CharacterData } from '../types/character'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { db } from '../storage'
 
 export function useCharacters() {
-  const [characters, setCharacters] = useState<CharacterData[]>([])
-  const [loading, setLoading] = useState(true)
+  const characters = useLiveQuery(async () => {
+    const chars = await db.characters.toArray()
 
-  useEffect(() => {
-    const subscription = database.loading$.subscribe(setLoading)
-
-    return () => subscription.unsubscribe()
+    // filter out deleted characters
+    return chars.filter(char => !char.isDeleted)
   }, [])
 
-  useEffect(() => {
-    if (loading) return
-
-    // Subscribe to all characters
-    const sub = database.characters
-      .find()
-      .$
-      .subscribe(docs => {
-        setCharacters(docs.map(doc => doc.toJSON()))
-      })
-
-    return () => sub.unsubscribe()
-  }, [loading])
-
-  return { characters, loading }
-} 
+  return { characters: characters || [], isLoading: (characters === undefined) }
+}

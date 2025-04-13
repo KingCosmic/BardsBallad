@@ -19,7 +19,7 @@ function Create({ id, data: { outputType } }: NodeProps<Node<{ outputType: strin
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   return (
     <Card title='Add Item To Array'>

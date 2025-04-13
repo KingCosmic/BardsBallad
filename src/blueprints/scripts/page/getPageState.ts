@@ -1,9 +1,9 @@
 import { Node } from '@xyflow/react'
 import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import { SystemData, TypeData } from '../../../types/system'
+import { type System, type TypeData } from '../../../storage/schemas/system'
 import getRandomDataFromType from '../../../utils/getRandomDataFromType'
 
-function generateDefaultData(system: SystemData, typeDef: TypeData) {
+function generateDefaultData(system: System, typeDef: TypeData) {
 
   const isBaseType = ['string', 'number', ].includes(typeDef.type)
 
@@ -36,7 +36,7 @@ export default {
   process: (processor: BlueprintProcessor, node: Node) => {
     const page = processor.getPage()
 
-    const state = page.state.find(d => d.name === (node.data.chosenState as any).name)
+    const state = page.state.find((d: any) => d.name === (node.data.chosenState as any).name)
 
     if (!state) return
 

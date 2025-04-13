@@ -1,5 +1,5 @@
 import { database } from '../index'
-import { SystemData, SystemType, TypeData } from '../../types/system'
+import { type System, type TypeData } from '../../storage/schemas/system'
 import { v4 as uuidv4 } from 'uuid'
 import { produce } from 'immer'
 import { editorState } from '../../state/editor'
@@ -8,7 +8,7 @@ import lz from 'lzutf8'
 import { getDefaultNodes } from '../../blueprints/utils'
 import { BlueprintData } from '../../types/blueprint'
 
-export async function updateSystem(id: string, updateFn: (draft: SystemData) => void) {
+export async function updateSystem(id: string, updateFn: (draft: System) => void) {
   const doc = await database.systems.findOne(id).exec()
   if (!doc) return
 
@@ -42,7 +42,7 @@ export async function getSystem(id: string) {
   return doc?.toJSON() || null
 }
 
-export async function createSystem(system: Omit<SystemData, 'id'>) {
+export async function createSystem(system: Omit<System, 'id'>) {
   return await database.systems.insert({
     id: uuidv4(),
     ...system
@@ -50,7 +50,7 @@ export async function createSystem(system: Omit<SystemData, 'id'>) {
 }
 
 export async function renameSystem(id: string, newName: string) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     draft.name = newName
   })
 }
@@ -77,7 +77,7 @@ export async function deleteSystem(id: string) {
 }
 
 export async function setDefaultCharacterData(id: string, data: { [key: string]: any }) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     draft.defaultCharacterData = data
   })
 }
@@ -85,7 +85,7 @@ export async function setDefaultCharacterData(id: string, data: { [key: string]:
 export async function addCharacterPage() {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.pages.findIndex((data => data.name === 'New Page'))
 
     if (index !== -1) return
@@ -102,7 +102,7 @@ export async function addCharacterPage() {
 export async function renameCharacterPage(oldName: string, newName: string) {
   const editor = editorState.get() 
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.pages.findIndex((data => data.name === oldName))
 
     if (index === -1) return  
@@ -114,7 +114,7 @@ export async function renameCharacterPage(oldName: string, newName: string) {
 export async function deleteCharacterPage(name: string) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.pages.findIndex((data => data.name === name))
 
     if (index === -1) return
@@ -126,7 +126,7 @@ export async function deleteCharacterPage(name: string) {
 export async function updateCharacterPageBlueprint(blueprint: BlueprintData) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.pages.findIndex((data => data.name === editor.characterPage))
 
     if (index === -1) return
@@ -138,7 +138,7 @@ export async function updateCharacterPageBlueprint(blueprint: BlueprintData) {
 export async function addCharacterPageState(pageName: string, key: string, type: TypeData) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.pages.findIndex((data => data.name === pageName))
 
     if (index === -1) return
@@ -156,7 +156,7 @@ export async function addCharacterPageState(pageName: string, key: string, type:
 export async function updateCharacterPageState(pageName: string, oldName: string, state: { name: string, type: TypeData, value: any }) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     for (let i = 0; i < draft.pages.length; i++) {
       const page = draft.pages[i]
 
@@ -177,7 +177,7 @@ export async function updateCharacterPageState(pageName: string, oldName: string
 }
 
 export async function addSystemData(id: string) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     const index = draft.data.findIndex((data => data.name === 'New Data'))
 
     if (index !== -1) return
@@ -200,7 +200,7 @@ export async function addSystemData(id: string) {
 
 
 export async function updateSystemData(id: string, oldName: string, newData: any) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     const index = draft.data.findIndex((data => data.name === oldName))
 
     if (index === -1) return
@@ -215,7 +215,7 @@ export async function updateSystemData(id: string, oldName: string, newData: any
 }
 
 export async function deleteSystemData(id: string, name: string) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     const index = draft.data.findIndex((data => data.name === name))
 
     if (index === -1) return
@@ -225,7 +225,7 @@ export async function deleteSystemData(id: string, name: string) {
 }
 
 export async function addSystemType(id: string, typeName: string) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     draft.types.push({
       name: typeName,
       properties: [
@@ -247,7 +247,7 @@ export async function addSystemType(id: string, typeName: string) {
 }
 
 export async function renameSystemType(id: string, oldName: string, newName: string) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     const index = draft.types.findIndex((type => type.name === oldName))
 
     if (index === -1) return
@@ -257,7 +257,7 @@ export async function renameSystemType(id: string, oldName: string, newName: str
 }
 
 export async function deleteSystemType(id: string, typeName: string) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     const index = draft.types.findIndex((type => type.name === typeName)) 
 
     if (index === -1) return
@@ -283,7 +283,7 @@ export async function addTypeProperty(id: string, typeName: string) {
     }
   }
 
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     const index = draft.types.findIndex((type => type.name === typeName))
 
     if (index === -1) return
@@ -295,7 +295,7 @@ export async function addTypeProperty(id: string, typeName: string) {
 }
 
 export async function updateTypeProperty(id: string, typeName: string, oldKey: string, data: { key: string; typeData: TypeData }) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     for (let t = 0; t < draft.types.length; t++) {
       const type = draft.types[t]
 
@@ -316,7 +316,7 @@ export async function updateTypeProperty(id: string, typeName: string, oldKey: s
 }
 
 export async function deleteTypeProperty(id: string, typeName: string, key: string) {
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     for (let t = 0; t < draft.types.length; t++) {
       const type = draft.types[t]
 
@@ -338,7 +338,7 @@ export async function updateLexical(id: string, lexical: string) {
 
   const newLexical = lz.encodeBase64(lz.compress(lexical))
 
-  await updateSystem(id, (draft: SystemData) => {
+  await updateSystem(id, (draft: System) => {
     if (editor.tab === 'editor') {
       const index = draft.pages.findIndex((data => data.name === editor.characterPage))
 
@@ -358,7 +358,7 @@ export async function updateLexical(id: string, lexical: string) {
 export async function addCreatorPage() {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.creator.findIndex((data => data.name === 'New Page'))
 
     if (index !== -1) return
@@ -375,7 +375,7 @@ export async function addCreatorPage() {
 export async function renameCreatorPage(oldName: string, newName: string) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.creator.findIndex((data => data.name === oldName))
 
     if (index === -1) return  
@@ -387,7 +387,7 @@ export async function renameCreatorPage(oldName: string, newName: string) {
 export async function deleteCreatorPage(name: string) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.creator.findIndex((data => data.name === name))
 
     if (index === -1) return
@@ -399,7 +399,7 @@ export async function deleteCreatorPage(name: string) {
 export async function updateCreatorPageBlueprint(blueprint: BlueprintData) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.creator.findIndex((data => data.name === editor.creatorPage))
 
     if (index === -1) return
@@ -411,7 +411,7 @@ export async function updateCreatorPageBlueprint(blueprint: BlueprintData) {
 export async function addCreatorPageState(pageName: string, key: string, type: TypeData) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     const index = draft.creator.findIndex((data => data.name === pageName))
 
     if (index === -1) return
@@ -429,7 +429,7 @@ export async function addCreatorPageState(pageName: string, key: string, type: T
 export async function updateCreatorPageState(pageName: string, oldName: string, state: { name: string, type: TypeData, value: any }) {
   const editor = editorState.get()
 
-  await updateSystem(editor.systemId, (draft: SystemData) => {
+  await updateSystem(editor.systemId, (draft: System) => {
     for (let i = 0; i < draft.creator.length; i++) {
       const page = draft.creator[i]
 

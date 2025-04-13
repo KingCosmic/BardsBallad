@@ -7,7 +7,6 @@ import Text from '../../designer/components/Text/Editor'
 import Searchbar from '../../designer/Searchbar'
 import EditPageStateModal from '../../modals/EditPageState'
 import { editorState, setCharacterPage } from '../../state/editor'
-import { TypeData } from '../../types/system'
 import Divider from '../Divider'
 import DesignerDivider from '../../designer/components/Divider'
 import EditStringModal from '../../modals/EditString'
@@ -17,18 +16,19 @@ import Select from '../inputs/Select'
 import Button from '../inputs/Button'
 import { openModal } from '../../state/modals'
 import { useSystem } from '../../hooks/useSystem'
-import { addCharacterPage, addCharacterPageState, deleteCharacterPage, renameCharacterPage, updateCharacterPageBlueprint, updateCharacterPageState } from '../../storage/utils/systems'
+import { addCharacterPage, addCharacterPageState, deleteCharacterPage, renameCharacterPage, updateCharacterPageBlueprint, updateCharacterPageState } from '../../storage/methods/systems'
 
+import { type TypeData } from '../../storage/schemas/system'
 
 function EditorMenu() {
   const editor = editorState.useValue()
-  const { system } = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const page = useMemo(() => system?.pages.find(p => p.name === editor.characterPage), [system, editor.characterPage])
 
   const [tab, setTab] = useState('components')
 
-  const [editingState, setEditingState] = useState<{ name: string, type: TypeData } | null>(null)
+  const [editingState, setEditingState] = useState<{ name: string, type: any, value?: any } | null>(null)
 
   const [editName, setEditName] = useState<any>(null)
 
@@ -59,7 +59,7 @@ function EditorMenu() {
           {system.pages.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
         </Select>
 
-        <button type='button' onClick={addCharacterPage} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
+        <button type='button' onClick={() => addCharacterPage(editor.systemId)} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
           <svg
             className='w-5 h-5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
             <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />
@@ -147,14 +147,14 @@ function EditorMenu() {
             <EditStringModal data={editName} isOpen={editName !== null}
               requestClose={() => setEditName(null)}
               onSave={(newName) => {
-                renameCharacterPage(editName, newName)
+                renameCharacterPage(editor.systemId, editName, newName)
                 setCharacterPage(newName)
               }}
             />
 
             <div className='inline-flex rounded-md shadow-sm my-2'>
               <Button color='danger' disabled={system.pages.length <= 1} onClick={() => {
-                deleteCharacterPage(editor.characterPage)
+                deleteCharacterPage(editor.systemId, editor.characterPage)
               }}>
                 Delete
               </Button>
@@ -167,7 +167,7 @@ function EditorMenu() {
                 type: 'blueprint',
                 title: 'Page Blueprint',
                 data: page?.blueprint,
-                onSave: updateCharacterPageBlueprint
+                onSave: (bp) => updateCharacterPageBlueprint(editor.systemId, editor.characterPage, bp)
               })
             }>
               Edit Page Blueprint
@@ -178,7 +178,7 @@ function EditorMenu() {
                 <h5>Page State</h5>
               </div>
 
-              <button onClick={() => addCharacterPageState(editor.characterPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], outputType: 'string', isOutputAnArray: false, inputs: [] })}
+              <button onClick={() => addCharacterPageState(editor.systemId, editor.characterPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], outputType: 'string', isOutputAnArray: false, inputs: [] })}
                 type='button'
                 className='text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'
               >
@@ -202,7 +202,7 @@ function EditorMenu() {
 
             <EditPageStateModal isOpen={editingState !== null}
               requestClose={() => setEditingState(null)} data={editingState}
-              onSave={(newState) => updateCharacterPageState(editor.characterPage, editingState!.name, { ...newState, value: undefined })}
+              onSave={(newState) => updateCharacterPageState(editor.systemId, editor.characterPage, editingState!.name, { ...newState, value: undefined })}
               onDelete={() => {}} // TODO:(Cosmic) Implement
             />
           </>

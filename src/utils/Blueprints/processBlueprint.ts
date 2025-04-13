@@ -1,15 +1,16 @@
-import { PageData, SystemData } from '../../types/system'
 import { findEntryNode } from './findEntryNode'
 
 import { Node } from '@xyflow/react'
 import { getNode } from './getNode'
 import { getNodeScript } from './getNodeScript'
-import { CharacterData } from '../../types/character'
 import { BlueprintData } from '../../types/blueprint'
 
+import { type System, type PageData } from '../../storage/schemas/system'
+import { type Character } from '../../storage/schemas/character'
+
 export type BlueprintProcessorState = {
-  system: SystemData;
-  character: CharacterData;
+  system: System;
+  character: Character;
   page: PageData;
 }
 

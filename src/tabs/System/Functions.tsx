@@ -1,7 +1,7 @@
-import { SystemData } from '../../types/system'
+import { type System } from '../../storage/schemas/system'
 
 type FunctionsProps = {
-  system: SystemData
+  system: System
 }
 
 const Functions: React.FC<FunctionsProps> = ({ system }) => {

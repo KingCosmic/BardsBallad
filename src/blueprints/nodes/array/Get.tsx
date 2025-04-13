@@ -14,14 +14,15 @@ import {
 import { editorState } from '../../../state/editor'
 import Card from '../../../components/Card'
 import { useSystem } from '../../../hooks/useSystem'
-import { SystemType } from '../../../types/system'
+import { type SystemType } from '../../../storage/schemas/system'
+
  
 function Add({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const connections = useNodeConnections()
   const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])

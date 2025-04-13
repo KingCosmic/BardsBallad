@@ -1,13 +1,16 @@
 import { useState } from 'react'
-import { DataType, SystemData, SystemType, TypeData } from '../../types/system'
+
+import { type System } from '../../storage/schemas/system'
 
 import { produce } from 'immer'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
-import { setDefaultCharacterData } from '../../storage/utils/systems'
+import { setDefaultCharacterData } from '../../storage/methods/systems'
+
+import { type SystemType, type TypeData, type DataType } from '../../storage/schemas/system'
 
 type CharacterProps = {
-  system: SystemData
+  system: System
 }
 
 const Character: React.FC<CharacterProps> = ({ system }) => {
@@ -24,7 +27,7 @@ const Character: React.FC<CharacterProps> = ({ system }) => {
             draft._type.properties = draft._type.properties.filter((prop: any) => prop.key !== editData?.name)
           })
 
-          setDefaultCharacterData(system.id, newCopy!)
+          setDefaultCharacterData(system.local_id, newCopy!)
         }}
         onSave={(newData) => {
           const key = newData.name
@@ -46,7 +49,7 @@ const Character: React.FC<CharacterProps> = ({ system }) => {
             }
           })
 
-          setDefaultCharacterData(system.id, newCopy!)
+          setDefaultCharacterData(system.local_id, newCopy!)
         }}
         isVisible={(editData !== null)}
         requestClose={() => setEditData(null)}
@@ -96,7 +99,7 @@ const Character: React.FC<CharacterProps> = ({ system }) => {
             }
           }
 
-          setDefaultCharacterData(system.id, newCopy)
+          setDefaultCharacterData(system.local_id, newCopy)
         }}
       />
     </>

@@ -1,7 +1,9 @@
 import { database } from '../index'
-import { CharacterData } from '../../types/character'
 import { v4 as uuidv4 } from 'uuid'
 import { produce } from 'immer'
+import { authState } from '../../state/auth'
+
+type CharacterData = any
 
 async function saveCharacter(id: string, updateFn: (draft: CharacterData) => void) {
   const doc = await database.characters.findOne(id).exec()
@@ -28,9 +30,10 @@ async function saveCharacter(id: string, updateFn: (draft: CharacterData) => voi
 
 export async function createCharacter(character: Omit<CharacterData, 'id' | 'createdAt' | 'updatedAt'>) {
   const now = new Date().toISOString()
+  const auth = authState.get()
+  // TODO: set this up to pull from our auth user id and default to "NONE" if not set
   return await database.characters.insert({
-    id: uuidv4(),
-    ownerID: '',
+    local_id: uuidv4(),
     name: character.name,
     data: { ...character.data },
     system: { ...character.system },

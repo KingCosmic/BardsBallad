@@ -1,5 +1,5 @@
 import { newRidgeState } from 'react-ridge-state'
-import { SystemType } from '../types/system'
+import { type SystemType } from '../storage/schemas/system'
 
 type ModalData = {
   type: string;
