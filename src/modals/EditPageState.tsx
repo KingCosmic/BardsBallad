@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { TypeData } from '../types/system';
+import { type TypeData } from '../newstorage/schemas/system'
 import { editorState } from '../state/editor';
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';
@@ -24,7 +24,7 @@ type Props = {
 
 function EditPageStateModal({ data, isOpen, requestClose, onSave, onDelete }: Props) {
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const [name, setName] = useState('')
   const [type, setType] = useState('')

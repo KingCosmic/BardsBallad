@@ -1,6 +1,7 @@
 import { getDefaultNodes } from '../blueprints/utils';
-import { SystemType, TypeData } from '../types/system';
 import generateObject from './generateObject';
+
+import { type SystemType, type TypeData } from '../newstorage/schemas/system'
 
 export default function getRandomDataFromType(types: SystemType[], options: TypeData): any {
   if (options.isArray) return []
@@ -15,7 +16,7 @@ export default function getRandomDataFromType(types: SystemType[], options: Type
     case 'enum':
       return (options.options ? [options.options[0]] : ['undefined options'])
     case 'blueprint':
-      return { nodes: getDefaultNodes(options.inputs, options.outputType !== 'none' ? { name: 'output', type: options.outputType, isArray: options.isOutputAnArray } : undefined), edges: [] }
+      return { nodes: getDefaultNodes(options.inputs, options.outputType !== 'none' ? { name: 'output', type: options.outputType || 'none', isArray: options.isOutputAnArray || false } : undefined), edges: [] }
     default:
       const type = types.find(t => t.name === options.type)
 

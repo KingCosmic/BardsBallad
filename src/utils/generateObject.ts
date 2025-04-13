@@ -1,5 +1,6 @@
-import { SystemType } from '../types/system'
 import getRandomDataFromType from './getRandomDataFromType'
+
+import { type SystemType } from '../newstorage/schemas/system'
 
 export default function generateObject(types: SystemType[], typeDef: SystemType | string) {
   if (typeof typeDef === 'string') return getRandomDataFromType(types, { type: typeDef, useTextArea: false, isArray: false, options: [], isOutputAnArray: false, inputs: [], outputType: 'none', })

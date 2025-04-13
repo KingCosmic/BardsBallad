@@ -10,7 +10,7 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { TypeData } from '../../../types/system'
+import { type TypeData } from '../../../newstorage/schemas/system'
 import { useSystem } from '../../../hooks/useSystem'
 
 import Select from '../../../components/inputs/Select'
@@ -21,7 +21,7 @@ function GetPageDataNode({ id, data: { chosenState } }: NodeProps<Node<{ chosenS
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const page = useMemo(() => {
     if (editor.tab === 'editor') {

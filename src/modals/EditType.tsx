@@ -14,7 +14,7 @@ import { openModal } from '../state/modals'
 import { Param } from '../blueprints/utils'
 import { editorState } from '../state/editor'
 import { useSystem } from '../hooks/useSystem'
-import { TypeData } from '../types/system'
+import { type TypeData } from '../newstorage/schemas/system'
 
 type Props = {
   data: { key: string; typeData: TypeData, typeName: string } | null;
@@ -33,7 +33,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
 
   const editor = editorState.useValue()
 
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const parentType = useMemo(() => system?.types.find(t => t.name === data?.typeName), [data, system])
 
@@ -81,11 +81,11 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
 
                 <div
                   onClick={() => {
-                    const index = propertyData.options.findIndex(o => o === 'New Option')
+                    const index = propertyData.options?.findIndex(o => o === 'New Option')
 
                     if (index !== -1) return
 
-                    setPropertyData({ ...propertyData, options: [ ...propertyData.options, 'New Option'] })
+                    setPropertyData({ ...propertyData, options: [ ...propertyData.options || [], 'New Option'] })
                   }}
                 >
                   <p>Add</p>
@@ -95,7 +95,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
               <p style={{ height: 1, width: '100%', backgroundColor: 'white', marginTop: 4, marginBottom: 4 }} />
 
               <div>
-                {propertyData.options.map((item) => {
+                {propertyData.options?.map((item) => {
                   return (
                     <div key={item} onClick={() => setEditOption(item)}>
                       <p>{item}</p>
@@ -111,7 +111,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
           (propertyData.type === 'blueprint') && (
             <div className='mt-4'>
               <div className='flex flex-col'>
-                <Select id='output-type' label='Output Type' value={propertyData.outputType} onChange={outputType => setPropertyData({ ...propertyData, outputType })}>
+                <Select id='output-type' label='Output Type' value={propertyData.outputType || 'none'} onChange={outputType => setPropertyData({ ...propertyData, outputType })}>
                   <option value='none'>none</option>
 
                   <option value='string'>string</option>
@@ -157,7 +157,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
                         title: 'Edit Blueprint Param',
                         data: param,
                         onSave: (value: Param) => {
-                          let newInputs = [ ...propertyData.inputs ]
+                          let newInputs = [ ...propertyData.inputs || [] ]
               
                           const index = newInputs.findIndex(p => p.name === param.name)
               
@@ -168,7 +168,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
                           setPropertyData({ ...propertyData, inputs: newInputs })
                         },
                         onDelete: () => {
-                          const newInputs = propertyData.inputs.filter(p => p.name !== param.name)
+                          const newInputs = propertyData.inputs?.filter(p => p.name !== param.name)
                           setPropertyData({ ...propertyData, inputs: newInputs })
                         }
                       })}>
@@ -184,7 +184,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
         <EditStringModal data={editOption} isOpen={editOption !== null}
           requestClose={() => setEditOption(null)}
           onSave={(data) => {
-            let newOptions = [ ...propertyData.options ]
+            let newOptions = [ ...propertyData.options || [] ]
 
             const index = newOptions.findIndex(o => o === editOption)
 

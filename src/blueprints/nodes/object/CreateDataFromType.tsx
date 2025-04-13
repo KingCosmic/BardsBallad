@@ -9,7 +9,7 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { SystemType } from '../../../types/system'
+import { type SystemType } from '../../../newstorage/schemas/system'
 import Card from '../../../components/Card'
 import Select from '../../../components/inputs/Select'
 import { useSystem } from '../../../hooks/useSystem'
@@ -19,7 +19,7 @@ function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ sprea
 
   const editor = editorState.useValue()
 
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   return (
     <Card title='Create Object From Type'>

@@ -1,4 +1,4 @@
-import { database } from '../storage'
+import { database } from './index'
 import dnd5eData from '../lib/backup-dnd5e.json'
 
 export async function loadDefaultSystems() {

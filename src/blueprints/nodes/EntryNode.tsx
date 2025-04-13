@@ -13,16 +13,16 @@ import {
 
 import { Param } from '../utils'
 
-import { SystemType } from '../../types/system'
 import { editorState } from '../../state/editor'
 import { useSystem } from '../../hooks/useSystem'
+import { type SystemType } from '../../newstorage/schemas/system'
 
 const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:string]: any }, outputs: { [key:string]: SystemType | null } }>>> = ({ id, data: { params } }) => {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const { system } = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   useEffect(() => {
     let outputs: { [key:string]: SystemType | null } = {}

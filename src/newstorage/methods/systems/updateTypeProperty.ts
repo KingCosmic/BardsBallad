@@ -1,4 +1,4 @@
-import { TypeData } from '../../../types/system';
+import { type TypeData } from '../../../newstorage/schemas/system'
 import updateSystem from './updateSystem';
 
 export default async (local_id: string, typeName: string, oldKey: string, data: { key: string; typeData: TypeData }) => {

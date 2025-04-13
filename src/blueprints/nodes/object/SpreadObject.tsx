@@ -13,7 +13,7 @@ import {
 
 import Card from '../../../components/Card'
 import { editorState } from '../../../state/editor'
-import { SystemType } from '../../../types/system'
+import { type SystemType } from '../../../newstorage/schemas/system'
 import { useSystem } from '../../../hooks/useSystem'
  
 function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: SystemType }>>) {
@@ -22,7 +22,7 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: Sy
 
   const editor = editorState.useValue()
 
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const connections = useNodeConnections()
   const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])
