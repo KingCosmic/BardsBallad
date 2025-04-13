@@ -1,16 +1,16 @@
-
 export const androidDevices = [
   {
-    name: "Samsung Galaxy S21",
-    userAgent: "Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36",
+    name: 'Samsung Galaxy S21',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36',
     viewport: {
       width: 360,
       height: 800,
       deviceScaleFactor: 3.0,
       isMobile: true,
       hasTouch: true,
-      isLandscape: false
-    }
+      isLandscape: false,
+    },
   },
   {
     name: 'Pixel 5',
@@ -37,8 +37,8 @@ export const androidDevices = [
       hasTouch: true,
       isLandscape: true,
     },
-  }
-]
+  },
+];
 
 export const iosDevices = [
   {
@@ -67,17 +67,18 @@ export const iosDevices = [
       isLandscape: false,
     },
   },
-]
+];
 
 export const chromeBook = {
-  name: "Google Chromebook",
-  userAgent: "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+  name: 'Google Chromebook',
+  userAgent:
+    'Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
   viewport: {
     width: 1920,
     height: 1080,
     deviceScaleFactor: 1.0,
     isMobile: false,
     hasTouch: false,
-    isLandscape: true
-  }
-}
+    isLandscape: true,
+  },
+};

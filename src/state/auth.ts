@@ -6,17 +6,17 @@ type User = {
   id: string;
   username: string;
   email: string;
+  role: number;
+  synced_characers: string[];
 }
 
 type AuthState = {
   isLoggedIn: boolean;
-  isLoading: boolean;
   user: User | null;
 }
 
 const defaultState: AuthState = {
   isLoggedIn: false,
-  isLoading: false,
   user: null
 }
 
@@ -27,7 +27,7 @@ export const loadToken = () => {
 
   if (token) {
     const user = jwtDecode<User>(token)
-    authState.set({ isLoggedIn: true, isLoading: false, user })
+    authState.set({ isLoggedIn: true, user })
   }
 }
 
@@ -36,7 +36,7 @@ export const saveToken = (token: string) => {
 
   const user = jwtDecode<User>(token)
 
-  authState.set({ isLoggedIn: true, isLoading: false, user })
+  authState.set({ isLoggedIn: true, user })
 }
 
 export const logout = () => {

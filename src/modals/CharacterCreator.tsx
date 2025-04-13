@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 
-import { PageData, SystemData } from '../types/system'
 import TextInput from '../components/inputs/TextInput'
 import Select from '../components/inputs/Select'
 import Modal from '../components/Modal'
@@ -11,7 +10,7 @@ import Button from '../components/inputs/Button'
 import RenderEditorData from '../designer/RenderEditorData'
 
 import lz from 'lzutf8'
-import { CharacterData } from '../types/character'
+import { Character } from '../newstorage/schemas/character'
 import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 
 import { useSystems } from '../hooks/useSystems'
@@ -19,7 +18,8 @@ import { useSystems } from '../hooks/useSystems'
 import { deepEqual } from 'fast-equals'
 import { useCharacters } from '../hooks/useCharacters'
 
-import { createCharacter } from '../storage/utils/characters'
+import { createCharacter } from '../newstorage/methods/characters'
+import { type System, type PageData } from '../newstorage/schemas/system'
 
 import { usePostHog } from 'posthog-js/react'
 
@@ -29,13 +29,13 @@ function CharacterCreatorModal(props: any) {
 
   const posthog = usePostHog()
 
-  const [system, setSystem] = useState<SystemData | undefined>(systems[0])
+  const [system, setSystem] = useState<System | undefined>(systems[0])
 
   const [tab, setTab] = useState(0)
 
-  const [characterData, setCharacterData] = useState<CharacterData>({
-    id: '',
-    ownerID: 'none',
+  const [characterData, setCharacterData] = useState<Character>({
+    local_id: '',
+    user_id: 'none',
   
     name: 'Aliza Cartwight',
     data: system?.defaultCharacterData ?? {},
@@ -43,7 +43,8 @@ function CharacterCreatorModal(props: any) {
     system: { id: '', name: '', version: '' },
   
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
+    isDeleted: false,
   })
 
   // const updateState = useCallback((state: BlueprintProcessorState) => {
@@ -79,7 +80,7 @@ function CharacterCreatorModal(props: any) {
     if (!sys) return
 
     setSystem(sys)
-    setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.id, name: sys.name, version: sys.version } })
+    setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.local_id, name: sys.name, version: sys.version } })
   }, [systems])
 
   if (!props.isOpen) return <></>
@@ -114,7 +115,7 @@ function CharacterCreatorModal(props: any) {
               if (!sys) return
 
               setSystem(sys)
-              setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.id, name: sys.name, version: sys.version } })
+              setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.local_id, name: sys.name, version: sys.version } })
             }}>
               {systems.map((sys) => <option key={sys.name} value={sys.name}>{sys.name}</option>)}
             </Select>
@@ -174,8 +175,8 @@ function CharacterCreatorModal(props: any) {
           </Button>
         )} */}
 
-        <Button id='create-character-button' color='primary' onClick={() => {
-          createCharacter(characterData)
+        <Button id='create-character-button' color='primary' onClick={async () => {
+          await createCharacter(characterData.name, characterData.data, characterData.system)
           setSystem(systems[0])
           props.setIsOpen(false)
           posthog.capture('character_created', { character_name: characterData.name })

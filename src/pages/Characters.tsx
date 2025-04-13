@@ -1,5 +1,3 @@
-import { CharacterData } from '../types/character'
-
 import CharacterCreatorModal from '../modals/CharacterCreator'
 
 import { useState } from 'react'
@@ -7,14 +5,20 @@ import Header from '../components/Header'
 import { NavLink } from 'react-router'
 import FloatingActionButton from '../components/FloatingActionButton'
 import { useCharacters } from '../hooks/useCharacters'
-import EditStringModal from '../modals/EditString'
 import { openModal } from '../state/modals'
-import { deleteCharacter, renameCharacter } from '../storage/utils/characters'
+import { authState } from '../state/auth'
+
+import { renameCharacter, deleteCharacter } from '../newstorage/methods/characters'
 
 const Characters: React.FC = () => {
-  const { characters, loading } = useCharacters()
+  const { characters, isLoading } = useCharacters()
+  const { isLoggedIn, user } = authState.useValue()
 
   const [isCreating, setIsCreating] = useState(false)
+
+  console.log(user)
+
+  if (isLoading) return <></>
 
   return (
     <div>
@@ -28,11 +32,13 @@ const Characters: React.FC = () => {
         {characters.length ? (
           characters.map(char => (
             <div
-              key={char.id}
+              key={char.local_id}
               className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
             >
+              <div className='absolute -top-3 -right-3 h-8 w-8 bg-purple-400 rounded-full'></div>
+
               <NavLink
-                to={char.id}
+                to={char.local_id}
                 className="flex items-start space-x-4"
               >
                 <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
@@ -52,13 +58,29 @@ const Characters: React.FC = () => {
               </NavLink>
 
               <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
+                {
+                  isLoggedIn && (
+                    <button
+                      onClick={() => {
+                        // toggleSyncingCharacter(char.local_id)
+                      }}
+                      className="mr-auto inline-flex items-center px-3 py-1.5 text-sm font-medium text-brand-600 hover:bg-brand-50 rounded-md dark:text-brand-400 dark:hover:bg-brand-700"
+                    >
+                      <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                      {user?.synced_characers?.includes(char.local_id) ? 'UnSync' : 'Sync'}
+                    </button>
+                  )
+                }
+
                 <button
                   onClick={() => openModal({
                     type: 'edit_string',
                     title: 'Rename Character',
                     data: char.name,
                     onSave: (newName: string) => {
-                      renameCharacter(char.id, newName)
+                      renameCharacter(char.local_id, newName)
                     }
                   })}
                   className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md dark:text-blue-400 dark:hover:bg-blue-900/30"
@@ -73,7 +95,7 @@ const Characters: React.FC = () => {
                     type: 'confirm',
                     title: 'Delete Character',
                     data: { type: 'danger', message: 'Are you sure you want to delete this character?' },
-                    onSave: () => deleteCharacter(char.id)
+                    onSave: () => deleteCharacter(char.local_id)
                   })}
                   className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md dark:text-red-400 dark:hover:bg-red-900/30"
                 >

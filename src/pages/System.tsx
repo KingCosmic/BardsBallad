@@ -22,13 +22,13 @@ import Creator from '../tabs/System/Creator'
 import EditorSelect from '../designer/components/Select/Editor'
 import TextInput from '../designer/components/Input/Editor'
 import { useSystem } from '../hooks/useSystem'
-import { updateLexical } from '../storage/utils/systems'
+import { updateLexical } from '../newstorage/methods/systems'
 import { useEffect } from 'react'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
-  const { system, loading } = useSystem(id)
+  const system = useSystem(id)
 
   const editor = editorState.useValue()
 
@@ -37,10 +37,9 @@ const System: React.FC = () => {
   }, [id])
 
   if (!system || !id) return <>loading...</>
-  if (loading) return <>loading...</>
 
   return (
-    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updateLexical(id, query.serialize())}>
+    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updateLexical(id, editor.tab, query.serialize())}>
       <div className='flex flex-col h-full'>
         <Header title={system.name} />
 

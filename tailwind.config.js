@@ -2,7 +2,7 @@
 export default {
   content: [
     './index.html',
-    './src/**/*.{ts,tsx}'
+    './src/**/*.{ts,tsx}',
   ],
   darkMode: 'media',
   theme: {
@@ -93,9 +93,9 @@ export default {
           900: 'var(--green-900)',
           950: 'var(--green-950)',
         },
-      }
-    }
+      },
+    },
   },
   plugins: [],
-}
+};
 

@@ -7,7 +7,7 @@ import CreatorMenu from './CreatorMenu'
 
 function SystemMenu() {
   const editor = editorState.useValue()
-  const {system} = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   if (!system) return <></>
 

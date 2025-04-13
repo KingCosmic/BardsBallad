@@ -3,10 +3,10 @@ import Header from '../components/Header'
 
 import { useSystems } from '../hooks/useSystems'
 import { openModal } from '../state/modals'
-import { deleteSystem, renameSystem } from '../storage/utils/systems'
+import { deleteSystem, renameSystem } from '../newstorage/methods/systems'
 
 const Library: React.FC = () => {
-  const { systems, loading } = useSystems()
+  const { systems, isLoading } = useSystems()
 
   return (
     <div>
@@ -16,7 +16,7 @@ const Library: React.FC = () => {
         {/* TODO: Searchbar */}
 
         {
-          loading && (
+          isLoading && (
             <h5>Loading...</h5>
           ) || !systems && (
             <h5>
@@ -24,11 +24,11 @@ const Library: React.FC = () => {
             </h5>
           ) || systems.map(sys => (
             <div
-              key={sys.id}
+              key={sys.local_id}
               className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
             >
               <NavLink
-                to={`systems/${sys.id}`}
+                to={`systems/${sys.local_id}`}
                 className="flex items-start space-x-4"
               >
                 <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
@@ -54,7 +54,7 @@ const Library: React.FC = () => {
                     title: 'Rename System',
                     data: sys.name,
                     onSave: (newName: string) => {
-                      renameSystem(sys.id, newName)
+                      renameSystem(sys.local_id, newName)
                     }
                   })}
                   className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md dark:text-blue-400 dark:hover:bg-blue-900/30"
@@ -69,7 +69,7 @@ const Library: React.FC = () => {
                     type: 'confirm',
                     title: 'Delete System',
                     data: { type: 'danger', message: 'Are you sure you want to delete this system?' },
-                    onSave: () => deleteSystem(sys.id)
+                    onSave: () => deleteSystem(sys.local_id)
                   })}
                   className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md dark:text-red-400 dark:hover:bg-red-900/30"
                 >

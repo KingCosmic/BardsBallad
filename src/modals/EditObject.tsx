@@ -4,7 +4,6 @@ import { produce } from 'immer'
 
 import setNestedProperty from '../utils/setNestedProperty'
 import generateObject from '../utils/generateObject'
-import { SystemType, TypeData } from '../types/system'
 import Divider from '../components/Divider';
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';
@@ -16,6 +15,8 @@ import Textarea from '../components/inputs/Textarea';
 import Checkbox from '../components/inputs/Checkbox';
 import Select from '../components/inputs/Select';
 import { openModal } from '../state/modals';
+
+import { type SystemType, type TypeData } from '../newstorage/schemas/system'
 
 type ModalProps = {
   title: string;
@@ -140,7 +141,7 @@ export function RenderComponentFromType(types: SystemType[], type: string, data:
       return (
         <Select id={label} label={label} value={data} onChange={val => setProperty(label, dataCopy, val)}>
           {
-            typeData.options.map((option: string) => <option key={option} value={option}>{option}</option>)
+            typeData.options?.map((option: string) => <option key={option} value={option}>{option}</option>)
           }
         </Select>
       )

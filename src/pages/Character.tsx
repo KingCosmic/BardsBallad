@@ -2,7 +2,6 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'react-router'
 
-import { PageData, SystemData } from '../types/system'
 import RenderEditorData from '../designer/RenderEditorData'
 
 import Header from '../components/Header'
@@ -14,23 +13,24 @@ import lz from 'lzutf8'
 import { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 import { deepEqual } from 'fast-equals'
 import { useSystems } from '../hooks/useSystems'
-import { updateCharacterData } from '../storage/utils/characters'
+import { updateCharacterData } from '../newstorage/methods/characters'
+import { Character } from '../newstorage/schemas/character'
 
-import { CharacterData } from '../types/character'
+import { type System, type PageData } from '../newstorage/schemas/system'
 
-const Character: React.FC = () => {
+const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
   const { systems } = useSystems()
 
   const character = useCharacter(id)
 
-  const [system, setSystem] = useState<SystemData | null>(null)
+  const [system, setSystem] = useState<System | null>(null)
 
   const updateState = useCallback((state: BlueprintProcessorState) => {
     if (!character || !system) return
 
-    const index = state.system.pages.findIndex(c => c.name === state.page.name)
+    const index = state.system.pages.findIndex((c: any) => c.name === state.page.name)
 
     if (
       deepEqual(character, state.character) &&
@@ -38,22 +38,23 @@ const Character: React.FC = () => {
       deepEqual(state.system.pages[index], state.page)
     ) return
 
-    updateCharacterData(character.id, state.character)
-    setSystem({ ...state.system, pages: state.system.pages.map(c => c.name === state.page.name ? state.page : c )})
+    updateCharacterData(character.local_id, state.character.data)
+    setSystem({ ...state.system, pages: state.system.pages.map((c: any) => c.name === state.page.name ? state.page : c )})
   }, [character, system])
 
   useEffect(() => {
-    if (!systems) return
+    if (!systems || !character) return
 
-    const newSystem = systems.find(s => s.id === character?.system.id)
+    const newSystem = systems.find(s => s.local_id === character?.system.id)
     if (!newSystem) return
 
     if (deepEqual(system, newSystem)) return
 
     setSystem(newSystem)
-  }, [systems])
+  }, [systems, character])
 
-  if (!character || !system) return <p id='loading-text' className='text-center text-2xl'>loading...</p>
+  if (!character) return <p id='loading-text' className='text-center text-2xl'>loading character...</p>
+  if (!system) return <p id='loading-text' className='text-center text-2xl'>loading system...</p>
 
   return (
     <div className='flex flex-col h-full w-full'>
@@ -78,7 +79,7 @@ const Character: React.FC = () => {
   )
 }
 
-const RenderTab = ({ system, character, updateState, className }: { system: SystemData, character: CharacterData, updateState(state: BlueprintProcessorState): void, className: string }) => {
+const RenderTab = ({ system, character, updateState, className }: { system: System, character: Character, updateState(state: BlueprintProcessorState): void, className: string }) => {
   const [tab, setTab] = useState(system.pages[0].name)
 
   return (
@@ -96,7 +97,7 @@ const RenderTab = ({ system, character, updateState, className }: { system: Syst
   )
 }
 
-function RenderPage({ page, character, system, currentTab, updateState }: { page: PageData, character: CharacterData, system: SystemData, currentTab: string, updateState(state: BlueprintProcessorState): void }) {
+function RenderPage({ page, character, system, currentTab, updateState }: { page: PageData, character: Character, system: System, currentTab: string, updateState(state: BlueprintProcessorState): void }) {
   const data = useMemo(() => {
     if (!page.lexical) return {}
 
@@ -110,4 +111,4 @@ function RenderPage({ page, character, system, currentTab, updateState }: { page
   )
 }
 
-export default Character;
+export default CharacterPage;

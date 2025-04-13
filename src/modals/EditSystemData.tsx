@@ -4,7 +4,6 @@ import { produce } from 'immer'
 
 import setNestedProperty from '../utils/setNestedProperty'
 import generateObject from '../utils/generateObject'
-import { DataType, SystemType, TypeData } from '../types/system'
 
 import EditObject from './EditObject'
 import Modal from '../components/Modal'
@@ -19,6 +18,8 @@ import Textarea from '../components/inputs/Textarea'
 import { editorState } from '../state/editor'
 import { useSystem } from '../hooks/useSystem'
 
+import { type SystemType, type TypeData, type DataType } from '../newstorage/schemas/system'
+
 type ModalProps = {
   onDelete?(): void;
   onSave(newData: any): void;
@@ -31,7 +32,7 @@ type ModalProps = {
 
 function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data }: ModalProps) {
   const editor = editorState.useValue()
-  const { system } = useSystem(editor.systemId)
+  const system = useSystem(editor.systemId)
 
   const [dataCopy, setDataCopy] = useState<DataType>({ name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' })
 
@@ -148,7 +149,7 @@ function getComponentFromType(type: SystemType, data: any, dataCopy: any, typeDa
       return (
         <Select id={label} label={label} value={data} onChange={val => setProperty('data', dataCopy, val)}>
           {
-            typeData.options.map((option: string) => <option key={option} value={option}>{option}</option>)
+            typeData.options?.map((option: string) => <option key={option} value={option}>{option}</option>)
           }
         </Select>
       )
