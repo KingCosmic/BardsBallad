@@ -1,9 +1,19 @@
-import { pullUpdatesForCharacters, pushUpdatesForCharacters, setSyncedCharacters } from '../lib/api'
+import { checkInternetAccess, pullUpdatesForCharacters, pushUpdatesForCharacters, setSyncedCharacters } from '../lib/api'
 import { openModal } from '../state/modals'
 import { db } from '../storage'
 import { type Character } from '../storage/schemas/character'
 
 const batchSize = 10
+
+// set our initial value to the navigator value.
+// this checks the device is connected, not if that internet is working.
+let isOnline = navigator.onLine
+
+// this checks if the user has internet / the server is reachable.
+// this is better than the navigator value since it checks if the server is reachable.
+checkInternetAccess().then((val) => {
+  isOnline = val
+})
 
 async function handleConflicts(conflicts: { local: Character, remote: Character }[]): Promise<Character[]> {
   if (conflicts.length === 0) return []
@@ -20,6 +30,7 @@ async function handleConflicts(conflicts: { local: Character, remote: Character 
 }
 
 export const sync = async () => {
+  if (!isOnline) return
 
   // Update synced characters array first.
   const synced = JSON.parse(localStorage.getItem('synced_characters') || '[]')
@@ -87,8 +98,16 @@ export const sync = async () => {
   // TODO: setup websocket connection for real-time updates.
 }
 
-window.addEventListener('online', () => {
+window.addEventListener('online', async () => {
   console.log('online')
+
+  const isConnected = await checkInternetAccess()
+  
+  if (!isConnected) {
+    console.log('not connected')
+    isOnline = false
+    return
+  }
 
   sync()
 })
