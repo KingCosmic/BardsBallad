@@ -13,11 +13,13 @@ type User = {
 type AuthState = {
   isLoggedIn: boolean;
   user: User | null;
+  synced_characters: string[];
 }
 
 const defaultState: AuthState = {
   isLoggedIn: false,
-  user: null
+  user: null,
+  synced_characters: []
 }
 
 export const authState = newRidgeState<AuthState>(defaultState)
@@ -27,7 +29,7 @@ export const loadToken = () => {
 
   if (token) {
     const user = jwtDecode<User>(token)
-    authState.set({ isLoggedIn: true, user })
+    authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers })
   }
 }
 
@@ -35,8 +37,14 @@ export const saveToken = (token: string) => {
   localStorage.setItem('token', token)
 
   const user = jwtDecode<User>(token)
+  console.log('decoded', user)
 
-  authState.set({ isLoggedIn: true, user })
+  authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers })
+}
+
+export const updateSyncedCharacters = (characters: string[]) => {
+  authState.set((prev) => ({ ...prev, synced_characters: characters }))
+  localStorage.setItem('synced_characters', JSON.stringify(characters))
 }
 
 export const logout = () => {

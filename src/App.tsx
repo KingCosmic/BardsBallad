@@ -14,6 +14,11 @@ import Auth from './pages/Auth'
 import { applyTheme } from './state/settings'
 import Settings from './pages/Settings'
 
+import { sync } from './sync'
+
+// @ts-ignore
+window.trySync = sync
+
 applyTheme()
 
 const App: React.FC = () => {

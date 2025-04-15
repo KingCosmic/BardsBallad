@@ -1,3 +1,4 @@
+import { authState } from '../../../state/auth'
 import { db } from '../../index'
 import CharacterSchema from '../../schemas/character'
 
@@ -5,11 +6,16 @@ import { v4 as uuidv4 } from 'uuid'
 
 export default async (name: string, data: any, system: { id: string, name: string, version: string }) => {
   try {
+    const { user } = authState.get()
+
+    const user_id = user?.id || 'none'
+    const device_id = localStorage.getItem('deviceId') || 'none'
+
     // validate character format.
     const characterData = {
-      local_id: uuidv4(),
+      local_id: `${device_id}-${uuidv4()}`,
 
-      user_id: 'none', // TODO:(Cosmic) set this up to pull from our auth user id and default to "NONE" if not set
+      user_id: user_id,
 
       name: name,
       data: data,

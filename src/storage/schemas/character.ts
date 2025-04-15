@@ -1,3 +1,4 @@
+import { last } from 'rxjs';
 import { z } from 'zod';
 
 const characterSchema = z.object({

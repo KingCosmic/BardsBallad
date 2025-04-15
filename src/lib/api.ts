@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { saveToken } from '../state/auth'
-import { RxReplicationWriteToMasterRow } from 'rxdb'
+import { saveToken, updateSyncedCharacters } from '../state/auth'
 import { getDeviceIdentifier } from '../utils/getDeviceName'
+import { type Character } from '../storage/schemas/character'
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/v1',
@@ -24,6 +24,8 @@ api.interceptors.response.use((response) => {
   const newToken = response.headers['authorization']
   const apiKey = response.headers['x-api-key']
 
+  console.log(response.headers)
+
   if (newToken) {
     // Remove 'Bearer ' prefix if it exists and save the token
     const token = newToken.replace('Bearer ', '')
@@ -38,6 +40,15 @@ api.interceptors.response.use((response) => {
 }, (error) => {
   return Promise.reject(error)
 })
+
+export const checkInternetAccess = async () => {
+  try {
+    const response = await api.get('/ping');
+    return response.status === 200;
+  } catch (err) {
+    return false;
+  }
+}
 
 export const register = async (username: string, email: string, password: string) => {
   const response = await api.post('/auth/register', { username, email, password, deviceName: await getDeviceIdentifier() })
@@ -70,12 +81,18 @@ export const logout = async () => {
 }
 
 export const setSyncedCharacters = async (characters: string[]) => {
+  updateSyncedCharacters(characters)
   const response = await api.post('/characters/change-synced', { characterIds: characters })
+
+  updateSyncedCharacters(characters)
 
   return response.data
 }
 
-export const pullUpdatesForCharacters = async (checkpointOrNull: { updatedAt: number, id: string } | null, batchSize: number) => {
+export const pullUpdatesForCharacters = async (checkpointOrNull: { updatedAt: number, id: string } | null, batchSize: number): Promise<{
+  documents: Character[];
+  checkpoint: { id: number, updatedAt: string };
+}> => {
   const updatedAt = checkpointOrNull?.updatedAt || 0
   const id = checkpointOrNull?.id || ''
   
@@ -88,8 +105,8 @@ export const pullUpdatesForCharacters = async (checkpointOrNull: { updatedAt: nu
   }).then((response) => response.data)
 }
 
-export const pushUpdatesForCharacters = async (rows: RxReplicationWriteToMasterRow<unknown>[]) => {
-  return await api.post('/characters/push', rows).then((response) => response.data)
+export const pushUpdatesForCharacters = async (items: Character[]) => {
+  return await api.post('/characters/push', items).then((response) => response.data)
 }
 
 export default api

@@ -9,10 +9,11 @@ import { openModal } from '../state/modals'
 import { authState } from '../state/auth'
 
 import { renameCharacter, deleteCharacter } from '../storage/methods/characters'
+import { setSyncedCharacters } from '../lib/api'
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters()
-  const { isLoggedIn, user } = authState.useValue()
+  const { isLoggedIn, user, synced_characters } = authState.useValue()
 
   const [isCreating, setIsCreating] = useState(false)
 
@@ -62,14 +63,21 @@ const Characters: React.FC = () => {
                   isLoggedIn && (
                     <button
                       onClick={() => {
-                        // toggleSyncingCharacter(char.local_id)
+                        let newSynced: string[] = []
+                        if (synced_characters.includes(char.local_id)) {
+                          newSynced = synced_characters.filter((c: string) => c !== char.local_id)
+                        } else if (length < 3) {
+                          newSynced = [...synced_characters, char.local_id]
+                        }
+
+                        setSyncedCharacters(newSynced)
                       }}
                       className="mr-auto inline-flex items-center px-3 py-1.5 text-sm font-medium text-brand-600 hover:bg-brand-50 rounded-md dark:text-brand-400 dark:hover:bg-brand-700"
                     >
                       <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                       </svg>
-                      {user?.synced_characers?.includes(char.local_id) ? 'UnSync' : 'Sync'}
+                      {synced_characters.includes(char.local_id) ? 'UnSync' : 'Sync'}
                     </button>
                   )
                 }
