@@ -29,7 +29,7 @@ export const loadToken = () => {
 
   if (token) {
     const user = jwtDecode<User>(token)
-    authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers })
+    authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers || [] })
   }
 }
 
@@ -39,7 +39,7 @@ export const saveToken = (token: string) => {
   const user = jwtDecode<User>(token)
   console.log('decoded', user)
 
-  authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers })
+  authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers || [] })
 
   return user
 }

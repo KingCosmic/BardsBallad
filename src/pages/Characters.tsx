@@ -36,8 +36,6 @@ const Characters: React.FC = () => {
               key={char.local_id}
               className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
             >
-              <div className='absolute -top-3 -right-3 h-8 w-8 bg-purple-400 rounded-full'></div>
-
               <NavLink
                 to={char.local_id}
                 className="flex items-start space-x-4"
