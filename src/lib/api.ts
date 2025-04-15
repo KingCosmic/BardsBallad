@@ -84,7 +84,13 @@ export const login = async (username: string, password: string) => {
 }
 
 export const logout = async () => {
-
+  localStorage.removeItem('token')
+  localStorage.removeItem('apiKey')
+  localStorage.removeItem('deviceId')
+  localStorage.removeItem('synced_characters')
+  localStorage.removeItem('sync_checkpoint')
+  
+  // TODO: remove local data, plus clear auth state.
 }
 
 export const setSyncedCharacters = async (characters: string[]) => {

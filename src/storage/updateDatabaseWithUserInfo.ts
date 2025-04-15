@@ -20,7 +20,7 @@ export async function updateDatabaseWithUserInfo(user_id: string, device_id: str
     updatedChars.push({
       ...char,
       user_id: user_id,
-      local_id: `${device_id}-${char.local_id}`,
+      local_id: `${device_id}-${_snowflake}`,
     })
   })
 

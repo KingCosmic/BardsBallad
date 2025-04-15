@@ -1,4 +1,6 @@
+import { jwtDecode } from 'jwt-decode'
 import { checkInternetAccess, pullUpdatesForCharacters, pushUpdatesForCharacters, setSyncedCharacters } from '../lib/api'
+import { AuthStorage, SyncStorage } from '../lib/storage'
 import { openModal } from '../state/modals'
 import { db } from '../storage'
 import { type Character } from '../storage/schemas/character'
@@ -14,6 +16,10 @@ let isOnline = navigator.onLine
 checkInternetAccess().then((val) => {
   isOnline = val
 })
+
+setInterval(async () => {
+  isOnline = await checkInternetAccess()
+}, 5 * 60 * 1000) // every 5 minutes.
 
 async function handleConflicts(conflicts: { local: Character, remote: Character }[]): Promise<Character[]> {
   if (conflicts.length === 0) return []
@@ -37,7 +43,11 @@ export const sync = async () => {
 
   await setSyncedCharacters(synced)
 
-  const cp = localStorage.getItem('sync_checkpoint')
+  const user = jwtDecode<{ role: number }>(await AuthStorage.get('token'))
+
+  if (!user) return
+
+  const cp = await SyncStorage.get('sync_checkpoint')
   console.log('syncing')
 
   const localDocuments = await db.characters.toArray()
@@ -46,7 +56,7 @@ export const sync = async () => {
   while (pullUpdates) {
     const { checkpoint, documents } = await pullUpdatesForCharacters(cp ? JSON.parse(cp) : null, batchSize)
 
-    localStorage.setItem('sync_checkpoint', JSON.stringify(checkpoint))
+    await SyncStorage.set('sync_checkpoint', checkpoint)
 
     console.log('sync checkpoint', checkpoint)
     console.log('sync documents', documents)
@@ -75,11 +85,24 @@ export const sync = async () => {
     console.log('bulk put', documents.length)
   }
 
-  // TODO: filter localDocuments to only those in our synced array if the user isn't premium.
+  const updatedCharacters = await SyncStorage.get('updated_characters') || []
+  const localDocumentsToPush = localDocuments.filter(c => {
+    const isPremium = user.role > 0
+    const isSynced = synced.includes(c.local_id)
+    const isUpdated = updatedCharacters.includes(c.local_id)
+
+    // premium users can push all characters.
+    if (isPremium && isUpdated) return true
+
+    // free users can only push synced characters.
+    if (isSynced && isUpdated) return true
+
+    return false
+  })
 
   let pushUpdates = true
   while (pushUpdates) {
-    const pushConflicts = await pushUpdatesForCharacters(localDocuments)
+    const pushConflicts = await pushUpdatesForCharacters(localDocumentsToPush)
 
     if (pushConflicts.length === 0) {
       pushUpdates = false

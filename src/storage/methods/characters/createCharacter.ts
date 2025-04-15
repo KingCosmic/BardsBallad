@@ -1,3 +1,4 @@
+import { SyncStorage } from '../../../lib/storage'
 import { authState } from '../../../state/auth'
 import { db } from '../../index'
 import CharacterSchema from '../../schemas/character'
@@ -33,6 +34,11 @@ export default async (name: string, data: any, system: { id: string, name: strin
         console.log('Invalid character data:', result.error.format());
         return;
       }
+    }
+
+    let updatedChars = await SyncStorage.get('updated_characters') || []
+    if (!updatedChars.includes(characterData.local_id)) {
+      await SyncStorage.set('updated_characters', [ ...updatedChars, characterData.local_id ])
     }
 
     return await db.characters.add(characterData);

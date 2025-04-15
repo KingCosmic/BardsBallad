@@ -48,5 +48,7 @@ class Storage {
 }
 
 export const SettingsStorage = new Storage('settings')
+export const AuthStorage = new Storage('auth')
+export const SyncStorage = new Storage('sync')
 
 export default Storage
