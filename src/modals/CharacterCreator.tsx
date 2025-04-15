@@ -108,7 +108,7 @@ function CharacterCreatorModal(props: any) {
       <ModalBody>
         {tab === 0 && (
           <>
-            <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={!characters.find(c => c.name === characterData.name)} errorMessage='Names must be unique' />
+            <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={(!characters.find(c => c.name === characterData.name) && (characterData.name.length > 0))} errorMessage='Names must be unique and not empty.' />
 
             <Select id='character-system' label='Tabletop System' value={system.name} onChange={(name) => {
               const sys = systems.find(s => s.name === name)

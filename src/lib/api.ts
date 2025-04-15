@@ -2,6 +2,7 @@ import axios from 'axios'
 import { saveToken, updateSyncedCharacters } from '../state/auth'
 import { getDeviceIdentifier } from '../utils/getDeviceName'
 import { type Character } from '../storage/schemas/character'
+import { updateDatabaseWithUserInfo } from '../storage/updateDatabaseWithUserInfo'
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/v1',
@@ -41,6 +42,8 @@ api.interceptors.response.use((response) => {
   return Promise.reject(error)
 })
 
+// Technically this doesn't check internet access, but rather if the server is reachable
+// The client should be considered offline if they have no internet or the server isn't reachable.
 export const checkInternetAccess = async () => {
   try {
     const response = await api.get('/ping');
@@ -57,10 +60,12 @@ export const register = async (username: string, email: string, password: string
 
   if (!(accessToken | apiKey | deviceId)) return
 
-  saveToken(accessToken)
+  const user = saveToken(accessToken)
 
   localStorage.setItem('apiKey', apiKey)
   localStorage.setItem('deviceId', deviceId)
+
+  updateDatabaseWithUserInfo(user.id, deviceId)
 }
 
 export const login = async (username: string, password: string) => {
@@ -70,10 +75,12 @@ export const login = async (username: string, password: string) => {
 
   if (!(accessToken | apiKey | deviceId)) return
 
-  saveToken(accessToken)
+  const user = saveToken(accessToken)
 
   localStorage.setItem('apiKey', apiKey)
   localStorage.setItem('deviceId', deviceId)
+
+  updateDatabaseWithUserInfo(user.id, deviceId)
 }
 
 export const logout = async () => {

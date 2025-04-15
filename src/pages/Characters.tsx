@@ -60,7 +60,7 @@ const Characters: React.FC = () => {
 
               <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
                 {
-                  isLoggedIn && (
+                  (isLoggedIn && user?.role === 0) && (
                     <button
                       onClick={() => {
                         let newSynced: string[] = []

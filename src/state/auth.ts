@@ -40,6 +40,8 @@ export const saveToken = (token: string) => {
   console.log('decoded', user)
 
   authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers })
+
+  return user
 }
 
 export const updateSyncedCharacters = (characters: string[]) => {
