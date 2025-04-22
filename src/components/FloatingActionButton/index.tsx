@@ -30,7 +30,7 @@ const FloatingActionButton: React.FC<FABProps> = forwardRef(({ buttons, onClick,
             >
               <path d='M14.419 10.581a3.564 3.564 0 0 0-2.574 1.1l-4.756-2.49a3.54 3.54 0 0 0 .072-.71 3.55 3.55 0 0 0-.043-.428L11.67 6.1a3.56 3.56 0 1 0-.831-2.265c.006.143.02.286.043.428L6.33 6.218a3.573 3.573 0 1 0-.175 4.743l4.756 2.491a3.58 3.58 0 1 0 3.508-2.871Z' />
             </svg>
-            <span className='absolute block mb-px text-sm font-medium -translate-x-2 -translate-y-1/2 -start-14 top-1/2 shadow-black'>
+            <span className='absolute block mb-px text-sm font-medium -translate-x-[100%] -translate-y-1/2 -start-3 top-1/2 shadow-black'>
               {btn.name}
             </span>
           </button>

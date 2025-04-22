@@ -7,6 +7,8 @@ import EditStringModal from '../modals/EditString'
 import EditNumberModal from '../modals/EditNumber'
 import ConfirmModal from '../modals/ConfirmModal'
 import HandleConflicts from '../modals/HandleConflicts'
+import AuthModal from '../modals/Auth'
+import ImportFile from '../modals/ImportFile'
 
 // TODO: I'm not sure how we'll grab the types since we're not using the system state anymore.
 
@@ -31,6 +33,20 @@ const ModalManager = () => {
             <HandleConflicts
               key={id}
               data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+            />
+          ) : (modal.type === 'authentication') ? (
+            <AuthModal
+              key={id}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+            />
+          ) : (modal.type === 'import_file') ? (
+            <ImportFile
+              key={id}
+              title={modal.title}
               isOpen={true}
               requestClose={() => closeModal(id)}
               onSave={modal.onSave}

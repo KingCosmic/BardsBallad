@@ -1,8 +1,9 @@
 import axios from 'axios'
-import { saveToken, updateSyncedCharacters } from '../state/auth'
+import { authState, saveToken, updateSyncedCharacters } from '../state/auth'
 import { getDeviceIdentifier } from '../utils/getDeviceName'
 import { type Character } from '../storage/schemas/character'
 import { updateDatabaseWithUserInfo } from '../storage/updateDatabaseWithUserInfo'
+import { db } from '../storage'
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/v1',
@@ -25,8 +26,6 @@ api.interceptors.response.use((response) => {
   const newToken = response.headers['authorization']
   const apiKey = response.headers['x-api-key']
 
-  console.log(response.headers)
-
   if (newToken) {
     // Remove 'Bearer ' prefix if it exists and save the token
     const token = newToken.replace('Bearer ', '')
@@ -41,6 +40,16 @@ api.interceptors.response.use((response) => {
 }, (error) => {
   return Promise.reject(error)
 })
+
+export const testApi = async () => {
+  try {
+    const response = await api.get('/test')
+    return response.data
+  } catch (err) {
+    console.error('Error testing API:', err)
+    return null
+  }
+}
 
 // Technically this doesn't check internet access, but rather if the server is reachable
 // The client should be considered offline if they have no internet or the server isn't reachable.
@@ -89,8 +98,11 @@ export const logout = async () => {
   localStorage.removeItem('deviceId')
   localStorage.removeItem('synced_characters')
   localStorage.removeItem('sync_checkpoint')
-  
-  // TODO: remove local data, plus clear auth state.
+
+  authState.set({ isLoggedIn: false, user: null, synced_characters: [] })
+
+  await db.characters.clear()
+  await db.systems.clear()
 }
 
 export const setSyncedCharacters = async (characters: string[]) => {
@@ -120,6 +132,24 @@ export const pullUpdatesForCharacters = async (checkpointOrNull: { updatedAt: nu
 
 export const pushUpdatesForCharacters = async (items: Character[]) => {
   return await api.post('/characters/push', items).then((response) => response.data)
+}
+
+export const subscribe = async () => {
+  return await api.get('/stripe/create-checkout-session').then((response) => response.data)
+}
+
+export const openBilling = async () => {
+  return await api.get('/stripe/create-portal-session').then((response) => response.data)
+}
+
+export const syncStripeData = async () => {
+  const response = await api.get('/stripe/sync-stripe-data')
+
+  const { newAccessToken } = response.data
+
+  if (!newAccessToken) return
+
+  saveToken(newAccessToken)
 }
 
 export default api

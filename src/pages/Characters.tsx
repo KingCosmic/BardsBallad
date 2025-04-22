@@ -8,16 +8,16 @@ import { useCharacters } from '../hooks/useCharacters'
 import { openModal } from '../state/modals'
 import { authState } from '../state/auth'
 
-import { renameCharacter, deleteCharacter } from '../storage/methods/characters'
+import { renameCharacter, deleteCharacter, importCharacter } from '../storage/methods/characters'
 import { setSyncedCharacters } from '../lib/api'
+import JSONToFile from '../utils/JSONToFile'
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters()
   const { isLoggedIn, user, synced_characters } = authState.useValue()
 
+  const [isOpen, setIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
-
-  console.log(user)
 
   if (isLoading) return <></>
 
@@ -81,6 +81,15 @@ const Characters: React.FC = () => {
                 }
 
                 <button
+                  onClick={() => JSONToFile(char, `${char.name}-export`)}
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md dark:text-blue-400 dark:hover:bg-blue-900/30"
+                >
+                  <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  Export
+                </button>
+                <button
                   onClick={() => openModal({
                     type: 'edit_string',
                     title: 'Rename Character',
@@ -119,7 +128,29 @@ const Characters: React.FC = () => {
           </h5>
         )}
 
-        <FloatingActionButton onClick={() => setIsCreating(true)} />
+        <FloatingActionButton
+            isOpen={isOpen}
+            onClick={() => setIsOpen(!isOpen)}
+            buttons={[
+              { name: 'Create Character', icon: '', onClick: () => setIsCreating(true) },
+              { name: 'Import Character', icon: '', onClick: () => openModal({
+                  type: 'import_file',
+                  title: 'Import Character',
+                  data: undefined,
+                  onSave: async (fileContent: string) => {
+                    try {
+                      const parsed = JSON.parse(fileContent)
+                      if (parsed) {
+                        importCharacter(parsed)
+                      }
+                    } catch (e) {
+                      console.error(e)
+                    }
+                  }
+                })
+              }
+            ]}
+        />
       </div>
     </div>
   )

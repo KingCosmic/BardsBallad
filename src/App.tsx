@@ -9,12 +9,13 @@ import Characters from './pages/Characters'
 import Character from './pages/Character'
 import Library from './pages/Library'
 import System from './pages/System'
-import Auth from './pages/Auth'
 
 import { applyTheme } from './state/settings'
 import Settings from './pages/Settings'
 
 import { sync } from './sync'
+import SubscriptionConfirmation from './pages/SubscriptionConfirmation'
+import Marketplace from './pages/Marketplace'
 
 // @ts-ignore
 window.trySync = sync
@@ -34,13 +35,15 @@ const App: React.FC = () => {
             <Route path=':id' element={<Character />} />
           </Route>
 
+          <Route path='marketplace' element={<Marketplace />} />
+
           <Route path='library' element={<Library />} />
 
           <Route path='library/systems/:id' element={<System />} />
 
           <Route path='settings' element={<Settings />} />
 
-          <Route path='auth' element={<Auth />} />
+          <Route path='subscription-confirmation' element={<SubscriptionConfirmation />} />
         </Route>
       </Routes>
     </BrowserRouter>

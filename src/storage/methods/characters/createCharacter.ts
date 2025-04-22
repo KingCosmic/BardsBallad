@@ -5,7 +5,7 @@ import CharacterSchema from '../../schemas/character'
 
 import { v4 as uuidv4 } from 'uuid'
 
-export default async (name: string, data: any, system: { id: string, name: string, version: string }) => {
+export default async (name: string, data: any, system: { local_id: string, name: string, version: string }) => {
   try {
     const { user } = authState.get()
 

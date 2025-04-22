@@ -10,8 +10,8 @@ export const db = new Dexie('bardsballad') as Dexie & {
 };
 
 db.version(1).stores({
-  characters: '&local_id, name, updatedAt',
-  systems: '&local_id, name',
+  characters: '&local_id, updatedAt, id',
+  systems: '&local_id, id',
   // campaigns: '++id, local_id, name, description, createdAt, updatedAt',
   // settings: '++id, local_id, key, value',
 });

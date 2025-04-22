@@ -1,4 +1,3 @@
-import { last } from 'rxjs';
 import { z } from 'zod';
 
 const characterSchema = z.object({
@@ -13,7 +12,7 @@ const characterSchema = z.object({
   data: z.object({}),
 
   system: z.object({
-    id: z.string(),
+    local_id: z.string(),
     name: z.string(),
     version: z.string()
   }),

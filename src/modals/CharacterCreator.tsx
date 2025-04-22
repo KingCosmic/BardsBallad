@@ -40,7 +40,7 @@ function CharacterCreatorModal(props: any) {
     name: 'Aliza Cartwight',
     data: system?.defaultCharacterData ?? {},
 
-    system: { id: '', name: '', version: '' },
+    system: { local_id: '', name: '', version: '' },
   
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -80,7 +80,7 @@ function CharacterCreatorModal(props: any) {
     if (!sys) return
 
     setSystem(sys)
-    setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.local_id, name: sys.name, version: sys.version } })
+    setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { local_id: sys.local_id, name: sys.name, version: sys.version } })
   }, [systems])
 
   if (!props.isOpen) return <></>
@@ -115,7 +115,7 @@ function CharacterCreatorModal(props: any) {
               if (!sys) return
 
               setSystem(sys)
-              setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.local_id, name: sys.name, version: sys.version } })
+              setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { local_id: sys.local_id, name: sys.name, version: sys.version } })
             }}>
               {systems.map((sys) => <option key={sys.name} value={sys.name}>{sys.name}</option>)}
             </Select>

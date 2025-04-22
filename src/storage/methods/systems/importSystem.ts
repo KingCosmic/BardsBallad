@@ -4,23 +4,25 @@ import { db } from '../../index'
 
 export default async (sys: System) => {
   try {
-    let local_id = `${'deviceId'}-${uuidv4()}`
+    let local_id = sys.local_id || `${'deviceId'}-${uuidv4()}`
 
-    while (await db.systems.get(local_id) !== undefined) {
+    if (await db.systems.get({ id: sys.id || '' }) !== undefined) {
+      console.log('System already exists in the database')
+      return
+    }
+
+    let existingSystem = await db.systems.get({ local_id })
+
+    while (existingSystem !== undefined) {
       // Generate a new id until we find one that doesn't exist in the database
       local_id = `${'deviceId'}-${uuidv4()}`
+      existingSystem = await db.systems.get({ local_id })
     }
 
     const sysData = {
       ...sys,
       local_id,
-
-      user_id: 'none', // TODO:(Cosmic) set this up to pull from our auth user id and default to "NONE" if not set
-
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-
-      isDeleted: false,
+      updatedAt: new Date().toISOString()
     }
 
     // if (process.env.VITE_PUBLIC_VALIDATE_SCHEMA === 'true') {
