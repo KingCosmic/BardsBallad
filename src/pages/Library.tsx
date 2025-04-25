@@ -8,10 +8,11 @@ import FloatingActionButton from '../components/FloatingActionButton'
 import { useState } from 'react'
 import { openModal } from '../state/modals'
 import importSystem from '../storage/methods/systems/importSystem'
+import { useSubscriptions } from '../hooks/useSubscriptions'
+import SubscriptionCard from '../components/Library/SubscriptionCard'
 
 const Library: React.FC = () => {
-  const { systems, isLoading } = useSystems()
-  const themes = themesState.useValue()
+  const { subscriptions, isLoading } = useSubscriptions()
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -22,36 +23,23 @@ const Library: React.FC = () => {
       <div className='p-4'>
         {/* TODO: Searchbar */}
 
-        {
-          isLoading && (
-            <h5>Loading...</h5>
-          ) || !systems && (
-            <h5>
-              Doesn't look like you have any systems, refreshing should load a backup of dnd5e
-            </h5>
-          ) || (
-            <div className='flex flex-col gap-4'>
+        {/* <Searchbar placeholder='' onSearch={() => {}} /> */}
 
-              <div>
-                <h4 className='mb-1 text-xl'>Your Systems</h4>
-                <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-                  {systems.map((sys) => (
-                    <SystemCard key={sys.local_id} sys={sys} />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 className='mb-1 text-xl'>Your Themes</h4>
-                <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-                  {themes.map((theme) => (
-                    <ThemeCard key={theme.name} theme={theme} />
-                  ))}
-                </div>
+        {isLoading ? (
+          <h5 className='mb-4 text-xl'>Loading...</h5>
+        ) : (
+          <h5 className='flex flex-col gap-4'>
+            <div>
+              <h4 className='mb-2 text-xl'>Subscribed Systems</h4>
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+                {subscriptions.filter(sub => sub.resource_type === 'system').map((sys) => (
+                  // @ts-ignore
+                  <SubscriptionCard key={sys.local_id} subscription={sys} />
+                ))}
               </div>
             </div>
-          )
-        }
+          </h5>
+        )}
 
         <FloatingActionButton isOpen={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} buttons={[
           { name: 'Create System', icon: '', onClick: () => {} },

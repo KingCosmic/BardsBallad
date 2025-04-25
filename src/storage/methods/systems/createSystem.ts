@@ -20,7 +20,7 @@ export default async (sys: System) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
 
-      isDeleted: false,
+      deleted_at: null,
     }
 
     // if (process.env.VITE_PUBLIC_VALIDATE_SCHEMA === 'true') {
@@ -32,7 +32,8 @@ export default async (sys: System) => {
       }
     }
 
-    return await db.systems.add(sysData);
+    await db.systems.add(sysData);
+    return sysData
   } catch (e) {
     console.log('Error creating system:', e);
   }

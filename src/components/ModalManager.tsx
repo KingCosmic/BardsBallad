@@ -9,6 +9,7 @@ import ConfirmModal from '../modals/ConfirmModal'
 import HandleConflicts from '../modals/HandleConflicts'
 import AuthModal from '../modals/Auth'
 import ImportFile from '../modals/ImportFile'
+import MarketplaceViewModal from '../modals/MarketplaceView'
 
 // TODO: I'm not sure how we'll grab the types since we're not using the system state anymore.
 
@@ -33,6 +34,15 @@ const ModalManager = () => {
             <HandleConflicts
               key={id}
               data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+            />
+          ) : (modal.type === 'marketplace_view') ? (
+            <MarketplaceViewModal
+              key={id}
+              data={modal.data}
+              title={modal.title}
               isOpen={true}
               requestClose={() => closeModal(id)}
               onSave={modal.onSave}

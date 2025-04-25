@@ -2,6 +2,8 @@ import { forwardRef, HTMLAttributes, PropsWithChildren, StyleHTMLAttributes } fr
 
 type SelectProps = {
   id: string;
+  containerClassName?: string;
+  labelClassName?: string;
   className?: string;
   label: string;
   value: string;
@@ -10,13 +12,13 @@ type SelectProps = {
   style?: React.CSSProperties;
 }
 
-const Select: React.FC<PropsWithChildren<SelectProps>> = forwardRef(({ id, label, value, onChange, children, style, className }, ref) => {
+const Select: React.FC<PropsWithChildren<SelectProps>> = forwardRef(({ id, label, value, onChange, children, style, containerClassName, labelClassName, className }, ref) => {
   return (
     // @ts-ignore
-    <div className={`mb-6`} style={style} ref={ref}>
+    <div className={containerClassName ? containerClassName : `mb-6`} style={style} ref={ref}>
       <label
         htmlFor={id}
-        className='block mb-2 text-sm font-medium text-neutral-900 dark:text-white'
+        className={`block mb-2 text-sm font-medium text-neutral-900 dark:text-white ${labelClassName}`}
       >
         {label}
       </label>

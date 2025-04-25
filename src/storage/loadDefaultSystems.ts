@@ -1,29 +1,35 @@
 import dnd5eData from '../lib/backup-dnd5e.json'
 import { db } from '.'
 
+import { v4 as uuidv4 } from 'uuid'
+
+import baseData from '../lib/newsystemschema/system.json'
+import versionData from '../lib/newsystemschema/systemversion.json'
+
 export async function loadDefaultSystems() {
-  // Check if we already have systems
-  const systemCount = await db.systems.count()
-  
-  if (systemCount > 0) {
-    return // Systems already loaded
-  }
 
-  // Load default systems
-  const defaultSystems = [
-    {
-      ...dnd5eData,
-
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isDeleted: false,
-    }
-    // Add other default systems here
-  ]
+  if ((await db.subscriptions.toArray()).length > 0) return
 
   try {
     // Insert all default systems
-    await db.systems.bulkAdd(defaultSystems)
+    await db.subscriptions.add({
+      local_id: `none-${uuidv4()}`,
+    
+      user_id: 'none',
+    
+      resource_type: 'system',
+      resource_id: baseData.local_id,
+      subscribedAt: new Date().toISOString(),
+      version_id: versionData.local_id,
+      autoUpdate: true,
+      pinned: false,
+    
+      deleted_at: null,
+    })
+    // @ts-ignore
+    await db.systems.add(baseData)
+    // @ts-ignore
+    await db.versions.add(versionData)
     console.log('Default systems loaded successfully')
   } catch (error) {
     console.error('Error loading default systems:', error)

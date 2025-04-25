@@ -35,26 +35,26 @@ async function handleConflicts(conflicts: { local: Character, remote: Character 
   })
 }
 
-export const sync = async () => {
-  if (!isOnline) return
+type PullFunction = (checkpointOrNull: {
+  updatedAt: number;
+  id: string;
+} | null, batchSize: number) => Promise<{
+  documents: Character[];
+  checkpoint: {
+    id: number;
+    updatedAt: string;
+  };
+}>
 
-  // Update synced characters array first.
-  const synced = JSON.parse(localStorage.getItem('synced_characters') || '[]')
+type PushFunction = (localDocuments: any[]) => Promise<{ local: Character, remote: Character }[]>
 
-  await setSyncedCharacters(synced)
-
-  const user = jwtDecode<{ role: number }>(await AuthStorage.get('token'))
-
-  if (!user) return
-
+async function handlePullUpdates(pull: PullFunction, localDocuments: any[]) {
   const cp = await SyncStorage.get('sync_checkpoint')
   console.log('syncing')
 
-  const localDocuments = await db.characters.toArray()
-
   let pullUpdates = true
   while (pullUpdates) {
-    const { checkpoint, documents } = await pullUpdatesForCharacters(cp ? JSON.parse(cp) : null, batchSize)
+    const { checkpoint, documents } = await pull(cp ? JSON.parse(cp) : null, batchSize)
 
     await SyncStorage.set('sync_checkpoint', checkpoint)
 
@@ -84,25 +84,12 @@ export const sync = async () => {
 
     console.log('bulk put', documents.length)
   }
+}
 
-  const updatedCharacters = await SyncStorage.get('updated_characters') || []
-  const localDocumentsToPush = localDocuments.filter(c => {
-    const isPremium = user.role > 0
-    const isSynced = synced.includes(c.local_id)
-    const isUpdated = updatedCharacters.includes(c.local_id)
-
-    // premium users can push all characters.
-    if (isPremium && isUpdated) return true
-
-    // free users can only push synced characters.
-    if (isSynced && isUpdated) return true
-
-    return false
-  })
-
+async function handlePushingUpdates(push: PushFunction, localDocuments: any[]) {
   let pushUpdates = true
   while (pushUpdates) {
-    const pushConflicts = await pushUpdatesForCharacters(localDocumentsToPush)
+    const pushConflicts = await push(localDocuments)
 
     if (pushConflicts.length === 0) {
       pushUpdates = false
@@ -117,6 +104,66 @@ export const sync = async () => {
     console.log('documents pushed', localDocuments.length)
     console.log('conflicts handled', pushConflicts.length)
   }
+}
+
+export const sync = async () => {
+  if (!isOnline) return
+
+  // Update synced characters array first.
+  const synced = JSON.parse(localStorage.getItem('synced_characters') || '[]')
+
+  await setSyncedCharacters(synced)
+
+  const user = jwtDecode<{ role: number }>(await AuthStorage.get('token'))
+
+  if (!user) return
+
+  // Systems need to be synced *FIRST* just on the offchance that syncing fails halfway through, another
+  // client won't download a character that references a system that doesn't exist.
+  // downloading a system that isn't being used is fine, but downloading a character that references a system that doesn't exist is bad.
+
+  // TODO: Sync Systems before characters.
+
+  const localCharacters = await db.characters.toArray()
+
+  const updatedCharacters = await SyncStorage.get('updated_characters') || []
+  const localCharactersToPush = localCharacters.filter(c => {
+    const isPremium = user.role > 0
+    const isSynced = synced.includes(c.local_id)
+    const isUpdated = updatedCharacters.includes(c.local_id)
+
+    // premium users can push all characters.
+    if (isPremium && isUpdated) return true
+
+    // free users can only push synced characters.
+    if (isSynced && isUpdated) return true
+
+    return false
+  })
+
+  /* Systems */
+
+  const localSystems = await db.systems.toArray()
+
+  await handlePullUpdates(pullUpdatesForCharacters, localSystems)
+
+  const systemsToPush = localSystems.filter(s => {
+    const pushedCharacterRef = localCharactersToPush.find(c => c.system.local_id === s.local_id)
+
+    // TODO: in the future we want to check if this system is updated aswell.
+    // rn we're just checking if a updated character references this system.
+    return pushedCharacterRef !== undefined
+  })
+
+  await handlePushingUpdates(pushUpdatesForCharacters, systemsToPush)
+
+  /* Characters */
+
+  await handlePullUpdates(pullUpdatesForCharacters, localCharacters)
+  console.log('documents pulled', localCharacters.length)
+
+
+  await handlePushingUpdates(pushUpdatesForCharacters, localCharactersToPush)
 
   // TODO: setup websocket connection for real-time updates.
 }
