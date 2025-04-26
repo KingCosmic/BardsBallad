@@ -6,7 +6,7 @@ import { createSystem } from '../../storage/methods/systems';
 import createVersionedResource from '../../storage/methods/versionedresources/createVersionedResource';
 import { System } from '../../storage/schemas/system';
 import { VersionedResource } from '../../storage/schemas/versionedResource';
-import { redirect } from 'react-router';
+import { useNavigate } from 'react-router';
 
 type Props = {
   subscription: UserSubscription
@@ -30,6 +30,7 @@ const forkSystem = async (baseData: System, versionData: VersionedResource) => {
 
 const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
   const { query, isLoading } = useSubscriptionData(subscription)
+  let navigate = useNavigate();
 
   const { user } = authState.useValue()
 
@@ -37,12 +38,13 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
 
   const { baseData, versionData } = query
 
+  // we are considered the owner if our user id's match or if the subscription doesn't have a user id and server provided id
   const isOwner = (user && baseData.user_id && user.id === baseData.user_id) || (!baseData.user_id && !baseData.id)
 
   return (
     <div
       key={subscription.local_id}
-      className="relative flex flex-col max-w-96 p-4 tranasition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
+      className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
     >
       <div className="flex items-start space-x-4">
         <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
@@ -61,10 +63,10 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
 
       <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
         <button
-          onClick={async () => {
+          onClick={() => {
             if (isOwner) {
               // direct to editor.
-              return redirect(`/${subscription.resource_type}/${baseData.local_id}`)
+              return navigate(`/library/${subscription.resource_type}/${versionData.local_id}`)
             }
 
             // fork

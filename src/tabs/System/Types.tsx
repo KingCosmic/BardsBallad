@@ -8,13 +8,15 @@ import Button from '../../components/inputs/Button'
 import Accordion from '../../components/Accordion'
 import { addSystemType, addTypeProperty, deleteSystemType, deleteTypeProperty, renameSystemType, updateTypeProperty } from '../../storage/methods/systems'
 
-import { type System, type TypeData } from '../../storage/schemas/system'
+import { SystemType, type System, type TypeData } from '../../storage/schemas/system'
+import { VersionedResource } from '../../storage/schemas/versionedResource'
 
 type TypesProps = {
   system: System
+  versionedResource: VersionedResource
 }
 
-const Types: React.FC<TypesProps> = ({ system }) => {
+const Types: React.FC<TypesProps> = ({ system, versionedResource }) => {
   const [editData, setEditData] = useState<{
     key: string;
     typeData: TypeData;
@@ -29,32 +31,32 @@ const Types: React.FC<TypesProps> = ({ system }) => {
     <>
       <EditTypeModal data={editData} isOpen={editData !== null}
         requestClose={() => setEditData(null)}
-        onSave={(data) => updateTypeProperty(system.local_id, editData?.typeName || '', editData?.key || '', data)}
-        onDelete={() => deleteTypeProperty(system.local_id, editData?.typeName || '', editData?.key || '')}
+        onSave={(data) => updateTypeProperty(versionedResource.local_id, editData?.typeName || '', editData?.key || '', data)}
+        onDelete={() => deleteTypeProperty(versionedResource.local_id, editData?.typeName || '', editData?.key || '')}
       />
 
       <EditStringModal data={editName} isOpen={editName !== null}
         requestClose={() => setEditName(null)}
-        onSave={(data) => renameSystemType(system.local_id, editName || '', data)}
+        onSave={(data) => renameSystemType(versionedResource.local_id, editName || '', data)}
       />
       
       {/* TODO: Searchbar */}
 
       <AccordionGroup>
-        {system?.types.map((type, i) => (
+        {versionedResource.data.types.map((type: SystemType, i: number) => (
           <Accordion key={type.name} id={type.name} title={type.name} isOpen={openAccordion === i} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? i : -1)}>
             <div>
               <Button color='light' onClick={() => setEditName(type.name)}>Edit Name</Button>
 
               <Button color='light' onClick={async () => {
-                const propertyType = await addTypeProperty(system.local_id, type.name)
+                const propertyType = await addTypeProperty(versionedResource.data.local_id, type.name)
 
                 if (!propertyType) return
 
                 setEditData({ ...propertyType, typeName: type.name })
               }}>Add Property</Button>
 
-              <Button color='danger' onClick={() => deleteSystemType(system.local_id, type.name)}>Delete Type</Button>
+              <Button color='danger' onClick={() => deleteSystemType(versionedResource.local_id, type.name)}>Delete Type</Button>
             </div>
 
             <div className='flex flex-col gap-1 mt-3'>
@@ -76,7 +78,7 @@ const Types: React.FC<TypesProps> = ({ system }) => {
       </AccordionGroup>
 
       <FloatingActionButton onClick={async () => {
-        await addSystemType(system.local_id, 'New Type')
+        await addSystemType(versionedResource.data.local_id, 'New Type')
         setEditName('New Type')
       }} />
     </>

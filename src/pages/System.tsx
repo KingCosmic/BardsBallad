@@ -24,19 +24,21 @@ import TextInput from '../designer/components/Input/Editor'
 import { useSystem } from '../hooks/useSystem'
 import { updateLexical } from '../storage/methods/systems'
 import { useEffect } from 'react'
+import { useVersionResource } from '../hooks/useVersionResource'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
-  const system = useSystem(id)
+  const versionedResource = useVersionResource(id)
+  const system = useSystem(versionedResource?.reference_id)
 
   const editor = editorState.useValue()
 
   useEffect(() => {
-    editorState.set((prev) => ({ ...prev, systemId: id ?? '' }))
+    editorState.set((prev) => ({ ...prev, versionId: id ?? '' }))
   }, [id])
 
-  if (!system || !id) return <>loading...</>
+  if (!id || !versionedResource || !system) return <>loading...</>
 
   return (
     <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updateLexical(id, editor.tab, query.serialize())}>
@@ -55,17 +57,17 @@ const System: React.FC = () => {
 
           {
             (editor.tab === 'character') ? (
-              <Character system={system} />
+              <Character system={system} versionedResource={versionedResource} />
             ) : (editor.tab === 'data') ? (
-              <Data system={system} />
+              <Data system={system} versionedResource={versionedResource} />
             ) : (editor.tab === 'types') ? (
-              <Types system={system} />
+              <Types system={system} versionedResource={versionedResource} />
             ) : (editor.tab === 'functions') ? (
-              <Functions system={system} />
+              <Functions system={system} versionedResource={versionedResource} />
             ) : (editor.tab === 'editor') ? (
-              <Editor system={system} />
+              <Editor system={system} versionedResource={versionedResource} />
             ) : (editor.tab === 'creator') && (
-              <Creator system={system} />
+              <Creator system={system} versionedResource={versionedResource} />
             )
           }
         </div>

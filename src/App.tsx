@@ -37,9 +37,11 @@ const App: React.FC = () => {
 
           <Route path='marketplace' element={<Marketplace />} />
 
-          <Route path='library' element={<Library />} />
+          <Route path='library'>
+            <Route index element={<Library />} />
 
-          <Route path='library/systems/:id' element={<System />} />
+            <Route path='system/:id' element={<System />} />
+          </Route>
 
           <Route path='settings' element={<Settings />} />
 
