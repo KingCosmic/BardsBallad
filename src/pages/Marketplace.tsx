@@ -1,6 +1,9 @@
 import { NavLink } from 'react-router';
 import Header from '../components/Header'
 import { openModal } from '../state/modals';
+import { useEffect } from 'react';
+import { MiscStorage } from '../lib/storage';
+import FloatingActionButton from '../components/FloatingActionButton';
 
 const testSystems = [
   {
@@ -77,6 +80,25 @@ const SystemCard: React.FC<{ sys: { name: string, description: string, version: 
 };
 
 const Marketplace: React.FC = () => {
+  useEffect(() => {
+    const disclaimer = async () => {
+      const hasSeenDisclaimer = await MiscStorage.get('seen-marketplace-disclaimer')
+
+      if (hasSeenDisclaimer) return
+
+      openModal({
+        title: '',
+        type: 'marketplace_disclaimer',
+        data: '',
+        onSave: () => {
+          MiscStorage.set('seen-marketplace-disclaimer', true)
+        }
+      })
+    }
+
+    disclaimer()
+  }, [])
+
   return (
     <div>
       <Header title='Marketplace' />
@@ -93,7 +115,17 @@ const Marketplace: React.FC = () => {
             {testSystems.map((system, index) => <SystemCard sys={system} />)}
           </div>
         </div>
+        <div>
+          <h3 className='text-xl font-semibold mt-4'>Featured Themes</h3>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
+            
+          </div>
+        </div>
       </div>
+
+      <FloatingActionButton
+        onClick={() => true}
+      />
     </div>
   )
 }

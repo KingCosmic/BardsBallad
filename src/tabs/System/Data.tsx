@@ -2,10 +2,11 @@
 import { useState } from 'react'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
-import { updateSystemData, deleteSystemData, addSystemData } from '../../storage/methods/systems'
+import { updateSystemData, deleteSystemData, addSystemData } from '../../utils/system'
 
 import { type System, type DataType } from '../../storage/schemas/system'
 import { VersionedResource } from '../../storage/schemas/versionedResource'
+import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 
 type DataProps = {
   system: System
@@ -20,8 +21,8 @@ const Data: React.FC<DataProps> = ({ system, versionedResource }) => {
     <>
       <EditSystemData
         types={versionedResource.data.types}
-        onDelete={() => deleteSystemData(versionedResource.local_id, editData!.name)}
-        onSave={(newData) => updateSystemData(versionedResource.local_id, editData!.name, newData)}
+        onDelete={() => storeMutation(versionedResource.local_id, deleteSystemData(versionedResource.data, editData!.name))}
+        onSave={(newData) => storeMutation(versionedResource.local_id, updateSystemData(versionedResource.data, editData!.name, newData))}
         isVisible={(editData !== null)}
         requestClose={() => setEditData(null)}
         data={editData!}
@@ -43,7 +44,7 @@ const Data: React.FC<DataProps> = ({ system, versionedResource }) => {
         }
       </div>
 
-      <FloatingActionButton onClick={() => addSystemData(versionedResource.local_id)} />
+      <FloatingActionButton onClick={() => storeMutation(versionedResource.local_id, addSystemData(versionedResource.data))} />
     </>
   )
 }

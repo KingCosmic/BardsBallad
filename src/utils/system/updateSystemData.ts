@@ -1,7 +1,8 @@
-import updateSystem from './updateSystem';
+import { produce } from 'immer';
+import { SystemData } from '../../storage/schemas/system';
 
-export default async (local_id: string, oldName: string, newData: any) => {
-  await updateSystem(local_id, (draft) => {
+export default async (data: SystemData, oldName: string, newData: any) => {
+  return produce(data, draft => {
     const index = draft.data.findIndex((data => data.name === oldName))
 
     if (index === -1) return

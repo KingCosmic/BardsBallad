@@ -1,16 +1,17 @@
-import { editorState } from '../../../state/editor';
-import updateSystem from './updateSystem';
+import { produce } from 'immer';
+import { editorState } from '../../state/editor';
 
 import lz from 'lzutf8';
+import { SystemData } from '../../storage/schemas/system';
 
-export default async (local_id: string, tab: string, lexical: string) => {
-  const editor = editorState.get()
-
+export default async (data: SystemData, lexical: string) => {
   if (lexical === '{}') return
   
   const newLexical = lz.encodeBase64(lz.compress(lexical))
 
-  await updateSystem(local_id, (draft) => {
+  const editor = editorState.get()
+
+  return produce(data, draft => {
     if (editor.tab === 'editor') {
       const index = draft.pages.findIndex((data => data.name === editor.characterPage))
 

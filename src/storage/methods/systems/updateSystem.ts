@@ -11,7 +11,7 @@ export default async function updateSystem(local_id: string, updateFn: (draft: S
     
     return await db.systems.update(local_id, {
       ...newState,
-      updatedAt: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
   } catch (err: any) {
     console.log('Error updating system:', err)

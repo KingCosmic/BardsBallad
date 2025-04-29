@@ -20,16 +20,18 @@ import Layers from '../../designer/Layers/Layers'
 import EditorSelect from '../../designer/components/Select/Editor'
 import InputEditor from '../../designer/components/Input/Editor'
 import { useSystem } from '../../hooks/useSystem'
-import { addCreatorPage, addCreatorPageState, deleteCreatorPage, renameCreatorPage, updateCreatorPageBlueprint, updateCreatorPageState } from '../../storage/methods/systems'
-import { type TypeData } from '../../storage/schemas/system'
+import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '../../utils/system'
+import { useVersionResource } from '../../hooks/useVersionResource'
+import { SystemData } from '../../storage/schemas/system'
+import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 
 
 const CreatorMenu: React.FC = () => {
   const editor = editorState.useValue()
 
-  const system = useSystem(editor.systemId)
+  const versionResource = useVersionResource<SystemData>(editor.versionId)
 
-  const page = useMemo(() => system?.creator.find(p => p.name === editor.creatorPage), [system, editor.creatorPage])
+  const page = useMemo(() => versionResource?.data.creator.find(p => p.name === editor.creatorPage), [versionResource, editor.creatorPage])
 
   const [tab, setTab] = useState('components')
 
@@ -55,16 +57,16 @@ const CreatorMenu: React.FC = () => {
     return { selected }
   })
 
-  if (!system) return <></>
+  if (!versionResource) return <></>
 
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Select id='page' label='Page' value={editor.creatorPage} onChange={setCreatorPage}>
-          {system.creator.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
+          {versionResource.data.creator.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
         </Select>
 
-        <button type='button' onClick={() => addCreatorPage(editor.systemId)} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
+        <button type='button' onClick={() => storeMutation(versionResource.local_id, addPage(versionResource.data, 'builder'))} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
           <svg
             className='w-5 h-5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
             <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />
@@ -168,14 +170,14 @@ const CreatorMenu: React.FC = () => {
             <EditStringModal data={editName} isOpen={editName !== null}
               requestClose={() => setEditName(null)}
               onSave={(newName) => {
-                renameCreatorPage(editor.systemId, editName, newName)
+                storeMutation(versionResource.local_id, renamePage(versionResource.data, 'builder', editName, newName))
                 setCreatorPage(newName)
               }}
             />
 
             <div className='inline-flex rounded-md shadow-sm my-2'>
-              <Button color='danger' disabled={system.pages.length <= 1} onClick={() => {
-                deleteCreatorPage(editor.systemId, editor.creatorPage)
+              <Button color='danger' disabled={versionResource.data.pages.length <= 1} onClick={() => {
+                storeMutation(versionResource.local_id, deletePage(versionResource.data, 'builder', editor.creatorPage))
               }}>
                 Delete
               </Button>
@@ -188,7 +190,7 @@ const CreatorMenu: React.FC = () => {
                 type: 'blueprint',
                 title: 'Page Blueprint',
                 data: page?.blueprint,
-                onSave: (bp) => updateCreatorPageBlueprint(editor.systemId, bp)
+                onSave: (bp) => storeMutation(versionResource.local_id, updatePageBlueprint(versionResource.data, 'builder', editor.creatorPage, bp))
               })
             }>
               Edit Page Blueprint
@@ -199,7 +201,7 @@ const CreatorMenu: React.FC = () => {
                 <h5>Page State</h5>
               </div>
 
-              <button onClick={() => addCreatorPageState(editor.systemId, editor.creatorPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], inputs: [], outputType: 'none', isOutputAnArray: false })}
+              <button onClick={() => storeMutation(versionResource.local_id, addPageState(versionResource.data, 'builder', editor.creatorPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], inputs: [], outputType: 'none', isOutputAnArray: false }))}
                 type='button'
                 className='text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'
               >
@@ -226,7 +228,7 @@ const CreatorMenu: React.FC = () => {
 
             <EditPageStateModal isOpen={editingState !== null}
               requestClose={() => setEditingState(null)} data={editingState}
-              onSave={(newState) => updateCreatorPageState(editor.systemId, editor.creatorPage, editingState!.name, { ...newState, value: undefined })}
+              onSave={(newState) => storeMutation(versionResource.local_id, updatePageState(versionResource.data, 'builder', editor.creatorPage, editingState!.name, { ...newState, value: undefined }))}
               onDelete={() => {}}
             />
           </>

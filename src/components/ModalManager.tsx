@@ -10,6 +10,7 @@ import HandleConflicts from '../modals/HandleConflicts'
 import AuthModal from '../modals/Auth'
 import ImportFile from '../modals/ImportFile'
 import MarketplaceViewModal from '../modals/MarketplaceView'
+import MarketplaceDisclaimer from '../modals/MarketplaceDisclaimer'
 
 // TODO: I'm not sure how we'll grab the types since we're not using the system state anymore.
 
@@ -109,6 +110,13 @@ const ModalManager = () => {
               isOpen={true}
               requestClose={() => closeModal(id)}
               onConfirm={modal.onSave}
+            />
+          ) : (modal.type === 'marketplace_disclaimer') ? (
+            <MarketplaceDisclaimer
+              key={id}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onAccept={modal.onSave}
             />
           ) : <h1>{modal.type} is un supported.</h1>
         })

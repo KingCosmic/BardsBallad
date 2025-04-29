@@ -5,7 +5,7 @@ export type EditorState = {
   modalsPage: string;
   creatorPage: string;
   tab: string;
-  systemId: string;
+  versionId: string;
 }
 
 const defaultState: EditorState = {
@@ -13,7 +13,7 @@ const defaultState: EditorState = {
   modalsPage: 'Start',
   creatorPage: 'Start',
   tab: 'character',
-  systemId: ''
+  versionId: ''
 }
 
 export const editorState = newRidgeState<EditorState>(defaultState)

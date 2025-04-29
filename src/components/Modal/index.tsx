@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react'
 
 type ModalProps = {
   isOpen: boolean;
-  onClose(): void;
+  onClose?(): void;
 }
 
 const Modal: React.FC<PropsWithChildren<ModalProps>> = ({ children, isOpen, onClose }) => {

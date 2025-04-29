@@ -1,7 +1,8 @@
-import updateSystem from './updateSystem';
+import { produce } from 'immer';
+import { SystemData } from '../../storage/schemas/system';
 
-export default async (local_id: string, typeName: string, key: string) => {
-  await updateSystem(local_id, (draft) => {
+export default async (data: SystemData, typeName: string, key: string) => {
+  return produce(data, draft => {
     for (let t = 0; t < draft.types.length; t++) {
       const type = draft.types[t]
 

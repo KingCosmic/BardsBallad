@@ -6,10 +6,11 @@ import AccordionGroup from '../../components/AccordionGroup'
 import FloatingActionButton from '../../components/FloatingActionButton'
 import Button from '../../components/inputs/Button'
 import Accordion from '../../components/Accordion'
-import { addSystemType, addTypeProperty, deleteSystemType, deleteTypeProperty, renameSystemType, updateTypeProperty } from '../../storage/methods/systems'
+import { addSystemType, addTypeProperty, deleteSystemType, deleteTypeProperty, renameSystemType, updateTypeProperty } from '../../utils/system'
 
 import { SystemType, type System, type TypeData } from '../../storage/schemas/system'
 import { VersionedResource } from '../../storage/schemas/versionedResource'
+import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 
 type TypesProps = {
   system: System
@@ -31,13 +32,13 @@ const Types: React.FC<TypesProps> = ({ system, versionedResource }) => {
     <>
       <EditTypeModal data={editData} isOpen={editData !== null}
         requestClose={() => setEditData(null)}
-        onSave={(data) => updateTypeProperty(versionedResource.local_id, editData?.typeName || '', editData?.key || '', data)}
-        onDelete={() => deleteTypeProperty(versionedResource.local_id, editData?.typeName || '', editData?.key || '')}
+        onSave={(data) => storeMutation(versionedResource.local_id, updateTypeProperty(versionedResource.data, editData?.typeName || '', editData?.key || '', data))}
+        onDelete={() => storeMutation(versionedResource.local_id, deleteTypeProperty(versionedResource.data, editData?.typeName || '', editData?.key || ''))}
       />
 
       <EditStringModal data={editName} isOpen={editName !== null}
         requestClose={() => setEditName(null)}
-        onSave={(data) => renameSystemType(versionedResource.local_id, editName || '', data)}
+        onSave={(data) => storeMutation(versionedResource.local_id, renameSystemType(versionedResource.data, editName || '', data))}
       />
       
       {/* TODO: Searchbar */}
@@ -49,14 +50,28 @@ const Types: React.FC<TypesProps> = ({ system, versionedResource }) => {
               <Button color='light' onClick={() => setEditName(type.name)}>Edit Name</Button>
 
               <Button color='light' onClick={async () => {
-                const propertyType = await addTypeProperty(versionedResource.data.local_id, type.name)
+                let newProperty: {
+                  key: string;
+                  typeData: TypeData;
+                } = {
+                  key: 'newProperty',
+                  typeData: {
+                    type: 'string',
+                    options: [],
+                    isArray: false,
+                    useTextArea: false,
+                    inputs: [],
+                    outputType: 'none',
+                    isOutputAnArray: false
+                  }
+                }
 
-                if (!propertyType) return
+                await storeMutation(versionedResource.local_id, addTypeProperty(versionedResource.data, type.name, newProperty))
 
-                setEditData({ ...propertyType, typeName: type.name })
+                setEditData({ ...newProperty, typeName: type.name })
               }}>Add Property</Button>
 
-              <Button color='danger' onClick={() => deleteSystemType(versionedResource.local_id, type.name)}>Delete Type</Button>
+              <Button color='danger' onClick={() => storeMutation(versionedResource.local_id, deleteSystemType(versionedResource.data, type.name))}>Delete Type</Button>
             </div>
 
             <div className='flex flex-col gap-1 mt-3'>
@@ -78,7 +93,7 @@ const Types: React.FC<TypesProps> = ({ system, versionedResource }) => {
       </AccordionGroup>
 
       <FloatingActionButton onClick={async () => {
-        await addSystemType(versionedResource.data.local_id, 'New Type')
+        await storeMutation(versionedResource.local_id, addSystemType(versionedResource.data, 'New Type'))
         setEditName('New Type')
       }} />
     </>

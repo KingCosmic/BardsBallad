@@ -22,14 +22,15 @@ import Creator from '../tabs/System/Creator'
 import EditorSelect from '../designer/components/Select/Editor'
 import TextInput from '../designer/components/Input/Editor'
 import { useSystem } from '../hooks/useSystem'
-import { updateLexical } from '../storage/methods/systems'
+import { updateLexical } from '../utils/system'
 import { useEffect } from 'react'
 import { useVersionResource } from '../hooks/useVersionResource'
+import storeMutation from '../storage/methods/versionedresources/storeMutation'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
-  const versionedResource = useVersionResource(id)
+  const versionedResource = useVersionResource<any>(id)
   const system = useSystem(versionedResource?.reference_id)
 
   const editor = editorState.useValue()
@@ -41,7 +42,7 @@ const System: React.FC = () => {
   if (!id || !versionedResource || !system) return <>loading...</>
 
   return (
-    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updateLexical(id, editor.tab, query.serialize())}>
+    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => storeMutation(versionedResource.local_id, updateLexical(versionedResource.data, query.serialize()))}>
       <div className='flex flex-col h-full'>
         <Header title={system.name} />
 

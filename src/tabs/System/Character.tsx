@@ -5,10 +5,11 @@ import { type System } from '../../storage/schemas/system'
 import { produce } from 'immer'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
-import { setDefaultCharacterData } from '../../storage/methods/systems'
+import { setDefaultCharacterData } from '../../utils/system'
 
 import { type SystemType, type TypeData, type DataType } from '../../storage/schemas/system'
 import { VersionedResource } from '../../storage/schemas/versionedResource'
+import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 
 type CharacterProps = {
   system: System
@@ -29,7 +30,7 @@ const Character: React.FC<CharacterProps> = ({ system, versionedResource }) => {
             draft._type.properties = draft._type.properties.filter((prop: any) => prop.key !== editData?.name)
           })
 
-          setDefaultCharacterData(system.local_id, newCopy!)
+          storeMutation(versionedResource.local_id, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
         onSave={(newData) => {
           const key = newData.name
@@ -51,7 +52,7 @@ const Character: React.FC<CharacterProps> = ({ system, versionedResource }) => {
             }
           })
 
-          setDefaultCharacterData(versionedResource.local_id, newCopy!)
+          storeMutation(versionedResource.local_id, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
         isVisible={(editData !== null)}
         requestClose={() => setEditData(null)}
@@ -101,7 +102,7 @@ const Character: React.FC<CharacterProps> = ({ system, versionedResource }) => {
             }
           }
 
-          setDefaultCharacterData(versionedResource.local_id, newCopy)
+          storeMutation(versionedResource.local_id, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
       />
     </>
