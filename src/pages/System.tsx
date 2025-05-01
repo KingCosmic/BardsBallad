@@ -23,26 +23,44 @@ import EditorSelect from '../designer/components/Select/Editor'
 import TextInput from '../designer/components/Input/Editor'
 import { useSystem } from '../hooks/useSystem'
 import { updateLexical } from '../utils/system'
-import { useEffect } from 'react'
-import { useVersionResource } from '../hooks/useVersionResource'
+import { useCallback, useEffect, useMemo } from 'react'
 import storeMutation from '../storage/methods/versionedresources/storeMutation'
+import { SystemData } from '../storage/schemas/system'
+import { useVersionEdits } from '../hooks/useVersionEdits'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
-  const versionedResource = useVersionResource<any>(id)
-  const system = useSystem(versionedResource?.reference_id)
+  const edits_id = useMemo(() => id ? `${id}|edits` : undefined, [id])
+
+  const versionEdits = useVersionEdits<SystemData>(edits_id)
+  // const versionEdits = useVersionResource<SystemData>(edits_id)
+  const system = useSystem(versionEdits?.reference_id)
 
   const editor = editorState.useValue()
 
   useEffect(() => {
-    editorState.set((prev) => ({ ...prev, versionId: id ?? '' }))
-  }, [id])
+    if (!edits_id || (edits_id === editor.versionId)) return
 
-  if (!id || !versionedResource || !system) return <>loading...</>
+    editorState.set((prev) => ({ ...prev, versionId: edits_id }))
+  }, [edits_id, editor])
+
+  const resolver = useMemo(() => ({
+    Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider
+  }), [Container, Text, EditorSelect, TextInput, FAB, Searchbar, DesignerDivider])
+
+  const handleNodeChange = useCallback((query: any) => {
+    if (!versionEdits) return
+
+    storeMutation(versionEdits.local_id, updateLexical(versionEdits.data, query.serialize()))
+  }, [versionEdits, storeMutation, updateLexical])
+
+  if (!edits_id) return <>id not defined...</>
+  if (!versionEdits) return <>Loading Edits...</>
+  if (!system) return <>Loading System...</>
 
   return (
-    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => storeMutation(versionedResource.local_id, updateLexical(versionedResource.data, query.serialize()))}>
+    <EditorContext resolver={resolver} onNodesChange={handleNodeChange}>
       <div className='flex flex-col h-full'>
         <Header title={system.name} />
 
@@ -58,17 +76,17 @@ const System: React.FC = () => {
 
           {
             (editor.tab === 'character') ? (
-              <Character system={system} versionedResource={versionedResource} />
+              <Character editsId={edits_id} versionedResource={versionEdits} />
             ) : (editor.tab === 'data') ? (
-              <Data system={system} versionedResource={versionedResource} />
+              <Data editsId={edits_id} versionedResource={versionEdits} />
             ) : (editor.tab === 'types') ? (
-              <Types system={system} versionedResource={versionedResource} />
+              <Types editsId={edits_id} versionedResource={versionEdits} />
             ) : (editor.tab === 'functions') ? (
-              <Functions system={system} versionedResource={versionedResource} />
+              <Functions versionedResource={versionEdits} />
             ) : (editor.tab === 'editor') ? (
-              <Editor system={system} versionedResource={versionedResource} />
+              <Editor versionedResource={versionEdits} />
             ) : (editor.tab === 'creator') && (
-              <Creator system={system} versionedResource={versionedResource} />
+              <Creator versionedResource={versionEdits} />
             )
           }
         </div>

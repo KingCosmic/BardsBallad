@@ -12,12 +12,14 @@ import { VersionedResource } from '../../storage/schemas/versionedResource'
 import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 
 type CharacterProps = {
-  system: System
+  editsId: string
   versionedResource: VersionedResource
 }
 
-const Character: React.FC<CharacterProps> = ({ system, versionedResource }) => {
+const Character: React.FC<CharacterProps> = ({ editsId, versionedResource }) => {
   const [editData, setEditData] = useState<DataType | null>(null)
+
+  console.log(versionedResource)
 
   return (
     <>
@@ -30,7 +32,7 @@ const Character: React.FC<CharacterProps> = ({ system, versionedResource }) => {
             draft._type.properties = draft._type.properties.filter((prop: any) => prop.key !== editData?.name)
           })
 
-          storeMutation(versionedResource.local_id, setDefaultCharacterData(versionedResource.data, newCopy))
+          storeMutation(editsId, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
         onSave={(newData) => {
           const key = newData.name
@@ -52,7 +54,7 @@ const Character: React.FC<CharacterProps> = ({ system, versionedResource }) => {
             }
           })
 
-          storeMutation(versionedResource.local_id, setDefaultCharacterData(versionedResource.data, newCopy))
+          storeMutation(editsId, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
         isVisible={(editData !== null)}
         requestClose={() => setEditData(null)}
@@ -102,7 +104,7 @@ const Character: React.FC<CharacterProps> = ({ system, versionedResource }) => {
             }
           }
 
-          storeMutation(versionedResource.local_id, setDefaultCharacterData(versionedResource.data, newCopy))
+          storeMutation(editsId, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
       />
     </>

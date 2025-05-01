@@ -2,11 +2,10 @@ import { type System } from '../../storage/schemas/system'
 import { VersionedResource } from '../../storage/schemas/versionedResource'
 
 type FunctionsProps = {
-  system: System
   versionedResource: VersionedResource
 }
 
-const Functions: React.FC<FunctionsProps> = ({ system }) => {
+const Functions: React.FC<FunctionsProps> = ({ }) => {
   return (
     <>
       <p>TODO</p>

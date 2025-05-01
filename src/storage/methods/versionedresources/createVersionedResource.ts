@@ -18,10 +18,10 @@ export default async (reference_type: Types, reference_id: string, version: stri
       reference_id,
       reference_type,
     
+      updated_at: new Date().toISOString(),
       deleted_at: null,
     }
 
-    // if (process.env.VITE_PUBLIC_VALIDATE_SCHEMA === 'true') {
     if (true) {
       const result = VersionedResourceSchema.safeParse(versionData);
       if (!result.success) {
