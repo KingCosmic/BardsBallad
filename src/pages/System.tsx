@@ -34,7 +34,6 @@ const System: React.FC = () => {
   const edits_id = useMemo(() => id ? `${id}|edits` : undefined, [id])
 
   const versionEdits = useVersionEdits<SystemData>(edits_id)
-  // const versionEdits = useVersionResource<SystemData>(edits_id)
   const system = useSystem(versionEdits?.reference_id)
 
   const editor = editorState.useValue()
@@ -62,7 +61,10 @@ const System: React.FC = () => {
   return (
     <EditorContext resolver={resolver} onNodesChange={handleNodeChange}>
       <div className='flex flex-col h-full'>
-        <Header title={system.name} />
+        <Header title={system.name} options={[{
+          onClick: () => true,
+          Content: () => <a href='#' className='block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500' aria-current='page'>Home</a>
+        }]} />
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
           <Select id='tab-selector' label='' value={editor.tab} onChange={setTab}>
