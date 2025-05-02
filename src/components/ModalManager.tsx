@@ -11,6 +11,7 @@ import AuthModal from '../modals/Auth'
 import ImportFile from '../modals/ImportFile'
 import MarketplaceViewModal from '../modals/MarketplaceView'
 import MarketplaceDisclaimer from '../modals/MarketplaceDisclaimer'
+import SaveNewVersion from '../modals/SaveNewVersion'
 
 // TODO: I'm not sure how we'll grab the types since we're not using the system state anymore.
 
@@ -30,6 +31,14 @@ const ModalManager = () => {
               requestClose={() => closeModal(id)}
               onSave={modal.onSave}
               onDelete={modal.onDelete}
+            />
+          ) : (modal.type === 'SaveNewVersion') ? (
+            <SaveNewVersion
+              key={id}
+              data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
             />
           ) : (modal.type === 'HandleConflicts') ? (
             <HandleConflicts

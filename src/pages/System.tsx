@@ -27,6 +27,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import storeMutation from '../storage/methods/versionedresources/storeMutation'
 import { SystemData } from '../storage/schemas/system'
 import { useVersionEdits } from '../hooks/useVersionEdits'
+import { openModal } from '../state/modals'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -62,8 +63,13 @@ const System: React.FC = () => {
     <EditorContext resolver={resolver} onNodesChange={handleNodeChange}>
       <div className='flex flex-col h-full'>
         <Header title={system.name} options={[{
-          onClick: () => true,
-          Content: () => <a href='#' className='block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500' aria-current='page'>Home</a>
+          onClick: () => openModal({
+            type: 'SaveNewVersion',
+            title: 'none',
+            data: 'versionID',
+            onSave: (value: any) => {}
+          }),
+          Content: () => <p className='block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500'>Save Version</p>
         }]} />
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
