@@ -12,8 +12,10 @@ import ImportFile from '../modals/ImportFile'
 import MarketplaceViewModal from '../modals/MarketplaceView'
 import MarketplaceDisclaimer from '../modals/MarketplaceDisclaimer'
 import SaveNewVersion from '../modals/SaveNewVersion'
+import PublishNewVersion from '../modals/PublishNewVersion'
+import PublishNewSystem from '../modals/PublishNewSystem'
 
-// TODO: I'm not sure how we'll grab the types since we're not using the system state anymore.
+// TODO: completely rework this, make it to where you provide the modal component when calling addModal
 
 const ModalManager = () => {
   const modals = modalState.useValue()
@@ -31,6 +33,22 @@ const ModalManager = () => {
               requestClose={() => closeModal(id)}
               onSave={modal.onSave}
               onDelete={modal.onDelete}
+            />
+          ) : (modal.type === 'PublishNewSystem') ? (
+            <PublishNewSystem
+              key={id}
+              data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+            />
+          ) : (modal.type === 'PublishNewVersion') ? (
+            <PublishNewVersion
+              key={id}
+              data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
             />
           ) : (modal.type === 'SaveNewVersion') ? (
             <SaveNewVersion

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 import { editorState, setTab } from '../state/editor'
 
@@ -28,12 +28,17 @@ import storeMutation from '../storage/methods/versionedresources/storeMutation'
 import { SystemData } from '../storage/schemas/system'
 import { useVersionEdits } from '../hooks/useVersionEdits'
 import { openModal } from '../state/modals'
+import duplicateVersionedResource from '../storage/methods/versionedresources/duplicateVersionedResource'
+import createSubscription from '../storage/methods/subscriptions/createSubscription'
+import { useVersionResource } from '../hooks/useVersionResource'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
+  let navigate = useNavigate();
 
   const edits_id = useMemo(() => id ? `${id}|edits` : undefined, [id])
 
+  const orignal = useVersionResource<SystemData>(id)
   const versionEdits = useVersionEdits<SystemData>(edits_id)
   const system = useSystem(versionEdits?.reference_id)
 
@@ -66,10 +71,29 @@ const System: React.FC = () => {
           onClick: () => openModal({
             type: 'SaveNewVersion',
             title: 'none',
-            data: 'versionID',
-            onSave: (value: any) => {}
+            data: 'none',
+            onSave: async (value: any) => {
+              const newVersion = await duplicateVersionedResource(versionEdits)
+
+              if (!newVersion) return // TODO:(Cosmic) Show error.
+
+              const newSub = await createSubscription('system', newVersion.reference_id, newVersion.local_id, false)
+
+              if (!newSub) return // TODO:(Cosmic) Show error. and remove new version.
+
+              // I'm not entirely sure how this would happen?
+              // possibly a user unsubs from the original but then the ui *shouldn't* allow a user to get into this editing scenario.
+              // TODO:(Cosmic) Make sure we clear up edits when unsubbing from a resourec :)
+              if (!orignal) return
+
+              await duplicateVersionedResource(orignal, edits_id)
+
+              // TODO: show confirmation
+
+              navigate('/library')
+            }
           }),
-          Content: () => <p className='block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500'>Save Version</p>
+          Content: () => <p className='block cursor-pointer py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500'>Save Version</p>
         }]} />
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>

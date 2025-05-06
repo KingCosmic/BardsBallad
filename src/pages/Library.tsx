@@ -1,15 +1,12 @@
 import Header from '../components/Header'
 
-import { useSystems } from '../hooks/useSystems'
-import SystemCard from '../components/Library/SystemCard'
-import { themesState } from '../state/themes'
-import ThemeCard from '../components/Library/ThemeCard'
 import FloatingActionButton from '../components/FloatingActionButton'
 import { useState } from 'react'
 import { openModal } from '../state/modals'
 import importSystem from '../storage/methods/systems/importSystem'
 import { useSubscriptions } from '../hooks/useSubscriptions'
 import SubscriptionCard from '../components/Library/SubscriptionCard'
+import JSONToFile from '../utils/JSONToFile'
 
 const Library: React.FC = () => {
   const { subscriptions, isLoading } = useSubscriptions()
@@ -33,7 +30,6 @@ const Library: React.FC = () => {
               <h4 className='mb-2 text-xl'>Subscribed Systems</h4>
               <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
                 {subscriptions.filter(sub => sub.resource_type === 'system').map((sys) => (
-                  // @ts-ignore
                   <SubscriptionCard key={sys.local_id} subscription={sys} />
                 ))}
               </div>
@@ -50,8 +46,8 @@ const Library: React.FC = () => {
               onSave: async (fileContent: string) => {
                 try {
                   const parsed = JSON.parse(fileContent)
-                  if (parsed) {
-                    await importSystem(parsed)
+                  if (parsed && parsed.system && parsed.version) {
+                    await importSystem(parsed.system, parsed.version)
                   }
                 } catch (e) {
                   console.error(e)

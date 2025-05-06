@@ -2,12 +2,13 @@ import VersionedResourceSchema from '../../schemas/versionedResource'
 import { db } from '../../index'
 
 import { v4 as uuidv4 } from 'uuid'
+import { AuthStorage } from '../../../lib/storage'
 
 type Types = 'system' | 'character' | 'module' | 'plugin'
 
 export default async (reference_type: Types, reference_id: string, version: string, data: any) => {
   try {
-    const device_id = localStorage.getItem('deviceId') || 'none'
+    const device_id = await AuthStorage.get('deviceId') || 'none'
 
     // validate character format.
     const versionData = {

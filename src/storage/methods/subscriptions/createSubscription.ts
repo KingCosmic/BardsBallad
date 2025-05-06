@@ -3,6 +3,7 @@ import { db } from '../../index'
 
 import { v4 as uuidv4 } from 'uuid'
 import { authState } from '../../../state/auth'
+import { AuthStorage } from '../../../lib/storage'
 
 type Types = 'system' | 'character' | 'module' | 'plugin'
 
@@ -11,7 +12,7 @@ export default async (type: Types, resource_id: string, version_id: string, auto
     const { user } = authState.get()
     
     const user_id = user?.id || 'none'
-    const device_id = localStorage.getItem('deviceId') || 'none'
+    const device_id = await AuthStorage.get('deviceId') || 'none'
 
     // validate character format.
     const subscriptionData = {

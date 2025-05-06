@@ -17,8 +17,8 @@ db.version(1).stores({
   characters: '&local_id, updatedAt, id',
   systems: '&local_id, id',
   subscriptions: '&local_id, user_id, resource_id, version_id',
-  versions: '&local_id, reference_id',
+  versions: '&local_id, reference_id, id',
   // campaigns: '++id, local_id, name, description, createdAt, updatedAt',
 });
 
-loadDefaultSystems()
+// loadDefaultSystems()

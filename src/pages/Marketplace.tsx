@@ -1,9 +1,10 @@
 import { NavLink } from 'react-router';
 import Header from '../components/Header'
 import { openModal } from '../state/modals';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MiscStorage } from '../lib/storage';
 import FloatingActionButton from '../components/FloatingActionButton';
+import { publishSystem } from '../lib/api';
 
 const testSystems = [
   {
@@ -80,6 +81,8 @@ const SystemCard: React.FC<{ sys: { name: string, description: string, version: 
 };
 
 const Marketplace: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false)
+
   useEffect(() => {
     const disclaimer = async () => {
       const hasSeenDisclaimer = await MiscStorage.get('seen-marketplace-disclaimer')
@@ -124,7 +127,30 @@ const Marketplace: React.FC = () => {
       </div>
 
       <FloatingActionButton
-        onClick={() => true}
+        isOpen={isOpen}
+        onClick={() => setIsOpen(!isOpen)}
+        buttons={[
+          {
+            name: 'Publish System',
+            icon: '',
+            onClick: () => openModal({
+              type: 'PublishNewSystem',
+              title: 'none',
+              data: 'none',
+              onSave: publishSystem
+            })
+          },
+          {
+            name: 'Publish Version',
+            icon: '',
+            onClick: () => openModal({
+              type: 'PublishNewVersion',
+              title: 'none',
+              data: 'none',
+              onSave: async (value: any) => {}
+            })
+          }
+        ]}
       />
     </div>
   )

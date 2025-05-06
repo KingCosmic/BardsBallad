@@ -12,12 +12,10 @@ import { useCharacter } from '../hooks/useCharacter'
 import lz from 'lzutf8'
 import { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 import { deepEqual } from 'fast-equals'
-import { useSystems } from '../hooks/useSystems'
 import { updateCharacterData } from '../storage/methods/characters'
 import { Character } from '../storage/schemas/character'
 
-import { type System, type PageData, SystemData } from '../storage/schemas/system'
-import { useVersionResource } from '../hooks/useVersionResource'
+import { type PageData, SystemData } from '../storage/schemas/system'
 import getVersionedResource from '../storage/methods/versionedresources/getVersionedResource'
 
 const CharacterPage: React.FC = () => {

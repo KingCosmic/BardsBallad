@@ -1,41 +1,93 @@
 import SystemChema, { type System } from '../../schemas/system'
-import { v4 as uuidv4 } from 'uuid'
 import { db } from '../../index'
+import generateLocalId from '../../../utils/generateLocalId'
+import { authState } from '../../../state/auth'
+import versionedResourceSchema, { VersionedResource } from '../../schemas/versionedResource'
 
-export default async (sys: System) => {
+// TODO: check if local_id includes 'none' if so we need to update it if we're logged in.
+// TODO:(Cosmic) Give this a once over to make sure we aren't doing stupid stuff.
+// (like we override the local_id if one doesn't exist but don't touch id or user_id)
+export default async (sys: System, version: VersionedResource) => {
   try {
-    let local_id = sys.local_id || `${'deviceId'}-${uuidv4()}`
+    let system_local_id = sys.local_id || await generateLocalId()
 
-    if (await db.systems.get({ id: sys.id || '' }) !== undefined) {
+    if (await db.systems.get({ id: sys.local_id || '' }) !== undefined) {
       console.log('System already exists in the database')
       return
     }
 
-    let existingSystem = await db.systems.get({ local_id })
-
-    while (existingSystem !== undefined) {
+    while (await db.systems.get({ local_id: system_local_id })) {
       // Generate a new id until we find one that doesn't exist in the database
-      local_id = `${'deviceId'}-${uuidv4()}`
-      existingSystem = await db.systems.get({ local_id })
+      system_local_id = await generateLocalId()
     }
+
+    const { user } = authState.get()
+    const user_id = (user) ? user.id : 'none'
 
     const sysData = {
       ...sys,
-      local_id,
-      updatedAt: new Date().toISOString()
+      local_id: system_local_id,
+      user_id,
     }
 
-    // if (process.env.VITE_PUBLIC_VALIDATE_SCHEMA === 'true') {
-    if (true) {
-      const result = SystemChema.safeParse(sysData);
-      if (!result.success) {
-        console.log('Invalid character data:', result.error.format());
-        return;
-      }
+    console.log(sysData)
+    const systemResult = SystemChema.safeParse(sysData);
+    if (!systemResult.success) {
+      console.log('Invalid system data:', systemResult.error.format());
+      return;
     }
 
-    return await db.systems.add(sysData);
+    await db.systems.add(sysData);
+
+    let version_local_id = version.local_id || await generateLocalId()
+
+    if (await db.versions.get({ id: version.local_id || '' }) !== undefined) {
+      console.log('Version already exists in the database')
+      return
+    }
+
+    while (await db.versions.get({ local_id: version_local_id })) {
+      // Generate a new id until we find one that doesn't exist in the database
+      version_local_id = await generateLocalId()
+    }
+
+    const versData = {
+      ...version,
+      local_id: version_local_id,
+      reference_id: system_local_id
+    }
+
+    const versionResult = versionedResourceSchema.safeParse(versData);
+    if (!versionResult.success) {
+      console.log('Invalid Version data:', versionResult.error.format());
+      return;
+    }
+
+    await db.versions.add(versData);
+
+    let subscription_local_id = await generateLocalId()
+
+    while (await db.subscriptions.get({ local_id: subscription_local_id })) {
+      // Generate a new id until we find one that doesn't exist in the database
+      subscription_local_id = await generateLocalId()
+    }
+
+    // now we need to create a subscription for it.
+    await db.subscriptions.add({
+      local_id: subscription_local_id,
+    
+      user_id: user_id,
+    
+      resource_type: 'system',
+      resource_id: system_local_id,
+      subscribedAt: new Date().toISOString(),
+      version_id: version_local_id,
+      autoUpdate: false,
+      pinned: false,
+    
+      deleted_at: null,
+    })
   } catch (e) {
-    console.log('Error creating system:', e);
+    console.log('Error importing system or version or creating subscription:', e);
   }
 }

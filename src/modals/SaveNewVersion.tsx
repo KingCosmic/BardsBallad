@@ -3,6 +3,7 @@ import ModalHeader from '../components/Modal/Header';
 import ModalBody from '../components/Modal/Body';
 import ModalFooter from '../components/Modal/Footer';
 import Button from '../components/inputs/Button';
+import Select from '../components/inputs/Select';
 
 type Props = {
   data: string | null;
@@ -18,7 +19,8 @@ const SaveNewVersion: React.FC<Props> = ({ data, isOpen, requestClose, onSave })
       <ModalHeader title='Save New Version' onClose={requestClose} />
 
       <ModalBody>
-        {/* Check For Available Versions Numbers */}
+        <p>All of your changes are saved to a hidden "edits" copy of this version as you make them. This only saves your changes to a new public copy so that characters can use them.</p>
+        <p>Are you sure you'd like to save your changes to a new version.</p>
       </ModalBody>
 
       <ModalFooter>
@@ -27,6 +29,7 @@ const SaveNewVersion: React.FC<Props> = ({ data, isOpen, requestClose, onSave })
         </Button>
 
         <Button color='primary' onClick={() => {
+          onSave(true)
           requestClose()
         }}>Confirm</Button>
       </ModalFooter>

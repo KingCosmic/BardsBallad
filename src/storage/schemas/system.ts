@@ -61,7 +61,6 @@ const systemSchema = z.object({
   user_id: z.string(),
 
   name: z.string(),
-  description: z.string(),
 
   forked_from: z.string().optional(),
 

@@ -1,4 +1,4 @@
-import { SyncStorage } from '../../../lib/storage'
+import { AuthStorage, SyncStorage } from '../../../lib/storage'
 import { authState } from '../../../state/auth'
 import { db } from '../../index'
 import CharacterSchema from '../../schemas/character'
@@ -10,7 +10,7 @@ export default async (name: string, data: any, system: { local_id: string, name:
     const { user } = authState.get()
 
     const user_id = user?.id || 'none'
-    const device_id = localStorage.getItem('deviceId') || 'none'
+    const device_id = await AuthStorage.get('deviceId') || 'none'
 
     // validate character format.
     const characterData = {

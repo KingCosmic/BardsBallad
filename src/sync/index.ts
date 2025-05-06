@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode'
-import { checkInternetAccess, pullUpdatesForCharacters, pushUpdatesForCharacters, setSyncedCharacters } from '../lib/api'
+import { checkInternetAccess, pullUpdatesForCharacters, pullUpdatesForSystems, pushUpdatesForCharacters, pushUpdatesForSystems, setSyncedCharacters } from '../lib/api'
 import { AuthStorage, SyncStorage } from '../lib/storage'
 import { openModal } from '../state/modals'
 import { db } from '../storage'
@@ -36,17 +36,17 @@ async function handleConflicts(conflicts: { local: Character, remote: Character 
 }
 
 type PullFunction = (checkpointOrNull: {
-  updatedAt: number;
+  updated_at: number;
   id: string;
 } | null, batchSize: number) => Promise<{
-  documents: Character[];
+  documents: any[];
   checkpoint: {
     id: number;
-    updatedAt: string;
+    updated_at: string;
   };
 }>
 
-type PushFunction = (localDocuments: any[]) => Promise<{ local: Character, remote: Character }[]>
+type PushFunction = (localDocuments: any[]) => Promise<{ local: any, remote: any }[]>
 
 async function handlePullUpdates(pull: PullFunction, localDocuments: any[]) {
   const cp = await SyncStorage.get('sync_checkpoint')
@@ -54,7 +54,7 @@ async function handlePullUpdates(pull: PullFunction, localDocuments: any[]) {
 
   let pullUpdates = true
   while (pullUpdates) {
-    const { checkpoint, documents } = await pull(cp ? JSON.parse(cp) : null, batchSize)
+    const { checkpoint, documents } = await pull(cp ?? null, batchSize)
 
     await SyncStorage.set('sync_checkpoint', checkpoint)
 
@@ -66,8 +66,8 @@ async function handlePullUpdates(pull: PullFunction, localDocuments: any[]) {
 
       if (!localDocument) return []
 
-      const local = new Date(localDocument.updatedAt).getTime()
-      const remote = new Date(doc.updatedAt).getTime()
+      const local = new Date(localDocument.updated_at).getTime()
+      const remote = new Date(doc.updated_at).getTime()
 
       return (local > remote) ? { local: localDocument, remote: doc } : []
     })
@@ -110,13 +110,15 @@ export const sync = async () => {
   if (!isOnline) return
 
   // Update synced characters array first.
-  const synced = JSON.parse(localStorage.getItem('synced_characters') || '[]')
+  const synced = await SyncStorage.get('synced_characters') || []
 
   await setSyncedCharacters(synced)
 
   const user = jwtDecode<{ role: number }>(await AuthStorage.get('token'))
 
   if (!user) return
+
+  const isPremium = user.role > 0
 
   // Systems need to be synced *FIRST* just on the offchance that syncing fails halfway through, another
   // client won't download a character that references a system that doesn't exist.
@@ -128,7 +130,6 @@ export const sync = async () => {
 
   const updatedCharacters = await SyncStorage.get('updated_characters') || []
   const localCharactersToPush = localCharacters.filter(c => {
-    const isPremium = user.role > 0
     const isSynced = synced.includes(c.local_id)
     const isUpdated = updatedCharacters.includes(c.local_id)
 
@@ -145,17 +146,21 @@ export const sync = async () => {
 
   const localSystems = await db.systems.toArray()
 
-  await handlePullUpdates(pullUpdatesForCharacters, localSystems)
+  await handlePullUpdates(pullUpdatesForSystems, localSystems)
 
   const systemsToPush = localSystems.filter(s => {
     const pushedCharacterRef = localCharactersToPush.find(c => c.system.local_id === s.local_id)
 
-    // TODO: in the future we want to check if this system is updated aswell.
-    // rn we're just checking if a updated character references this system.
-    return pushedCharacterRef !== undefined
+    // if a character we're syncing relies on this character we need to sync it too.
+    const referencedByChar = (pushedCharacterRef !== undefined)
+
+    // if this system hasn't been synced and we're premium it should be synced.
+    const notSyncedAndPremium = (!s.id && isPremium)
+
+    return (referencedByChar || notSyncedAndPremium)
   })
 
-  await handlePushingUpdates(pushUpdatesForCharacters, systemsToPush)
+  await handlePushingUpdates(pushUpdatesForSystems, systemsToPush)
 
   /* Characters */
 

@@ -1,21 +1,25 @@
 import SystemChema, { type System } from '../../schemas/system'
-import { v4 as uuidv4 } from 'uuid'
 import { db } from '../../index'
+import generateLocalId from '../../../utils/generateLocalId'
+import { authState } from '../../../state/auth'
 
 export default async (sys: System) => {
   try {
-    let local_id = `${'deviceId'}-${uuidv4()}`
+    let local_id = await generateLocalId()
 
     while (await db.systems.get(local_id) !== undefined) {
       // Generate a new id until we find one that doesn't exist in the database
-      local_id = `${'deviceId'}-${uuidv4()}`
+      local_id = await generateLocalId()
     }
+
+    const { user } = authState.get()
+    const user_id = (user) ? user.id : 'none'
 
     const sysData = {
       ...sys,
       local_id,
 
-      user_id: 'none', // TODO:(Cosmic) set this up to pull from our auth user id and default to "NONE" if not set
+      user_id: user_id,
 
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
