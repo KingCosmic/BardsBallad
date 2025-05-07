@@ -8,7 +8,7 @@ const userSubscriptionSchema = z.object({
 
   resource_type: z.enum(['system', 'character', 'module', 'plugin']),
   resource_id: z.string({ invalid_type_error: 'resource_id must be a string' }),
-  subscribedAt: z.string().datetime({ offset: true }),
+  subscribed_at: z.string().datetime({ offset: true }),
   version_id: z.string(),
   autoUpdate: z.boolean().optional().default(true),
   pinned: z.boolean().optional().default(false),

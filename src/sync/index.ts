@@ -1,11 +1,36 @@
-import { jwtDecode } from 'jwt-decode'
-import { checkInternetAccess, pullUpdatesForCharacters, pullUpdatesForSystems, pushUpdatesForCharacters, pushUpdatesForSystems, setSyncedCharacters } from '../lib/api'
-import { AuthStorage, SyncStorage } from '../lib/storage'
+import { checkInternetAccess, setSyncedCharacters } from '../lib/api'
+import { SyncStorage } from '../lib/storage'
 import { openModal } from '../state/modals'
-import { db } from '../storage'
-import { type Character } from '../storage/schemas/character'
+
+import { get as systemsGet, bulkPut as systemsBulkPut, pull as systemsPull, push as systemsPush } from './systems'
+import { get as versionsGet, bulkPut as versionsBulkPut, pull as versionsPull, push as versionsPush } from './versions'
+import { get as charactersGet, bulkPut as charactersBulkPut, pull as charactersPull, push as charactersPush } from './characters'
 
 const batchSize = 10
+
+const collectionsToSync = [
+  {
+    name: 'Systems',
+    get: systemsGet,
+    bulkPut: systemsBulkPut,
+    pull: systemsPull,
+    push: systemsPush
+  },
+  {
+    name: 'Versions',
+    get: versionsGet,
+    bulkPut: versionsBulkPut,
+    pull: versionsPull,
+    push: versionsPush
+  },
+  {
+    name: 'Characters',
+    get: charactersGet,
+    bulkPut: charactersBulkPut,
+    pull: charactersPull,
+    push: charactersPush
+  }
+]
 
 // set our initial value to the navigator value.
 // this checks the device is connected, not if that internet is working.
@@ -21,11 +46,10 @@ setInterval(async () => {
   isOnline = await checkInternetAccess()
 }, 5 * 60 * 1000) // every 5 minutes.
 
-async function handleConflicts(conflicts: { local: Character, remote: Character }[]): Promise<Character[]> {
+async function handleConflicts(conflicts: { local: any, remote: any }[]): Promise<any[]> {
   if (conflicts.length === 0) return []
 
   return new Promise((res) => {
-    // TODO: show a modal to the user to resolve conflicts
     openModal({
       title: 'Handle Conflicts',
       type: 'handleConflicts',
@@ -35,30 +59,17 @@ async function handleConflicts(conflicts: { local: Character, remote: Character 
   })
 }
 
-type PullFunction = (checkpointOrNull: {
-  updated_at: number;
-  id: string;
-} | null, batchSize: number) => Promise<{
-  documents: any[];
-  checkpoint: {
-    id: number;
-    updated_at: string;
-  };
-}>
+type PullFunction = () => Promise<any[]>
 
-type PushFunction = (localDocuments: any[]) => Promise<{ local: any, remote: any }[]>
+type BulkPut = (docs: any[]) => Promise<any>
 
-async function handlePullUpdates(pull: PullFunction, localDocuments: any[]) {
-  const cp = await SyncStorage.get('sync_checkpoint')
-  console.log('syncing')
+type PushFunction = () => Promise<{ local: any, remote: any }[]>
 
+async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocuments: any[]) {
   let pullUpdates = true
   while (pullUpdates) {
-    const { checkpoint, documents } = await pull(cp ?? null, batchSize)
+    const documents = await pull()
 
-    await SyncStorage.set('sync_checkpoint', checkpoint)
-
-    console.log('sync checkpoint', checkpoint)
     console.log('sync documents', documents)
 
     const pullConflicts = documents.flatMap(doc => {
@@ -80,16 +91,16 @@ async function handlePullUpdates(pull: PullFunction, localDocuments: any[]) {
 
     const newDocs = documents.map(d => (chosen.find(c => c.local_id === d.local_id) || d))
 
-    await db.characters.bulkPut(newDocs)
+    await bulkPut(newDocs)
 
     console.log('bulk put', documents.length)
   }
 }
 
-async function handlePushingUpdates(push: PushFunction, localDocuments: any[]) {
+async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction) {
   let pushUpdates = true
   while (pushUpdates) {
-    const pushConflicts = await push(localDocuments)
+    const pushConflicts = await push()
 
     if (pushConflicts.length === 0) {
       pushUpdates = false
@@ -98,10 +109,9 @@ async function handlePushingUpdates(push: PushFunction, localDocuments: any[]) {
 
     const chosen = await handleConflicts(pushConflicts)
 
-    await db.characters.bulkPut(chosen)
+    await bulkPut(chosen)
     // TODO: we may need to reSync to push up our chosen conflict resolutions.
 
-    console.log('documents pushed', localDocuments.length)
     console.log('conflicts handled', pushConflicts.length)
   }
 }
@@ -110,65 +120,18 @@ export const sync = async () => {
   if (!isOnline) return
 
   // Update synced characters array first.
-  const synced = await SyncStorage.get('synced_characters') || []
+  const synced = await SyncStorage.get<string[]>('synced_characters') || []
 
   await setSyncedCharacters(synced)
 
-  const user = jwtDecode<{ role: number }>(await AuthStorage.get('token'))
 
-  if (!user) return
+  for (let i = 0; i < collectionsToSync.length; i++) {
+    const coll = collectionsToSync[i]
 
-  const isPremium = user.role > 0
+    await handlePullUpdates(coll.bulkPut, coll.pull, await coll.get())
 
-  // Systems need to be synced *FIRST* just on the offchance that syncing fails halfway through, another
-  // client won't download a character that references a system that doesn't exist.
-  // downloading a system that isn't being used is fine, but downloading a character that references a system that doesn't exist is bad.
-
-  // TODO: Sync Systems before characters.
-
-  const localCharacters = await db.characters.toArray()
-
-  const updatedCharacters = await SyncStorage.get('updated_characters') || []
-  const localCharactersToPush = localCharacters.filter(c => {
-    const isSynced = synced.includes(c.local_id)
-    const isUpdated = updatedCharacters.includes(c.local_id)
-
-    // premium users can push all characters.
-    if (isPremium && isUpdated) return true
-
-    // free users can only push synced characters.
-    if (isSynced && isUpdated) return true
-
-    return false
-  })
-
-  /* Systems */
-
-  const localSystems = await db.systems.toArray()
-
-  await handlePullUpdates(pullUpdatesForSystems, localSystems)
-
-  const systemsToPush = localSystems.filter(s => {
-    const pushedCharacterRef = localCharactersToPush.find(c => c.system.local_id === s.local_id)
-
-    // if a character we're syncing relies on this character we need to sync it too.
-    const referencedByChar = (pushedCharacterRef !== undefined)
-
-    // if this system hasn't been synced and we're premium it should be synced.
-    const notSyncedAndPremium = (!s.id && isPremium)
-
-    return (referencedByChar || notSyncedAndPremium)
-  })
-
-  await handlePushingUpdates(pushUpdatesForSystems, systemsToPush)
-
-  /* Characters */
-
-  await handlePullUpdates(pullUpdatesForCharacters, localCharacters)
-  console.log('documents pulled', localCharacters.length)
-
-
-  await handlePushingUpdates(pushUpdatesForCharacters, localCharactersToPush)
+    await handlePushingUpdates(coll.bulkPut, coll.push)
+  }
 
   // TODO: setup websocket connection for real-time updates.
 }
@@ -176,11 +139,10 @@ export const sync = async () => {
 window.addEventListener('online', async () => {
   console.log('online')
 
-  const isConnected = await checkInternetAccess()
+  isOnline = await checkInternetAccess()
   
-  if (!isConnected) {
+  if (!isOnline) {
     console.log('not connected')
-    isOnline = false
     return
   }
 
@@ -189,6 +151,8 @@ window.addEventListener('online', async () => {
 
 window.addEventListener('offline', () => {
   console.log('offline')
+
+  isOnline = false
   
   // TODO: not sure what to do here yet. Maybe just cancel the websocket connection?
 })

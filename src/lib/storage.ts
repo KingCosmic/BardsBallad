@@ -18,7 +18,7 @@ class Storage {
     this.isCreated = true
   }
 
-  get(key: string) {
+  get<T>(key: string): Promise<T> {
     return this.store.get(key)
   }
 

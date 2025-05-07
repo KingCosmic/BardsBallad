@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useVersions } from '../hooks/useVersions';
 import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
 import { useOurSystems } from '../hooks/useOurSystems';
+import TextInput from '../components/inputs/TextInput';
 
 type Props = {
   data: string | null;
@@ -25,6 +26,8 @@ const PublishNewVersion: React.FC<Props> = ({ data, isOpen, requestClose, onSave
   const { versions, isLoading: isVersionsLoading } = useVersions()
 
   const [selectedVersion, setSelectedVersion] = useState(versions[0])
+
+  const [changelog, setChangelog] = useState('')
 
   console.log(systems)
 
@@ -48,11 +51,13 @@ const PublishNewVersion: React.FC<Props> = ({ data, isOpen, requestClose, onSave
           ))}
         </Select>
 
-        <Select id='version-to-publish' label='Version' value={selectedVersion.local_id} onChange={val => setSelectedVersion(versions.find(ver => ver.local_id === val)!)}>
+        <Select id='version-to-publish' label='Version' value={selectedVersion?.local_id} onChange={val => setSelectedVersion(versions.find(ver => ver.local_id === val)!)}>
           {versions?.filter(vers => vers.reference_id === selectedSystem.local_id).map(vers => (
             <option key={vers.local_id} value={vers.local_id}>{getVisualTextFromVersionID(vers.local_id)}</option>
           ))}
         </Select>
+
+        <TextInput id='changelog' label='Changelog' value={changelog} onChange={setChangelog} isValid={true} errorMessage='' />
       </ModalBody>
 
       <ModalFooter>
@@ -60,9 +65,11 @@ const PublishNewVersion: React.FC<Props> = ({ data, isOpen, requestClose, onSave
           Close
         </Button>
 
-        <Button color='primary' onClick={() => {
+        <Button color='primary' disabled={(!selectedSystem && !selectedVersion)} onClick={() => {
           onSave({
-            ...selectedVersion
+            version_id: selectedVersion.local_id,
+            system_id: selectedSystem.local_id,
+            changelog
           })
           requestClose()
         }}>Confirm</Button>

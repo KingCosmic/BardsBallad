@@ -16,9 +16,22 @@ import Settings from './pages/Settings'
 import { sync } from './sync'
 import SubscriptionConfirmation from './pages/SubscriptionConfirmation'
 import Marketplace from './pages/Marketplace'
+import { updateDatabaseWithUserInfo } from './storage/updateDatabaseWithUserInfo'
+import { authState } from './state/auth'
+import { AuthStorage } from './lib/storage'
 
 // @ts-ignore
 window.trySync = sync
+
+// @ts-ignore
+window.updateFromAuth = async () => {
+  const { user } = authState.get()
+  const user_id = (user) ? user.id : 'none'
+
+  const device_id = await AuthStorage.get<string>('deviceId') || ''
+
+  updateDatabaseWithUserInfo(user_id, device_id)
+}
 
 applyTheme()
 

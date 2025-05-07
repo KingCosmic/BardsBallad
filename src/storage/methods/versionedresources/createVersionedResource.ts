@@ -3,23 +3,28 @@ import { db } from '../../index'
 
 import { v4 as uuidv4 } from 'uuid'
 import { AuthStorage } from '../../../lib/storage'
+import { authState } from '../../../state/auth'
 
-type Types = 'system' | 'character' | 'module' | 'plugin'
+type Types = 'system' | 'character'
 
 export default async (reference_type: Types, reference_id: string, version: string, data: any) => {
   try {
     const device_id = await AuthStorage.get('deviceId') || 'none'
 
+    const { user } = authState.get()
+    
+      const user_id = user?.id || 'none'
+
     // validate character format.
     const versionData = {
       local_id: `${device_id}-${uuidv4()}`,
-    
-      version,
+      user_id,
+
       data,
       reference_id,
       reference_type,
     
-      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       deleted_at: null,
     }
 

@@ -13,8 +13,7 @@ const characterSchema = z.object({
 
   system: z.object({
     local_id: z.string(),
-    name: z.string(),
-    version: z.string()
+    version_id: z.string()
   }),
 
   createdAt: z.string().datetime({ offset: true }),

@@ -9,13 +9,7 @@ import versionedResourceSchema, { VersionedResource } from '../../schemas/versio
 // (like we override the local_id if one doesn't exist but don't touch id or user_id)
 export default async (sys: System, version: VersionedResource) => {
   try {
-    let system_local_id = sys.local_id || await generateLocalId()
-
-    if (await db.systems.get({ id: sys.local_id || '' }) !== undefined) {
-      console.log('System already exists in the database')
-      return
-    }
-
+    let system_local_id = await generateLocalId()
     while (await db.systems.get({ local_id: system_local_id })) {
       // Generate a new id until we find one that doesn't exist in the database
       system_local_id = await generateLocalId()
@@ -39,12 +33,7 @@ export default async (sys: System, version: VersionedResource) => {
 
     await db.systems.add(sysData);
 
-    let version_local_id = version.local_id || await generateLocalId()
-
-    if (await db.versions.get({ id: version.local_id || '' }) !== undefined) {
-      console.log('Version already exists in the database')
-      return
-    }
+    let version_local_id = await generateLocalId()
 
     while (await db.versions.get({ local_id: version_local_id })) {
       // Generate a new id until we find one that doesn't exist in the database
@@ -54,7 +43,8 @@ export default async (sys: System, version: VersionedResource) => {
     const versData = {
       ...version,
       local_id: version_local_id,
-      reference_id: system_local_id
+      reference_id: system_local_id,
+      user_id
     }
 
     const versionResult = versionedResourceSchema.safeParse(versData);
@@ -80,7 +70,7 @@ export default async (sys: System, version: VersionedResource) => {
     
       resource_type: 'system',
       resource_id: system_local_id,
-      subscribedAt: new Date().toISOString(),
+      subscribed_at: new Date().toISOString(),
       version_id: version_local_id,
       autoUpdate: false,
       pinned: false,

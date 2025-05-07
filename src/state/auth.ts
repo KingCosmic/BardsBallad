@@ -26,7 +26,7 @@ const defaultState: AuthState = {
 export const authState = newRidgeState<AuthState>(defaultState)
 
 export const loadToken = async () => {
-  const token = await AuthStorage.get('token')
+  const token = await AuthStorage.get<string>('token')
 
   if (token) {
     const user = jwtDecode<User>(token)
@@ -47,7 +47,7 @@ export const saveToken = async (token: string) => {
 
 export const updateSyncedCharacters = (characters: string[]) => {
   authState.set((prev) => ({ ...prev, synced_characters: characters }))
-  SyncStorage.set('synced_characters', JSON.stringify(characters))
+  SyncStorage.set('synced_characters', characters)
 }
 
 export const logout = () => {

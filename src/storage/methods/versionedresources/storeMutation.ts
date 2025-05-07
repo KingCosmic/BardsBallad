@@ -10,7 +10,6 @@ export default async function storeMutation(local_id: string, promise: any) {
   try {
     return await db.versions.update(local_id, {
       data: data,
-      updated_at: new Date().toISOString(),
     })
   } catch (err: any) {
     console.log('Error updating version resource:', err)

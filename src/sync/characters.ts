@@ -1,8 +1,53 @@
+import { jwtDecode } from 'jwt-decode'
+import { pullUpdatesForCharacters, pushUpdatesForCharacters } from '../lib/api'
+import { AuthStorage, SyncStorage } from '../lib/storage'
+import { db } from '../storage'
+import { Character } from '../storage/schemas/character'
 
-export async function pullCharacters() {
+const CHECKPOINT = 'character-checkpoint'
 
+export const pull = async () => {
+  const cp = await SyncStorage.get<any>(CHECKPOINT)
+
+  console.log('pulling characters')
+
+  const { checkpoint, documents } = await pullUpdatesForCharacters(cp, 20)
+
+  await SyncStorage.set(CHECKPOINT, checkpoint)
+
+  return documents
 }
 
-export async function pushCharacters() {
+export const push = async (): Promise<{ local: any[], remote: any[] }[]> => {
+  const characters = await db.characters.toArray()
 
+  const user = jwtDecode<{ id: String, role: number }>(await AuthStorage.get('token'))
+  
+  if (!user) return []
+  
+  const isPremium = user.role > 0
+
+  const updatedCharacters = await SyncStorage.get<string[]>('updated_characters')
+  const synced = await SyncStorage.get<string[]>('synced_characters') || []
+
+  const localCharactersToPush = characters.filter(c => {
+    const isSynced = synced.includes(c.local_id)
+    const isUpdated = updatedCharacters.includes(c.local_id)
+
+    // premium users can push all characters.
+    if (isPremium && isUpdated) return true
+
+    // free users can only push synced characters.
+    if (isSynced && isUpdated) return true
+
+    return false
+  })
+
+  const { conflicts, ids } = await pushUpdatesForCharacters(localCharactersToPush)
+
+  return conflicts
 }
+
+export const bulkPut = async (docs: Character[]) => db.characters.bulkPut(docs)
+
+export const get = async () => await db.characters.toArray()

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { authState, saveToken, updateSyncedCharacters } from '../state/auth'
 import { getDeviceIdentifier } from '../utils/getDeviceName'
 import { type Character } from '../storage/schemas/character'
@@ -6,6 +6,7 @@ import { updateDatabaseWithUserInfo } from '../storage/updateDatabaseWithUserInf
 import { db } from '../storage'
 import { AuthStorage, SyncStorage } from './storage'
 import { System } from '../storage/schemas/system'
+import { VersionedResource } from '../storage/schemas/versionedResource'
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/v1',
@@ -73,6 +74,25 @@ export const publishSystem = async (data: any) => {
   }
 }
 
+export const publishVersion = async (data: any) => {
+  try {
+    const response = await api.post(`/marketplace/${data.system_id}/versions`, data)
+    return response.status === 200;
+  } catch (err) {
+    return false;
+  }
+}
+
+export const getMarketplaceItems = async (): Promise<any[]> => {
+  try {
+    const items = await api.get(`/marketplace`)
+
+    return items.data
+  } catch (err) {
+    return [];
+  }
+}
+
 export const register = async (username: string, email: string, password: string) => {
   const response = await api.post('/auth/register', { username, email, password, deviceName: await getDeviceIdentifier() })
 
@@ -120,6 +140,26 @@ export const setSyncedCharacters = async (characters: string[]) => {
   updateSyncedCharacters(characters)
 
   return response.data
+}
+
+export const pullUpdatesForVersions = async (checkpointOrNull: { updated_at: number, id: string } | null, batchSize: number): Promise<{
+  documents: VersionedResource[];
+  checkpoint: { id: number, updated_at: string };
+}> => {
+  const updated_at = checkpointOrNull?.updated_at || 0
+  const id = checkpointOrNull?.id || ''
+  
+  return await api.get<{ documents: any, checkpoint: any }>('/versions/pull', {
+    params: {
+      updated_at,
+      id,
+      batchSize
+    }
+  }).then((response) => response.data)
+}
+
+export const pushUpdatesForVersions = async (items: VersionedResource[]) => {
+  return await api.post('/versions/push', items).then((response) => response.data)
 }
 
 export const pullUpdatesForSystems = async (checkpointOrNull: { updated_at: number, id: string } | null, batchSize: number): Promise<{

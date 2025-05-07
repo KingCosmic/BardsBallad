@@ -1,40 +1,36 @@
-import { NavLink } from 'react-router';
 import Header from '../components/Header'
 import { openModal } from '../state/modals';
 import { useEffect, useState } from 'react';
 import { MiscStorage } from '../lib/storage';
 import FloatingActionButton from '../components/FloatingActionButton';
-import { publishSystem } from '../lib/api';
+import { getMarketplaceItems, publishSystem, publishVersion } from '../lib/api';
 
-const testSystems = [
-  {
-    name: 'Pathfinder 2e',
-    description: 'A fantasy role-playing game set in a world of magic and adventure.',
-    version: '2.0.0',
-  },
-  {
-    name: 'Pathfinder 3e',
-    description: 'A fantasy role-playing game set in a world of magic and adventure.',
-    version: '2.0.0',
-  },
-  {
-    name: 'Dungeons And Dragons 5e',
-    description: 'A fantasy role-playing game set in a world of magic and adventure.',
-    version: '2.0.0',
-  }
-]
+type MarketplaceItem = {
+  id: string,
+  name: string,
+  description: string,
 
-const SystemCard: React.FC<{ sys: { name: string, description: string, version: string } }> = ({ sys }) => {
+  creator_id: string,
+
+  resource_type: string,
+  resource_id: string,
+
+  updated_at: string,
+  published_at: string
+  is_public: boolean
+}
+
+const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
   return (
     <div
-      key={sys.name}
+      key={item.name}
       className="relative flex flex-col max-w-96 p-4 tranasition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
     >
       <div
         onClick={() => openModal({
           type: 'marketplace_view',
-          title: sys.name,
-          data: sys,
+          title: item.name,
+          data: item,
           onSave: () => {
 
           },
@@ -42,21 +38,21 @@ const SystemCard: React.FC<{ sys: { name: string, description: string, version: 
         className="flex items-start space-x-4"
       >
         <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
-          <span className="text-xl font-bold text-white">{sys.name[0]}</span>
+          <span className="text-xl font-bold text-white">{item.name[0]}</span>
         </div>
 
         <div className="flex-1 min-w-0">
           <h5 className="text-xl font-semibold text-neutral-900 truncate dark:text-white">
-            {sys.name}
+            {item.name}
           </h5>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Version {sys.version}
+            Published {new Date(item.published_at).toDateString()}
           </p>
         </div>
       </div>
 
       <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
-        <button
+        {/* <button
           onClick={() => {}}
           className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md dark:text-blue-400 dark:hover:bg-blue-900/30"
         >
@@ -74,7 +70,7 @@ const SystemCard: React.FC<{ sys: { name: string, description: string, version: 
             />
           </svg>
           Export
-        </button>
+        </button> */}
       </div>
     </div>
   );
@@ -82,6 +78,7 @@ const SystemCard: React.FC<{ sys: { name: string, description: string, version: 
 
 const Marketplace: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [items, setItems] = useState<any[]>([])
 
   useEffect(() => {
     const disclaimer = async () => {
@@ -99,7 +96,14 @@ const Marketplace: React.FC = () => {
       })
     }
 
+    const loadItems = async () => {
+      const resp = await getMarketplaceItems()
+
+      setItems(resp)
+    }
+
     disclaimer()
+    loadItems()
   }, [])
 
   return (
@@ -115,7 +119,7 @@ const Marketplace: React.FC = () => {
         <div>
           <h3 className='text-xl font-semibold mt-4'>Featured Systems</h3>
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
-            {testSystems.map((system, index) => <SystemCard sys={system} />)}
+            {items.map((item, index) => <ItemCard item={item} />)}
           </div>
         </div>
         <div>
@@ -147,7 +151,7 @@ const Marketplace: React.FC = () => {
               type: 'PublishNewVersion',
               title: 'none',
               data: 'none',
-              onSave: async (value: any) => {}
+              onSave: publishVersion
             })
           }
         ]}

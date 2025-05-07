@@ -21,7 +21,7 @@ type Props = {
     resource_type: string
     resource_id: string
 
-    isPublic: boolean
+    is_public: boolean
   }): void;
 }
 
@@ -66,7 +66,7 @@ const PublishNewSystem: React.FC<Props> = ({ data, isOpen, requestClose, onSave 
             description: description,
             resource_id: selectedSystem.local_id,
             resource_type: 'system',
-            isPublic: isPublic
+            is_public: isPublic
           })
           requestClose()
         }}>Publish</Button>
