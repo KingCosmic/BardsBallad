@@ -7,6 +7,7 @@ import { db } from '../storage'
 import { AuthStorage, SyncStorage } from './storage'
 import { System } from '../storage/schemas/system'
 import { VersionedResource } from '../storage/schemas/versionedResource'
+import { UserSubscription } from '../storage/schemas/userSubscription'
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/v1',
@@ -85,11 +86,31 @@ export const publishVersion = async (data: any) => {
 
 export const getMarketplaceItems = async (): Promise<any[]> => {
   try {
-    const items = await api.get(`/marketplace`)
+    const resp = await api.get(`/marketplace`)
 
-    return items.data
+    return resp.data
   } catch (err) {
     return [];
+  }
+}
+
+export const getVersionsForItem = async (id: string): Promise<any[]> => {
+  try {
+    const resp = await api.get(`/marketplace/${id}/versions`)
+
+    return resp.data
+  } catch (err) {
+    return [];
+  }
+}
+
+export const getSubscriptionData = async (id: string): Promise<any | null> => {
+  try {
+    const resp = await api.get(`/marketplace/subscribe/${id}`)
+
+    return resp.data
+  } catch (err) {
+    return null;
   }
 }
 
@@ -160,6 +181,26 @@ export const pullUpdatesForVersions = async (checkpointOrNull: { updated_at: num
 
 export const pushUpdatesForVersions = async (items: VersionedResource[]) => {
   return await api.post('/versions/push', items).then((response) => response.data)
+}
+
+export const pullUpdatesForSubscriptions = async (checkpointOrNull: { updated_at: number, id: string } | null, batchSize: number): Promise<{
+  documents: UserSubscription[];
+  checkpoint: { id: number, updated_at: string };
+}> => {
+  const updated_at = checkpointOrNull?.updated_at || 0
+  const id = checkpointOrNull?.id || ''
+  
+  return await api.get<{ documents: any, checkpoint: any }>('/subscriptions/pull', {
+    params: {
+      updated_at,
+      id,
+      batchSize
+    }
+  }).then((response) => response.data)
+}
+
+export const pushUpdatesForSubscriptions = async (items: UserSubscription[]) => {
+  return await api.post('/subscriptions/push', items).then((response) => response.data)
 }
 
 export const pullUpdatesForSystems = async (checkpointOrNull: { updated_at: number, id: string } | null, batchSize: number): Promise<{

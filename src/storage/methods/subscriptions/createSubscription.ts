@@ -7,7 +7,7 @@ import { AuthStorage } from '../../../lib/storage'
 
 type Types = 'system' | 'character' | 'module' | 'plugin'
 
-export default async (type: Types, resource_id: string, version_id: string, autoUpdate: boolean) => {
+export default async (type: Types, resource_id: string, version_id: string, auto_update: boolean) => {
   try {
     const { user } = authState.get()
     
@@ -22,21 +22,18 @@ export default async (type: Types, resource_id: string, version_id: string, auto
     
       resource_type: type,
       resource_id: resource_id,
-      subscribedAt: new Date().toISOString(),
       version_id: version_id,
-      autoUpdate: autoUpdate,
-      pinned: false,
+      auto_update: auto_update,
     
+      subscribed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       deleted_at: null,
     }
 
-    // if (process.env.VITE_PUBLIC_VALIDATE_SCHEMA === 'true') {
-    if (true) {
-      const result = SubcriptionSchema.safeParse(subscriptionData);
-      if (!result.success) {
-        console.log('Invalid subscription data:', result.error.format());
-        return;
-      }
+    const result = SubcriptionSchema.safeParse(subscriptionData);
+    if (!result.success) {
+      console.log('Invalid subscription data:', result.error.format());
+      return;
     }
 
     await db.subscriptions.add(subscriptionData);

@@ -19,7 +19,7 @@ const forkSystem = async (baseData: System, versionData: VersionedResource) => {
 
   if (!newSys) return
 
-  const newVers = await createVersionedResource('system', newSys.local_id, versionData.version, versionData.data)
+  const newVers = await createVersionedResource('system', newSys.local_id, versionData.data)
 
   // TODO: if this check fails we should cleanup the system we just made :)
   if (!newVers) return

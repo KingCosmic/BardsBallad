@@ -62,7 +62,7 @@ const systemSchema = z.object({
 
   name: z.string(),
 
-  forked_from: z.string().optional(),
+  forked_from: z.string().nullable().optional(),
 
   created_at: z.string().datetime({ offset: true }),
   updated_at: z.string().datetime({ offset: true }),

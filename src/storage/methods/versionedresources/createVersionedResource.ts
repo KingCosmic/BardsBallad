@@ -7,7 +7,7 @@ import { authState } from '../../../state/auth'
 
 type Types = 'system' | 'character'
 
-export default async (reference_type: Types, reference_id: string, version: string, data: any) => {
+export default async (reference_type: Types, reference_id: string, data: any) => {
   try {
     const device_id = await AuthStorage.get('deviceId') || 'none'
 

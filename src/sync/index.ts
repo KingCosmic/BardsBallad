@@ -5,10 +5,18 @@ import { openModal } from '../state/modals'
 import { get as systemsGet, bulkPut as systemsBulkPut, pull as systemsPull, push as systemsPush } from './systems'
 import { get as versionsGet, bulkPut as versionsBulkPut, pull as versionsPull, push as versionsPush } from './versions'
 import { get as charactersGet, bulkPut as charactersBulkPut, pull as charactersPull, push as charactersPush } from './characters'
+import { get as subscriptiosGet, bulkPut as subscriptionsBulkPut, pull as subscriptionsPull, push as subscriptionsPush } from './subscriptions'
 
 const batchSize = 10
 
 const collectionsToSync = [
+  {
+    name: 'Subscriptions',
+    get: subscriptiosGet,
+    bulkPut: subscriptionsBulkPut,
+    pull: subscriptionsPull,
+    push: subscriptionsPush,
+  },
   {
     name: 'Systems',
     get: systemsGet,
