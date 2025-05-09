@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { saveToken } from '../state/auth'
+import { RxReplicationWriteToMasterRow } from 'rxdb'
 import { getDeviceIdentifier } from '../utils/getDeviceName'
 
 const api = axios.create({
@@ -85,6 +86,10 @@ export const pullUpdatesForCharacters = async (checkpointOrNull: { updatedAt: nu
       batchSize
     }
   }).then((response) => response.data)
+}
+
+export const pushUpdatesForCharacters = async (rows: RxReplicationWriteToMasterRow<unknown>[]) => {
+  return await api.post('/characters/push', rows).then((response) => response.data)
 }
 
 export default api
