@@ -24,6 +24,7 @@ import { type System, type PageData } from '../storage/schemas/system'
 
 import { usePostHog } from 'posthog-js/react'
 import { VersionedResource } from '../storage/schemas/versionedResource'
+import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID'
 
 function CharacterCreatorModal(props: any) {
   const { systems } = useSystems()
@@ -149,7 +150,7 @@ function CharacterCreatorModal(props: any) {
               setVersion(vers)
               setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.local_id, version_id: vers.local_id } })
             }}>
-              {systems.map((sys) => <option key={sys.name} value={sys.name}>{sys.name}</option>)}
+              {systems.map((sys) => <option key={sys.local_id} value={sys.local_id}>{sys.name}</option>)}
             </Select>
 
             <Select id='character-system-version' label='System Version' value={version?.local_id ?? ''} onChange={(local_id) => {
@@ -159,7 +160,7 @@ function CharacterCreatorModal(props: any) {
               setVersion(vers)
               setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: system.local_id, version_id: vers.local_id } })
             }}>
-              {systems.map((sys) => <option key={sys.name} value={sys.name}>{sys.name}</option>)}
+              {versions.map((ver) => <option key={ver.local_id} value={ver.local_id}>{getVisualTextFromVersionID(ver.local_id)}</option>)}
             </Select>
           </>
         )}

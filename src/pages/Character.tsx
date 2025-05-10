@@ -44,7 +44,7 @@ const CharacterPage: React.FC = () => {
     const loadSystem = async () => {
       if (!character) return
 
-      const systemData = await getVersionedResource(character.system.local_id)
+      const systemData = await getVersionedResource(character.system.version_id)
 
       if (!systemData) return
 
