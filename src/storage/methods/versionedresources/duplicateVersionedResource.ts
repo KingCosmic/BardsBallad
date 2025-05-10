@@ -2,6 +2,7 @@ import { VersionedResource } from '../../schemas/versionedResource'
 import { db } from '../../index'
 import generateLocalId from '../../../utils/generateLocalId'
 import { authState } from '../../../state/auth'
+import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
 
 export default async (oldResource: VersionedResource, new_id?: string) => {
   try {
@@ -9,13 +10,10 @@ export default async (oldResource: VersionedResource, new_id?: string) => {
 
     const user_id = (user) ? user.id : 'none'
 
-    if (!new_id) {
-      new_id = await generateLocalId()
-    
-      while (await db.systems.get(new_id) !== undefined) {
-        // Generate a new id until we find one that doesn't exist in the database
-        new_id = await generateLocalId()
-      }
+    let local_id = new_id ?? await generateLocalId()
+
+    while (!await ensureUniqueness(local_id)) {
+      local_id = await generateLocalId()
     }
 
     const versionData = {

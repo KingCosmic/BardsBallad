@@ -4,20 +4,26 @@ import { db } from '../../index'
 import { v4 as uuidv4 } from 'uuid'
 import { AuthStorage } from '../../../lib/storage'
 import { authState } from '../../../state/auth'
+import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
+import generateLocalId from '../../../utils/generateLocalId'
 
 type Types = 'system' | 'character'
 
 export default async (reference_type: Types, reference_id: string, data: any) => {
   try {
-    const device_id = await AuthStorage.get('deviceId') || 'none'
+    let local_id = await generateLocalId()
+
+    while (!await ensureUniqueness(local_id)) {
+      local_id = await generateLocalId()
+    }
 
     const { user } = authState.get()
     
-      const user_id = user?.id || 'none'
+    const user_id = user?.id || 'none'
 
-    // validate character format.
+
     const versionData = {
-      local_id: `${device_id}-${uuidv4()}`,
+      local_id,
       user_id,
 
       data,
@@ -28,12 +34,10 @@ export default async (reference_type: Types, reference_id: string, data: any) =>
       deleted_at: null,
     }
 
-    if (true) {
-      const result = VersionedResourceSchema.safeParse(versionData);
-      if (!result.success) {
-        console.log('Invalid subscription data:', result.error.format());
-        return;
-      }
+    const result = VersionedResourceSchema.safeParse(versionData);
+    if (!result.success) {
+      console.log('Invalid subscription data:', result.error.format());
+      return;
     }
 
     await db.versions.add(versionData);
