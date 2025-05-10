@@ -6,8 +6,17 @@ import { AddData } from './renderer/Context'
 import { FABPreview } from './FloatingActionButton'
 import SelectPreview from './components/Select/Preview'
 import InputPreview from './components/Input/Preview'
+import { PageData, SystemData } from '../storage/schemas/system'
+import { Character } from '../storage/schemas/character'
 
-const RenderEditorData = ({ data, style, state, updateState }: any) => {
+type Props = {
+  data: any
+  style?: any
+  state: { page: PageData, character: Character, system: SystemData }
+  updateState: any
+}
+
+const RenderEditorData: React.FC<Props> = ({ data, style, state, updateState }) => {
   // TODO: process page blueprint.
 
   return (
@@ -19,7 +28,14 @@ const RenderEditorData = ({ data, style, state, updateState }: any) => {
   )
 }
 
-const NodeRenderer = ({ node, data, state, updateState }: any) => {
+type RendererProps = {
+  data: any
+  node: any
+  state: { page: PageData, character: Character, system: SystemData }
+  updateState: any
+}
+
+const NodeRenderer: React.FC<RendererProps> = ({ node, data, state, updateState }) => {
   const type = (typeof node.type === 'object') ? node.type.resolvedName : node.type
 
   const Children = node.nodes.map((id: string) => <NodeRenderer key={id} node={data[id]} data={data} state={state} updateState={updateState} />)

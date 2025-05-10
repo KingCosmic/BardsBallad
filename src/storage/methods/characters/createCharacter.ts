@@ -1,15 +1,22 @@
+import { AuthStorage, SyncStorage } from '../../../lib/storage'
+import { authState } from '../../../state/auth'
 import { db } from '../../index'
 import CharacterSchema from '../../schemas/character'
 
 import { v4 as uuidv4 } from 'uuid'
 
-export default async (name: string, data: any, system: { id: string, name: string, version: string }) => {
+export default async (name: string, data: any, system: { local_id: string, name: string, version: string }) => {
   try {
+    const { user } = authState.get()
+
+    const user_id = user?.id || 'none'
+    const device_id = await AuthStorage.get('deviceId') || 'none'
+
     // validate character format.
     const characterData = {
-      local_id: uuidv4(),
+      local_id: `${device_id}-${uuidv4()}`,
 
-      user_id: 'none', // TODO:(Cosmic) set this up to pull from our auth user id and default to "NONE" if not set
+      user_id: user_id,
 
       name: name,
       data: data,
@@ -27,6 +34,11 @@ export default async (name: string, data: any, system: { id: string, name: strin
         console.log('Invalid character data:', result.error.format());
         return;
       }
+    }
+
+    let updatedChars = await SyncStorage.get('updated_characters') || []
+    if (!updatedChars.includes(characterData.local_id)) {
+      await SyncStorage.set('updated_characters', [ ...updatedChars, characterData.local_id ])
     }
 
     return await db.characters.add(characterData);

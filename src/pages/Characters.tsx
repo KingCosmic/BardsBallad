@@ -8,15 +8,16 @@ import { useCharacters } from '../hooks/useCharacters'
 import { openModal } from '../state/modals'
 import { authState } from '../state/auth'
 
-import { renameCharacter, deleteCharacter } from '../storage/methods/characters'
+import { renameCharacter, deleteCharacter, importCharacter } from '../storage/methods/characters'
+import { setSyncedCharacters } from '../lib/api'
+import JSONToFile from '../utils/JSONToFile'
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters()
-  const { isLoggedIn, user } = authState.useValue()
+  const { isLoggedIn, user, synced_characters } = authState.useValue()
 
+  const [isOpen, setIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
-
-  console.log(user)
 
   if (isLoading) return <></>
 
@@ -35,8 +36,6 @@ const Characters: React.FC = () => {
               key={char.local_id}
               className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
             >
-              <div className='absolute -top-3 -right-3 h-8 w-8 bg-purple-400 rounded-full'></div>
-
               <NavLink
                 to={char.local_id}
                 className="flex items-start space-x-4"
@@ -59,21 +58,37 @@ const Characters: React.FC = () => {
 
               <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
                 {
-                  isLoggedIn && (
+                  (isLoggedIn && user?.role === 0) && (
                     <button
                       onClick={() => {
-                        // toggleSyncingCharacter(char.local_id)
+                        let newSynced: string[] = []
+                        if (synced_characters.includes(char.local_id)) {
+                          newSynced = synced_characters.filter((c: string) => c !== char.local_id)
+                        } else if (length < 3) {
+                          newSynced = [...synced_characters, char.local_id]
+                        }
+
+                        setSyncedCharacters(newSynced)
                       }}
                       className="mr-auto inline-flex items-center px-3 py-1.5 text-sm font-medium text-brand-600 hover:bg-brand-50 rounded-md dark:text-brand-400 dark:hover:bg-brand-700"
                     >
                       <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                       </svg>
-                      {user?.synced_characers?.includes(char.local_id) ? 'UnSync' : 'Sync'}
+                      {synced_characters.includes(char.local_id) ? 'UnSync' : 'Sync'}
                     </button>
                   )
                 }
 
+                <button
+                  onClick={() => JSONToFile(char, `${char.name}-export`)}
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md dark:text-blue-400 dark:hover:bg-blue-900/30"
+                >
+                  <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  Export
+                </button>
                 <button
                   onClick={() => openModal({
                     type: 'edit_string',
@@ -113,7 +128,29 @@ const Characters: React.FC = () => {
           </h5>
         )}
 
-        <FloatingActionButton onClick={() => setIsCreating(true)} />
+        <FloatingActionButton
+            isOpen={isOpen}
+            onClick={() => setIsOpen(!isOpen)}
+            buttons={[
+              { name: 'Create Character', icon: '', onClick: () => setIsCreating(true) },
+              { name: 'Import Character', icon: '', onClick: () => openModal({
+                  type: 'import_file',
+                  title: 'Import Character',
+                  data: undefined,
+                  onSave: async (fileContent: string) => {
+                    try {
+                      const parsed = JSON.parse(fileContent)
+                      if (parsed) {
+                        importCharacter(parsed)
+                      }
+                    } catch (e) {
+                      console.error(e)
+                    }
+                  }
+                })
+              }
+            ]}
+        />
       </div>
     </div>
   )

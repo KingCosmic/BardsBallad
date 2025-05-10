@@ -5,36 +5,41 @@ import { type System } from '../../storage/schemas/system'
 import { produce } from 'immer'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
-import { setDefaultCharacterData } from '../../storage/methods/systems'
+import { setDefaultCharacterData } from '../../utils/system'
 
 import { type SystemType, type TypeData, type DataType } from '../../storage/schemas/system'
+import { VersionedResource } from '../../storage/schemas/versionedResource'
+import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 
 type CharacterProps = {
-  system: System
+  editsId: string
+  versionedResource: VersionedResource
 }
 
-const Character: React.FC<CharacterProps> = ({ system }) => {
+const Character: React.FC<CharacterProps> = ({ editsId, versionedResource }) => {
   const [editData, setEditData] = useState<DataType | null>(null)
+
+  console.log(versionedResource)
 
   return (
     <>
       <EditSystemData
-        types={system.types}
+        types={versionedResource.data.types}
         onDelete={() => {
-          const newCopy = produce(system.defaultCharacterData, (draft: any) => {
+          const newCopy = produce(versionedResource.data.defaultCharacterData, (draft: any) => {
             delete draft[editData?.name || '']
 
             draft._type.properties = draft._type.properties.filter((prop: any) => prop.key !== editData?.name)
           })
 
-          setDefaultCharacterData(system.local_id, newCopy!)
+          storeMutation(editsId, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
         onSave={(newData) => {
           const key = newData.name
           const typeData = newData.typeData
           const value = newData.data
 
-          const newCopy = produce(system?.defaultCharacterData, (draft: any) => {
+          const newCopy = produce(versionedResource.data.defaultCharacterData, (draft: any) => {
             delete draft[editData?.name || '']
 
             draft[key] = value
@@ -49,7 +54,7 @@ const Character: React.FC<CharacterProps> = ({ system }) => {
             }
           })
 
-          setDefaultCharacterData(system.local_id, newCopy!)
+          storeMutation(editsId, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
         isVisible={(editData !== null)}
         requestClose={() => setEditData(null)}
@@ -60,9 +65,9 @@ const Character: React.FC<CharacterProps> = ({ system }) => {
 
       <div className='flex flex-col gap-1'>
         {
-          (system?.defaultCharacterData._type as SystemType).properties.map((prop) => {
+          (versionedResource.data.defaultCharacterData._type as SystemType).properties.map((prop) => {
             const key = prop.key
-            const data = system?.defaultCharacterData[key]
+            const data = versionedResource.data.defaultCharacterData[key]
 
             const def = prop.typeData
 
@@ -81,12 +86,12 @@ const Character: React.FC<CharacterProps> = ({ system }) => {
 
       <FloatingActionButton onClick={() => {
           const newCopy = {
-            ...system?.defaultCharacterData,
+            ...versionedResource.data.defaultCharacterData,
             newKey: 'new value',
             _type: {
-              name: system?.defaultCharacterData?._type?.name || '',
+              name: versionedResource.data.defaultCharacterData._type.name || '',
               properties: [
-                ...system?.defaultCharacterData?._type?.properties || [],
+                ...versionedResource.data.defaultCharacterData._type.properties || [],
                 {
                   key: 'newKey',
                   typeData: {
@@ -99,7 +104,7 @@ const Character: React.FC<CharacterProps> = ({ system }) => {
             }
           }
 
-          setDefaultCharacterData(system.local_id, newCopy)
+          storeMutation(editsId, setDefaultCharacterData(versionedResource.data, newCopy))
         }}
       />
     </>

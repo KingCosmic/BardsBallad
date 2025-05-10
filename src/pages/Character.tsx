@@ -12,20 +12,18 @@ import { useCharacter } from '../hooks/useCharacter'
 import lz from 'lzutf8'
 import { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 import { deepEqual } from 'fast-equals'
-import { useSystems } from '../hooks/useSystems'
 import { updateCharacterData } from '../storage/methods/characters'
 import { Character } from '../storage/schemas/character'
 
-import { type System, type PageData } from '../storage/schemas/system'
+import { type PageData, SystemData } from '../storage/schemas/system'
+import getVersionedResource from '../storage/methods/versionedresources/getVersionedResource'
 
 const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
-  const { systems } = useSystems()
-
   const character = useCharacter(id)
 
-  const [system, setSystem] = useState<System | null>(null)
+  const [system, setSystem] = useState<SystemData | null>(null)
 
   const updateState = useCallback((state: BlueprintProcessorState) => {
     if (!character || !system) return
@@ -43,18 +41,23 @@ const CharacterPage: React.FC = () => {
   }, [character, system])
 
   useEffect(() => {
-    if (!systems || !character) return
+    const loadSystem = async () => {
+      if (!character) return
 
-    const newSystem = systems.find(s => s.local_id === character?.system.id)
-    if (!newSystem) return
+      const systemData = await getVersionedResource(character.system.local_id)
 
-    if (deepEqual(system, newSystem)) return
+      if (!systemData) return
 
-    setSystem(newSystem)
-  }, [systems, character])
+      if (deepEqual(system, systemData.data)) return
 
-  if (!character) return <p id='loading-text' className='text-center text-2xl'>loading character...</p>
-  if (!system) return <p id='loading-text' className='text-center text-2xl'>loading system...</p>
+      setSystem(systemData.data)
+    }
+
+    loadSystem()
+  }, [character])
+
+  if (!character) return <p id='loading-text' className='text-center text-2xl'>loading character data...</p>
+  if (!system) return <p id='loading-text' className='text-center text-2xl'>loading system data...</p>
 
   return (
     <div className='flex flex-col h-full w-full'>
@@ -79,7 +82,7 @@ const CharacterPage: React.FC = () => {
   )
 }
 
-const RenderTab = ({ system, character, updateState, className }: { system: System, character: Character, updateState(state: BlueprintProcessorState): void, className: string }) => {
+const RenderTab = ({ system, character, updateState, className }: { system: SystemData, character: Character, updateState(state: BlueprintProcessorState): void, className: string }) => {
   const [tab, setTab] = useState(system.pages[0].name)
 
   return (
@@ -97,7 +100,7 @@ const RenderTab = ({ system, character, updateState, className }: { system: Syst
   )
 }
 
-function RenderPage({ page, character, system, currentTab, updateState }: { page: PageData, character: Character, system: System, currentTab: string, updateState(state: BlueprintProcessorState): void }) {
+function RenderPage({ page, character, system, currentTab, updateState }: { page: PageData, character: Character, system: SystemData, currentTab: string, updateState(state: BlueprintProcessorState): void }) {
   const data = useMemo(() => {
     if (!page.lexical) return {}
 

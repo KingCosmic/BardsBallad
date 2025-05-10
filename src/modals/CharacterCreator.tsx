@@ -40,7 +40,7 @@ function CharacterCreatorModal(props: any) {
     name: 'Aliza Cartwight',
     data: system?.defaultCharacterData ?? {},
 
-    system: { id: '', name: '', version: '' },
+    system: { local_id: '', name: '', version: '' },
   
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -80,7 +80,7 @@ function CharacterCreatorModal(props: any) {
     if (!sys) return
 
     setSystem(sys)
-    setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.local_id, name: sys.name, version: sys.version } })
+    setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { local_id: sys.local_id, name: sys.name, version: sys.version } })
   }, [systems])
 
   if (!props.isOpen) return <></>
@@ -108,14 +108,14 @@ function CharacterCreatorModal(props: any) {
       <ModalBody>
         {tab === 0 && (
           <>
-            <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={!characters.find(c => c.name === characterData.name)} errorMessage='Names must be unique' />
+            <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={(!characters.find(c => c.name === characterData.name) && (characterData.name.length > 0))} errorMessage='Names must be unique and not empty.' />
 
             <Select id='character-system' label='Tabletop System' value={system.name} onChange={(name) => {
               const sys = systems.find(s => s.name === name)
               if (!sys) return
 
               setSystem(sys)
-              setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { id: sys.local_id, name: sys.name, version: sys.version } })
+              setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { local_id: sys.local_id, name: sys.name, version: sys.version } })
             }}>
               {systems.map((sys) => <option key={sys.name} value={sys.name}>{sys.name}</option>)}
             </Select>

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 import { editorState, setTab } from '../state/editor'
 
@@ -22,26 +22,79 @@ import Creator from '../tabs/System/Creator'
 import EditorSelect from '../designer/components/Select/Editor'
 import TextInput from '../designer/components/Input/Editor'
 import { useSystem } from '../hooks/useSystem'
-import { updateLexical } from '../storage/methods/systems'
-import { useEffect } from 'react'
+import { updateLexical } from '../utils/system'
+import { useCallback, useEffect, useMemo } from 'react'
+import storeMutation from '../storage/methods/versionedresources/storeMutation'
+import { SystemData } from '../storage/schemas/system'
+import { useVersionEdits } from '../hooks/useVersionEdits'
+import { openModal } from '../state/modals'
+import duplicateVersionedResource from '../storage/methods/versionedresources/duplicateVersionedResource'
+import createSubscription from '../storage/methods/subscriptions/createSubscription'
+import { useVersionResource } from '../hooks/useVersionResource'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
+  let navigate = useNavigate();
 
-  const system = useSystem(id)
+  const edits_id = useMemo(() => id ? `${id}|edits` : undefined, [id])
+
+  const orignal = useVersionResource<SystemData>(id)
+  const versionEdits = useVersionEdits<SystemData>(edits_id)
+  const system = useSystem(versionEdits?.reference_id)
 
   const editor = editorState.useValue()
 
   useEffect(() => {
-    editorState.set((prev) => ({ ...prev, systemId: id ?? '' }))
-  }, [id])
+    if (!edits_id || (edits_id === editor.versionId)) return
 
-  if (!system || !id) return <>loading...</>
+    editorState.set((prev) => ({ ...prev, versionId: edits_id }))
+  }, [edits_id, editor])
+
+  const resolver = useMemo(() => ({
+    Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider
+  }), [Container, Text, EditorSelect, TextInput, FAB, Searchbar, DesignerDivider])
+
+  const handleNodeChange = useCallback((query: any) => {
+    if (!versionEdits) return
+
+    storeMutation(versionEdits.local_id, updateLexical(versionEdits.data, query.serialize()))
+  }, [versionEdits, storeMutation, updateLexical])
+
+  if (!edits_id) return <>id not defined...</>
+  if (!versionEdits) return <>Loading Edits...</>
+  if (!system) return <>Loading System...</>
 
   return (
-    <EditorContext resolver={{ Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider }} onNodesChange={(query) => updateLexical(id, editor.tab, query.serialize())}>
+    <EditorContext resolver={resolver} onNodesChange={handleNodeChange}>
       <div className='flex flex-col h-full'>
-        <Header title={system.name} />
+        <Header title={system.name} options={[{
+          onClick: () => openModal({
+            type: 'SaveNewVersion',
+            title: 'none',
+            data: 'none',
+            onSave: async (value: any) => {
+              const newVersion = await duplicateVersionedResource(versionEdits)
+
+              if (!newVersion) return // TODO:(Cosmic) Show error.
+
+              const newSub = await createSubscription('system', newVersion.reference_id, newVersion.local_id, false)
+
+              if (!newSub) return // TODO:(Cosmic) Show error. and remove new version.
+
+              // I'm not entirely sure how this would happen?
+              // possibly a user unsubs from the original but then the ui *shouldn't* allow a user to get into this editing scenario.
+              // TODO:(Cosmic) Make sure we clear up edits when unsubbing from a resourec :)
+              if (!orignal) return
+
+              await duplicateVersionedResource(orignal, edits_id)
+
+              // TODO: show confirmation
+
+              navigate('/library')
+            }
+          }),
+          Content: () => <p className='block cursor-pointer py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500'>Save Version</p>
+        }]} />
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
           <Select id='tab-selector' label='' value={editor.tab} onChange={setTab}>
@@ -55,17 +108,17 @@ const System: React.FC = () => {
 
           {
             (editor.tab === 'character') ? (
-              <Character system={system} />
+              <Character editsId={edits_id} versionedResource={versionEdits} />
             ) : (editor.tab === 'data') ? (
-              <Data system={system} />
+              <Data editsId={edits_id} versionedResource={versionEdits} />
             ) : (editor.tab === 'types') ? (
-              <Types system={system} />
+              <Types editsId={edits_id} versionedResource={versionEdits} />
             ) : (editor.tab === 'functions') ? (
-              <Functions system={system} />
+              <Functions versionedResource={versionEdits} />
             ) : (editor.tab === 'editor') ? (
-              <Editor system={system} />
+              <Editor versionedResource={versionEdits} />
             ) : (editor.tab === 'creator') && (
-              <Creator system={system} />
+              <Creator versionedResource={versionEdits} />
             )
           }
         </div>

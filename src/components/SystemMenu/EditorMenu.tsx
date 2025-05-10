@@ -15,16 +15,16 @@ import Layers from '../../designer/Layers/Layers'
 import Select from '../inputs/Select'
 import Button from '../inputs/Button'
 import { openModal } from '../../state/modals'
-import { useSystem } from '../../hooks/useSystem'
-import { addCharacterPage, addCharacterPageState, deleteCharacterPage, renameCharacterPage, updateCharacterPageBlueprint, updateCharacterPageState } from '../../storage/methods/systems'
-
-import { type TypeData } from '../../storage/schemas/system'
+import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '../../utils/system'
+import { SystemData } from '../../storage/schemas/system'
+import storeMutation from '../../storage/methods/versionedresources/storeMutation'
+import { useVersionEdits } from '../../hooks/useVersionEdits'
 
 function EditorMenu() {
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
-  const page = useMemo(() => system?.pages.find(p => p.name === editor.characterPage), [system, editor.characterPage])
+  const page = useMemo(() => versionEdits?.data.pages.find(p => p.name === editor.characterPage), [versionEdits, editor.characterPage])
 
   const [tab, setTab] = useState('components')
 
@@ -50,16 +50,16 @@ function EditorMenu() {
     return { selected }
   })
 
-  if (!system) return <></>
+  if (!versionEdits) return <></>
 
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Select id='page' label='Page' value={editor.characterPage} onChange={setCharacterPage}>
-          {system.pages.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
+          {versionEdits.data.pages.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
         </Select>
 
-        <button type='button' onClick={() => addCharacterPage(editor.systemId)} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
+        <button type='button' onClick={() => storeMutation(editor.versionId, addPage(versionEdits.data, 'character'))} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
           <svg
             className='w-5 h-5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
             <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />
@@ -147,14 +147,14 @@ function EditorMenu() {
             <EditStringModal data={editName} isOpen={editName !== null}
               requestClose={() => setEditName(null)}
               onSave={(newName) => {
-                renameCharacterPage(editor.systemId, editName, newName)
+                storeMutation(versionEdits.local_id, renamePage(versionEdits.data, 'character', editName, newName))
                 setCharacterPage(newName)
               }}
             />
 
             <div className='inline-flex rounded-md shadow-sm my-2'>
-              <Button color='danger' disabled={system.pages.length <= 1} onClick={() => {
-                deleteCharacterPage(editor.systemId, editor.characterPage)
+              <Button color='danger' disabled={versionEdits.data.pages.length <= 1} onClick={() => {
+                storeMutation(versionEdits.local_id, deletePage(versionEdits.data, 'character', editor.characterPage))
               }}>
                 Delete
               </Button>
@@ -167,7 +167,7 @@ function EditorMenu() {
                 type: 'blueprint',
                 title: 'Page Blueprint',
                 data: page?.blueprint,
-                onSave: (bp) => updateCharacterPageBlueprint(editor.systemId, editor.characterPage, bp)
+                onSave: (bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))
               })
             }>
               Edit Page Blueprint
@@ -178,7 +178,7 @@ function EditorMenu() {
                 <h5>Page State</h5>
               </div>
 
-              <button onClick={() => addCharacterPageState(editor.systemId, editor.characterPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], outputType: 'string', isOutputAnArray: false, inputs: [] })}
+              <button onClick={() => storeMutation(versionEdits.local_id, addPageState(versionEdits.data, 'character', editor.characterPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], outputType: 'string', isOutputAnArray: false, inputs: [] }))}
                 type='button'
                 className='text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'
               >
@@ -202,7 +202,7 @@ function EditorMenu() {
 
             <EditPageStateModal isOpen={editingState !== null}
               requestClose={() => setEditingState(null)} data={editingState}
-              onSave={(newState) => updateCharacterPageState(editor.systemId, editor.characterPage, editingState!.name, { ...newState, value: undefined })}
+              onSave={(newState) => storeMutation(versionEdits.local_id, updatePageState(versionEdits.data, 'character', editor.characterPage, editingState!.name, { ...newState, value: undefined }))}
               onDelete={() => {}} // TODO:(Cosmic) Implement
             />
           </>
