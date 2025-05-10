@@ -54,6 +54,18 @@ setInterval(async () => {
   isOnline = await checkInternetAccess()
 }, 5 * 60 * 1000) // every 5 minutes.
 
+const runSync = async () => {
+  isOnline = await checkInternetAccess()
+
+  if (!isOnline) return
+
+  await sync()
+
+  setTimeout(runSync, 10 * 1000) // every 10 seconds
+}
+
+runSync()
+
 async function handleConflicts(conflicts: { local: any, remote: any }[]): Promise<any[]> {
   if (conflicts.length === 0) return []
 
