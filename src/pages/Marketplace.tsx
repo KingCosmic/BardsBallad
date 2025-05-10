@@ -9,6 +9,7 @@ import createSubscription from '../storage/methods/subscriptions/createSubscript
 import saveSystem from '../storage/methods/systems/saveSystem';
 import saveVersionedResource from '../storage/methods/versionedresources/saveVersionedResource';
 import { authState } from '../state/auth';
+import { syncState } from '../state/sync';
 
 type MarketplaceItem = {
   id: string,
@@ -78,6 +79,8 @@ const Marketplace: React.FC = () => {
 
   const { isLoggedIn } = authState.useValue()
 
+  const { isOnline } = syncState.useValue()
+
   useEffect(() => {
     const disclaimer = async () => {
       const hasSeenDisclaimer = await MiscStorage.get('seen-marketplace-disclaimer')
@@ -103,6 +106,14 @@ const Marketplace: React.FC = () => {
     disclaimer()
     loadItems()
   }, [])
+
+  if (!isOnline) (
+    <div>
+      <Header title='Marketplace' />
+
+      <h2>Marketplace is not available while you're offline!</h2>
+    </div>
+  )
 
   return (
     <div>

@@ -6,6 +6,7 @@ import { get as systemsGet, bulkPut as systemsBulkPut, pull as systemsPull, push
 import { get as versionsGet, bulkPut as versionsBulkPut, pull as versionsPull, push as versionsPush } from './versions'
 import { get as charactersGet, bulkPut as charactersBulkPut, pull as charactersPull, push as charactersPush } from './characters'
 import { get as subscriptiosGet, bulkPut as subscriptionsBulkPut, pull as subscriptionsPull, push as subscriptionsPush } from './subscriptions'
+import { setOnlineState, syncState } from '../state/sync'
 
 const batchSize = 10
 
@@ -40,22 +41,16 @@ const collectionsToSync = [
   }
 ]
 
-// set our initial value to the navigator value.
-// this checks the device is connected, not if that internet is working.
-let isOnline = navigator.onLine
-
 // this checks if the user has internet / the server is reachable.
 // this is better than the navigator value since it checks if the server is reachable.
 checkInternetAccess().then((val) => {
-  isOnline = val
+  setOnlineState(val)
 })
 
-setInterval(async () => {
-  isOnline = await checkInternetAccess()
-}, 5 * 60 * 1000) // every 5 minutes.
-
 const runSync = async () => {
-  isOnline = await checkInternetAccess()
+  const isOnline = await checkInternetAccess()
+
+  setOnlineState(isOnline)
 
   if (!isOnline) return
 
@@ -137,6 +132,8 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction) {
 }
 
 export const sync = async () => {
+  const { isOnline } = syncState.get()
+
   if (!isOnline) return
 
   // Update synced characters array first.
@@ -159,7 +156,9 @@ export const sync = async () => {
 window.addEventListener('online', async () => {
   console.log('online')
 
-  isOnline = await checkInternetAccess()
+  const isOnline = await checkInternetAccess()
+
+  setOnlineState(isOnline)
   
   if (!isOnline) {
     console.log('not connected')
@@ -172,7 +171,7 @@ window.addEventListener('online', async () => {
 window.addEventListener('offline', () => {
   console.log('offline')
 
-  isOnline = false
+  setOnlineState(false)
   
   // TODO: not sure what to do here yet. Maybe just cancel the websocket connection?
 })
