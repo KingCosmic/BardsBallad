@@ -3,11 +3,12 @@ import MenuButton from "./MenuButton"
 type HeaderProps = {
   title: string
   options?: { onClick(): void, Content: React.FC }[]
+  hasSidebar?: boolean
 }
 
-const Header: React.FC<HeaderProps> = ({ title, options }) => {
+const Header: React.FC<HeaderProps> = ({ title, options, hasSidebar = false }) => {
   return (
-    <nav className='md:w-[calc(100vw-32rem)] bg-blue-50 dark:bg-neutral-950 sticky z-20 top-0 start-0 border-b border-neutral-200 dark:border-neutral-700'>
+    <nav className={(hasSidebar ? 'md:w-[calc(100vw-32rem)]' : '') + ' bg-blue-50 dark:bg-neutral-950 sticky z-20 top-0 start-0 border-b border-neutral-200 dark:border-neutral-700'}>
       <div className='flex flex-wrap items-center justify-between mx-auto sm:mx-0 p-4'>
         <div className='flex'>
           <MenuButton />

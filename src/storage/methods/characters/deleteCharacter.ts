@@ -3,7 +3,7 @@ import { db } from '../../index'
 
 export default async (local_id: string) => {
   try {
-    let updatedChars = await SyncStorage.get('updated_characters') || []
+    let updatedChars = await SyncStorage.get<string[]>('updated_characters') || []
     if (!updatedChars.includes(local_id)) {
       await SyncStorage.set('updated_characters', [ ...updatedChars, local_id ])
     }

@@ -4,7 +4,7 @@ import { getDeviceIdentifier } from '../utils/getDeviceName'
 import { type Character } from '../storage/schemas/character'
 import { updateDatabaseWithUserInfo } from '../storage/updateDatabaseWithUserInfo'
 import { db } from '../storage'
-import { AuthStorage, SyncStorage } from './storage'
+import { AuthStorage, MiscStorage, SyncStorage } from './storage'
 import { System } from '../storage/schemas/system'
 import { VersionedResource } from '../storage/schemas/versionedResource'
 import { UserSubscription } from '../storage/schemas/userSubscription'
@@ -150,8 +150,9 @@ export const logout = async () => {
 
   authState.set({ isLoggedIn: false, user: null, synced_characters: [] })
 
-  await db.characters.clear()
-  await db.systems.clear()
+  await Promise.all(
+    db.tables.map(table => table.clear())
+  );  
 }
 
 export const setSyncedCharacters = async (characters: string[]) => {

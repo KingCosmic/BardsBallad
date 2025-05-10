@@ -10,12 +10,6 @@
 <h4 align="center">A Supercharged Tabletop Character Manager.</h4>
 
 <p align="center">
-  <a href="https://ko-fi.com/bardsballad">
-    <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
-  </a>
-</p>
-
-<p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#download">Download</a> •
@@ -101,10 +95,6 @@ This software uses the following open source packages:
 
 TODO
 <!-- [markdownify-web](https://github.com/amitmerchant1990/markdownify-web) - Web version of Markdownify -->
-
-## Support
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z415GLHC)
 
 <p>Or</p> 
 

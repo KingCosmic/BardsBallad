@@ -11,9 +11,15 @@ import { authState } from '../state/auth'
 import { renameCharacter, deleteCharacter, importCharacter } from '../storage/methods/characters'
 import { setSyncedCharacters } from '../lib/api'
 import JSONToFile from '../utils/JSONToFile'
+import { useSystems } from '../hooks/useSystems'
+import { useVersions } from '../hooks/useVersions'
+import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID'
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters()
+  const { systems } = useSystems()
+  const { versions } = useVersions()
+
   const { isLoggedIn, user, synced_characters } = authState.useValue()
 
   const [isOpen, setIsOpen] = useState(false)
@@ -51,7 +57,7 @@ const Characters: React.FC = () => {
                     {char.name}
                   </h5>
                   <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    {char.system.name} • Version {char.system.version}
+                    {systems.find(s => s.local_id === char.system.local_id)?.name} • Version {getVisualTextFromVersionID(versions.find(v => v.local_id === char.system.version_id)?.local_id ?? '')}
                   </p>
                 </div>
               </NavLink>
