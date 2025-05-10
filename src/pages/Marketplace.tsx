@@ -8,6 +8,7 @@ import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
 import createSubscription from '../storage/methods/subscriptions/createSubscription';
 import saveSystem from '../storage/methods/systems/saveSystem';
 import saveVersionedResource from '../storage/methods/versionedresources/saveVersionedResource';
+import { authState } from '../state/auth';
 
 type MarketplaceItem = {
   id: string,
@@ -75,6 +76,8 @@ const Marketplace: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<any[]>([])
 
+  const { isLoggedIn } = authState.useValue()
+
   useEffect(() => {
     const disclaimer = async () => {
       const hasSeenDisclaimer = await MiscStorage.get('seen-marketplace-disclaimer')
@@ -124,33 +127,35 @@ const Marketplace: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <FloatingActionButton
-        isOpen={isOpen}
-        onClick={() => setIsOpen(!isOpen)}
-        buttons={[
-          {
-            name: 'Publish System',
-            icon: '',
-            onClick: () => openModal({
-              type: 'PublishNewSystem',
-              title: 'none',
-              data: 'none',
-              onSave: publishSystem
-            })
-          },
-          {
-            name: 'Publish Version',
-            icon: '',
-            onClick: () => openModal({
-              type: 'PublishNewVersion',
-              title: 'none',
-              data: 'none',
-              onSave: publishVersion
-            })
-          }
-        ]}
-      />
+      
+      {isLoggedIn ?? (
+        <FloatingActionButton
+          isOpen={isOpen}
+          onClick={() => setIsOpen(!isOpen)}
+          buttons={[
+            {
+              name: 'Publish System',
+              icon: '',
+              onClick: () => openModal({
+                type: 'PublishNewSystem',
+                title: 'none',
+                data: 'none',
+                onSave: publishSystem
+              })
+            },
+            {
+              name: 'Publish Version',
+              icon: '',
+              onClick: () => openModal({
+                type: 'PublishNewVersion',
+                title: 'none',
+                data: 'none',
+                onSave: publishVersion
+              })
+            }
+          ]}
+        />
+      )}
     </div>
   )
 }
