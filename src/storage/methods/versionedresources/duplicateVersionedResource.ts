@@ -18,8 +18,8 @@ export default async (oldResource: VersionedResource, new_id?: string) => {
 
     const versionData = {
       ...oldResource,
-      user_id: user_id,
-      local_id: new_id,
+      user_id,
+      local_id,
       id: undefined,
       created_at: new Date().toISOString()
     }
