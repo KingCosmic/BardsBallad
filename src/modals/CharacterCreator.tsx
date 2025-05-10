@@ -14,6 +14,7 @@ import { Character } from '../storage/schemas/character'
 import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
 
 import { useSystems } from '../hooks/useSystems'
+import { useVersions } from '../hooks/useVersions'
 
 import { deepEqual } from 'fast-equals'
 import { useCharacters } from '../hooks/useCharacters'
@@ -22,14 +23,17 @@ import { createCharacter } from '../storage/methods/characters'
 import { type System, type PageData } from '../storage/schemas/system'
 
 import { usePostHog } from 'posthog-js/react'
+import { VersionedResource } from '../storage/schemas/versionedResource'
 
 function CharacterCreatorModal(props: any) {
   const { systems } = useSystems()
+  const { versions } = useVersions()
   const { characters } = useCharacters()
 
   const posthog = usePostHog()
 
   const [system, setSystem] = useState<System | undefined>(systems[0])
+  const [version, setVersion] = useState<VersionedResource | undefined>(versions[0])
 
   const [tab, setTab] = useState(0)
 
@@ -38,9 +42,9 @@ function CharacterCreatorModal(props: any) {
     user_id: 'none',
   
     name: 'Aliza Cartwight',
-    data: system?.defaultCharacterData ?? {},
+    data: version?.data.defaultCharacterData ?? {},
 
-    system: { local_id: '', name: '', version: '' },
+    system: { local_id: '', version_id: '' },
   
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -79,9 +83,23 @@ function CharacterCreatorModal(props: any) {
 
     if (!sys) return
 
+    const vers = versions.filter(ver => {
+      const forSystem = (ver.reference_id === sys.local_id)
+      
+      return forSystem
+    }).sort((a, b) => {
+      const aCreated = new Date(a.created_at)
+      const bCreated = new Date(b.created_at)
+
+      return (aCreated > bCreated) ? 1 : 0
+    })[0]
+
+    if (!vers) return
+
     setSystem(sys)
-    setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { local_id: sys.local_id, name: sys.name, version: sys.version } })
-  }, [systems])
+    setVersion(vers)
+    setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.local_id, version_id: vers.local_id } })
+  }, [systems, versions])
 
   if (!props.isOpen) return <></>
 
@@ -110,12 +128,36 @@ function CharacterCreatorModal(props: any) {
           <>
             <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={(!characters.find(c => c.name === characterData.name) && (characterData.name.length > 0))} errorMessage='Names must be unique and not empty.' />
 
-            <Select id='character-system' label='Tabletop System' value={system.name} onChange={(name) => {
-              const sys = systems.find(s => s.name === name)
+            <Select id='character-system' label='Tabletop System' value={system.local_id} onChange={(local_id) => {
+              const sys = systems.find(s => s.local_id === local_id)
               if (!sys) return
 
+              const vers = versions.filter(ver => {
+                const forSystem = (ver.reference_id === sys.local_id)
+                
+                return forSystem
+              }).sort((a, b) => {
+                const aCreated = new Date(a.created_at)
+                const bCreated = new Date(b.created_at)
+          
+                return (aCreated > bCreated) ? 1 : 0
+              })[0]
+          
+              if (!vers) return
+          
               setSystem(sys)
-              setCharacterData({ ...characterData, data: structuredClone(sys.defaultCharacterData), system: { local_id: sys.local_id, name: sys.name, version: sys.version } })
+              setVersion(vers)
+              setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.local_id, version_id: vers.local_id } })
+            }}>
+              {systems.map((sys) => <option key={sys.name} value={sys.name}>{sys.name}</option>)}
+            </Select>
+
+            <Select id='character-system-version' label='System Version' value={version?.local_id ?? ''} onChange={(local_id) => {
+              const vers = versions.find(v => v.local_id === local_id)
+              if (!vers) return
+
+              setVersion(vers)
+              setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: system.local_id, version_id: vers.local_id } })
             }}>
               {systems.map((sys) => <option key={sys.name} value={sys.name}>{sys.name}</option>)}
             </Select>
@@ -138,7 +180,7 @@ function CharacterCreatorModal(props: any) {
                 Basics
               </p>
             </li>
-            {system?.creator.map((page, i) => {
+            {version?.data.creator.map((page: PageData, i: number) => {
               if (tab < (i + 1)) return <></>
 
               return (
