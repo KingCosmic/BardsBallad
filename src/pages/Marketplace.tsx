@@ -107,13 +107,15 @@ const Marketplace: React.FC = () => {
     loadItems()
   }, [])
 
-  if (!isOnline) (
-    <div>
+  if (!isOnline) {
+    return (
+      <div>
       <Header title='Marketplace' />
 
       <h2>Marketplace is not available while you're offline!</h2>
     </div>
-  )
+    )
+  }
 
   return (
     <div>

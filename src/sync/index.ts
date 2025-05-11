@@ -52,9 +52,9 @@ const runSync = async () => {
 
   setOnlineState(isOnline)
 
-  if (!isOnline) return
-
-  await sync()
+  if (isOnline) {
+    await sync()
+  }
 
   setTimeout(runSync, 10 * 1000) // every 10 seconds
 }
