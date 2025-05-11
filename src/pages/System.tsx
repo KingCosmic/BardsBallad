@@ -94,7 +94,7 @@ const System: React.FC = () => {
             }
           }),
           Content: () => <p className='block cursor-pointer py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500'>Save Version</p>
-        }]} />
+        }]} hasSidebar />
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
           <Select id='tab-selector' label='' value={editor.tab} onChange={setTab}>

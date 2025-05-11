@@ -3,6 +3,7 @@ import { db } from '../../index'
 import generateLocalId from '../../../utils/generateLocalId'
 import { authState } from '../../../state/auth'
 import versionedResourceSchema, { VersionedResource } from '../../schemas/versionedResource'
+import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
 
 // TODO: check if local_id includes 'none' if so we need to update it if we're logged in.
 // TODO:(Cosmic) Give this a once over to make sure we aren't doing stupid stuff.
@@ -10,10 +11,11 @@ import versionedResourceSchema, { VersionedResource } from '../../schemas/versio
 export default async (sys: System, version: VersionedResource) => {
   try {
     let system_local_id = await generateLocalId()
-    while (await db.systems.get({ local_id: system_local_id })) {
-      // Generate a new id until we find one that doesn't exist in the database
+
+    while (!await ensureUniqueness(system_local_id)) {
       system_local_id = await generateLocalId()
     }
+
 
     const { user } = authState.get()
     const user_id = (user) ? user.id : 'none'
@@ -24,7 +26,6 @@ export default async (sys: System, version: VersionedResource) => {
       user_id,
     }
 
-    console.log(sysData)
     const systemResult = SystemChema.safeParse(sysData);
     if (!systemResult.success) {
       console.log('Invalid system data:', systemResult.error.format());
@@ -35,8 +36,7 @@ export default async (sys: System, version: VersionedResource) => {
 
     let version_local_id = await generateLocalId()
 
-    while (await db.versions.get({ local_id: version_local_id })) {
-      // Generate a new id until we find one that doesn't exist in the database
+    while (!await ensureUniqueness(version_local_id)) {
       version_local_id = await generateLocalId()
     }
 
@@ -57,8 +57,7 @@ export default async (sys: System, version: VersionedResource) => {
 
     let subscription_local_id = await generateLocalId()
 
-    while (await db.subscriptions.get({ local_id: subscription_local_id })) {
-      // Generate a new id until we find one that doesn't exist in the database
+    while (!await ensureUniqueness(subscription_local_id)) {
       subscription_local_id = await generateLocalId()
     }
 
@@ -70,11 +69,11 @@ export default async (sys: System, version: VersionedResource) => {
     
       resource_type: 'system',
       resource_id: system_local_id,
-      subscribed_at: new Date().toISOString(),
       version_id: version_local_id,
-      autoUpdate: false,
-      pinned: false,
+      auto_update: false,
     
+      subscribed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       deleted_at: null,
     })
   } catch (e) {

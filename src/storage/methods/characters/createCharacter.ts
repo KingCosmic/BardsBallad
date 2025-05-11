@@ -1,20 +1,25 @@
 import { AuthStorage, SyncStorage } from '../../../lib/storage'
 import { authState } from '../../../state/auth'
+import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
+import generateLocalId from '../../../utils/generateLocalId'
 import { db } from '../../index'
 import CharacterSchema from '../../schemas/character'
 
-import { v4 as uuidv4 } from 'uuid'
-
-export default async (name: string, data: any, system: { local_id: string, name: string, version: string }) => {
+export default async (name: string, data: any, system: { local_id: string, version_id: string }) => {
   try {
     const { user } = authState.get()
 
     const user_id = user?.id || 'none'
-    const device_id = await AuthStorage.get('deviceId') || 'none'
+
+    let local_id = await generateLocalId()
+
+    while (!await ensureUniqueness(local_id)) {
+      local_id = await generateLocalId()
+    }
 
     // validate character format.
     const characterData = {
-      local_id: `${device_id}-${uuidv4()}`,
+      local_id,
 
       user_id: user_id,
 
@@ -36,7 +41,7 @@ export default async (name: string, data: any, system: { local_id: string, name:
       }
     }
 
-    let updatedChars = await SyncStorage.get('updated_characters') || []
+    let updatedChars = await SyncStorage.get<string[]>('updated_characters') || []
     if (!updatedChars.includes(characterData.local_id)) {
       await SyncStorage.set('updated_characters', [ ...updatedChars, characterData.local_id ])
     }
