@@ -6,8 +6,15 @@ import EditBlueprintParamModal from '../modals/EditBlueprintParam'
 import EditStringModal from '../modals/EditString'
 import EditNumberModal from '../modals/EditNumber'
 import ConfirmModal from '../modals/ConfirmModal'
+import HandleConflicts from '../modals/HandleConflicts'
+import AuthModal from '../modals/Auth'
+import ImportFile from '../modals/ImportFile'
+import MarketplaceViewModal from '../modals/MarketplaceView'
+import MarketplaceDisclaimer from '../modals/MarketplaceDisclaimer'
+import SaveNewVersion from '../modals/SaveNewVersion'
+import PublishItem from '../modals/PublishItem'
 
-// TODO: I'm not sure how we'll grab the types since we're not using the system state anymore.
+// TODO: completely rework this, make it to where you provide the modal component when calling addModal
 
 const ModalManager = () => {
   const modals = modalState.useValue()
@@ -25,6 +32,53 @@ const ModalManager = () => {
               requestClose={() => closeModal(id)}
               onSave={modal.onSave}
               onDelete={modal.onDelete}
+            />
+          ) : (modal.type === 'PublishItem') ? (
+            <PublishItem
+              key={id}
+              data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+            />
+          ) : (modal.type === 'SaveNewVersion') ? (
+            <SaveNewVersion
+              key={id}
+              data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+            />
+          ) : (modal.type === 'HandleConflicts') ? (
+            <HandleConflicts
+              key={id}
+              data={modal.data}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+            />
+          ) : (modal.type === 'marketplace_view') ? (
+            <MarketplaceViewModal
+              key={id}
+              data={modal.data}
+              title={modal.title}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+            />
+          ) : (modal.type === 'authentication') ? (
+            <AuthModal
+              key={id}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+            />
+          ) : (modal.type === 'import_file') ? (
+            <ImportFile
+              key={id}
+              title={modal.title}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
             />
           ) : (modal.type === 'edit_object') ? (
             <EditObject
@@ -74,6 +128,13 @@ const ModalManager = () => {
               isOpen={true}
               requestClose={() => closeModal(id)}
               onConfirm={modal.onSave}
+            />
+          ) : (modal.type === 'marketplace_disclaimer') ? (
+            <MarketplaceDisclaimer
+              key={id}
+              isOpen={true}
+              requestClose={() => closeModal(id)}
+              onAccept={modal.onSave}
             />
           ) : <h1>{modal.type} is un supported.</h1>
         })

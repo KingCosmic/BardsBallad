@@ -2,11 +2,17 @@ import { NavLink, Outlet } from 'react-router'
 import ModalManager from './components/ModalManager'
 import { sidebarState, closeSidebar } from './state/sidebar'
 import { authState } from './state/auth'
+import Button from './components/inputs/Button'
+import { openModal } from './state/modals'
 
 const topItems = [
   {
     name: 'Home',
     path: ''
+  },
+  {
+    name: 'Marketplace',
+    path: 'marketplace',
   },
   {
     name: 'Characters',
@@ -121,20 +127,18 @@ const Layout: React.FC = () => {
             </div>
             <a href='mailto:support@bardsballad.com' className='text-neutral-300 px-2 mt-1 hover:text-brand-400 transition-colors'>support@bardsballad.com</a>
             <ul className='pt-4 mt-4 space-y-2 font-medium border-t border-neutral-200 dark:border-neutral-700'>
-              <li>
-                <NavLink to={auth.isLoggedIn ? '/account' : '/auth'} onClick={closeSidebar}>
-                  <div className='flex items-center p-2 text-neutral-900 rounded-lg dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 group'>
-                    {auth.isLoggedIn ? (
-                    <div className="flex items-center justify-center w-5 h-5 rounded-full bg-brand-500 text-white">
-                      {auth.user?.username.charAt(0).toUpperCase()}
-                    </div>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className='flex-shrink-0 w-5 h-5 text-neutral-500 transition duration-75 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white' fill='currentColor' viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.31 0-10 1.67-10 5v2h20v-2c0-3.33-6.69-5-10-5z"/></svg>
-                    )}
-                    <span className='ms-3'>Account</span>
-                  </div>
-                </NavLink>
-              </li>
+              {!auth.isLoggedIn && (
+                <li>
+                  <Button className='w-full' color='primary' onClick={() => {
+                    openModal({
+                      type: 'authentication',
+                      title: '',
+                      data: null,
+                      onSave: () => {},
+                    })
+                  }}>Login / Register</Button>
+                </li>
+              )}
               {bottomItems.map((item) => (
                 <li key={item.name}>
                   <NavLink to={item.path} onClick={closeSidebar}>

@@ -9,10 +9,29 @@ import Characters from './pages/Characters'
 import Character from './pages/Character'
 import Library from './pages/Library'
 import System from './pages/System'
-import Auth from './pages/Auth'
 
 import { applyTheme } from './state/settings'
 import Settings from './pages/Settings'
+
+import { sync } from './sync'
+import SubscriptionConfirmation from './pages/SubscriptionConfirmation'
+import Marketplace from './pages/Marketplace'
+import { updateDatabaseWithUserInfo } from './storage/updateDatabaseWithUserInfo'
+import { authState } from './state/auth'
+import { AuthStorage } from './lib/storage'
+
+// @ts-ignore
+window.trySync = sync
+
+// @ts-ignore
+window.updateFromAuth = async () => {
+  const { user } = authState.get()
+  const user_id = (user) ? user.id : 'none'
+
+  const device_id = await AuthStorage.get<string>('deviceId') || ''
+
+  updateDatabaseWithUserInfo(user_id, device_id)
+}
 
 applyTheme()
 
@@ -29,13 +48,17 @@ const App: React.FC = () => {
             <Route path=':id' element={<Character />} />
           </Route>
 
-          <Route path='library' element={<Library />} />
+          <Route path='marketplace' element={<Marketplace />} />
 
-          <Route path='library/systems/:id' element={<System />} />
+          <Route path='library'>
+            <Route index element={<Library />} />
+
+            <Route path='system/:id' element={<System />} />
+          </Route>
 
           <Route path='settings' element={<Settings />} />
 
-          <Route path='auth' element={<Auth />} />
+          <Route path='subscription-confirmation' element={<SubscriptionConfirmation />} />
         </Route>
       </Routes>
     </BrowserRouter>

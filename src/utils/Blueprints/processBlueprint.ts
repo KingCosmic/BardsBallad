@@ -5,11 +5,11 @@ import { getNode } from './getNode'
 import { getNodeScript } from './getNodeScript'
 import { BlueprintData } from '../../types/blueprint'
 
-import { type System, type PageData } from '../../storage/schemas/system'
+import { type PageData, SystemData } from '../../storage/schemas/system'
 import { type Character } from '../../storage/schemas/character'
 
 export type BlueprintProcessorState = {
-  system: System;
+  system: SystemData;
   character: Character;
   page: PageData;
 }

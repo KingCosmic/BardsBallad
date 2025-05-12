@@ -12,15 +12,13 @@ const characterSchema = z.object({
   data: z.object({}),
 
   system: z.object({
-    id: z.string(),
-    name: z.string(),
-    version: z.string()
+    local_id: z.string(),
+    version_id: z.string()
   }),
 
-  createdAt: z.string().datetime({ offset: true }),
-  updatedAt: z.string().datetime({ offset: true }),
-
-  isDeleted: z.boolean().optional().default(false),
+  created_at: z.string().datetime({ offset: true }),
+  updated_at: z.string().datetime({ offset: true }),
+  deleted_at: z.string().datetime({ offset: true }).optional(),
 })
 
 export type Character = z.infer<typeof characterSchema>;

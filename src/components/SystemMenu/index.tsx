@@ -2,14 +2,14 @@
 import DesignerMenu from './EditorMenu'
 
 import { editorState } from '../../state/editor'
-import { useSystem } from '../../hooks/useSystem'
 import CreatorMenu from './CreatorMenu'
+import { useVersionResource } from '../../hooks/useVersionResource'
 
 function SystemMenu() {
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const versionedResource = useVersionResource(editor.versionId)
 
-  if (!system) return <></>
+  if (!versionedResource) return <></>
 
   return (
     <aside

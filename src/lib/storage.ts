@@ -18,7 +18,7 @@ class Storage {
     this.isCreated = true
   }
 
-  get(key: string) {
+  get<T>(key: string): Promise<T> {
     return this.store.get(key)
   }
 
@@ -48,5 +48,8 @@ class Storage {
 }
 
 export const SettingsStorage = new Storage('settings')
+export const AuthStorage = new Storage('auth')
+export const SyncStorage = new Storage('sync')
+export const MiscStorage = new Storage('misc')
 
 export default Storage
