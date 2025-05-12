@@ -13,8 +13,8 @@ import {
 
 import { editorState } from '../../../state/editor'
 import Card from '../../../components/Card'
-import { useSystem } from '../../../hooks/useSystem'
-import { type SystemType } from '../../../storage/schemas/system'
+import system, { SystemData, type SystemType } from '../../../storage/schemas/system'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
 
  
 function Add({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
@@ -22,7 +22,7 @@ function Add({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const connections = useNodeConnections()
   const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])
@@ -55,43 +55,15 @@ function Add({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>
 
     const inputType = (input['base-array'] ?? { name: 'unknown', properties: [] }).name
 
-    updateNodeData(id, { inputs: input, inputType, outputs: { [`output-${inputType}`]: system?.types.find(t => t.name === inputType) } })
+    updateNodeData(id, { inputs: input, inputType, outputs: { [`output-${inputType}`]: version?.data.types.find(t => t.name === inputType) } })
     updateNodeInternals(id)
   }, [connections, nodes, system])
 
-  // useNodeConnections({
-  //   handleType: 'target',
-  //   handleId: 'base-array',
-  //   onConnect: (conns) => {
-  //     const conn = conns[0]
-
-  //     if (!conn) return
-
-  //     if (!conn.sourceHandle) return
-
-  //     const sourceType = conn.sourceHandle.split('-')[1]
-    
-  //     if (!sourceType) return
-
-
-  //     const inputType = sourceType.split('(')[0]
-
-  //     if (!inputType) return
-
-  //     updateNodeData(id, { inputType })
-  //     updateNodeInternals(id)
-  //   },
-  //   onDisconnect: () => {
-  //     updateNodeData(id, { inputType: 'unknown' })
-  //     updateNodeInternals(id)
-  //   }
-  // })
-
   useEffect(() => {
-    if (!system) return
+    if (!version) return
 
     updateNodeInternals(id)
-  }, [system, inputType])
+  }, [version, inputType])
 
   return (
     <Card title='Get Item In Array'>

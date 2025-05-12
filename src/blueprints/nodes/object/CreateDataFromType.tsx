@@ -9,17 +9,17 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { type SystemType } from '../../../storage/schemas/system'
+import { SystemData, type SystemType } from '../../../storage/schemas/system'
 import Card from '../../../components/Card'
 import Select from '../../../components/inputs/Select'
-import { useSystem } from '../../../hooks/useSystem'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
  
 function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ spreadType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()
 
   const editor = editorState.useValue()
 
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   return (
     <Card title='Create Object From Type'>
@@ -30,8 +30,8 @@ function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ sprea
         style={{ top: 30, bottom: 'auto' }}
       />
 
-      <Select id={`type-${id}`} label='Type' value={spreadType.name} onChange={type => updateNodeData(id, { spreadType: system?.types.find(t => t.name === type) })}>
-        {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+      <Select id={`type-${id}`} label='Type' value={spreadType.name} onChange={type => updateNodeData(id, { spreadType: version?.data.types.find(t => t.name === type) })}>
+        {version?.data.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
       </Select>
 
       {

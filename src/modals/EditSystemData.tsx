@@ -18,7 +18,8 @@ import Textarea from '../components/inputs/Textarea'
 import { editorState } from '../state/editor'
 import { useSystem } from '../hooks/useSystem'
 
-import { type SystemType, type TypeData, type DataType } from '../storage/schemas/system'
+import { type SystemType, type TypeData, type DataType, SystemData } from '../storage/schemas/system'
+import { useVersionEdits } from '../hooks/useVersionEdits'
 
 type ModalProps = {
   onDelete?(): void;
@@ -32,11 +33,11 @@ type ModalProps = {
 
 function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data }: ModalProps) {
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const [dataCopy, setDataCopy] = useState<DataType>({ name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' })
 
-  const [type, setType] = useState<SystemType | null>(system?.types.find(type => type.name === dataCopy.typeData.type) || null)
+  const [type, setType] = useState<SystemType | null>(version?.data?.types.find(type => type.name === dataCopy.typeData.type) || null)
 
   const setProperty = (key:string, obj: DataType, value:any) => {
     setDataCopy(produce(obj, (draft: DataType) => {
@@ -50,7 +51,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
     const dc = data ? data : { name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' }
 
     setDataCopy(dc)
-    setType(system?.types.find(type => type.name === dc.typeData.type) || null)
+    setType(version?.data?.types.find(type => type.name === dc.typeData.type) || null)
   }, [data, setDataCopy, setType])
 
   if (!data) return <></>
@@ -65,7 +66,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
         {/* <div className='h-4' /> */}
 
         <Select id='data-type' label='Type' value={type?.name || ''} onChange={val => {
-          const t = system?.types.find(type => type.name === val) || null
+          const t = version?.data?.types.find(type => type.name === val) || null
 
           setType(t)
           setDataCopy({ ...dataCopy, data: dataCopy.typeData.isArray ? [] : generateObject(types, t || val), typeData: { ...dataCopy.typeData, type: val } })
@@ -78,7 +79,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
           
           <option value='enum'>enum</option>
 
-          {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+          {version?.data?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
         </Select>
 
         {

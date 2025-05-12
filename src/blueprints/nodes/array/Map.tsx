@@ -13,14 +13,15 @@ import {
 import Card from '../../../components/Card'
 import Select from '../../../components/inputs/Select'
 import { editorState } from '../../../state/editor'
-import { useSystem } from '../../../hooks/useSystem'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import { SystemData } from '../../../storage/schemas/system'
  
 function Map({ id, data: { inputType, mapType } }: NodeProps<Node<{ inputType: string, mapType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   useNodeConnections({
     handleType: 'target',
@@ -59,7 +60,7 @@ function Map({ id, data: { inputType, mapType } }: NodeProps<Node<{ inputType: s
         updateNodeData(id, { mapType: mt })
         updateNodeInternals(id)
       }}>
-        {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+        {version?.data.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
       </Select>
 
       {

@@ -10,26 +10,26 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { type TypeData } from '../../../storage/schemas/system'
-import { useSystem } from '../../../hooks/useSystem'
+import { SystemData, type TypeData } from '../../../storage/schemas/system'
 
 import Select from '../../../components/inputs/Select'
 import Card from '../../../components/Card'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
  
 function GetPageDataNode({ id, data: { chosenState } }: NodeProps<Node<{ chosenState: { name: string, type: TypeData } | null }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const page = useMemo(() => {
     if (editor.tab === 'editor') {
-      return system?.pages.find(p => p.name === editor.characterPage)
+      return version?.data.pages.find(p => p.name === editor.characterPage)
     } else if (editor.tab === 'creator') {
-      return system?.creator.find(p => p.name === editor.creatorPage)
+      return version?.data.creator.find(p => p.name === editor.creatorPage)
     }
-  }, [system, editor])
+  }, [version, editor])
 
   useEffect(() => {
     if (!chosenState) chosenState = page?.state[0] || null

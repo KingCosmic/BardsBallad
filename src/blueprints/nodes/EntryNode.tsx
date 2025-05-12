@@ -15,14 +15,15 @@ import { Param } from '../utils'
 
 import { editorState } from '../../state/editor'
 import { useSystem } from '../../hooks/useSystem'
-import { type SystemType } from '../../storage/schemas/system'
+import { SystemData, type SystemType } from '../../storage/schemas/system'
+import { useVersionEdits } from '../../hooks/useVersionEdits'
 
 const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:string]: any }, outputs: { [key:string]: SystemType | null } }>>> = ({ id, data: { params } }) => {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   useEffect(() => {
     let outputs: { [key:string]: SystemType | null } = {}
@@ -30,12 +31,12 @@ const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:strin
     for (let p = 0; p < params.length; p++) {
       const param = params[p]
 
-      outputs[`${param.name}-${param.type}`] = system?.types.find(t => t.name === param.type)!
+      outputs[`${param.name}-${param.type}`] = version?.data.types.find(t => t.name === param.type)!
     }
 
     updateNodeData(id, { outputs })
     updateNodeInternals(id)
-  }, [params, system])
+  }, [params, version])
 
   return (
     <Card title='Entry'>

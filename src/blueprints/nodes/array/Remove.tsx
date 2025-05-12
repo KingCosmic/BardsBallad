@@ -12,14 +12,15 @@ import {
 
 import { editorState } from '../../../state/editor'
 import Card from '../../../components/Card'
-import { useSystem } from '../../../hooks/useSystem'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import { SystemData } from '../../../storage/schemas/system'
  
 function Remove({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   useNodeConnections({
     handleType: 'target',
@@ -35,7 +36,6 @@ function Remove({ id, data: { inputType } }: NodeProps<Node<{ inputType: string 
     
       if (!sourceType) return
 
-
       const inputType = sourceType.split('(')[0]
 
       if (!inputType) return
@@ -50,10 +50,10 @@ function Remove({ id, data: { inputType } }: NodeProps<Node<{ inputType: string 
   })
 
   useEffect(() => {
-    if (!system) return
+    if (!version) return
 
     updateNodeInternals(id)
-  }, [system, inputType])
+  }, [version, inputType])
 
   return (
     <Card title='Remove Item In Array'>

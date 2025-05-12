@@ -11,15 +11,16 @@ import {
 
 import { editorState } from '../../../state/editor'
 import Card from '../../../components/Card'
-import { useSystem } from '../../../hooks/useSystem'
 import Select from '../../../components/inputs/Select'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import { SystemData } from '../../../storage/schemas/system'
  
 function Create({ id, data: { outputType } }: NodeProps<Node<{ outputType: string }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   return (
     <Card title='Add Item To Array'>
@@ -31,10 +32,10 @@ function Create({ id, data: { outputType } }: NodeProps<Node<{ outputType: strin
       />
 
       <Select id={`type-${id}`} label='Type' value={outputType} onChange={type => {
-        updateNodeData(id, { outputType: type, outputs: { [`output-${type}array`]: system?.types.find(t => t.name === type) } })
+        updateNodeData(id, { outputType: type, outputs: { [`output-${type}array`]: version?.data.types.find(t => t.name === type) } })
         updateNodeInternals(id)
       }}>
-        {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+        {version?.data.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
       </Select>
 
       {

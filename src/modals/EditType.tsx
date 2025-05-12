@@ -14,7 +14,8 @@ import { openModal } from '../state/modals'
 import { Param } from '../blueprints/utils'
 import { editorState } from '../state/editor'
 import { useSystem } from '../hooks/useSystem'
-import { type TypeData } from '../storage/schemas/system'
+import { SystemData, type TypeData } from '../storage/schemas/system'
+import { useVersionEdits } from '../hooks/useVersionEdits'
 
 type Props = {
   data: { key: string; typeData: TypeData, typeName: string } | null;
@@ -33,9 +34,9 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
 
   const editor = editorState.useValue()
 
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
-  const parentType = useMemo(() => system?.types.find(t => t.name === data?.typeName), [data, system])
+  const parentType = useMemo(() => version?.data.types.find(t => t.name === data?.typeName), [data, version])
 
   useEffect(() => {
     if (!data) return
@@ -62,7 +63,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
 
           <option value='blueprint'>blueprint</option>
 
-          {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+          {version?.data.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
         </Select>
 
         <Checkbox id='is-array' label='Is Array?' checked={propertyData.isArray} onChange={val => setPropertyData({ ...propertyData, isArray: val })} />
@@ -123,7 +124,7 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
                   <option value='enum'>enum</option>
 
                   <option value='blueprint'>blueprint</option>
-                  {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+                  {version?.data?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
                 </Select>
 
                 <Checkbox id='is-output-an-array' label='Is Array?' checked={propertyData.isOutputAnArray} onChange={isOutputAnArray => setPropertyData({ ...propertyData, isOutputAnArray })} />
