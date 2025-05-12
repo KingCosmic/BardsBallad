@@ -46,10 +46,10 @@ const AuthModal: React.FC<Props> = (props) => {
             <TextInput id='email' label='Email' placeholder='support@bardsballad.com' value={email} onChange={setEmail} isValid errorMessage='' />
           )}
 
-          <TextInput id='password' label='Password' placeholder='OogaBooga1234' value={password} onChange={setPassword} isValid errorMessage='' />
+          <TextInput id='password' label='Password' type='password' placeholder='OogaBooga1234' value={password} onChange={setPassword} isValid errorMessage='' />
 
           {isSignUp && (
-            <TextInput id='confirm-password' label='Confirm Password' placeholder='OogaBooga1234' value={confirmPassword} onChange={setConfirmPassword} isValid={(confirmPassword.length === 0 || confirmPassword === password)} errorMessage={`Passwords don't match`} />
+            <TextInput id='confirm-password' label='Confirm Password' type='password' placeholder='OogaBooga1234' value={confirmPassword} onChange={setConfirmPassword} isValid={(confirmPassword.length === 0 || confirmPassword === password)} errorMessage={`Passwords don't match`} />
           )}
 
           <Button id='signup' color='primary' onClick={async () => {
