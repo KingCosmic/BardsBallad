@@ -3,7 +3,7 @@ import { openModal } from '../state/modals';
 import { useEffect, useState } from 'react';
 import { MiscStorage } from '../lib/storage';
 import FloatingActionButton from '../components/FloatingActionButton';
-import { getMarketplaceItems, getSubscriptionData, publishSystem, publishVersion } from '../lib/api';
+import { getMarketplaceItems, getSubscriptionData, publishItem } from '../lib/api';
 import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
 import createSubscription from '../storage/methods/subscriptions/createSubscription';
 import saveSystem from '../storage/methods/systems/saveSystem';
@@ -74,7 +74,6 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
 };
 
 const Marketplace: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<any[]>([])
 
   const { isLoggedIn } = authState.useValue()
@@ -145,30 +144,12 @@ const Marketplace: React.FC = () => {
       
       {isLoggedIn && (
         <FloatingActionButton
-          isOpen={isOpen}
-          onClick={() => setIsOpen(!isOpen)}
-          buttons={[
-            {
-              name: 'Publish System',
-              icon: '',
-              onClick: () => openModal({
-                type: 'PublishNewSystem',
-                title: 'none',
-                data: 'none',
-                onSave: publishSystem
-              })
-            },
-            {
-              name: 'Publish Version',
-              icon: '',
-              onClick: () => openModal({
-                type: 'PublishNewVersion',
-                title: 'none',
-                data: 'none',
-                onSave: publishVersion
-              })
-            }
-          ]}
+          onClick={() => openModal({
+            type: 'PublishItem',
+            title: 'none',
+            data: 'none',
+            onSave: publishItem
+          })}
         />
       )}
     </div>

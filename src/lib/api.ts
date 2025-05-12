@@ -66,18 +66,18 @@ export const checkInternetAccess = async () => {
   }
 }
 
-export const publishSystem = async (data: any) => {
+export const getMarketplaceItem = async (id: string): Promise<any | null> => {
   try {
-    const response = await api.post('/marketplace', data)
-    return response.status === 200;
+    const resp = await api.get(`/marketplace/${id}`)
+    return resp.data
   } catch (err) {
-    return false;
+    return null;
   }
 }
 
-export const publishVersion = async (data: any) => {
+export const publishItem = async (data: any) => {
   try {
-    const response = await api.post(`/marketplace/${data.system_id}/versions`, data)
+    const response = await api.post('/marketplace', data)
     return response.status === 200;
   } catch (err) {
     return false;
