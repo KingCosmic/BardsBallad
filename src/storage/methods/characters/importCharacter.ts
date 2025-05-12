@@ -26,7 +26,7 @@ export default async (char: Character) => {
 
     const charData = {
       ...char,
-      updatedAt: new Date().toISOString()
+      updated_at: new Date().toISOString()
     }
 
     // if (process.env.VITE_PUBLIC_VALIDATE_SCHEMA === 'true') {

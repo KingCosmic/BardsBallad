@@ -47,9 +47,8 @@ function CharacterCreatorModal(props: any) {
 
     system: { local_id: '', version_id: '' },
   
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    isDeleted: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   })
 
   // const updateState = useCallback((state: BlueprintProcessorState) => {
@@ -83,21 +82,27 @@ function CharacterCreatorModal(props: any) {
     const sys = systems[0]
 
     if (!sys) return
+    setSystem(sys)
 
-    const vers = versions.filter(ver => {
+    let vers;
+
+    const filteredVersions = versions.filter(ver => {
       const forSystem = (ver.reference_id === sys.local_id)
       
       return forSystem
     }).sort((a, b) => {
+      if (!a || !b) return 0
+
       const aCreated = new Date(a.created_at)
       const bCreated = new Date(b.created_at)
 
       return (aCreated > bCreated) ? 1 : 0
-    })[0]
+    })
+
+    vers = filteredVersions[0]
 
     if (!vers) return
 
-    setSystem(sys)
     setVersion(vers)
     setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.local_id, version_id: vers.local_id } })
   }, [systems, versions])

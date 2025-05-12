@@ -31,6 +31,7 @@ export default async (reference_type: Types, reference_id: string, data: any) =>
       reference_type,
     
       created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       deleted_at: null,
     }
 

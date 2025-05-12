@@ -3,7 +3,7 @@ import { openModal } from '../state/modals';
 import { useEffect, useState } from 'react';
 import { MiscStorage } from '../lib/storage';
 import FloatingActionButton from '../components/FloatingActionButton';
-import { getMarketplaceItems, getSubscriptionData, publishSystem, publishVersion } from '../lib/api';
+import { getMarketplaceItems, getSubscriptionData, publishItem } from '../lib/api';
 import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
 import createSubscription from '../storage/methods/subscriptions/createSubscription';
 import saveSystem from '../storage/methods/systems/saveSystem';
@@ -74,7 +74,6 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
 };
 
 const Marketplace: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<any[]>([])
 
   const { isLoggedIn } = authState.useValue()
@@ -107,13 +106,17 @@ const Marketplace: React.FC = () => {
     loadItems()
   }, [])
 
-  if (!isOnline) (
-    <div>
-      <Header title='Marketplace' />
+  if (!isOnline) {
+    return (
+      <div className='h-full'>
+        <Header title='Marketplace' />
 
-      <h2>Marketplace is not available while you're offline!</h2>
-    </div>
-  )
+        <div className='flex justify-center items-center p-4'>
+          <h2 className='text-3xl'>Marketplace is not available while you're offline!</h2>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -139,32 +142,14 @@ const Marketplace: React.FC = () => {
         </div>
       </div>
       
-      {isLoggedIn ?? (
+      {isLoggedIn && (
         <FloatingActionButton
-          isOpen={isOpen}
-          onClick={() => setIsOpen(!isOpen)}
-          buttons={[
-            {
-              name: 'Publish System',
-              icon: '',
-              onClick: () => openModal({
-                type: 'PublishNewSystem',
-                title: 'none',
-                data: 'none',
-                onSave: publishSystem
-              })
-            },
-            {
-              name: 'Publish Version',
-              icon: '',
-              onClick: () => openModal({
-                type: 'PublishNewVersion',
-                title: 'none',
-                data: 'none',
-                onSave: publishVersion
-              })
-            }
-          ]}
+          onClick={() => openModal({
+            type: 'PublishItem',
+            title: 'none',
+            data: 'none',
+            onSave: publishItem
+          })}
         />
       )}
     </div>

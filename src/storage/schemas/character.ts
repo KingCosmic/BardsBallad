@@ -16,10 +16,9 @@ const characterSchema = z.object({
     version_id: z.string()
   }),
 
-  createdAt: z.string().datetime({ offset: true }),
-  updatedAt: z.string().datetime({ offset: true }),
-
-  isDeleted: z.boolean().optional().default(false),
+  created_at: z.string().datetime({ offset: true }),
+  updated_at: z.string().datetime({ offset: true }),
+  deleted_at: z.string().datetime({ offset: true }).optional(),
 })
 
 export type Character = z.infer<typeof characterSchema>;

@@ -9,9 +9,11 @@ import { System } from '../storage/schemas/system'
 import { VersionedResource } from '../storage/schemas/versionedResource'
 import { UserSubscription } from '../storage/schemas/userSubscription'
 
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
 const api = axios.create({
-  baseURL: 'http://localhost:3000/v1',
-})
+  baseURL: isLocalhost ? 'http://localhost:3000/v1' : 'https://api.bardsballad.com/v1',
+});
 
 api.interceptors.request.use(async (config) => {
   const token = await AuthStorage.get('token')
@@ -66,18 +68,18 @@ export const checkInternetAccess = async () => {
   }
 }
 
-export const publishSystem = async (data: any) => {
+export const getMarketplaceItem = async (id: string): Promise<any | null> => {
   try {
-    const response = await api.post('/marketplace', data)
-    return response.status === 200;
+    const resp = await api.get(`/marketplace/${id}`)
+    return resp.data
   } catch (err) {
-    return false;
+    return null;
   }
 }
 
-export const publishVersion = async (data: any) => {
+export const publishItem = async (data: any) => {
   try {
-    const response = await api.post(`/marketplace/${data.system_id}/versions`, data)
+    const response = await api.post('/marketplace', data)
     return response.status === 200;
   } catch (err) {
     return false;
