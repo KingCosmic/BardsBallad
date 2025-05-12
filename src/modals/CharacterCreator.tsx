@@ -47,9 +47,8 @@ function CharacterCreatorModal(props: any) {
 
     system: { local_id: '', version_id: '' },
   
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    isDeleted: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   })
 
   // const updateState = useCallback((state: BlueprintProcessorState) => {
@@ -92,6 +91,8 @@ function CharacterCreatorModal(props: any) {
       
       return forSystem
     }).sort((a, b) => {
+      if (!a || !b) return 0
+
       const aCreated = new Date(a.created_at)
       const bCreated = new Date(b.created_at)
 

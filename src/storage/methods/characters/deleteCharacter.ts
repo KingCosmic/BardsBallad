@@ -8,8 +8,8 @@ export default async (local_id: string) => {
       await SyncStorage.set('updated_characters', [ ...updatedChars, local_id ])
     }
     return await db.characters.update(local_id, {
-      isDeleted: true,
-      updatedAt: new Date().toISOString(),
+      deleted_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
   } catch (e) {
     console.log('Error deleting character:', e);

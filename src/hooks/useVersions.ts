@@ -7,7 +7,7 @@ export function useVersions() {
 
     // filter out versions
     return versions.filter(vers => {
-      const wasDeleted = vers.deleted_at !== null
+      const wasDeleted = vers.deleted_at
       const isEdits = vers.local_id.split('|')[1] !== undefined
 
       return (!wasDeleted && !isEdits)

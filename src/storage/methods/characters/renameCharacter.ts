@@ -10,7 +10,7 @@ export default async (local_id: string, newName: string) => {
 
     return await db.characters.update(local_id, {
       name: newName,
-      updatedAt: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
   } catch (e) {
     console.log('Error renaming character:', e);

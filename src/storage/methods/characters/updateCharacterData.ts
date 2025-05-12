@@ -10,7 +10,7 @@ export default async (local_id: string, newData: { [key: string]: any }) => {
 
     return await db.characters.update(local_id, {
       data: newData,
-      updatedAt: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
   } catch (e) {
     console.log('Error updating character data:', e);

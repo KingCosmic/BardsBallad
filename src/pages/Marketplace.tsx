@@ -143,7 +143,7 @@ const Marketplace: React.FC = () => {
         </div>
       </div>
       
-      {isLoggedIn ?? (
+      {isLoggedIn && (
         <FloatingActionButton
           isOpen={isOpen}
           onClick={() => setIsOpen(!isOpen)}

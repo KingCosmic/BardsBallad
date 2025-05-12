@@ -26,19 +26,14 @@ export default async (name: string, data: any, system: { local_id: string, versi
       name: name,
       data: data,
       system: system,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-
-      isDeleted: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     }
 
-    // if (process.env.VITE_PUBLIC_VALIDATE_SCHEMA === 'true') {
-    if (true) {
-      const result = CharacterSchema.safeParse(characterData);
-      if (!result.success) {
-        console.log('Invalid character data:', result.error.format());
-        return;
-      }
+    const result = CharacterSchema.safeParse(characterData);
+    if (!result.success) {
+      console.log('Invalid character data:', result.error.format());
+      return;
     }
 
     let updatedChars = await SyncStorage.get<string[]>('updated_characters') || []
