@@ -9,9 +9,11 @@ import { System } from '../storage/schemas/system'
 import { VersionedResource } from '../storage/schemas/versionedResource'
 import { UserSubscription } from '../storage/schemas/userSubscription'
 
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
 const api = axios.create({
-  baseURL: 'http://localhost:3000/v1',
-})
+  baseURL: isLocalhost ? 'http://localhost:3000/v1' : 'https://api.bardsballad.com/v1',
+});
 
 api.interceptors.request.use(async (config) => {
   const token = await AuthStorage.get('token')
