@@ -109,11 +109,13 @@ const Marketplace: React.FC = () => {
 
   if (!isOnline) {
     return (
-      <div>
-      <Header title='Marketplace' />
+      <div className='h-full'>
+        <Header title='Marketplace' />
 
-      <h2>Marketplace is not available while you're offline!</h2>
-    </div>
+        <div className='flex justify-center items-center p-4'>
+          <h2 className='text-3xl'>Marketplace is not available while you're offline!</h2>
+        </div>
+      </div>
     )
   }
 

@@ -83,8 +83,11 @@ function CharacterCreatorModal(props: any) {
     const sys = systems[0]
 
     if (!sys) return
+    setSystem(sys)
 
-    const vers = versions.filter(ver => {
+    let vers;
+
+    const filteredVersions = versions.filter(ver => {
       const forSystem = (ver.reference_id === sys.local_id)
       
       return forSystem
@@ -93,11 +96,12 @@ function CharacterCreatorModal(props: any) {
       const bCreated = new Date(b.created_at)
 
       return (aCreated > bCreated) ? 1 : 0
-    })[0]
+    })
+
+    vers = filteredVersions[0]
 
     if (!vers) return
 
-    setSystem(sys)
     setVersion(vers)
     setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.local_id, version_id: vers.local_id } })
   }, [systems, versions])

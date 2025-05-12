@@ -21,7 +21,8 @@ export default async (oldResource: VersionedResource, new_id?: string) => {
       user_id,
       local_id,
       id: undefined,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }
 
     await db.versions.put(versionData);

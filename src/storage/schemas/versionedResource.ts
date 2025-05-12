@@ -10,6 +10,7 @@ const versionedResourceSchema = z.object({
   reference_type: z.enum(['system', 'character']),
 
   created_at: z.string().datetime({ offset: true }),
+  updated_at: z.string().datetime({ offset: true }),
 
   deleted_at: z.string().datetime({ offset: true }).nullable().optional(),
 })
