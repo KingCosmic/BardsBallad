@@ -7,6 +7,7 @@ import { get as versionsGet, bulkPut as versionsBulkPut, pull as versionsPull, p
 import { get as charactersGet, bulkPut as charactersBulkPut, pull as charactersPull, push as charactersPush } from './characters'
 import { get as subscriptiosGet, bulkPut as subscriptionsBulkPut, pull as subscriptionsPull, push as subscriptionsPush } from './subscriptions'
 import { setOnlineState, syncState } from '../state/sync'
+import { authState } from '../state/auth'
 
 const batchSize = 10
 
@@ -48,12 +49,17 @@ checkInternetAccess().then((val) => {
 })
 
 const runSync = async () => {
-  const isOnline = await checkInternetAccess()
+  try {
+    const isOnline = await checkInternetAccess()
+    const { isLoggedIn } = authState.get()
 
-  setOnlineState(isOnline)
+    setOnlineState(isOnline)
 
-  if (isOnline) {
-    await sync()
+    if (isOnline && isLoggedIn) {
+      await sync()
+    }
+  } catch (e) {
+    console.error('Error in sync', e)
   }
 
   setTimeout(runSync, 10 * 1000) // every 10 seconds

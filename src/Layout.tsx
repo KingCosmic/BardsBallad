@@ -48,7 +48,7 @@ const Layout: React.FC = () => {
   const auth = authState.useValue()
 
   return (
-    <div className='w-screen h-screen bg-neutral-50 dark:bg-neutral-900 text-primary transition-colors overflow-x-hidden'>
+    <div className='w-screen h-screen-dynamic bg-neutral-50 dark:bg-neutral-900 text-primary transition-colors overflow-x-hidden'>
       <div onClick={closeSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen sm:translate-x-0`} />
       <aside
         onClick={closeSidebar}
