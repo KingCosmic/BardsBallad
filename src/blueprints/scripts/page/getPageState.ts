@@ -1,9 +1,10 @@
 import { Node } from '@xyflow/react'
 import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import { type System, type TypeData } from '../../../storage/schemas/system'
+import { SystemData, type TypeData } from '../../../storage/schemas/system'
 import getRandomDataFromType from '../../../utils/getRandomDataFromType'
+import { VersionedResource } from '../../../storage/schemas/versionedResource'
 
-function generateDefaultData(system: System, typeDef: TypeData) {
+function generateDefaultData(system: SystemData, typeDef: TypeData) {
 
   const isBaseType = ['string', 'number', ].includes(typeDef.type)
 

@@ -10,6 +10,8 @@ import Checkbox from '../components/inputs/Checkbox';
 import { editorState } from '../state/editor';
 import { useSystem } from '../hooks/useSystem';
 import { Param } from '../blueprints/utils';
+import { useVersionEdits } from '../hooks/useVersionEdits';
+import { SystemData } from '../storage/schemas/system';
 
 type Props = {
   data: Param;
@@ -22,7 +24,7 @@ type Props = {
 
 function EditBlueprintParamModal({ data, isOpen, requestClose, onSave, onDelete } : Props) {
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const [param, setParam] = useState<Param>({ name: 'New Param', type: 'string', isArray: false })
 
@@ -51,7 +53,7 @@ function EditBlueprintParamModal({ data, isOpen, requestClose, onSave, onDelete 
           <option value='enum'>enum</option>
 
           <option value='blueprint'>blueprint</option>
-          {system?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+          {version?.data?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
         </Select>
 
         <Checkbox id='is-array' label='Is Array?' checked={param.isArray} onChange={isArray => setParam({ ...param, isArray })} />

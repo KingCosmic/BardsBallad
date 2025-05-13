@@ -13,8 +13,8 @@ import {
 
 import Card from '../../../components/Card'
 import { editorState } from '../../../state/editor'
-import { type SystemType } from '../../../storage/schemas/system'
-import { useSystem } from '../../../hooks/useSystem'
+import { SystemData, type SystemType } from '../../../storage/schemas/system'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
  
 function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()
@@ -22,7 +22,7 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: Sy
 
   const editor = editorState.useValue()
 
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const connections = useNodeConnections()
   const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])
@@ -58,7 +58,7 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: Sy
 
     updateNodeData(id, { inputs: input, inputType: typeInput, outputs })
     updateNodeInternals(id)
-  }, [connections, nodes, system])
+  }, [connections, nodes, version])
 
   return (
     <Card title='Spread Object'>

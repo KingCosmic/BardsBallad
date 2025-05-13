@@ -6,7 +6,7 @@ export function useCharacters() {
     const chars = await db.characters.toArray()
 
     // filter out deleted characters
-    return chars.filter(char => !char.isDeleted)
+    return chars.filter(char => !char.deleted_at)
   }, [])
 
   return { characters: characters || [], isLoading: (characters === undefined) }

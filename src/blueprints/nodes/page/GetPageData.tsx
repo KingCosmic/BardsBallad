@@ -12,18 +12,18 @@ import {
 } from '@xyflow/react'
 
 import { editorState } from '../../../state/editor'
-import { type SystemType, type TypeData } from '../../../storage/schemas/system'
+import { SystemData, type SystemType, type TypeData } from '../../../storage/schemas/system'
 
 import Select from '../../../components/inputs/Select'
 import Card from '../../../components/Card'
-import { useSystem } from '../../../hooks/useSystem'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
  
 function SetPageDataNode({ id, data: { chosenState } }: NodeProps<Node<{ chosenState: { name: string, type: TypeData } | null }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const connections = useNodeConnections()
   const nodeIds = useMemo(() => connections.filter(c => c.source !== id).map(c => c.source), [connections])
@@ -31,22 +31,22 @@ function SetPageDataNode({ id, data: { chosenState } }: NodeProps<Node<{ chosenS
 
   const page = useMemo(() => {
     if (editor.tab === 'editor') {
-      return system?.pages.find(p => p.name === editor.characterPage)
+      return version?.data.pages.find(p => p.name === editor.characterPage)
     } else if (editor.tab === 'creator') {
-      return system?.creator.find(p => p.name === editor.creatorPage)
+      return version?.data.creator.find(p => p.name === editor.creatorPage)
     }
-  }, [system, editor])
+  }, [version, editor])
   
   useEffect(() => {
     let outputs: { [key:string]: SystemType | null } = {}
 
     if (!chosenState) chosenState = page?.state[0] || null
 
-    if (chosenState) outputs[`${chosenState.name}-${chosenState.type.type}${chosenState.type.isArray ? '(Array)': ''}`] = system?.types.find(t => t.name === chosenState!.type.type) || null
+    if (chosenState) outputs[`${chosenState.name}-${chosenState.type.type}${chosenState.type.isArray ? '(Array)': ''}`] = version?.data.types.find(t => t.name === chosenState!.type.type) || null
 
     updateNodeData(id, { chosenState, outputs })
     updateNodeInternals(id)
-  }, [connections, nodes, system, page])
+  }, [connections, nodes, version, page])
 
   return (
     <Card title='Get Page State'>
@@ -55,7 +55,7 @@ function SetPageDataNode({ id, data: { chosenState } }: NodeProps<Node<{ chosenS
         updateNodeData(id, {
           chosenState,
           outputs: {
-            [`${chosenState.name}-${chosenState.type.type}${chosenState.type.isArray ? '(Array)': ''}`]: system?.types.find(t => t.name === chosenState.type.type)
+            [`${chosenState.name}-${chosenState.type.type}${chosenState.type.isArray ? '(Array)': ''}`]: version?.data.types.find(t => t.name === chosenState.type.type)
           }
         })
         updateNodeInternals(id)

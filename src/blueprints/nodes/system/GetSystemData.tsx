@@ -13,7 +13,8 @@ import { editorState } from '../../../state/editor'
 
 import Card from '../../../components/Card'
 import Select from '../../../components/inputs/Select'
-import { useSystem } from '../../../hooks/useSystem'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import { SystemData } from '../../../storage/schemas/system'
  
 function GetSystemDataNode({ id, data: { path, type }, }: NodeProps<Node<{ path: string; type: string; pathData: any; }>>) {
   const { updateNodeData } = useReactFlow()
@@ -21,10 +22,10 @@ function GetSystemDataNode({ id, data: { path, type }, }: NodeProps<Node<{ path:
 
   const editor = editorState.useValue()
 
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const updateTypeFromSelection = useCallback((name: string) => {
-    const typeData = system?.data.find(d => d.name === name)?.typeData
+    const typeData = version?.data.data.find(d => d.name === name)?.typeData
     const type = typeData ? (`${typeData.type}${typeData.isArray ? '(Array)': ''}`) : 'unknown'
 
     updateNodeData(id, { path: name, type })
@@ -34,8 +35,8 @@ function GetSystemDataNode({ id, data: { path, type }, }: NodeProps<Node<{ path:
   useEffect(() => {
     if (path) return
 
-    const name = system?.data[0]?.name
-    const typeData = system?.data[0]?.typeData
+    const name = version?.data.data[0]?.name
+    const typeData = version?.data.data[0]?.typeData
     const type = typeData ? (`${typeData.type}${typeData.isArray ? '(Array)': ''}`) : 'unknown'
 
     updateNodeData(id, { path: name, type })
@@ -52,7 +53,7 @@ function GetSystemDataNode({ id, data: { path, type }, }: NodeProps<Node<{ path:
       />
 
       <Select id={`get-system-${id}`} label='Data' value={path} onChange={updateTypeFromSelection}>
-        {system?.data.map(d => <option value={d.name}>{d.name}</option>)}
+        {version?.data.data.map(d => <option value={d.name}>{d.name}</option>)}
       </Select>
 
       <p>Calculated type {type}</p>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { type TypeData } from '../storage/schemas/system'
+import { SystemData, type TypeData } from '../storage/schemas/system'
 import { editorState } from '../state/editor';
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';
@@ -11,6 +11,7 @@ import TextInput from '../components/inputs/TextInput';
 import Select from '../components/inputs/Select';
 import Checkbox from '../components/inputs/Checkbox';
 import { useSystem } from '../hooks/useSystem';
+import { useVersionEdits } from '../hooks/useVersionEdits';
 
 type Props = {
   data: { name: string, type: TypeData } | null;
@@ -24,7 +25,7 @@ type Props = {
 
 function EditPageStateModal({ data, isOpen, requestClose, onSave, onDelete }: Props) {
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const [name, setName] = useState('')
   const [type, setType] = useState('')
@@ -38,7 +39,7 @@ function EditPageStateModal({ data, isOpen, requestClose, onSave, onDelete }: Pr
     setIsArray(data.type.isArray || false)
   }, [data])
 
-  if (!system) return <></>
+  if (!version) return <></>
 
   return (
     <Modal isOpen={isOpen} onClose={requestClose}>
@@ -53,7 +54,7 @@ function EditPageStateModal({ data, isOpen, requestClose, onSave, onDelete }: Pr
           <option value='boolean'>boolean</option>
           <option value='enum'>enum</option>
 
-          {system.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+          {version.data.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
         </Select>
 
         <Checkbox id='is-array' label='Is Array?' checked={isArray} onChange={setIsArray} />

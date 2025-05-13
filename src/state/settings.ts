@@ -36,7 +36,7 @@ export const settingsState = newRidgeState<SettingsState>({
 })
 
 const loadSettings = async () => {
-  const settings = await SettingsStorage.get('settings')
+  const settings = await SettingsStorage.get<SettingsState>('settings')
 
   if (!settings) return
 

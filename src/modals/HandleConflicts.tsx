@@ -42,8 +42,8 @@ const HandleConflicts: React.FC<Props> = ({ data, isOpen, requestClose, onSave, 
 
       <ModalBody className="text-center">
         <div className="p-4">
-          <p className="text-lg font-medium mb-2">Local last updated {conflict.local.updatedAt}</p>
-          <p className="text-lg font-medium mb-2">Remote last updated {conflict.remote.updatedAt}</p>
+          <p className="text-lg font-medium mb-2">Local last updated {conflict.local.updated_at}</p>
+          <p className="text-lg font-medium mb-2">Remote last updated {conflict.remote.updated_at}</p>
         </div>
       </ModalBody>
 

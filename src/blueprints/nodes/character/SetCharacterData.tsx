@@ -15,16 +15,18 @@ import TextInput from '../../../components/inputs/TextInput'
 import Card from '../../../components/Card'
 import { editorState } from '../../../state/editor'
 import { useSystem } from '../../../hooks/useSystem'
+import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import system, { SystemData } from '../../../storage/schemas/system'
  
 function SetCharacterDataNode({ id, data: { path, type } }: NodeProps<Node<{ path: string; type: string; }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
   const editor = editorState.useValue()
-  const system = useSystem(editor.systemId)
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   const updateTypeFromPath = useCallback((path: string) => {
-    const type = getTypeFromProperty(system?.defaultCharacterData || {}, path)
+    const type = getTypeFromProperty(version?.data.defaultCharacterData || {}, path)
 
     updateNodeData(id, { path, type })
     updateNodeInternals(id)
