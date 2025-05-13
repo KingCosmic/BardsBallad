@@ -49,10 +49,10 @@ const Layout: React.FC = () => {
 
   return (
     <div className='w-screen h-screen-dynamic bg-neutral-50 dark:bg-neutral-900 text-primary transition-colors overflow-x-hidden'>
-      <div onClick={closeSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen sm:translate-x-0`} />
+      <div onClick={closeSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen-dynamic sm:translate-x-0`} />
       <aside
         onClick={closeSidebar}
-        className={`${isOpen ? '' : '-translate-x-full'} border-r border-neutral-500 dark:border-neutral-700 bg-neutral-950 fixed top-0 left-0 z-40 w-64 h-screen transition-transform sm:translate-x-0`}
+        className={`${isOpen ? '' : '-translate-x-full'} border-r border-neutral-500 dark:border-neutral-700 bg-neutral-950 fixed top-0 left-0 z-40 w-64 h-screen-dynamic transition-transform sm:translate-x-0`}
         aria-label='Sidebar'
       >
         <div className='h-full flex flex-col justify-between px-3 py-4 overflow-y-auto bg-neutral-50 dark:bg-neutral-950' onClick={(e) => e.stopPropagation()}>
