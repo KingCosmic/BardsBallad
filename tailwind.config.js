@@ -7,6 +7,9 @@ export default {
   darkMode: 'media',
   theme: {
     extend: {
+      height: {
+        'screen-dynamic': 'calc(var(--vh, 1vh) * 100)'
+      },
       colors: {
         background: 'var(--background)',
 
