@@ -16,7 +16,7 @@ type Props = {
 const AuthModal: React.FC<Props> = (props) => {
   const { isOpen, requestClose } = props
 
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(false);
   
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -24,8 +24,6 @@ const AuthModal: React.FC<Props> = (props) => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const title = useMemo(() => isSignUp ? 'Sign Up' : 'Login', [isSignUp])
-
-  const auth = authState.useValue();
 
   const handleSignUp = async () => {
     await register(username, email, password)
