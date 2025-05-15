@@ -8,7 +8,7 @@ type User = {
   username: string;
   email: string;
   role: number;
-  synced_characers: string[];
+  synced_characters: string[];
 }
 
 type AuthState = {
@@ -30,7 +30,7 @@ export const loadToken = async () => {
 
   if (token) {
     const user = jwtDecode<User>(token)
-    authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers || [] })
+    authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characters || [] })
   }
 }
 
@@ -40,7 +40,7 @@ export const saveToken = async (token: string) => {
   const user = jwtDecode<User>(token)
   console.log('decoded', user)
 
-  authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characers || [] })
+  authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characters || [] })
 
   return user
 }

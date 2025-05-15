@@ -1,6 +1,6 @@
 import CharacterCreatorModal from '../modals/CharacterCreator'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Header from '../components/Header'
 import { NavLink } from 'react-router'
 import FloatingActionButton from '../components/FloatingActionButton'
@@ -147,7 +147,7 @@ const Characters: React.FC = () => {
                     try {
                       const parsed = JSON.parse(fileContent)
                       if (parsed) {
-                        importCharacter(parsed)
+                        await importCharacter(parsed)
                       }
                     } catch (e) {
                       console.error(e)

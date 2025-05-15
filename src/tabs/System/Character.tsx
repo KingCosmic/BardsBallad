@@ -1,6 +1,4 @@
-import { useState } from 'react'
-
-import { type System } from '../../storage/schemas/system'
+import React, { useState } from 'react'
 
 import { produce } from 'immer'
 import EditSystemData from '../../modals/EditSystemData'

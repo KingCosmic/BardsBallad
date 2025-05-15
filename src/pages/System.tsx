@@ -23,7 +23,7 @@ import EditorSelect from '../designer/components/Select/Editor'
 import TextInput from '../designer/components/Input/Editor'
 import { useSystem } from '../hooks/useSystem'
 import { updateLexical } from '../utils/system'
-import { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import storeMutation from '../storage/methods/versionedresources/storeMutation'
 import { SystemData } from '../storage/schemas/system'
 import { useVersionEdits } from '../hooks/useVersionEdits'
@@ -38,7 +38,7 @@ const System: React.FC = () => {
 
   const edits_id = useMemo(() => id ? `${id}|edits` : undefined, [id])
 
-  const orignal = useVersionResource<SystemData>(id)
+  const original = useVersionResource<SystemData>(id)
   const versionEdits = useVersionEdits<SystemData>(edits_id)
   const system = useSystem(versionEdits?.reference_id)
 
@@ -84,9 +84,9 @@ const System: React.FC = () => {
               // I'm not entirely sure how this would happen?
               // possibly a user unsubs from the original but then the ui *shouldn't* allow a user to get into this editing scenario.
               // TODO:(Cosmic) Make sure we clear up edits when unsubbing from a resourec :)
-              if (!orignal) return
+              if (!original) return
 
-              await duplicateVersionedResource(orignal, edits_id)
+              await duplicateVersionedResource(original, edits_id)
 
               // TODO: show confirmation
 
