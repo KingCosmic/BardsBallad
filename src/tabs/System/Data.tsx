@@ -1,10 +1,10 @@
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import EditSystemData from '../../modals/EditSystemData'
 import FloatingActionButton from '../../components/FloatingActionButton'
 import { updateSystemData, deleteSystemData, addSystemData } from '../../utils/system'
 
-import { type System, type DataType } from '../../storage/schemas/system'
+import { type DataType } from '../../storage/schemas/system'
 import { VersionedResource } from '../../storage/schemas/versionedResource'
 import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 

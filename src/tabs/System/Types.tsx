@@ -1,6 +1,5 @@
-
 import EditTypeModal from '../../modals/EditType'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import EditStringModal from '../../modals/EditString'
 import AccordionGroup from '../../components/AccordionGroup'
 import FloatingActionButton from '../../components/FloatingActionButton'

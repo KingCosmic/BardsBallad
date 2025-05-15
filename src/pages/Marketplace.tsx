@@ -1,6 +1,6 @@
 import Header from '../components/Header'
 import { openModal } from '../state/modals';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MiscStorage } from '../lib/storage';
 import FloatingActionButton from '../components/FloatingActionButton';
 import { getMarketplaceItems, getSubscriptionData, publishItem } from '../lib/api';
@@ -51,7 +51,7 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
 
           if (!vers) return
 
-          createSubscription('system', sys.local_id, vers.local_id, false)
+          await createSubscription('system', sys.local_id, vers.local_id, false)
         }
       })}
     >

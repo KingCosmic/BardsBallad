@@ -38,9 +38,7 @@ export const push = async (): Promise<{ local: any[], remote: any[] }[]> => {
     if (isPremium && isUpdated) return true
 
     // free users can only push synced characters.
-    if (isSynced && isUpdated) return true
-
-    return false
+    return isSynced && isUpdated;
   })
 
   const { conflicts, ids } = await pushUpdatesForCharacters(localCharactersToPush)
