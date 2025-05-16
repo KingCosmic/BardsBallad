@@ -81,6 +81,18 @@ const Marketplace: React.FC = () => {
   const { isOnline } = syncState.useValue()
 
   useEffect(() => {
+    if (!isOnline) return setItems([])
+
+    const loadItems = async () => {
+      const resp = await getMarketplaceItems()
+
+      setItems(resp)
+    }
+
+    loadItems()
+  }, [isOnline])
+
+  useEffect(() => {
     const disclaimer = async () => {
       const hasSeenDisclaimer = await MiscStorage.get('seen-marketplace-disclaimer')
 
@@ -96,14 +108,7 @@ const Marketplace: React.FC = () => {
       })
     }
 
-    const loadItems = async () => {
-      const resp = await getMarketplaceItems()
-
-      setItems(resp)
-    }
-
     disclaimer()
-    loadItems()
   }, [])
 
   if (!isOnline) {
@@ -124,14 +129,15 @@ const Marketplace: React.FC = () => {
 
       <div className='p-4'>
         <div className='flex flex-col items-center justify-center'>
-          <img src='/images/marketplace.png' alt='Marketplace' className='w-1/2 mb-4' />
-          <h2 className='text-2xl font-bold'>Welcome to the Marketplace!</h2>
-          <p className='text-gray-600'>Explore and discover new systems and modules.</p>
+          <div className='bg-brand-700 rounded-lg p-8 text-center w-full md:w-10/12 h-40 bg-[url("/marketplace.png")] bg-cover bg-no-repeat bg-top'>
+            <h2 className='text-2xl font-bold'>Welcome to the Marketplace!</h2>
+            <p className='text-neutral-100'>Explore and discover new systems and modules.</p>
+          </div>
         </div>
         <div>
           <h3 className='text-xl font-semibold mt-4'>Featured Systems</h3>
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
-            {items.map((item, index) => <ItemCard item={item} />)}
+            {items.map((item, index) => <ItemCard key={index} item={item} />)}
           </div>
         </div>
         <div>

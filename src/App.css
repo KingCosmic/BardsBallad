@@ -85,17 +85,17 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #888;
+  background: var(--neutral-400);
   border-radius: 5px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #000;
+  background: var(--brand-600);
   border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--neutral-400);
 }

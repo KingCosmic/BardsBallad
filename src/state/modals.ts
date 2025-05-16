@@ -20,8 +20,18 @@ let idCounter = 0;
 export const modalState = newRidgeState<ModalInfo[]>([])
 
 export function openModal(modal: ModalData) {
+  const id = idCounter++;
+
   modalState.set(
-    (prevState) => [...prevState, { id: idCounter++, modal }],
+    (prevState) => [...prevState, { id, modal }],
+  );
+
+  return id
+}
+
+export function closeModalByTitle(title: string) {
+  modalState.set(
+    (prevState) => prevState.filter(modal => modal.modal.title !== title),
   );
 }
 
