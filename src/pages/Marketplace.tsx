@@ -83,6 +83,16 @@ const Marketplace: React.FC = () => {
   useEffect(() => {
     if (!isOnline) return setItems([])
 
+    const loadItems = async () => {
+      const resp = await getMarketplaceItems()
+
+      setItems(resp)
+    }
+
+    loadItems()
+  }, [isOnline])
+
+  useEffect(() => {
     const disclaimer = async () => {
       const hasSeenDisclaimer = await MiscStorage.get('seen-marketplace-disclaimer')
 
@@ -98,15 +108,8 @@ const Marketplace: React.FC = () => {
       })
     }
 
-    const loadItems = async () => {
-      const resp = await getMarketplaceItems()
-
-      setItems(resp)
-    }
-
     disclaimer()
-    loadItems()
-  }, [isOnline])
+  }, [])
 
   // if (!isOnline) {
   //   return (
