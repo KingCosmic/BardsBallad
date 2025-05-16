@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router'
 import ModalManager from './components/ModalManager'
-import { sidebarState, closeSidebar } from './state/sidebar'
+import { sidebarState, closeSidebar, openSidebar } from './state/sidebar'
 import { authState } from './state/auth'
 import Button from './components/inputs/Button'
 import { closeModal, closeModalByTitle, openModal } from './state/modals'
@@ -71,6 +71,7 @@ const Layout: React.FC = () => {
           MiscStorage.set('onboarding-completed', true)
         },
         onSave: () => {
+          openSidebar()
           setShowOnboarding(true)
         }
       })
@@ -88,7 +89,10 @@ const Layout: React.FC = () => {
 
       {/* Onboarding Layer */}
       {showOnboarding && (
-        <Onboarding steps={onboardingSteps} onFinish={() => setShowOnboarding(false)} />
+        <Onboarding steps={onboardingSteps} onFinish={() => {
+          MiscStorage.set('onboarding-completed', true)
+          setShowOnboarding(false)}
+        }/>
       )}
 
       <div onClick={closeSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen-dynamic sm:translate-x-0`} />
@@ -196,7 +200,7 @@ const Layout: React.FC = () => {
         </div>
       </aside>
 
-      <div className='sm:ml-64 h-screen'>
+      <div className='sm:ml-64 h-screen-dynamic'>
         <Outlet />
       </div>
 

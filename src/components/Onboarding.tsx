@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { useLiveRect } from '../hooks/useLiveRect';
+import { useNavigate } from 'react-router';
 
 function getTooltipPosition(targetRect: DOMRect | null, position: string) {
   if (!targetRect || position === 'center') {
@@ -50,30 +52,20 @@ function getTooltipPosition(targetRect: DOMRect | null, position: string) {
   }
 }
 
-
 export const Onboarding = ({ steps, onFinish }: {
   steps: any[];
   onFinish: () => void;
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const targetRect = useLiveRect(steps[currentStep].selector, true);
+
+  const navigate = useNavigate()
 
   const step = steps[currentStep];
 
-  useEffect(() => {
-    const el = document.querySelector(step.selector);
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      setTargetRect(rect);
-    }
-  }, [currentStep, step]);
-
   const next = () => {
-    if (step.shouldClick) {
-      const el = document.querySelector(step.selector);
-      if (el) {
-        (el as HTMLElement).click();
-      }
+    if (step.navTo) {
+      navigate(step.navTo);
     }
     if (currentStep + 1 < steps.length) {
       setCurrentStep(currentStep + 1);
