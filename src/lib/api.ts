@@ -121,7 +121,7 @@ export const register = async (username: string, email: string, password: string
 
   const { accessToken, apiKey, deviceId } = response.data
 
-  if (!(accessToken | apiKey | deviceId)) return
+  if (!(accessToken && apiKey && deviceId)) return
 
   const user = await saveToken(accessToken)
 
@@ -136,7 +136,7 @@ export const login = async (username: string, password: string) => {
 
   const { accessToken, apiKey, deviceId } = response.data
 
-  if (!(accessToken | apiKey | deviceId)) return
+  if (!(accessToken && apiKey && deviceId)) return
 
   const user = await saveToken(accessToken)
 
