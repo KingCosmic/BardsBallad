@@ -31,7 +31,7 @@ window.updateFromAuth = async () => {
 
   const device_id = await AuthStorage.get<string>('deviceId') || ''
 
-  updateDatabaseWithUserInfo(user_id, device_id)
+  await updateDatabaseWithUserInfo(user_id, device_id)
 }
 
 applyTheme()

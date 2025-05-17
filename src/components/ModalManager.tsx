@@ -13,6 +13,7 @@ import MarketplaceViewModal from '../modals/MarketplaceView'
 import MarketplaceDisclaimer from '../modals/MarketplaceDisclaimer'
 import SaveNewVersion from '../modals/SaveNewVersion'
 import PublishItem from '../modals/PublishItem'
+import WelcomeMessage from '../modals/WelcomeMessage'
 
 // TODO: completely rework this, make it to where you provide the modal component when calling addModal
 
@@ -29,6 +30,16 @@ const ModalManager = () => {
               title={modal.title}
               data={modal.data}
               isVisible={true}
+              requestClose={() => closeModal(id)}
+              onSave={modal.onSave}
+              onDelete={modal.onDelete}
+            />
+          ) : (modal.type === 'onboarding') ? (
+            <WelcomeMessage
+              key={id}
+              data={modal.data}
+              title={modal.title}
+              isOpen={true}
               requestClose={() => closeModal(id)}
               onSave={modal.onSave}
               onDelete={modal.onDelete}

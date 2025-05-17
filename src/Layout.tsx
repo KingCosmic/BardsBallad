@@ -1,9 +1,13 @@
 import { NavLink, Outlet } from 'react-router'
 import ModalManager from './components/ModalManager'
-import { sidebarState, closeSidebar } from './state/sidebar'
+import { sidebarState, closeSidebar, openSidebar } from './state/sidebar'
 import { authState } from './state/auth'
 import Button from './components/inputs/Button'
-import { openModal } from './state/modals'
+import { closeModal, closeModalByTitle, openModal } from './state/modals'
+import { useEffect, useRef, useState } from 'react'
+import { Onboarding } from './components/Onboarding'
+import onboardingSteps from './lib/onboarding'
+import { MiscStorage } from './lib/storage'
 
 const topItems = [
   {
@@ -47,8 +51,50 @@ const Layout: React.FC = () => {
 
   const auth = authState.useValue()
 
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const hasRunRef = useRef(false)
+
+  useEffect(() => {
+    if (hasRunRef.current) return;
+    hasRunRef.current = true;
+
+    const checkOnboardingCompleted = async () => {
+      const hasCompletedOnboarding = await MiscStorage.get('onboarding-completed')
+
+      if (hasCompletedOnboarding) return;
+
+      openModal({
+        type: 'onboarding',
+        data: null,
+        title: 'Welcome to BardsBallad!',
+        onDelete: () => {
+          MiscStorage.set('onboarding-completed', true)
+        },
+        onSave: () => {
+          openSidebar()
+          setShowOnboarding(true)
+        }
+      })
+    }
+    
+    checkOnboardingCompleted()
+
+    return () => {
+      closeModalByTitle('onboarding')
+    }
+  }, [])
+
   return (
     <div className='w-screen h-screen-dynamic bg-neutral-50 dark:bg-neutral-900 text-primary transition-colors overflow-x-hidden'>
+
+      {/* Onboarding Layer */}
+      {showOnboarding && (
+        <Onboarding steps={onboardingSteps} onFinish={() => {
+          MiscStorage.set('onboarding-completed', true)
+          setShowOnboarding(false)}
+        }/>
+      )}
+
       <div onClick={closeSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen-dynamic sm:translate-x-0`} />
       <aside
         onClick={closeSidebar}
@@ -80,7 +126,7 @@ const Layout: React.FC = () => {
             <ul className='pt-4 mt-4 space-y-2 font-medium border-t border-neutral-200 dark:border-neutral-700'>
               {topItems.map((item) => (
                 <li key={item.name}>
-                  <NavLink to={item.path} onClick={closeSidebar}>
+                  <NavLink id={`nav-${item.name}`} to={item.path} onClick={closeSidebar}>
                     <div className='flex items-center p-2 text-neutral-900 rounded-lg dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 group'>
                       <svg
                         className='w-5 h-5 text-neutral-500 transition duration-75 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'
@@ -141,7 +187,7 @@ const Layout: React.FC = () => {
               )}
               {bottomItems.map((item) => (
                 <li key={item.name}>
-                  <NavLink to={item.path} onClick={closeSidebar}>
+                  <NavLink id={`nav-${item.name}`} to={item.path} onClick={closeSidebar}>
                     <div className='flex items-center p-2 text-neutral-900 rounded-lg dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 group'>
                       {item.icon()}
                       <span className='ms-3'>{item.name}</span>
@@ -154,7 +200,7 @@ const Layout: React.FC = () => {
         </div>
       </aside>
 
-      <div className='sm:ml-64 h-screen'>
+      <div className='sm:ml-64 h-screen-dynamic'>
         <Outlet />
       </div>
 

@@ -5,80 +5,79 @@ import Select from '../components/inputs/Select'
 import { themesState } from '../state/themes'
 import { setErudaActive, setTheme, settingsState } from '../state/settings'
 import Checkbox from '../components/inputs/Checkbox'
-import Divider from '../components/Divider'
 import Button from '../components/inputs/Button'
-import { logout, openBilling, subscribe, testApi } from '../lib/api'
+import { logout, openBilling, subscribe } from '../lib/api'
 import { authState } from '../state/auth'
 import getPermsFromRole from '../utils/getPermsFromRole'
 import { openModal } from '../state/modals'
 import Tabs from '../components/Tabs'
+import React from "react";
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {
     return (
-      <>
+      <div className='max-w-5xl mx-auto'>
         {(isLoggedIn && user) ? (
-          <div className='my-2 flex flex-col gap-y-4 md:flex-row rtl:space-x-reverse flex-wrap'>
-            <div className='flex flex-col w-full md:w-1/2'>
-              <p className=''>Username</p>
+          <div className='my-2 flex flex-col gap-4 lg:grid lg:grid-cols-2 rtl:space-x-reverse flex-wrap'>
+
+            <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-neutral-500 border'>
+              <p className='text-lg'>Username</p>
               <p>{user.username}</p>
             </div>
-            <div className='flex flex-col w-full md:w-1/2'>
-              <p>Email</p>
+
+            <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-neutral-500 border'>
+              <p className='text-lg'>Email</p>
               <p>{user.email}</p>
             </div>
 
-            <div className='flex flex-col w-full md:w-1/2'>
-              <p>Subscription</p>
-              <p>{getPermsFromRole(user.role)}</p>
-              {(user.role === 0) ? (
-                <Button color='light' onClick={async () => {
-                  const { url } = await subscribe()
-        
-                  window.open(url, '_self')
-                }}>
-                  Subscribe
-                </Button>
-              ) : (user.role === 1) ? (
-                <Button color='light' onClick={async () => {
-                  const { url } = await openBilling()
-        
-                  window.open(url, '_self')
-                }}>
-                  Manage Subscription
-                </Button>
-              ) : (<p>Thank you for everything!</p>)}
+            <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-brand-500 border'>
+              <p className='text-lg'>Subscription</p>
+              <p className='mb-4'>Current Tier: {getPermsFromRole(user.role)}</p>
+              <Button color='primary' onClick={async () => {
+                let url = ''
+
+                if (user.role === 0) {
+                  const { url: newUrl } = await subscribe()
+                  url = newUrl
+                } else if (user.role === 1) {
+                  const { url: newUrl } = await openBilling()
+                  url = newUrl
+                }
+
+                window.open(url, '_self')
+              }}>
+                {(user.role === 0) ? 'Subscribe' : (user.role === 1) ? 'Manage Subscription' : 'Thank you for everything!'}
+              </Button>
             </div>
 
-            <div className='flex flex-col w-full md:w-1/2'>
-              <p>WARNING</p>
-              <p>All local data is cleared (unsynced data will be lost)</p>
-              <Button color='danger' onClick={() => {
-                logout()
-              }}>
+            <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-red-500 border'>
+              <p className='text-lg'>Danger Zone</p>
+              <p className='mb-4 text-red-500'>All local data is cleared (unsynced data will be lost)</p>
+              <Button color='danger' onClick={() => openModal({
+                type: 'confirm',
+                title: 'Logout',
+                data: { type: 'danger', message: 'All local data is cleared (unsynced data will be lost)' },
+                onSave: logout
+              })}>
                 Logout
               </Button>
             </div>
-
-            <div className='flex flex-col w-full md:w-1/2'>
-              <p>Refresh user info</p>
-              <p>(ratelimited)</p>
-              <Button color='light' onClick={() => {
-                // TODO:
-              }}>
-                Update Info
-              </Button>
-            </div>
           </div>
-        ) : <Button color='light' onClick={() => {
-          openModal({
-            type: 'authentication',
-            title: '',
-            data: null,
-            onSave: () => {},
-          })
-        }}>Login / Register</Button>}
-      </>
+        ) : (
+        <div className='flex flex-col items-center justify-center h-full'>
+          <p className='text-lg'>You are not logged in</p>
+          <p className='mb-4'>Login to access your profile</p>
+          <Button color='light' onClick={() => {
+            openModal({
+              type: 'authentication',
+              title: '',
+              data: null,
+              onSave: () => {},
+            })
+          }}>Login / Register</Button>
+        </div>
+      )}
+      </div>
     )
   } 
 },

@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import { Frame, Element, useEditor } from '@craftjs/core'
 
 import Container from '../../designer/components/Container/Editor'
 import Text from '../../designer/components/Text/Editor'
 
-import { PageData, type System } from '../../storage/schemas/system'
+import { PageData } from '../../storage/schemas/system'
 import { editorState } from '../../state/editor'
 
 import lz from 'lzutf8'

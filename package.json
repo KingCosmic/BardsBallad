@@ -15,6 +15,7 @@
   "dependencies": {
     "@capacitor/device": "^7.0.1",
     "@craftjs/core": "^0.2.11",
+    "@floating-ui/react": "^0.27.8",
     "@ionic/storage": "^4.0.0",
     "@phosphor-icons/react": "^2.1.7",
     "@xyflow/react": "^12.4.2",
