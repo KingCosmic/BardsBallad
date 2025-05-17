@@ -10,6 +10,7 @@ import saveSystem from '../storage/methods/systems/saveSystem';
 import saveVersionedResource from '../storage/methods/versionedresources/saveVersionedResource';
 import { authState } from '../state/auth';
 import { syncState } from '../state/sync';
+import { useToast } from '../hooks/useToast';
 
 type MarketplaceItem = {
   id: string,
@@ -30,6 +31,8 @@ type MarketplaceItem = {
 }
 
 const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
+  const { addToast } = useToast()
+
   return (
     <div
       key={item.name}
@@ -39,19 +42,27 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
         title: item.name,
         data: item,
         onSave: async (version_id: string) => {
-          const subscriptionData = await getSubscriptionData(version_id)
+          try {
+            const subscriptionData = await getSubscriptionData(version_id)
 
-          const { baseData, versionData } = subscriptionData
+            const { baseData, versionData } = subscriptionData
 
-          const sys = await saveSystem(baseData)
+            const sys = await saveSystem(baseData)
 
-          if (!sys) return
+            if (!sys) return addToast('Failed to create system.', 'error')
 
-          const vers = await saveVersionedResource(versionData)
+            const vers = await saveVersionedResource(versionData)
 
-          if (!vers) return
+            if (!vers) return addToast('Failed to create version.', 'error')
 
-          await createSubscription('system', sys.local_id, vers.local_id, false)
+            const sub = await createSubscription('system', sys.local_id, vers.local_id, false)
+
+            if (!sub) return addToast('Failed to create subscription.', 'error')
+
+            addToast('Subscription created!', 'success')
+          } catch(e) {
+            addToast(`Error creating subscription`, 'error')
+          }
         }
       })}
     >
@@ -131,7 +142,7 @@ const Marketplace: React.FC = () => {
         <div className='flex flex-col items-center justify-center'>
           <div className='bg-brand-700 rounded-lg p-8 text-center w-full md:w-10/12 h-40 bg-[url("/marketplace.png")] bg-cover bg-no-repeat bg-top'>
             <h2 className='text-2xl font-bold'>Welcome to the Marketplace!</h2>
-            <p className='text-neutral-100'>Explore and discover new systems and modules.</p>
+            <p className='text-neutral-100'>Explore and discover new systems and datapacks.</p>
           </div>
         </div>
         <div>
