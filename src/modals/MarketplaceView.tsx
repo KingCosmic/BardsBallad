@@ -8,6 +8,7 @@ import Checkbox from '../components/inputs/Checkbox';
 import Select from '../components/inputs/Select';
 import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
 import { getVersionsForItem } from '../lib/api';
+import DropdownButton from '../components/DropdownButton';
 
 type Props = {
   data: {
@@ -68,22 +69,20 @@ const MarketplaceViewModal: React.FC<Props> = ({ data, title = 'Edit string', is
 
       <ModalFooter>
         <div className='flex items-center justify-between w-full'>
-          <Button color='light' onClick={requestClose}>Exit</Button>
-
           <div className='flex flex-row justify-center gap-2'>
             {(versions.length) ? (
               <>
                 <Checkbox id='auto-update' label='Auto Update' checked={autoUpdate} onChange={setAutoUpdate} />
-
-                <Select id='version' containerClassName='flex flex-row items-center gap-2' labelClassName='mb-0' label='Version' value={selectedVersion.item_id} onChange={(val) => setSelectedVersion(versions.find(ver => ver.item_id === val)!)}>
-                  {versions.map(ver => (
-                    <option value={ver.item_id}>{getVisualTextFromVersionID(ver.item_id)}</option>
-                  ))}
-                </Select>
-
-                <Button color='primary' onClick={() => onSave(selectedVersion.item_id)}>
-                  Subscribe
-                </Button>
+                
+                <DropdownButton label={getVisualTextFromVersionID(selectedVersion.item_id)} onClick={() => {
+                  requestClose()
+                  onSave(selectedVersion.item_id)
+                }}
+                  options={versions.map(ver => ({
+                    label: getVisualTextFromVersionID(ver.item_id),
+                    onClick: () => setSelectedVersion(ver)
+                  }))}
+                />
               </>
             ) : (
               <p>loading versions...</p>
