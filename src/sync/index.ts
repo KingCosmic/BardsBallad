@@ -101,7 +101,10 @@ async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocu
       const local = new Date(localDocument.updated_at).getTime()
       const remote = new Date(doc.updated_at).getTime()
 
-      return (local > remote) ? { local: localDocument, remote: doc } : []
+      const doVersionsMatch = (localDocument.version === doc.verison)
+      const wasUpdatedLocaly = (local > remote)
+
+      return (!doVersionsMatch && wasUpdatedLocaly) ? { local: localDocument, remote: doc } : []
     })
 
     const chosen = await handleConflicts(pullConflicts)
