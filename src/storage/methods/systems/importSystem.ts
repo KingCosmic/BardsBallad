@@ -24,6 +24,9 @@ export default async (sys: System, version: VersionedResource) => {
       ...sys,
       local_id: system_local_id,
       user_id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      deleted_at: null
     }
 
     const systemResult = SystemChema.safeParse(sysData);
@@ -44,7 +47,10 @@ export default async (sys: System, version: VersionedResource) => {
       ...version,
       local_id: version_local_id,
       reference_id: system_local_id,
-      user_id
+      user_id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      deleted_at: null
     }
 
     const versionResult = versionedResourceSchema.safeParse(versData);

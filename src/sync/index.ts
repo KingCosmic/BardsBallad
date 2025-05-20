@@ -70,12 +70,12 @@ runSync()
 async function handleConflicts(conflicts: { local: any, remote: any }[]): Promise<any[]> {
   if (conflicts.length === 0) return []
 
-  return new Promise((res) => {
+  return new Promise(resolve => {
     openModal({
       title: 'Handle Conflicts',
-      type: 'handleConflicts',
+      type: 'HandleConflicts',
       data: conflicts,
-      onSave: res
+      onSave: resolve
     })
   })
 }
@@ -84,7 +84,7 @@ type PullFunction = () => Promise<any[]>
 
 type BulkPut = (docs: any[]) => Promise<any>
 
-type PushFunction = () => Promise<{ local: any, remote: any }[]>
+type PushFunction = () => Promise<{ conflicts: any[], metadata: any[] }>
 
 async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocuments: any[]) {
   let pullUpdates = true
@@ -121,20 +121,44 @@ async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocu
   }
 }
 
-async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction) {
+async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localDocuments: any[]) {
   let pushUpdates = true
   while (pushUpdates) {
-    const pushConflicts = await push()
+    const { conflicts, metadata } = await push()
 
-    if (pushConflicts.length === 0) {
+    if (conflicts.length === 0) {
       pushUpdates = false
       console.log('no conflicts')
     }
+
+    // we need to combine our metadata with our local documents (version hash updates, server id generation, etc.)
+    const updatedDocs = metadata.map(data => {
+      const localDoc = localDocuments.find(doc => doc.local_id === data.local_id)
+
+      return {
+        ...localDoc,
+        ...data
+      }
+    })
+
+    // store our updated docs.
+    await bulkPut(updatedDocs)
+
+    // since our metadata involves every uploaded item (version updates.) we can safely just loop over the updatedDocs instead of local docs.
+    // this will be more useful when we add a batchsize to the push step to keep us under the json 5mb size limit we're currently imposing.
+    const pushConflicts = conflicts.flatMap(doc => {
+      const localDocument = updatedDocs.find(localDoc => localDoc.local_id === doc.local_id)
+
+      if (!localDocument) return []
+
+      return { local: localDocument, remote: doc }
+    })
 
     const chosen = await handleConflicts(pushConflicts)
 
     await bulkPut(chosen)
     // TODO: we may need to reSync to push up our chosen conflict resolutions.
+    // can possibly get away without a reSync if we just update the updated_at field so it gets picked up in the next sync cycle.
 
     console.log('conflicts handled', pushConflicts.length)
   }
@@ -156,7 +180,7 @@ export const sync = async () => {
 
     await handlePullUpdates(coll.bulkPut, coll.pull, await coll.get())
 
-    await handlePushingUpdates(coll.bulkPut, coll.push)
+    await handlePushingUpdates(coll.bulkPut, coll.push, await coll.get())
   }
 
   // TODO: setup websocket connection for real-time updates.

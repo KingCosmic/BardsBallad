@@ -7,7 +7,7 @@ import ModalHeader from '../components/Modal/Header'
 import { type Character } from '../storage/schemas/character'
 
 type Props = {
-  data: { local: Character, remote: Character }[] | null;
+  data: { local: Character, remote: Character }[];
 
   isOpen: boolean;
   requestClose(): void;
@@ -15,9 +15,7 @@ type Props = {
 }
 
 const HandleConflicts: React.FC<Props> = ({ data, isOpen, requestClose, onSave, }) => {
-  if (!isOpen) return null
-  if (!data) return null
-  if (data.length === 0) return null
+  console.log(data)
 
   const [conflictIndex, setConflictIndex] = useState(0)
   const [conflict, setConflict] = useState(data[0])

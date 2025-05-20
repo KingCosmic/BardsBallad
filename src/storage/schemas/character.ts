@@ -13,9 +13,6 @@ const characterSchema = z.object({
   // character name
   name: z.string(),
 
-  // an array of user generated tags for quick filters (could be things like npc, cowboy, etc.)
-  tags: z.array(z.string()),
-
   // all character data.
   data: z.object({}),
 
