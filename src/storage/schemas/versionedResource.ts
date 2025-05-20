@@ -9,9 +9,11 @@ const versionedResourceSchema = z.object({
   reference_id: z.string({ invalid_type_error: 'reference_id must be a string' }),
   reference_type: z.enum(['system', 'character']),
 
+  // a random hash, a quick glance at whether or not update conflicts are happening.
+  version: z.string().optional(),
+
   created_at: z.string().datetime({ offset: true }),
   updated_at: z.string().datetime({ offset: true }),
-
   deleted_at: z.string().datetime({ offset: true }).nullable().optional(),
 })
 

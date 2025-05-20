@@ -64,6 +64,9 @@ const systemSchema = z.object({
 
   forked_from: z.string().nullable().optional(),
 
+  // a random hash, a quick glance at whether or not update conflicts are happening.
+  version: z.string().optional(),
+
   created_at: z.string().datetime({ offset: true }),
   updated_at: z.string().datetime({ offset: true }),
 

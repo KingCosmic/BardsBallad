@@ -147,7 +147,7 @@ const ModalManager = () => {
               requestClose={() => closeModal(id)}
               onAccept={modal.onSave}
             />
-          ) : <h1>{modal.type} is un supported.</h1>
+          ) : <h1 key={id}>{modal.type} is un supported.</h1>
         })
       }
     </>
