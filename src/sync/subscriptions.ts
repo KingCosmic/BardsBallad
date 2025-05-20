@@ -18,13 +18,13 @@ export const pull = async () => {
   return documents
 }
 
-export const push = async (): Promise<{ local: any[], remote: any[] }[]> => {
+export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => {
   const subscriptions = await db.subscriptions.toArray()
   const characters = await db.characters.toArray()
 
   const user = jwtDecode<{ id: String, role: number }>(await AuthStorage.get('token'))
   
-  if (!user) return []
+  if (!user) return { conflicts: [], metadata: [] }
 
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
   
@@ -52,9 +52,7 @@ export const push = async (): Promise<{ local: any[], remote: any[] }[]> => {
     return (referencedByChar || notSyncedAndPremium)
   })
 
-  const { conflicts, ids } = await pushUpdatesForSubscriptions(subscriptionsToPush)
-
-  return conflicts
+  return await pushUpdatesForSubscriptions(subscriptionsToPush)
 }
 
 export const bulkPut = async (docs: UserSubscription[]) => db.subscriptions.bulkPut(docs)

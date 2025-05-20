@@ -24,8 +24,11 @@ export default async (name: string, data: any, system: { local_id: string, versi
       user_id: user_id,
 
       name: name,
+
       data: data,
+
       system: system,
+      
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
