@@ -144,10 +144,8 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
     // store our updated docs.
     await bulkPut(updatedDocs)
 
-    // since our metadata involves every uploaded item (version updates.) we can safely just loop over the updatedDocs instead of local docs.
-    // this will be more useful when we add a batchsize to the push step to keep us under the json 5mb size limit we're currently imposing.
     const pushConflicts = conflicts.flatMap(doc => {
-      const localDocument = updatedDocs.find(localDoc => localDoc.local_id === doc.local_id)
+      const localDocument = localDocuments.find(localDoc => localDoc.local_id === doc.local_id)
 
       if (!localDocument) return []
 
