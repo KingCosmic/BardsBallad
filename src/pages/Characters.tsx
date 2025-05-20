@@ -1,46 +1,110 @@
-import CharacterCreatorModal from '../modals/CharacterCreator'
+import CharacterCreatorModal from '../modals/CharacterCreator';
 
-import React, { useState } from 'react'
-import Header from '../components/Header'
-import { NavLink } from 'react-router'
-import FloatingActionButton from '../components/FloatingActionButton'
-import { useCharacters } from '../hooks/useCharacters'
-import { openModal } from '../state/modals'
-import { authState } from '../state/auth'
+import React, { useState } from 'react';
+import Header from '../components/Header';
+import { NavLink, useNavigate } from 'react-router';
+import FloatingActionButton from '../components/FloatingActionButton';
+import { useCharacters } from '../hooks/useCharacters';
+import { openModal } from '../state/modals';
+import { authState } from '../state/auth';
 
-import { renameCharacter, deleteCharacter, importCharacter } from '../storage/methods/characters'
-import { setSyncedCharacters } from '../lib/api'
-import JSONToFile from '../utils/JSONToFile'
-import { useSystems } from '../hooks/useSystems'
-import { useVersions } from '../hooks/useVersions'
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID'
+import {
+  renameCharacter,
+  deleteCharacter,
+  importCharacter,
+} from '../storage/methods/characters';
+import { setSyncedCharacters } from '../lib/api';
+import JSONToFile from '../utils/JSONToFile';
+import { useSystems } from '../hooks/useSystems';
+import { useVersions } from '../hooks/useVersions';
+import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
 
-import { Menu, MenuItem } from '../components/DropdownMenu'
-import isPremium from '../utils/isPremium'
+import { Menu, MenuItem } from '../components/DropdownMenu';
+import isPremium from '../utils/isPremium';
+import DropdownButton from '../components/DropdownButton';
+import { Character } from '../storage/schemas/character';
 
 const Characters: React.FC = () => {
-  const { characters, isLoading } = useCharacters()
-  const { systems } = useSystems()
-  const { versions } = useVersions()
+  const { characters, isLoading } = useCharacters();
+  const { systems } = useSystems();
+  const { versions } = useVersions();
 
-  const { isLoggedIn, user, synced_characters } = authState.useValue()
+  const { isLoggedIn, user, synced_characters } = authState.useValue();
 
-  const [isOpen, setIsOpen] = useState(false)
-  const [isCreating, setIsCreating] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
-  if (isLoading) return <></>
+  const navigate = useNavigate();
+
+  if (isLoading) return <></>;
+
+  const getOptions = (char: Character) => {
+    const options = [
+      {
+        label: 'export',
+        onClick: () => JSONToFile(char, `${char.name}-export`),
+      },
+      {
+        label: 'rename',
+        onClick: () =>
+          openModal({
+            type: 'edit_string',
+            title: 'Rename Character',
+            data: char.name,
+            onSave: (newName: string) => {
+              renameCharacter(char.local_id, newName);
+            },
+          }),
+      },
+      {
+        label: 'delete',
+        onClick: () =>
+          openModal({
+            type: 'confirm',
+            title: 'Delete Character',
+            data: {
+              type: 'danger',
+              message: 'Are you sure you want to delete this character?',
+            },
+            onSave: () => deleteCharacter(char.local_id),
+          }),
+      },
+    ];
+
+    if (isPremium(user?.role ?? 0)) return options
+
+    const isSynced = synced_characters.includes(char.local_id)
+
+    options.unshift({
+      label: isSynced ? 'UnSync' : 'Sync',
+      onClick: () => {
+        let newSynced: string[] = [];
+        if (synced_characters.includes(char.local_id)) {
+          newSynced = synced_characters.filter(
+            (c: string) => c !== char.local_id
+          );
+        } else if (length < 3) {
+          newSynced = [...synced_characters, char.local_id];
+        }
+
+        setSyncedCharacters(newSynced);
+      }
+    })
+
+    return options
+  };
 
   return (
     <div>
-      <Header title='Characters' />
+      <Header title="Characters" />
 
       <CharacterCreatorModal isOpen={isCreating} setIsOpen={setIsCreating} />
 
-      <div className='p-4'>
+      <div className="p-4">
         {/* TODO: Searchbar */}
 
         {characters.length ? (
-          characters.map(char => (
+          characters.map((char) => (
             <div
               key={char.local_id}
               className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
@@ -54,47 +118,32 @@ const Characters: React.FC = () => {
                     {char.name[0]}
                   </span>
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
                   <h5 className="text-xl font-semibold text-neutral-900 truncate dark:text-white">
                     {char.name}
                   </h5>
                   <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    {systems.find(s => s.local_id === char.system.local_id)?.name} • Version {getVisualTextFromVersionID(versions.find(v => v.local_id === char.system.version_id)?.local_id ?? '')}
+                    {
+                      systems.find((s) => s.local_id === char.system.local_id)
+                        ?.name
+                    }{' '}
+                    • Version{' '}
+                    {getVisualTextFromVersionID(
+                      versions.find(
+                        (v) => v.local_id === char.system.version_id
+                      )?.local_id ?? ''
+                    )}
                   </p>
                 </div>
               </NavLink>
 
               <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
-                <Menu label='Options'>
-                  {isPremium(user?.role ?? 0) && (
-                    <MenuItem label={synced_characters.includes(char.local_id) ? 'UnSync' : 'Sync'} onClick={() => {
-                      let newSynced: string[] = []
-                      if (synced_characters.includes(char.local_id)) {
-                        newSynced = synced_characters.filter((c: string) => c !== char.local_id)
-                      } else if (length < 3) {
-                        newSynced = [...synced_characters, char.local_id]
-                      }
-
-                      setSyncedCharacters(newSynced)
-                    }} />
-                  )}
-                  <MenuItem label='export' onClick={() => JSONToFile(char, `${char.name}-export`)} />
-                  <MenuItem label='rename' onClick={() => openModal({
-                    type: 'edit_string',
-                    title: 'Rename Character',
-                    data: char.name,
-                    onSave: (newName: string) => {
-                      renameCharacter(char.local_id, newName)
-                    }
-                  })} />
-                  <MenuItem label='delete' onClick={() => openModal({
-                    type: 'confirm',
-                    title: 'Delete Character',
-                    data: { type: 'danger', message: 'Are you sure you want to delete this character?' },
-                    onSave: () => deleteCharacter(char.local_id)
-                  })} />
-                </Menu>
+                <DropdownButton
+                  label="Edit"
+                  onClick={() => navigate(char.local_id)}
+                  options={getOptions(char)}
+                />
               </div>
             </div>
           ))
@@ -105,31 +154,39 @@ const Characters: React.FC = () => {
         )}
 
         <FloatingActionButton
-            isOpen={isOpen}
-            onClick={() => setIsOpen(!isOpen)}
-            buttons={[
-              { name: 'Create Character', icon: '', onClick: () => setIsCreating(true) },
-              { name: 'Import Character', icon: '', onClick: () => openModal({
+          isOpen={isOpen}
+          onClick={() => setIsOpen(!isOpen)}
+          buttons={[
+            {
+              name: 'Create Character',
+              icon: '',
+              onClick: () => setIsCreating(true),
+            },
+            {
+              name: 'Import Character',
+              icon: '',
+              onClick: () =>
+                openModal({
                   type: 'import_file',
                   title: 'Import Character',
                   data: undefined,
                   onSave: async (fileContent: string) => {
                     try {
-                      const parsed = JSON.parse(fileContent)
+                      const parsed = JSON.parse(fileContent);
                       if (parsed) {
-                        await importCharacter(parsed)
+                        await importCharacter(parsed);
                       }
                     } catch (e) {
-                      console.error(e)
+                      console.error(e);
                     }
-                  }
-                })
-              }
-            ]}
+                  },
+                }),
+            },
+          ]}
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Characters
+export default Characters;

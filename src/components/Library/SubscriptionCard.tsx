@@ -14,6 +14,7 @@ import { openModal } from '../../state/modals';
 import { renameCharacter, deleteCharacter } from '../../storage/methods/characters';
 import isPremium from '../../utils/isPremium';
 import { Menu, MenuItem } from '../DropdownMenu';
+import DropdownButton from '../DropdownButton';
 
 type Props = {
   subscription: UserSubscription;
@@ -82,8 +83,7 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
       </div>
 
       <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
-        <Menu label="Options">
-          <MenuItem label='Edit' onClick={() => {
+        <DropdownButton label={isOwner ? 'Edit' : 'Fork'} onClick={() => {
             if (isOwner) {
               // direct to editor.
               return navigate(
@@ -93,17 +93,18 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
 
             // fork
             return forkSystem(baseData, versionData);
-          }} />
-          <MenuItem
-            label="export"
-            onClick={() => JSONToFile(
-              {
-                system: query.baseData,
-                version: query.versionData,
-              },
-              `${query.baseData.name}-${query.versionData.local_id}`
-            )}
-          />
+          }} options={[
+            {
+              label: 'export',
+              onClick: () => JSONToFile(
+                {
+                  system: query.baseData,
+                  version: query.versionData,
+                },
+                `${query.baseData.name}-${query.versionData.local_id}`
+              )
+            }
+          ]} />
           {/* <MenuItem
             label="delete"
             onClick={() =>
@@ -118,7 +119,6 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
               })
             }
           /> */}
-        </Menu>
       </div>
     </div>
   );
