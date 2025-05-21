@@ -32,6 +32,13 @@ const Library: React.FC = () => {
                   <SubscriptionCard key={sys.local_id} subscription={sys} />
                 ))}
               </div>
+
+              <h4 className='mb-2 text-xl'>Subscribed Datapacks</h4>
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+                {subscriptions.filter(sub => sub.resource_type === 'datapack').map((sys) => (
+                  <SubscriptionCard key={sys.local_id} subscription={sys} />
+                ))}
+              </div>
             </div>
           </h5>
         )}
