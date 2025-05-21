@@ -13,7 +13,7 @@ type Props = {
 
   isOpen: boolean;
   requestClose(): void;
-  onSave(newData: string): void;
+  onSave(newData: any): void;
   onDelete?(): void;
 }
 
@@ -37,7 +37,10 @@ const CreateSubscriptionModal: React.FC<Props> = ({ data, title, isOpen, request
 
       <ModalFooter>
         <Button color='primary' onClick={() => {
-          onSave(string)
+          onSave({
+            name,
+            type
+          })
           requestClose()
         }}>Update</Button>
       </ModalFooter>
