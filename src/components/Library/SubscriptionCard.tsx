@@ -77,7 +77,8 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
+      <div className="flex justify-between items-center gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
+        <p>{new Date(versionData.created_at).toDateString()}</p>
         <DropdownButton label={isOwner ? 'Edit' : 'Fork'} onClick={() => {
             if (isOwner) {
               // direct to editor.
