@@ -37,7 +37,13 @@ const Library: React.FC = () => {
         )}
 
         <FloatingActionButton isOpen={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} buttons={[
-          { name: 'Create System', icon: '', onClick: () => {} },
+          { name: 'Create System', icon: '', onClick: () => openModal({
+            type: 'create_subscription',
+            title: 'Create Subscription',
+            data: undefined,
+            onSave: () => {}
+            })
+          },
           { name: 'Import System', icon: '', onClick: () => openModal({
               type: 'import_file',
               title: 'Import System',

@@ -74,13 +74,13 @@ const SplitButton: React.FC<Props> = ({ label, options, onClick }) => {
           ref={refs.setFloating}
           style={floatingStyles}
           {...getFloatingProps()}
-          className="absolute z-50 mt-1 w-40 bg-neutral-600 border border-gray-200 rounded shadow-lg"
+          className="absolute z-50 mt-1 flex flex-col w-48 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
           {options.map((action, index) => (
             <div
               key={index}
               onClick={() => handleAltAction(action)}
-              className="px-4 py-2 hover:bg-neutral-100 cursor-pointer"
+              className="bg-neutral-50 text-neutral-950 dark:bg-neutral-800 dark:text-neutral-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg px-4 py-2 text-sm font-medium cursor-pointer"
             >
               {action.label}
             </div>
