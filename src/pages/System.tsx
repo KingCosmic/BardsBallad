@@ -31,6 +31,8 @@ import { openModal } from '../state/modals'
 import duplicateVersionedResource from '../storage/methods/versionedresources/duplicateVersionedResource'
 import createSubscription from '../storage/methods/subscriptions/createSubscription'
 import { useVersionResource } from '../hooks/useVersionResource'
+import Modals from '../tabs/System/Modals'
+import ActionsModal from '../tabs/System/Actions'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -98,12 +100,14 @@ const System: React.FC = () => {
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
           <Select id='tab-selector' label='' value={editor.tab} onChange={setTab}>
-            <option value='character'>Character</option>
-            <option value='data'>Data</option>
-            <option value='types'>Types</option>
-            <option value='functions'>Functions</option>
-            <option value='editor'>Editor</option>
-            <option value='creator'>Creator</option>
+            <option value='character'>Character Schema</option>
+            <option value='data'>System Data</option>
+            <option value='types'>Data Types</option>
+            <option value='functions'>Blueprints</option>
+            <option value='editor'>Editor UI</option>
+            <option value='creator'>Builder UI</option>
+            <option value='modals'>Modals</option>
+            <option value='actions'>Character Actions</option>
           </Select>
 
           {
@@ -117,8 +121,13 @@ const System: React.FC = () => {
               <Functions versionedResource={versionEdits} />
             ) : (editor.tab === 'editor') ? (
               <Editor versionedResource={versionEdits} />
-            ) : (editor.tab === 'creator') && (
+            ) : (editor.tab === 'creator') ? (
               <Creator versionedResource={versionEdits} />
+            ) : (editor.tab === 'modals') ? (
+              <></>
+              // <Modals />
+            ) : (editor.tab === 'actions') && (
+              <ActionsModal editsId={edits_id} versionedResource={versionEdits}  />
             )
           }
         </div>

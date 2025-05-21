@@ -9,11 +9,6 @@ import { VersionedResource } from '../../storage/schemas/versionedResource';
 import { useNavigate } from 'react-router';
 import getVisualTextFromVersionID from '../../utils/getVisualTextFromVersionID';
 import JSONToFile from '../../utils/JSONToFile';
-import { setSyncedCharacters } from '../../lib/api';
-import { openModal } from '../../state/modals';
-import { renameCharacter, deleteCharacter } from '../../storage/methods/characters';
-import isPremium from '../../utils/isPremium';
-import { Menu, MenuItem } from '../DropdownMenu';
 import DropdownButton from '../DropdownButton';
 
 type Props = {
