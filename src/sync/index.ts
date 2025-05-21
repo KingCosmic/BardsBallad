@@ -65,7 +65,8 @@ const runSync = async () => {
   setTimeout(runSync, 10 * 1000) // every 10 seconds
 }
 
-runSync()
+// wait 2 seconds for our initial sync (lets our data load)
+setTimeout(runSync, 2 * 1000)
 
 async function handleConflicts(conflicts: { local: any, remote: any }[]): Promise<any[]> {
   if (conflicts.length === 0) return []
@@ -86,6 +87,8 @@ type BulkPut = (docs: any[]) => Promise<any>
 
 type PushFunction = () => Promise<{ conflicts: any[], metadata: any[] }>
 
+type Get = () => Promise<any[]>
+
 async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocuments: any[]) {
   let pullUpdates = true
   while (pullUpdates) {
@@ -101,10 +104,10 @@ async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocu
       const local = new Date(localDocument.updated_at).getTime()
       const remote = new Date(doc.updated_at).getTime()
 
-      const doVersionsMatch = (localDocument.version === doc.verison)
-      const wasUpdatedLocaly = (local > remote)
+      const doVersionsMatch = (localDocument.version === doc.version)
+      const wasUpdatedLocaly = (local >= remote)
 
-      return (!doVersionsMatch && wasUpdatedLocaly) ? { local: localDocument, remote: doc } : []
+      return (doVersionsMatch && wasUpdatedLocaly) ? [] : { local: localDocument, remote: doc }
     })
 
     const chosen = await handleConflicts(pullConflicts)
@@ -154,6 +157,8 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
 
     const chosen = await handleConflicts(pushConflicts)
 
+    console.log(chosen)
+
     await bulkPut(chosen)
     // TODO: we may need to reSync to push up our chosen conflict resolutions.
     // can possibly get away without a reSync if we just update the updated_at field so it gets picked up in the next sync cycle.
@@ -164,8 +169,9 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
 
 export const sync = async () => {
   const { isOnline } = syncState.get()
+  const { isLoggedIn } = authState.get()
 
-  if (!isOnline) return
+  if (!isOnline || !isLoggedIn) return
 
   // Update synced characters array first.
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
@@ -193,7 +199,6 @@ window.addEventListener('online', async () => {
   
   if (!isOnline) {
     console.log('not connected')
-    return
   }
 
   sync()

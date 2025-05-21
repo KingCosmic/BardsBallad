@@ -27,7 +27,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   
   const isPremium = user.role > 0
 
-  const updatedCharacters = await SyncStorage.get<string[]>('updated_characters')
+  const updatedCharacters = await SyncStorage.get<string[]>('updated_characters') || []
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
 
   const localCharactersToPush = characters.filter(c => {
