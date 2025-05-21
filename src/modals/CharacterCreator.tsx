@@ -81,7 +81,7 @@ function CharacterCreatorModal(props: any) {
   useEffect(() => {
     const sys = systems[0]
 
-    if (!sys) return
+    if (!sys || sys.local_id === system?.local_id) return
     setSystem(sys)
 
     let vers;
@@ -101,7 +101,7 @@ function CharacterCreatorModal(props: any) {
 
     vers = filteredVersions[0]
 
-    if (!vers) return
+    if (!vers || vers.local_id === version?.local_id) return
 
     setVersion(vers)
     setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.local_id, version_id: vers.local_id } })

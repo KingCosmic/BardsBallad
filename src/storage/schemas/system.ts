@@ -39,6 +39,15 @@ const systemTypeSchema = z.object({
   }))
 })
 
+const actionSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  blueprint: z.object({
+    nodes: z.array(z.any()),
+    edges: z.array(z.any())
+  })
+})
+
 const systemDataSchema = z.object({
   creator: z.array(pageDataSchema),
 
@@ -52,6 +61,8 @@ const systemDataSchema = z.object({
   defaultCharacterData: z.any(),
 
   types: z.array(systemTypeSchema),
+
+  actions: z.array(actionSchema),
 })
 
 const systemSchema = z.object({
@@ -75,6 +86,7 @@ const systemSchema = z.object({
 
 export type SystemData = z.infer<typeof systemDataSchema>;
 export type SystemType = z.infer<typeof systemTypeSchema>;
+export type ActionType = z.infer<typeof actionSchema>;
 export type TypeData = z.infer<typeof typeDataSchema>;
 export type PageData = z.infer<typeof pageDataSchema>;
 export type DataType = z.infer<typeof dataType>;
