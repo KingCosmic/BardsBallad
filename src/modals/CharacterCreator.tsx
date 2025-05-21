@@ -114,7 +114,7 @@ function CharacterCreatorModal(props: any) {
       <ModalHeader title='Error grabbing system' onClose={() => props.setIsOpen(false)} />
 
       <ModalBody>
-        <h3>There was an error grabbing a default system, please refresh to load base data or make / import something!</h3>
+        <h3>There was an error grabbing a default system, please subscribe to a system from the marketplace or import something!</h3>
       </ModalBody>
 
       <ModalFooter>
