@@ -53,7 +53,7 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
   // we are considered the owner if our user id's match or if the subscription doesn't have a user id and server provided id
   const isOwner =
     (user && baseData.user_id && user.id === baseData.user_id) ||
-    (!baseData.user_id && !baseData.id);
+    (!user && baseData.user_id === 'none');
 
   return (
     <div

@@ -8,6 +8,7 @@ import { AuthStorage, MiscStorage, SyncStorage } from './storage'
 import { System } from '../storage/schemas/system'
 import { VersionedResource } from '../storage/schemas/versionedResource'
 import { UserSubscription } from '../storage/schemas/userSubscription'
+import clearLocalStorage from '../utils/clearLocalStorage'
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
@@ -146,15 +147,11 @@ export const login = async (username: string, password: string) => {
   updateDatabaseWithUserInfo(user.id, deviceId)
 }
 
-export const logout = async () => {
+export const logout = () => {
   AuthStorage.clear()
-  SyncStorage.clear()
-
   authState.set({ isLoggedIn: false, user: null, synced_characters: [] })
 
-  await Promise.all(
-    db.tables.map(table => table.clear())
-  );  
+  clearLocalStorage()
 }
 
 export const setSyncedCharacters = async (characters: string[]) => {

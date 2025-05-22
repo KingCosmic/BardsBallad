@@ -12,6 +12,7 @@ import getPermsFromRole from '../utils/getPermsFromRole'
 import { openModal } from '../state/modals'
 import Tabs from '../components/Tabs'
 import React from "react";
+import clearLocalStorage from '../utils/clearLocalStorage'
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {
@@ -93,6 +94,9 @@ const tabs = [
       <>
         <p className='my-2'><a className='underline' href='https://eruda.liriliri.io/' target='_blank'>Eruda</a> allows access to the development console on mobile.</p>
         <Checkbox id='use-eruda' label='Load Eruda' checked={settings.isErudaActive} onChange={setErudaActive} />
+
+        <p className='my-2'>Clear Local Storage</p>
+        <Button color='danger' onClick={clearLocalStorage} >Clear Local Storage</Button>
       </>
     )
   }},
