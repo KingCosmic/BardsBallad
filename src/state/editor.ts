@@ -30,6 +30,10 @@ export function setCharacterPage(characterPage: string) {
   editorState.set((prev) => ({ ...prev, characterPage }))
 }
 
+export function setModal(modalsPage: string) {
+  editorState.set((prev) => ({ ...prev, modalsPage }))
+}
+
 export function setTab(tab: string) {
   editorState.set((prev) => ({ ...prev, tab }))
 }

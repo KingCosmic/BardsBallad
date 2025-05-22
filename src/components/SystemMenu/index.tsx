@@ -4,6 +4,7 @@ import DesignerMenu from './EditorMenu'
 import { editorState } from '../../state/editor'
 import CreatorMenu from './CreatorMenu'
 import { useVersionResource } from '../../hooks/useVersionResource'
+import ModalsMenu from './ModalsMenu'
 
 function SystemMenu() {
   const editor = editorState.useValue()
@@ -38,8 +39,14 @@ function SystemMenu() {
             </p>
           ) : (editor.tab === 'editor') ? (
             <DesignerMenu />
-          ) : (editor.tab === 'creator') && (
+          ) : (editor.tab === 'creator') ? (
             <CreatorMenu />
+          ) : (editor.tab === 'modals') ? (
+            <ModalsMenu />
+          ) : (editor.tab === 'actions') && (
+            <p>
+              Quick actions such as long rest, reset spell slots, ect.
+            </p>
           )
         }
       </div>

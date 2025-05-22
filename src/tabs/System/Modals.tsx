@@ -23,7 +23,7 @@ const ModalsTab: React.FC<EditorTabProps> = ({ versionedResource }) => {
   const { actions } = useEditor()
 
   useEffect(() => {
-    let lexical = versionedResource.data.modals.find((p: PageData) => p.name === editor.characterPage)?.lexical
+    let lexical = versionedResource.data.modals.find((p: PageData) => p.name === editor.modalsPage)?.lexical
 
     if (!lexical) lexical = defaultLexical
 

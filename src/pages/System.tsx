@@ -124,8 +124,7 @@ const System: React.FC = () => {
             ) : (editor.tab === 'creator') ? (
               <Creator versionedResource={versionEdits} />
             ) : (editor.tab === 'modals') ? (
-              <></>
-              // <Modals />
+              <Modals versionedResource={versionEdits} />
             ) : (editor.tab === 'actions') && (
               <ActionsModal editsId={edits_id} versionedResource={versionEdits}  />
             )
