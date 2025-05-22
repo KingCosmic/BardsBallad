@@ -10,8 +10,8 @@ import Textarea from '../components/inputs/Textarea';
 import Checkbox from '../components/inputs/Checkbox';
 import { useVersions } from '../hooks/useVersions';
 import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
-import { getMarketplaceItem } from '../lib/api';
 import { VersionedResource } from '../storage/schemas/versionedResource';
+import {getMarketplaceItem} from "../api/getMarketplaceItem";
 
 type Props = {
   data: string | null;

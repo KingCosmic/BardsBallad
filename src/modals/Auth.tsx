@@ -6,7 +6,8 @@ import ModalBody from '../components/Modal/Body'
 import ModalFooter from '../components/Modal/Footer'
 import ModalHeader from '../components/Modal/Header'
 import { authState } from '../state/auth'
-import { login, register } from '../lib/api'
+import {login} from "../api/login";
+import {register} from "../api/register";
 
 type Props = {
   isOpen: boolean;

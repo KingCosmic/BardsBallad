@@ -6,12 +6,14 @@ import { themesState } from '../state/themes'
 import { setErudaActive, setTheme, settingsState } from '../state/settings'
 import Checkbox from '../components/inputs/Checkbox'
 import Button from '../components/inputs/Button'
-import { logout, openBilling, subscribe } from '../lib/api'
 import { authState } from '../state/auth'
 import getPermsFromRole from '../utils/getPermsFromRole'
 import { openModal } from '../state/modals'
 import Tabs from '../components/Tabs'
 import React from "react";
+import {subscribe} from "../api/subscribe";
+import {openBilling} from "../api/openBilling";
+import {logout} from "../api/logout";
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {

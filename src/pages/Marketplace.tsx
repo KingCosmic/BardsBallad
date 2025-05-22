@@ -3,7 +3,6 @@ import { openModal } from '../state/modals';
 import React, { useEffect, useState } from 'react';
 import { MiscStorage } from '../lib/storage';
 import FloatingActionButton from '../components/FloatingActionButton';
-import { getMarketplaceItems, getSubscriptionData, publishItem } from '../lib/api';
 import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
 import createSubscription from '../storage/methods/subscriptions/createSubscription';
 import saveSystem from '../storage/methods/systems/saveSystem';
@@ -11,6 +10,9 @@ import saveVersionedResource from '../storage/methods/versionedresources/saveVer
 import { authState } from '../state/auth';
 import { syncState } from '../state/sync';
 import { useToast } from '../hooks/useToast';
+import {getMarketplaceItems} from "../api/getMarketplaceItems";
+import {getSubscriptionData} from "../api/getSubscriptionData";
+import {publishItem} from "../api/publishItem";
 
 type MarketplaceItem = {
   id: string,

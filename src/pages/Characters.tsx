@@ -13,7 +13,6 @@ import {
   deleteCharacter,
   importCharacter,
 } from '../storage/methods/characters';
-import { setSyncedCharacters } from '../lib/api';
 import JSONToFile from '../utils/JSONToFile';
 import { useSystems } from '../hooks/useSystems';
 import { useVersions } from '../hooks/useVersions';
@@ -23,6 +22,7 @@ import { Menu, MenuItem } from '../components/DropdownMenu';
 import isPremium from '../utils/isPremium';
 import DropdownButton from '../components/DropdownButton';
 import { Character } from '../storage/schemas/character';
+import {setSyncedCharacters} from "../api/setSyncedCharacters";
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters();
