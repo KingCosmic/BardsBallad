@@ -1,8 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
-import { pullUpdatesForCharacters, pushUpdatesForCharacters } from '../lib/api'
 import { AuthStorage, SyncStorage } from '../lib/storage'
 import { db } from '../storage'
 import { Character } from '../storage/schemas/character'
+import {pullUpdatesForCharacters} from "../api/pullUpdatesForCharacters";
+import {pushUpdatesForCharacters} from "../api/pushUpdatesForCharacters";
 
 const CHECKPOINT = 'character-checkpoint'
 

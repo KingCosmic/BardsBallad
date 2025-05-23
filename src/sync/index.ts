@@ -1,4 +1,3 @@
-import { checkInternetAccess, setSyncedCharacters } from '../lib/api'
 import { SyncStorage } from '../lib/storage'
 import { openModal } from '../state/modals'
 
@@ -8,6 +7,8 @@ import { get as charactersGet, bulkPut as charactersBulkPut, pull as charactersP
 import { get as subscriptionsGet, bulkPut as subscriptionsBulkPut, pull as subscriptionsPull, push as subscriptionsPush } from './subscriptions'
 import { setOnlineState, syncState } from '../state/sync'
 import { authState } from '../state/auth'
+import {setSyncedCharacters} from "../api/setSyncedCharacters";
+import {checkInternetAccess} from "../api/checkInternetAccess";
 
 const batchSize = 10
 

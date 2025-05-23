@@ -1,8 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
-import { pullUpdatesForSubscriptions, pushUpdatesForSubscriptions } from '../lib/api'
 import { AuthStorage, SyncStorage } from '../lib/storage'
 import { db } from '../storage'
 import { UserSubscription } from '../storage/schemas/userSubscription'
+import {pushUpdatesForSubscriptions} from "../api/pushUpdatesForSubscriptions";
+import {pullUpdatesForSubscriptions} from "../api/pullUpdatesForSubscriptions";
 
 const CHECKPOINT = 'subscription-checkpoint'
 

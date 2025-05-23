@@ -5,8 +5,8 @@ import ModalBody from '../components/Modal/Body';
 import ModalFooter from '../components/Modal/Footer';
 import Checkbox from '../components/inputs/Checkbox';
 import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
-import { getVersionsForItem } from '../lib/api';
 import DropdownButton from '../components/DropdownButton';
+import {getVersionsForItem} from "../api/getVersionsForItem";
 
 type Props = {
   data: {
