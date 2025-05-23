@@ -1,16 +1,11 @@
 import api from "../lib/api";
 
 /**
- * Asynchronously initiates the process to open the billing portal.
+ * Represents an async function that initializes a billing portal session via the Stripe API.
  *
- * Makes an API call to retrieve the billing portal session data
- * from the server. The data includes the necessary information
- * to redirect the user to the Stripe customer portal for managing
- * their billing details.
- *
- * @returns {Promise<Object>} A promise that resolves with the response data
- *                            containing the billing portal session information.
+ * @function openBilling
+ * @returns {Promise<{ url: string }>} A promise that resolves to an object containing the URL of the billing portal session.
  */
-export const openBilling = async () => {
+export const openBilling = async (): Promise<{ url: string }> => {
     return await api.get('/stripe/create-portal-session').then((response) => response.data)
 }

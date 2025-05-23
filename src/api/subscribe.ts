@@ -1,15 +1,16 @@
 import api from "../lib/api";
 
 /**
- * Asynchronously initiates a subscription checkout session.
- * This function sends a GET request to the API endpoint '/stripe/create-checkout-session'
- * to create a Stripe checkout session and retrieves the session data from the API response.
+ * Creates a checkout session by making an asynchronous request to the Stripe API.
+ *
+ * This function performs a GET request to the endpoint '/stripe/create-checkout-session'
+ * and retrieves the URL of the created checkout session. The returned object contains
+ * the URL string that can be used for redirecting the user to the Stripe checkout page.
  *
  * @async
- * @function
- * @returns {Promise<Object>} A promise that resolves to the data returned from the API response.
- *                            The data typically contains the details for the checkout session.
+ * @function subscribe
+ * @returns {Promise<{ url: string }>} A Promise that resolves to an object containing the checkout session URL.
  */
-export const subscribe = async () => {
+export const subscribe = async (): Promise<{ url: string }> => {
     return await api.get('/stripe/create-checkout-session').then((response) => response.data)
 }
