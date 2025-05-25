@@ -1,11 +1,11 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 
-import { useLocalData } from '../../renderer/Context'
-import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
+import { useLocalData } from '@designer/renderer/Context'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { SelectProps } from './Editor'
-import globalStyles from '../../styles'
-import Select from '../../../components/inputs/Select'
+import globalStyles from '@designer/styles'
+import Select from '@components/inputs/Select'
 
 export default (props: SelectProps) => {
   const localData = useLocalData()

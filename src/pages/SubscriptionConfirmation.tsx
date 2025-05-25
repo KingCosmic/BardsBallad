@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
-import {syncStripeData} from "../api/syncStripeData";
+import {syncStripeData} from "@api/syncStripeData";
 
 const SubscriptionConfirmation: React.FC = () => {
   const navigate = useNavigate();

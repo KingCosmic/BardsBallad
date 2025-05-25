@@ -1,4 +1,4 @@
-import api from "../lib/api";
+import api from "@lib/api";
 
 /**
  * Retrieves a marketplace item by its unique identifier.

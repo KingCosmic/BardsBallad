@@ -1,6 +1,6 @@
 import { produce } from 'immer';
-import { getDefaultNodes } from '../../blueprints/utils';
-import { PageData, SystemData } from '../../storage/schemas/system';
+import { getDefaultNodes } from '@blueprints/utils';
+import { PageData, SystemData } from '@storage/schemas/system';
 
 export default async (data: SystemData, type: 'character' | 'builder') => {
   return produce(data, (draft) => {

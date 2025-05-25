@@ -1,11 +1,11 @@
-import VersionedResourceSchema from '../../schemas/versionedResource'
-import { db } from '../../index'
+import VersionedResourceSchema from '@storage/schemas/versionedResource'
+import { db } from '@/storage'
 
 import { v4 as uuidv4 } from 'uuid'
-import { AuthStorage } from '../../../lib/storage'
-import { authState } from '../../../state/auth'
-import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
-import generateLocalId from '../../../utils/generateLocalId'
+import { AuthStorage } from '@lib/storage'
+import { authState } from '@state/auth'
+import ensureUniqueness from '@utils/db/ensureIdUniqueness'
+import generateLocalId from '@utils/generateLocalId'
 
 type Types = 'system' | 'character'
 

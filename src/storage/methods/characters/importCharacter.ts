@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
-import { db } from '../../index'
-import characterSchema, { Character } from '../../schemas/character'
+import { db } from '@/storage'
+import characterSchema, { Character } from '@storage/schemas/character'
 
 export default async (char: Character) => {
   try {

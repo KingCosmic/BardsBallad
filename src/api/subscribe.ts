@@ -1,4 +1,4 @@
-import api from "../lib/api";
+import api from "@lib/api";
 
 /**
  * Creates a checkout session by making an asynchronous request to the Stripe API.

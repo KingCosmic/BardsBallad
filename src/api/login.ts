@@ -1,8 +1,8 @@
-import {getDeviceIdentifier} from "../utils/getDeviceName";
-import {AuthStorage} from "../lib/storage";
-import {saveToken} from "../state/auth";
-import {updateDatabaseWithUserInfo} from "../storage/updateDatabaseWithUserInfo";
-import api from "../lib/api";
+import {getDeviceIdentifier} from "@utils/getDeviceName";
+import {AuthStorage} from "@lib/storage";
+import {saveToken} from "@state/auth";
+import {updateDatabaseWithUserInfo} from "@storage/updateDatabaseWithUserInfo";
+import api from "@lib/api";
 
 /**
  * Logs in a user asynchronously by sending their credentials and device details to the authentication API.

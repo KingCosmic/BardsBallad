@@ -1,4 +1,4 @@
-import { VersionedResource } from '../../storage/schemas/versionedResource'
+import { VersionedResource } from '@storage/schemas/versionedResource'
 import React from "react";
 
 type FunctionsProps = {

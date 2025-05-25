@@ -1,5 +1,5 @@
-import {VersionedResource} from "../storage/schemas/versionedResource";
-import api from "../lib/api";
+import {VersionedResource} from "@storage/schemas/versionedResource";
+import api from "@lib/api";
 
 /**
  * Pulls updates for versions from the server based on a checkpoint and batch size.

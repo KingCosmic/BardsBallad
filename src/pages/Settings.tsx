@@ -1,19 +1,19 @@
-import Header from '../components/Header'
+import Header from '@components/Header'
 
-import Select from '../components/inputs/Select'
+import Select from '@components/inputs/Select'
 
-import { themesState } from '../state/themes'
-import { setErudaActive, setTheme, settingsState } from '../state/settings'
-import Checkbox from '../components/inputs/Checkbox'
-import Button from '../components/inputs/Button'
-import { authState } from '../state/auth'
-import getPermsFromRole from '../utils/getPermsFromRole'
-import { openModal } from '../state/modals'
-import Tabs from '../components/Tabs'
+import { themesState } from '@state/themes'
+import { setErudaActive, setTheme, settingsState } from '@state/settings'
+import Checkbox from '@components/inputs/Checkbox'
+import Button from '@components/inputs/Button'
+import { authState } from '@state/auth'
+import getPermsFromRole from '@utils/getPermsFromRole'
+import { openModal } from '@state/modals'
+import Tabs from '@components/Tabs'
 import React from "react";
-import {subscribe} from "../api/subscribe";
-import {openBilling} from "../api/openBilling";
-import {logout} from "../api/logout";
+import {subscribe} from "@api/subscribe";
+import {openBilling} from "@api/openBilling";
+import {logout} from "@api/logout";
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {

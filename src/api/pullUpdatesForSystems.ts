@@ -1,5 +1,5 @@
-import {System} from "../storage/schemas/system";
-import api from "../lib/api";
+import {System} from "@storage/schemas/system";
+import api from "@lib/api";
 
 /**
  * Fetches updates for systems starting from a given checkpoint.

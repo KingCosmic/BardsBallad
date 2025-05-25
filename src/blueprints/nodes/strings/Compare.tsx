@@ -7,7 +7,7 @@ import {
   Position,
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
+import Card from '@components/Card'
  
 function StringCompare(_props: NodeProps<Node<{ string1: string; string2: string; }>>) {
   return (

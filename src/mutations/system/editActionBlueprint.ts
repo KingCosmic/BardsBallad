@@ -1,6 +1,6 @@
 import { produce } from 'immer';
-import { SystemData } from '../../storage/schemas/system';
-import { BlueprintData } from '../../types/blueprint';
+import { SystemData } from '@storage/schemas/system';
+import { BlueprintData } from '@/types/blueprint';
 
 export default async (data: SystemData, name: string, blueprint: BlueprintData) => {
   return produce(data, draft => {

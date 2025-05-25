@@ -1,4 +1,4 @@
-import api from "../lib/api";
+import api from "@lib/api";
 
 /**
  * Asynchronous function to test the API endpoint.

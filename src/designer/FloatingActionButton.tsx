@@ -1,18 +1,17 @@
-
 import { useNode, UserComponentConfig } from '@craftjs/core'
-import { BlueprintData } from '../types/blueprint'
-import { openModal } from '../state/modals'
-import Divider from '../components/Divider'
-import { getDefaultNodes } from '../blueprints/utils'
-import EditButtonModal from '../modals/EditButton'
+import { BlueprintData } from '@/types/blueprint'
+import { openModal } from '@state/modals'
+import Divider from '@components/Divider'
+import { getDefaultNodes } from '@blueprints/utils'
+import EditButtonModal from '@modals/EditButton'
 
 import {  useCallback, useState } from 'react'
 
-import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
+import BlueprintProcessor, { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 
 import { useLocalData } from './renderer/Context'
-import FloatingActionButton from '../components/FloatingActionButton'
-import Checkbox from '../components/inputs/Checkbox'
+import FloatingActionButton from '@components/FloatingActionButton'
+import Checkbox from '@components/inputs/Checkbox'
 
 type Button = {
   name: string;

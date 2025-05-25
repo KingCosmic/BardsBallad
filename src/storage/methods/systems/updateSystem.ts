@@ -1,6 +1,6 @@
 import { produce } from 'immer'
-import { db } from '../../index'
-import { type System } from '../../schemas/system'
+import { db } from '@/storage'
+import { type System } from '@storage/schemas/system'
 
 export default async function updateSystem(local_id: string, updateFn: (draft: System) => void) {
   const doc = await db.systems.get(local_id)

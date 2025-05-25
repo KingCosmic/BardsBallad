@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../storage'
-import { type UserSubscription } from '../storage/schemas/userSubscription'
+import { db } from '@/storage'
+import { type UserSubscription } from '@storage/schemas/userSubscription'
 
 export function useSubscriptionData(sub: UserSubscription) {
   const query = useLiveQuery(async () => {
@@ -26,3 +26,4 @@ export function useSubscriptionData(sub: UserSubscription) {
 
   return { query, isLoading: (query === undefined) }
 }
+

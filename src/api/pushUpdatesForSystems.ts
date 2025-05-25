@@ -1,5 +1,5 @@
-import {System} from "../storage/schemas/system";
-import api from "../lib/api";
+import {System} from "@storage/schemas/system";
+import api from "@lib/api";
 
 /**
  * Sends a batch of system update items to the server for processing.

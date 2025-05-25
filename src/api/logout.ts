@@ -1,6 +1,6 @@
-import {AuthStorage, SyncStorage} from "../lib/storage";
-import {authState} from "../state/auth";
-import {db} from "../storage";
+import {AuthStorage, SyncStorage} from "@lib/storage";
+import {authState} from "@state/auth";
+import {db} from "@/storage";
 
 /**
  * Handles the user logout process.

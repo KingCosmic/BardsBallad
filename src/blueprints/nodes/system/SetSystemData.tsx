@@ -8,8 +8,8 @@ import {
   useReactFlow
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
-import TextInput from '../../../components/inputs/TextInput'
+import Card from '@components/Card'
+import TextInput from '@components/inputs/TextInput'
  
 function SetSystemDataNode({ id, data }: NodeProps<Node<{ path: string }>>) {
   const { updateNodeData } = useReactFlow()

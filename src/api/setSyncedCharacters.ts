@@ -1,5 +1,5 @@
-import {updateSyncedCharacters} from "../state/auth";
-import api from "../lib/api";
+import {updateSyncedCharacters} from "@state/auth";
+import api from "@lib/api";
 
 /**
  * Asynchronously updates and synchronizes the list of character IDs with the server and local state.

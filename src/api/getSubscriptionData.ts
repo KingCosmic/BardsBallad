@@ -1,4 +1,4 @@
-import api from "../lib/api";
+import api from "@lib/api";
 
 /**
  * Fetches subscription data for a given subscription ID.

@@ -1,9 +1,9 @@
 import React from 'react'
-import Button from '../components/inputs/Button'
-import Modal from '../components/Modal'
-import ModalBody from '../components/Modal/Body'
-import ModalFooter from '../components/Modal/Footer'
-import ModalHeader from '../components/Modal/Header'
+import Button from '@components/inputs/Button'
+import Modal from '@components/Modal'
+import ModalBody from '@components/Modal/Body'
+import ModalFooter from '@components/Modal/Footer'
+import ModalHeader from '@components/Modal/Header'
 
 type Props = {
   data: { type: string, message: string };
@@ -45,3 +45,4 @@ const ConfirmModal: React.FC<Props> = ({
 }
 
 export default ConfirmModal
+

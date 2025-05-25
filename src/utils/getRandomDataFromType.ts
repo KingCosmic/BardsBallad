@@ -1,7 +1,7 @@
-import { getDefaultNodes } from '../blueprints/utils';
+import { getDefaultNodes } from '@blueprints/utils';
 import generateObject from './generateObject';
 
-import { type SystemType, type TypeData } from '../storage/schemas/system'
+import { type SystemType, type TypeData } from '@storage/schemas/system'
 
 export default function getRandomDataFromType(types: SystemType[], options: TypeData): any {
   if (options.isArray) return []

@@ -1,5 +1,5 @@
-import type {Character} from "../storage/schemas/character";
-import api from "../lib/api";
+import type {Character} from "@storage/schemas/character";
+import api from "@lib/api";
 
 /**
  * Asynchronously pushes updates for a list of characters to the server.

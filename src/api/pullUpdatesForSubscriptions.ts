@@ -1,5 +1,5 @@
-import {UserSubscription} from "../storage/schemas/userSubscription";
-import api from "../lib/api";
+import {UserSubscription} from "@storage/schemas/userSubscription";
+import api from "@lib/api";
 
 /**
  * Fetches updates for user subscriptions based on the provided checkpoint and batch size.

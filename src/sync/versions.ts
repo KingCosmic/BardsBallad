@@ -1,9 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
-import { AuthStorage, SyncStorage } from '../lib/storage'
-import { db } from '../storage'
-import { VersionedResource } from '../storage/schemas/versionedResource'
-import {pullUpdatesForVersions} from "../api/pullUpdatesForVersions";
-import {pushUpdatesForVersions} from "../api/pushUpdatesForVersions";
+import { AuthStorage, SyncStorage } from '@lib/storage'
+import { db } from '@/storage'
+import { VersionedResource } from '@storage/schemas/versionedResource'
+import {pullUpdatesForVersions} from "@api/pullUpdatesForVersions";
+import {pushUpdatesForVersions} from "@api/pushUpdatesForVersions";
 
 const CHECKPOINT = 'version-checkpoint'
 
@@ -54,3 +54,4 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 export const bulkPut = async (docs: VersionedResource[]) => db.versions.bulkPut(docs)
 
 export const get = async () => await db.versions.toArray()
+

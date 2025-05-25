@@ -21,7 +21,7 @@ import StringCompare from './scripts/strings/compare'
 import StringConcat from './scripts/strings/concat'
 import numberToString from './scripts/numbers/numberToString'
 
-import BlueprintProcessor from '../utils/Blueprints/processBlueprint'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import createDataFromType from './scripts/object/createDataFromType'
 

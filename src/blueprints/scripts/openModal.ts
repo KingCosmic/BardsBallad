@@ -1,6 +1,6 @@
 import { Node } from '@xyflow/react'
-import BlueprintProcessor from '../../utils/Blueprints/processBlueprint'
-import { openModal } from '../../state/modals'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
+import { openModal } from '@state/modals'
 
 export default {
   process: (processor: BlueprintProcessor, node: Node) => {

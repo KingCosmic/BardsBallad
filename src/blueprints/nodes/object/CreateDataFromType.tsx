@@ -8,11 +8,11 @@ import {
   useReactFlow
 } from '@xyflow/react'
 
-import { editorState } from '../../../state/editor'
-import { SystemData, type SystemType } from '../../../storage/schemas/system'
-import Card from '../../../components/Card'
-import Select from '../../../components/inputs/Select'
-import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import { editorState } from '@state/editor'
+import { SystemData, type SystemType } from '@storage/schemas/system'
+import Card from '@components/Card'
+import Select from '@components/inputs/Select'
+import { useVersionEdits } from '@hooks/useVersionEdits'
  
 function CreateDataFromType({ id, data: { spreadType } }: NodeProps<Node<{ spreadType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()

@@ -1,18 +1,18 @@
-import Header from '../components/Header'
-import { openModal } from '../state/modals';
+import Header from '@components/Header'
+import { openModal } from '@state/modals';
 import React, { useEffect, useState } from 'react';
-import { MiscStorage } from '../lib/storage';
-import FloatingActionButton from '../components/FloatingActionButton';
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
-import createSubscription from '../storage/methods/subscriptions/createSubscription';
-import saveSystem from '../storage/methods/systems/saveSystem';
-import saveVersionedResource from '../storage/methods/versionedresources/saveVersionedResource';
-import { authState } from '../state/auth';
-import { syncState } from '../state/sync';
-import { useToast } from '../hooks/useToast';
-import {getMarketplaceItems} from "../api/getMarketplaceItems";
-import {getSubscriptionData} from "../api/getSubscriptionData";
-import {publishItem} from "../api/publishItem";
+import { MiscStorage } from '@lib/storage';
+import FloatingActionButton from '@components/FloatingActionButton';
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
+import createSubscription from '@storage/methods/subscriptions/createSubscription';
+import saveSystem from '@storage/methods/systems/saveSystem';
+import saveVersionedResource from '@storage/methods/versionedresources/saveVersionedResource';
+import { authState } from '@state/auth';
+import { syncState } from '@state/sync';
+import { useToast } from '@hooks/useToast';
+import {getMarketplaceItems} from "@api/getMarketplaceItems";
+import {getSubscriptionData} from "@api/getSubscriptionData";
+import {publishItem} from "@api/publishItem";
 
 type MarketplaceItem = {
   id: string,
@@ -176,3 +176,4 @@ const Marketplace: React.FC = () => {
 }
 
 export default Marketplace
+

@@ -1,8 +1,8 @@
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
 
 type Props = {
   isOpen: boolean;

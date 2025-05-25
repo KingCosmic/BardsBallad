@@ -1,8 +1,8 @@
-import {getDeviceIdentifier} from "../utils/getDeviceName";
-import {saveToken} from "../state/auth";
-import {AuthStorage} from "../lib/storage";
-import {updateDatabaseWithUserInfo} from "../storage/updateDatabaseWithUserInfo";
-import api from "../lib/api";
+import {getDeviceIdentifier} from "@utils/getDeviceName";
+import {saveToken} from "@state/auth";
+import {AuthStorage} from "@lib/storage";
+import {updateDatabaseWithUserInfo} from "@storage/updateDatabaseWithUserInfo";
+import api from "@lib/api";
 
 /**
  * Registers a new user by sending their credentials to the authentication API.

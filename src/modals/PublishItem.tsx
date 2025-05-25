@@ -1,17 +1,17 @@
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
-import Select from '../components/inputs/Select';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
+import Select from '@components/inputs/Select';
 import { useEffect, useState } from 'react';
-import { useOurSystems } from '../hooks/useOurSystems';
-import Textarea from '../components/inputs/Textarea';
-import Checkbox from '../components/inputs/Checkbox';
-import { useVersions } from '../hooks/useVersions';
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
-import { VersionedResource } from '../storage/schemas/versionedResource';
-import {getMarketplaceItem} from "../api/getMarketplaceItem";
+import { useOurSystems } from '@hooks/useOurSystems';
+import Textarea from '@components/inputs/Textarea';
+import Checkbox from '@components/inputs/Checkbox';
+import { useVersions } from '@hooks/useVersions';
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
+import { VersionedResource } from '@storage/schemas/versionedResource';
+import {getMarketplaceItem} from "@api/getMarketplaceItem";
 
 type Props = {
   data: string | null;
@@ -115,3 +115,4 @@ const PublishNewSystem: React.FC<Props> = ({ data, isOpen, requestClose, onSave 
 }
 
 export default PublishNewSystem
+

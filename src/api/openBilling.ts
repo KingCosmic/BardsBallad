@@ -1,4 +1,4 @@
-import api from "../lib/api";
+import api from "@lib/api";
 
 /**
  * Represents an async function that initializes a billing portal session via the Stripe API.

@@ -1,5 +1,5 @@
-import SystemChema, { type System } from '../../schemas/system'
-import { db } from '../../index'
+import SystemSchema, { type System } from '@storage/schemas/system'
+import { db } from '@/storage'
 
 export default async (sys: System): Promise<System | null> => {
   try {
@@ -7,7 +7,7 @@ export default async (sys: System): Promise<System | null> => {
       return null
     }
 
-    const result = SystemChema.safeParse(sys);
+    const result = SystemSchema.safeParse(sys);
     if (!result.success) {
       console.log('Invalid system data:', result.error.format());
       return null
