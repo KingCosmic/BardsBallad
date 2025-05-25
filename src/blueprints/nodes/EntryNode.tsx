@@ -1,6 +1,6 @@
 import { memo, useEffect } from 'react'
 
-import Card from '../../components/Card'
+import Card from '@components/Card'
 
 import {
   Handle,
@@ -11,12 +11,12 @@ import {
   useUpdateNodeInternals
 } from '@xyflow/react'
 
-import { Param } from '../utils'
+import { Param } from '@blueprints/utils'
 
-import { editorState } from '../../state/editor'
-import { useSystem } from '../../hooks/useSystem'
-import { SystemData, type SystemType } from '../../storage/schemas/system'
-import { useVersionEdits } from '../../hooks/useVersionEdits'
+import { editorState } from '@state/editor'
+import { useSystem } from '@hooks/useSystem'
+import { SystemData, type SystemType } from '@storage/schemas/system'
+import { useVersionEdits } from '@hooks/useVersionEdits'
 
 const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:string]: any }, outputs: { [key:string]: SystemType | null } }>>> = ({ id, data: { params } }) => {
   const { updateNodeData } = useReactFlow()
@@ -64,3 +64,4 @@ const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:strin
 }
  
 export default memo(EntryNode)
+

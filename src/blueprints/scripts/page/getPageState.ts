@@ -1,8 +1,8 @@
 import { Node } from '@xyflow/react'
-import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import { SystemData, type TypeData } from '../../../storage/schemas/system'
-import getRandomDataFromType from '../../../utils/getRandomDataFromType'
-import { VersionedResource } from '../../../storage/schemas/versionedResource'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
+import { SystemData, type TypeData } from '@storage/schemas/system'
+import getRandomDataFromType from '@utils/getRandomDataFromType'
+import { VersionedResource } from '@storage/schemas/versionedResource'
 
 function generateDefaultData(system: SystemData, typeDef: TypeData) {
 

@@ -9,9 +9,9 @@ import {
   useUpdateNodeInternals,
   useNodeConnections
 } from '@xyflow/react'
-import Card from '../../components/Card'
-import Select from '../../components/inputs/Select'
-import TextInput from '../../components/inputs/TextInput'
+import Card from '@components/Card'
+import Select from '@components/inputs/Select'
+import TextInput from '@components/inputs/TextInput'
 
 const OpenModal: React.FC<NodeProps<Node<{ type: string, title: string, inputType: string }>>> = ({ id, data: { type, title, inputType } }) => {
   const { updateNodeData } = useReactFlow()

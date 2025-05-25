@@ -1,4 +1,4 @@
-import api from "../lib/api";
+import api from "@lib/api";
 
 /**
  * Asynchronously publishes an item to the marketplace by sending the provided data to the API.

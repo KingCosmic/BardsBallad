@@ -6,8 +6,8 @@ import { AddData } from './renderer/Context'
 import { FABPreview } from './FloatingActionButton'
 import SelectPreview from './components/Select/Preview'
 import InputPreview from './components/Input/Preview'
-import { PageData, SystemData } from '../storage/schemas/system'
-import { Character } from '../storage/schemas/character'
+import { PageData, SystemData } from '@storage/schemas/system'
+import { Character } from '@storage/schemas/character'
 
 type Props = {
   data: any

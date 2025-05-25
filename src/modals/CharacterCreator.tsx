@@ -1,30 +1,30 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 
-import TextInput from '../components/inputs/TextInput'
-import Select from '../components/inputs/Select'
-import Modal from '../components/Modal'
-import ModalHeader from '../components/Modal/Header'
-import ModalBody from '../components/Modal/Body'
-import ModalFooter from '../components/Modal/Footer'
-import Button from '../components/inputs/Button'
-import RenderEditorData from '../designer/RenderEditorData'
+import TextInput from '@components/inputs/TextInput'
+import Select from '@components/inputs/Select'
+import Modal from '@components/Modal'
+import ModalHeader from '@components/Modal/Header'
+import ModalBody from '@components/Modal/Body'
+import ModalFooter from '@components/Modal/Footer'
+import Button from '@components/inputs/Button'
+import RenderEditorData from '@designer/RenderEditorData'
 
 import lz from 'lzutf8'
-import { Character } from '../storage/schemas/character'
-import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
+import { Character } from '@storage/schemas/character'
+import BlueprintProcessor, { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 
-import { useSystems } from '../hooks/useSystems'
-import { useVersions } from '../hooks/useVersions'
+import { useSystems } from '@hooks/useSystems'
+import { useVersions } from '@hooks/useVersions'
 
 import { deepEqual } from 'fast-equals'
-import { useCharacters } from '../hooks/useCharacters'
+import { useCharacters } from '@hooks/useCharacters'
 
-import { createCharacter } from '../storage/methods/characters'
-import { type System, type PageData } from '../storage/schemas/system'
+import { createCharacter } from '@storage/methods/characters'
+import { type System, type PageData } from '@storage/schemas/system'
 
 import { usePostHog } from 'posthog-js/react'
-import { VersionedResource } from '../storage/schemas/versionedResource'
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID'
+import { VersionedResource } from '@storage/schemas/versionedResource'
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID'
 
 function CharacterCreatorModal(props: any) {
   const { systems } = useSystems()

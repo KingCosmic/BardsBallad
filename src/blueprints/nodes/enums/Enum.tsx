@@ -8,8 +8,8 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
-import TextInput from '../../../components/inputs/TextInput'
+import Card from '@components/Card'
+import TextInput from '@components/inputs/TextInput'
  
 function Enum({ id, data: { value }}: NodeProps<Node<{ value: string }>>) {
   const { updateNodeData } = useReactFlow()

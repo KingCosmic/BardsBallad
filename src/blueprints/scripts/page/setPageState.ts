@@ -1,6 +1,6 @@
 import { Node } from '@xyflow/react'
-import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import { type TypeData } from '../../../storage/schemas/system'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
+import { type TypeData } from '@storage/schemas/system'
 import { produce } from 'immer'
 
 export default {

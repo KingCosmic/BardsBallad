@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
-import TextInput from '../components/inputs/TextInput';
-import Select from '../components/inputs/Select';
-import Checkbox from '../components/inputs/Checkbox';
-import { editorState } from '../state/editor';
-import { useSystem } from '../hooks/useSystem';
-import { Param } from '../blueprints/utils';
-import { useVersionEdits } from '../hooks/useVersionEdits';
-import { SystemData } from '../storage/schemas/system';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
+import TextInput from '@components/inputs/TextInput';
+import Select from '@components/inputs/Select';
+import Checkbox from '@components/inputs/Checkbox';
+import { editorState } from '@state/editor';
+import { useSystem } from '@hooks/useSystem';
+import { Param } from '@blueprints/utils';
+import { useVersionEdits } from '@hooks/useVersionEdits';
+import { SystemData } from '@storage/schemas/system';
 
 type Props = {
   data: Param;

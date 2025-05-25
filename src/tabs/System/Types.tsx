@@ -1,15 +1,15 @@
-import EditTypeModal from '../../modals/EditType'
+import EditTypeModal from '@modals/EditType'
 import React, { useState } from 'react'
-import EditStringModal from '../../modals/EditString'
-import AccordionGroup from '../../components/AccordionGroup'
-import FloatingActionButton from '../../components/FloatingActionButton'
-import Button from '../../components/inputs/Button'
-import Accordion from '../../components/Accordion'
-import { addSystemType, addTypeProperty, deleteSystemType, deleteTypeProperty, renameSystemType, updateTypeProperty } from '../../utils/system'
+import EditStringModal from '@modals/EditString'
+import AccordionGroup from '@components/AccordionGroup'
+import FloatingActionButton from '@components/FloatingActionButton'
+import Button from '@components/inputs/Button'
+import Accordion from '@components/Accordion'
+import { addSystemType, addTypeProperty, deleteSystemType, deleteTypeProperty, renameSystemType, updateTypeProperty } from '@utils/system'
 
-import { SystemType, type TypeData } from '../../storage/schemas/system'
-import { VersionedResource } from '../../storage/schemas/versionedResource'
-import storeMutation from '../../storage/methods/versionedresources/storeMutation'
+import { SystemType, type TypeData } from '@storage/schemas/system'
+import { VersionedResource } from '@storage/schemas/versionedResource'
+import storeMutation from '@storage/methods/versionedresources/storeMutation'
 
 type TypesProps = {
   editsId: string

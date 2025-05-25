@@ -1,11 +1,11 @@
 import { memo, useCallback, useMemo } from 'react'
 
-import { useLocalData } from '../../renderer/Context'
-import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
+import { useLocalData } from '@designer/renderer/Context'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { InputProps } from './Editor'
-import globalStyles from '../../styles'
-import TextInput from '../../../components/inputs/TextInput'
+import globalStyles from '@designer/styles'
+import TextInput from '@components/inputs/TextInput'
 
 export default (props: InputProps) => {
   const localData = useLocalData()

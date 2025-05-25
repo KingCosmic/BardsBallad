@@ -1,5 +1,5 @@
-import {UserSubscription} from "../storage/schemas/userSubscription";
-import api from "../lib/api";
+import {UserSubscription} from "@storage/schemas/userSubscription";
+import api from "@lib/api";
 
 /**
  * Sends updates for user subscriptions by making an asynchronous API POST request.

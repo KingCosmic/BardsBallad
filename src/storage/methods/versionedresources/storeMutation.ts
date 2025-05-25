@@ -1,4 +1,4 @@
-import { db } from '../../index'
+import { db } from '@/storage'
 
 export default async function storeMutation(local_id: string, promise: any) {
   const doc = await db.versions.get(local_id)

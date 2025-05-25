@@ -1,6 +1,6 @@
 import { Node } from '@xyflow/react'
-import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import getNestedProperty from '../../../utils/getNestedProperty'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
+import getNestedProperty from '@utils/getNestedProperty'
 
 export default {
   process: (processor: BlueprintProcessor, node: Node) => {

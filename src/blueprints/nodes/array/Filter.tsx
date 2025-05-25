@@ -10,10 +10,10 @@ import {
   useNodeConnections
 } from '@xyflow/react'
 
-import { editorState } from '../../../state/editor'
-import Card from '../../../components/Card'
-import { useVersionEdits } from '../../../hooks/useVersionEdits'
-import { SystemData } from '../../../storage/schemas/system'
+import { editorState } from '@state/editor'
+import Card from '@components/Card'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { SystemData } from '@storage/schemas/system'
  
 function Filter({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {
   const { updateNodeData } = useReactFlow()

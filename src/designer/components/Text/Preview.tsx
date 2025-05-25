@@ -1,10 +1,10 @@
 import { memo, useMemo } from 'react'
-import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
-import { useLocalData } from '../../renderer/Context'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
+import { useLocalData } from '@designer/renderer/Context'
 import { TextProps } from './Editor'
 
 import styles from './styles'
-import globalStyles from '../../styles'
+import globalStyles from '@designer/styles'
 
 export default (props: TextProps) => {
   const localData = useLocalData()

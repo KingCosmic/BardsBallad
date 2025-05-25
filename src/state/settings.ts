@@ -1,9 +1,9 @@
 import { newRidgeState } from 'react-ridge-state'
 
-import { SettingsStorage } from '../lib/storage'
+import { SettingsStorage } from '@lib/storage'
 
 import { themesState } from './themes'
-import { loadEruda, removeEruda } from '../utils/eruda';
+import { loadEruda, removeEruda } from '@utils/eruda';
 
 enum ThemeEnum {
   LIGHT = 'light',

@@ -1,5 +1,5 @@
-import {saveToken} from "../state/auth";
-import api from "../lib/api";
+import {saveToken} from "@state/auth";
+import api from "@lib/api";
 
 /**
  * Synchronizes Stripe data by making an API call to the Stripe sync endpoint.

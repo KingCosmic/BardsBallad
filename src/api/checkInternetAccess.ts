@@ -1,4 +1,4 @@
-import api from "../lib/api";
+import api from "@lib/api";
 
 // Technically this doesn't check internet access, but rather if the server is reachable
 // The client should be considered offline if the server isn't reachable.

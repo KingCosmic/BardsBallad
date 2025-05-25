@@ -1,4 +1,4 @@
-import {ipToNumber} from "../utils/ipToNumber";
+import {ipToNumber} from "@utils/ipToNumber";
 
 /**
  * Determines if the current server is running on a local machine or within a private network.

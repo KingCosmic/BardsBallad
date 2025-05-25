@@ -1,9 +1,9 @@
-import SystemChema, { type System } from '../../schemas/system'
-import { db } from '../../index'
-import generateLocalId from '../../../utils/generateLocalId'
-import { authState } from '../../../state/auth'
-import versionedResourceSchema, { VersionedResource } from '../../schemas/versionedResource'
-import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
+import SystemSchema, { type System } from '@storage/schemas/system'
+import { db } from '@/storage'
+import generateLocalId from '@utils/generateLocalId'
+import { authState } from '@state/auth'
+import versionedResourceSchema, { VersionedResource } from '@storage/schemas/versionedResource'
+import ensureUniqueness from '@utils/db/ensureIdUniqueness'
 
 // TODO: check if local_id includes 'none' if so we need to update it if we're logged in.
 // TODO:(Cosmic) Give this a once over to make sure we aren't doing stupid stuff.
@@ -29,7 +29,7 @@ export default async (sys: System, version: VersionedResource) => {
       deleted_at: null
     }
 
-    const systemResult = SystemChema.safeParse(sysData);
+    const systemResult = SystemSchema.safeParse(sysData);
     if (!systemResult.success) {
       console.log('Invalid system data:', systemResult.error.format());
       return;

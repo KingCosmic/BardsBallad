@@ -8,8 +8,8 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
-import Checkbox from '../../../components/inputs/Checkbox'
+import Card from '@components/Card'
+import Checkbox from '@components/inputs/Checkbox'
  
 function Boolean({ id, data: { value }}: NodeProps<Node<{ value: boolean }>>) {
   const { updateNodeData } = useReactFlow()

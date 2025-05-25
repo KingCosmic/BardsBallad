@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Checkbox from '../components/inputs/Checkbox';
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
-import DropdownButton from '../components/DropdownButton';
-import {getVersionsForItem} from "../api/getVersionsForItem";
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Checkbox from '@components/inputs/Checkbox';
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
+import DropdownButton from '@components/DropdownButton';
+import {getVersionsForItem} from "@api/getVersionsForItem";
 
 type Props = {
   data: {
@@ -93,3 +93,4 @@ const MarketplaceViewModal: React.FC<Props> = ({ data, title = 'Edit string', is
 }
 
 export default MarketplaceViewModal
+

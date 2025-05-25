@@ -1,8 +1,8 @@
 import { produce } from 'immer';
-import { editorState } from '../../state/editor';
+import { editorState } from '@state/editor';
 
 import lz from 'lzutf8';
-import { SystemData } from '../../storage/schemas/system';
+import { SystemData } from '@storage/schemas/system';
 
 export default async (data: SystemData, lexical: string) => {
   if (lexical === '{}') return

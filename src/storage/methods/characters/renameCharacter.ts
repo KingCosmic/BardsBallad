@@ -1,5 +1,5 @@
-import { SyncStorage } from '../../../lib/storage'
-import { db } from '../../index'
+import { SyncStorage } from '@lib/storage'
+import { db } from '@/storage'
 
 export default async (local_id: string, newName: string) => {
   try {

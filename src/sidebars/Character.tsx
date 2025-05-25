@@ -1,6 +1,6 @@
-import { Character } from '../storage/schemas/character'
-import { ActionType, SystemData } from '../storage/schemas/system'
-import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
+import { Character } from '@storage/schemas/character'
+import { ActionType, SystemData } from '@storage/schemas/system'
+import BlueprintProcessor, { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 
 interface Props {
   actions: ActionType[],

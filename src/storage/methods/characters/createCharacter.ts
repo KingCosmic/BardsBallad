@@ -1,9 +1,9 @@
-import { AuthStorage, SyncStorage } from '../../../lib/storage'
-import { authState } from '../../../state/auth'
-import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
-import generateLocalId from '../../../utils/generateLocalId'
-import { db } from '../../index'
-import CharacterSchema from '../../schemas/character'
+import { AuthStorage, SyncStorage } from '@lib/storage'
+import { authState } from '@state/auth'
+import ensureUniqueness from '@utils/db/ensureIdUniqueness'
+import generateLocalId from '@utils/generateLocalId'
+import { db } from '@/storage'
+import CharacterSchema from '@storage/schemas/character'
 
 export default async (name: string, data: any, system: { local_id: string, version_id: string }) => {
   try {

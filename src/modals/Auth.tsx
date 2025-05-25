@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react'
-import Button from '../components/inputs/Button'
-import TextInput from '../components/inputs/TextInput'
-import Modal from '../components/Modal'
-import ModalBody from '../components/Modal/Body'
-import ModalFooter from '../components/Modal/Footer'
-import ModalHeader from '../components/Modal/Header'
-import { authState } from '../state/auth'
-import {login} from "../api/login";
-import {register} from "../api/register";
+import Button from '@components/inputs/Button'
+import TextInput from '@components/inputs/TextInput'
+import Modal from '@components/Modal'
+import ModalBody from '@components/Modal/Body'
+import ModalFooter from '@components/Modal/Footer'
+import ModalHeader from '@components/Modal/Header'
+import { authState } from '@state/auth'
+import {login} from "@api/login";
+import {register} from "@api/register";
 
 type Props = {
   isOpen: boolean;
@@ -114,3 +114,4 @@ const AuthModal: React.FC<Props> = (props) => {
 }
 
 export default AuthModal
+

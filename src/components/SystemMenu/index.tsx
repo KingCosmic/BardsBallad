@@ -1,9 +1,9 @@
 
 import DesignerMenu from './EditorMenu'
 
-import { editorState } from '../../state/editor'
+import { editorState } from '@state/editor'
 import CreatorMenu from './CreatorMenu'
-import { useVersionResource } from '../../hooks/useVersionResource'
+import { useVersionResource } from '@hooks/useVersionResource'
 
 function SystemMenu() {
   const editor = editorState.useValue()

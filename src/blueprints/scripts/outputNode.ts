@@ -1,6 +1,6 @@
 import { Node } from '@xyflow/react'
-import BlueprintProcessor from '../../utils/Blueprints/processBlueprint'
-import { Param } from '../utils'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
+import { Param } from '@blueprints/utils'
 
 export default {
   process: (processor: BlueprintProcessor, node: Node) => {

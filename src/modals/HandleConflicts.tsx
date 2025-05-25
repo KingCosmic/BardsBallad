@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import Button from '../components/inputs/Button'
-import Modal from '../components/Modal'
-import ModalBody from '../components/Modal/Body'
-import ModalFooter from '../components/Modal/Footer'
-import ModalHeader from '../components/Modal/Header'
+import Button from '@components/inputs/Button'
+import Modal from '@components/Modal'
+import ModalBody from '@components/Modal/Body'
+import ModalFooter from '@components/Modal/Footer'
+import ModalHeader from '@components/Modal/Header'
 
 type Props = {
   data: { local: any, remote: any }[];

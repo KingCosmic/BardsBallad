@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router';
-import { deleteSystem, renameSystem } from '../../storage/methods/systems';
-import { openModal } from '../../state/modals';
-import { Theme } from '../../state/themes';
+import { deleteSystem, renameSystem } from '@storage/methods/systems';
+import { openModal } from '@state/modals';
+import { Theme } from '@state/themes';
 
 type Props = {
   theme: Theme

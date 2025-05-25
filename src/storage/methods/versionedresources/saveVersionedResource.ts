@@ -1,5 +1,5 @@
-import { db } from '../../index'
-import versionedResourceSchema, { VersionedResource } from '../../schemas/versionedResource';
+import { db } from '@/storage'
+import versionedResourceSchema, { VersionedResource } from '@storage/schemas/versionedResource';
 
 export default async (vers: VersionedResource): Promise<VersionedResource | null> => {
   try {
