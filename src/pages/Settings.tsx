@@ -37,17 +37,17 @@ const tabs = [
               <Button color='primary' onClick={async () => {
                 let url = ''
 
-                if (user.role === 0) {
+                if (user.role < 200) {
                   const { url: newUrl } = await subscribe()
                   url = newUrl
-                } else if (user.role === 1) {
+                } else if (user.role < 300) {
                   const { url: newUrl } = await openBilling()
                   url = newUrl
                 }
 
                 window.open(url, '_self')
               }}>
-                {(user.role === 0) ? 'Subscribe' : (user.role === 1) ? 'Manage Subscription' : 'Thank you for everything!'}
+                {(user.role < 200) ? 'Subscribe' : (user.role < 300) ? 'Manage Subscription' : 'Thank you for everything!'}
               </Button>
             </div>
 
