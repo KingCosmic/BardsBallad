@@ -7,7 +7,7 @@ import { AuthStorage } from '@lib/storage'
 import generateLocalId from '@utils/generateLocalId'
 import ensureUniqueness from '@utils/db/ensureIdUniqueness'
 
-type Types = 'system' | 'character' | 'module' | 'plugin'
+type Types = 'system' | 'theme' | 'datapack'
 
 export default async (type: Types, resource_id: string, version_id: string, auto_update: boolean) => {
   try {
