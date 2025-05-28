@@ -1,10 +1,10 @@
 import axios from 'axios'
 import {saveToken} from '@state/auth'
 import {AuthStorage} from './storage'
-import {isLocalServer} from "@api/isLocalServer";
+import {isHostnameLocal} from "@utils/isHostnameLocal";
 
 const api = axios.create({
-  baseURL: isLocalServer() ? `http://${window.location.hostname}:3000/v1` : 'https://api.bardsballad.com/v1',
+  baseURL: isHostnameLocal() ? `http://${window.location.hostname}:3000/v1` : 'https://api.bardsballad.com/v1',
 });
 
 api.interceptors.request.use(async (config) => {
