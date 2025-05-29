@@ -3,6 +3,10 @@ import { SystemData } from '../../storage/schemas/system';
 
 export default async (data: SystemData, typeName: string) => {
   return produce(data, draft => {
+    const index = draft.types.findIndex(data => data.name === typeName)
+
+    if (index !== -1) return
+
     draft.types.push({
       name: typeName,
       properties: [

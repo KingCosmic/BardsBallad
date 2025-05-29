@@ -28,7 +28,7 @@ const ModalsTab: React.FC<EditorTabProps> = ({ versionedResource }) => {
     if (!lexical) lexical = defaultLexical
 
     actions.deserialize(lz.decompress(lz.decodeBase64(lexical)))
-  }, [editor.characterPage])
+  }, [editor.modalsPage])
 
   return (
     <div className='mt-3 border-2 border-neutral-200 border-dashed rounded-lg dark:border-neutral-700'>
