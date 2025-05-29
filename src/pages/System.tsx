@@ -88,7 +88,10 @@ const System: React.FC = () => {
               // TODO:(Cosmic) Make sure we clear up edits when unsubbing from a resourec :)
               if (!original) return
 
-              await duplicateVersionedResource(original, edits_id)
+              // TODO:(Cosmic) if we want to we could reset the edits back inline with the original (to allow for some versioning incase they wanted to
+              // make edits off this version again.) will need to update duplicate function to not care of new_id is taken. and make sure that doesn't collide
+              // elsewhere
+              // await duplicateVersionedResource(original, edits_id)
 
               // TODO: show confirmation
 

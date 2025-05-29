@@ -33,8 +33,8 @@ function CharacterCreatorModal(props: any) {
 
   const posthog = usePostHog()
 
-  const [system, setSystem] = useState<System | undefined>(systems[0])
-  const [version, setVersion] = useState<VersionedResource | undefined>(versions[0])
+  const [system, setSystem] = useState<System | undefined>()
+  const [version, setVersion] = useState<VersionedResource | undefined>()
 
   const [tab, setTab] = useState(0)
 

@@ -12,18 +12,13 @@ export default async (data: SystemData, lexical: string) => {
   const editor = editorState.get()
 
   return produce(data, draft => {
-    if (editor.tab === 'editor') {
-      const index = draft.pages.findIndex((data => data.name === editor.characterPage))
+    const pages = (editor.tab === 'editor') ? draft.pages : (editor.tab === 'creator') ? draft.creator : draft.modals
+    const pageName = (editor.tab === 'editor') ? editor.characterPage : (editor.tab === 'creator') ? editor.creatorPage : editor.modalsPage
 
-      if (index === -1) return
+    const index = pages.findIndex(d => d.name === pageName)
 
-      draft.pages[index].lexical = newLexical
-    } else if (editor.tab === 'creator') {
-      const index = draft.creator.findIndex((data => data.name === editor.creatorPage))
+    if (index === -1) return
 
-      if (index === -1) return
-
-      draft.creator[index].lexical = newLexical
-    }
+    pages[index].lexical = newLexical
   })
 }

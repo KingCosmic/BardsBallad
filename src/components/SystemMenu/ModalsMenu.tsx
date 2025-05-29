@@ -6,7 +6,7 @@ import FAB from '../../designer/FloatingActionButton'
 import Text from '../../designer/components/Text/Editor'
 import Searchbar from '../../designer/Searchbar'
 import EditPageStateModal from '../../modals/EditPageState'
-import { editorState, setCharacterPage } from '../../state/editor'
+import { editorState, setCharacterPage, setModal } from '../../state/editor'
 import Divider from '../Divider'
 import DesignerDivider from '../../designer/components/Divider'
 import EditStringModal from '../../modals/EditString'
@@ -52,14 +52,10 @@ function ModalsMenu() {
 
   if (!versionEdits) return <></>
 
-  function setModalPage(val: string): void {
-    throw new Error('Function not implemented.')
-  }
-
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Select id='page' label='Page' value={editor.modalsPage} onChange={setModalPage}>
+        <Select id='page' label='Page' value={editor.modalsPage} onChange={setModal}>
           {versionEdits.data.modals.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
         </Select>
 
@@ -151,14 +147,14 @@ function ModalsMenu() {
             <EditStringModal data={editName} isOpen={editName !== null}
               requestClose={() => setEditName(null)}
               onSave={(newName) => {
-                storeMutation(versionEdits.local_id, renamePage(versionEdits.data, 'modal', editName, newName))
-                setCharacterPage(newName)
+                storeMutation(editor.versionId, renamePage(versionEdits.data, 'modal', editor.modalsPage, newName))
+                setModal(newName)
               }}
             />
 
             <div className='inline-flex rounded-md shadow-sm my-2'>
               <Button color='danger' disabled={versionEdits.data.pages.length <= 1} onClick={() => {
-                storeMutation(versionEdits.local_id, deletePage(versionEdits.data, 'modal', editor.modalsPage))
+                storeMutation(editor.versionId, deletePage(versionEdits.data, 'modal', editor.modalsPage))
               }}>
                 Delete
               </Button>

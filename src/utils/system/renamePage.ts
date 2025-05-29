@@ -7,7 +7,7 @@ export default async (data: SystemData, pageType: 'character' | 'builder' | 'mod
 
     const index = pages.findIndex(data => data.name === oldName)
 
-    if (index !== -1) return
+    if (index === -1) return
 
     pages[index].name = newName
   })

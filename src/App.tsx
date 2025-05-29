@@ -21,6 +21,7 @@ import { authState } from './state/auth'
 import { AuthStorage } from './lib/storage'
 import { useEffect } from 'react'
 
+// TODO: get rid of these.
 // @ts-ignore
 window.trySync = sync
 

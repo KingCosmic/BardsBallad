@@ -7,7 +7,7 @@ export default (data: SystemData, pageType: 'character' | 'builder' | 'modal', n
 
     const index = pages.findIndex(data => data.name === name)
     
-    if (index !== -1) return
+    if (index === -1) return
 
     pages.slice(index, 1)
   })
