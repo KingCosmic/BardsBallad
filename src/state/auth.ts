@@ -9,6 +9,7 @@ type User = {
   email: string;
   role: number;
   synced_characters: string[];
+  discord_id: string;
 }
 
 type AuthState = {
