@@ -14,6 +14,7 @@ import React from "react";
 import {subscribe} from "@api/subscribe";
 import {openBilling} from "@api/openBilling";
 import {logout} from "@api/logout";
+import {getDiscordLogin} from "@utils/getDiscordLogin";
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {
@@ -51,6 +52,21 @@ const tabs = [
                 {(user.role === 0) ? 'Subscribe' : (user.role === 1) ? 'Manage Subscription' : 'Thank you for everything!'}
               </Button>
             </div>
+
+            {!user.discord_id && (
+              <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-indigo-500 border'>
+                <p className='text-lg'>Discord Integration</p>
+                <p className='mb-4'>Link your Discord account to access additional features</p>
+                <Button color='primary' onClick={async () => {
+                  const url = await getDiscordLogin()
+                  if (url) {
+                    window.open(url, '_self')
+                  }
+                }}>
+                  Connect Discord Account
+                </Button>
+              </div>
+            )}
 
             <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-red-500 border'>
               <p className='text-lg'>Danger Zone</p>
