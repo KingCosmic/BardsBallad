@@ -23,6 +23,7 @@ import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, upd
 import { SystemData } from '../../storage/schemas/system'
 import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 import { useVersionEdits } from '../../hooks/useVersionEdits'
+import BlueprintEditor from '../../modals/BlueprintEditor'
 
 
 const CreatorMenu: React.FC = () => {
@@ -185,12 +186,9 @@ const CreatorMenu: React.FC = () => {
             </div>
 
             <Button color='light' onClick={() =>
-              openModal({
-                type: 'blueprint',
-                title: 'Page Blueprint',
-                data: page?.blueprint,
-                onSave: (bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'builder', editor.creatorPage, bp))
-              })
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'builder', editor.creatorPage, bp))} />
+              ))
             }>
               Edit Page Blueprint
             </Button>

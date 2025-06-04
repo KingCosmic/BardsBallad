@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router';
 import getVisualTextFromVersionID from '../../utils/getVisualTextFromVersionID';
 import JSONToFile from '../../utils/JSONToFile';
 import DropdownButton from '../DropdownButton';
+import ConfirmModal from '../../modals/ConfirmModal';
+
+import { openModal } from '../../state/modals'
 
 type Props = {
   subscription: UserSubscription;
@@ -91,7 +94,7 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
             return forkSystem(baseData, versionData);
           }} options={[
             {
-              label: 'export',
+              label: 'Export',
               onClick: () => JSONToFile(
                 {
                   system: query.baseData,
@@ -99,22 +102,12 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
                 },
                 `${query.baseData.name}-${query.versionData.local_id}`
               )
+            },
+            {
+              label: 'Delete',
+              onClick: () => openModal('delete-subscription', ({ id }) => <ConfirmModal id={id} title='Delete Subscription' type='danger' message='Are you sure you want to delete this subscription?' onConfirm={() => {}} />)
             }
           ]} />
-          {/* <MenuItem
-            label="delete"
-            onClick={() =>
-              openModal({
-                type: 'confirm',
-                title: 'Delete Subscription',
-                data: {
-                  type: 'danger',
-                  message: 'Are you sure you want to delete this subscription?',
-                },
-                onSave: () => deleteCharacter(char.local_id),
-              })
-            }
-          /> */}
       </div>
     </div>
   );

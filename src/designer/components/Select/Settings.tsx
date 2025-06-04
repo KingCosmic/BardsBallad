@@ -11,6 +11,7 @@ import { useLocalState } from '../../hooks/useLocalState'
 import Button from '../../../components/inputs/Button'
 import globalStyles from '../../styles'
 import { getReturnTypeOfBlueprint } from '../../../utils/Blueprints/getReturnTypeOfBlueprint'
+import BlueprintEditor from '../../../modals/BlueprintEditor'
 
 export function SelectSettings() {
   const { id, actions: { setProp },
@@ -65,27 +66,25 @@ export function SelectSettings() {
 
         {
           dynamicOptions ? (
-            <Button color='light' onClick={() => openModal({
-              type: 'blueprint',
-              title: '',
-              data: optionsBlueprint,
-              onSave: (blueprint) => {
-                setProp((props: any) => {
-                  props.optionsBlueprint = blueprint
+            <Button color='light' onClick={() =>
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={optionsBlueprint} onSave={(bp) => {
+                  setProp((props: any) => {
+                  props.optionsBlueprint = bp
 
                   props.onChange = {
                     edges: props.onChange.edges,
                     nodes: updateParams(props.onChange.nodes, [ ...localParams, {
                       name: 'selectedValue',
-                      type: getReturnTypeOfBlueprint(blueprint),
+                      type: getReturnTypeOfBlueprint(bp),
                       isArray: false
                     } ])
                   }
 
                   return props
                 })
-              }
-            })}>
+                }} />
+              ))}>
               Options Blueprint
             </Button>
           ) : (
@@ -95,14 +94,12 @@ export function SelectSettings() {
 
         <div className='h-2' />
 
-        <Button color='light' onClick={() => openModal({
-          type: 'blueprint',
-          title: '',
-          data: onChange,
-          onSave: (blueprint) => {
-            setProp((props: any) => props.onChange = blueprint)
-          }
-        })}>
+        <Button color='light' onClick={() =>
+          openModal('blueprint', ({ id }) => (
+            <BlueprintEditor id={id} data={onChange} onSave={(bp) => {
+              setProp((props: any) => props.onChange = bp)
+            }} />
+          ))}>
           onChange Blueprint
         </Button>
       </Accordion>

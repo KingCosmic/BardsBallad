@@ -7,13 +7,10 @@ import ModalHeader from '../components/Modal/Header'
 
 type Props = {
   data: { local: any, remote: any }[];
-
-  isOpen: boolean;
-  requestClose(): void;
   onSave(chars: any[]): void;
 }
 
-const HandleConflicts: React.FC<Props> = ({ data, isOpen, requestClose, onSave, }) => {
+const HandleConflicts: React.FC<Props> = ({ data, onSave, }) => {
   console.log(data)
 
   const [conflictIndex, setConflictIndex] = useState(0)
@@ -28,7 +25,6 @@ const HandleConflicts: React.FC<Props> = ({ data, isOpen, requestClose, onSave, 
 
     if (newIndex >= data.length) {
       onSave(updatedRevisions)
-      requestClose()
     } else {
       setConflictIndex(newIndex)
       setConflict(data[newIndex])
@@ -36,8 +32,8 @@ const HandleConflicts: React.FC<Props> = ({ data, isOpen, requestClose, onSave, 
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
-      <ModalHeader title={`Conflicts for Local:${conflict.local.name} / Remote:${conflict.remote.name}`} onClose={requestClose} />
+    <Modal isOpen>
+      <ModalHeader title={`Conflicts for Local:${conflict.local.name} / Remote:${conflict.remote.name}`} />
 
       <ModalBody className="text-center">
         <div className="p-4">

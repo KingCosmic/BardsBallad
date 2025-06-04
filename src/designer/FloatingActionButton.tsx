@@ -13,6 +13,7 @@ import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints
 import { useLocalData } from './renderer/Context'
 import FloatingActionButton from '../components/FloatingActionButton'
 import Checkbox from '../components/inputs/Checkbox'
+import BlueprintEditor from '../modals/BlueprintEditor'
 
 type Button = {
   name: string;
@@ -137,12 +138,10 @@ function FABSettings() {
             })} onDelete={() => setProp((props: any) => props.buttons = props.buttons.filter((b: any) => b.name !== editData!.name))} />
           </>
         ) : (
-          <p onClick={() => openModal({
-            type: 'blueprint',
-            title: '',
-            data: blueprint,
-            onSave: (blueprint) => setProp((props: any) => props.blueprint = blueprint)
-          })}>
+          <p onClick={() => 
+            openModal('blueprint', ({ id }) => (
+              <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setProp((props: any) => props.blueprint = bp)} />
+            ))}>
             On Click
           </p>
         )

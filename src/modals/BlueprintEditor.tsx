@@ -11,14 +11,11 @@ import ContextMenu from '../blueprints/ContextMenu'
 import nodeTypes from '../blueprints/nodeTypes'
 import Button from '../components/inputs/Button'
 import { useBlueprint } from '../hooks/useBlueprint'
+import { closeModal } from '../state/modals'
 
 type ModalProps = {
-  title: string;
-  onDelete?(): void;
+  id: number;
   onSave(newData: BlueprintData): void;
-  
-  isVisible: boolean;
-  requestClose(): void;
   data: BlueprintData;
 }
 
@@ -37,7 +34,7 @@ const isValidConnection = (conn: Connection | Edge) => {
   return (sourceType === targetType)
 }
 
-const BlueprintEditor: React.FC<ModalProps> = ({ title, isVisible, requestClose, data, onSave }) => {
+const BlueprintEditor: React.FC<ModalProps> = ({ id, data, onSave }) => {
   const [nodeMenu, setNodeMenu] = useState<any | null>(null)
   const [contextMenu, setContextMenu] = useState<any | null>(null)
   const ref = useRef<any>(null)
@@ -103,7 +100,7 @@ const BlueprintEditor: React.FC<ModalProps> = ({ title, isVisible, requestClose,
   }, [setNodeMenu, setContextMenu])
 
   return (
-    <div className={`${isVisible ? 'flex' : 'hidden'} z-50 absolute top-0 left-0 w-screen h-screen`}>
+    <div className='flex z-50 absolute top-0 left-0 w-screen h-screen'>
       <ReactFlow
         ref={ref}
         nodes={nodes}
@@ -126,14 +123,14 @@ const BlueprintEditor: React.FC<ModalProps> = ({ title, isVisible, requestClose,
         {contextMenu && <ContextMenu onClick={onPaneClick} {...contextMenu} />}
 
         <Panel position='top-right'>
-          <Button color='danger' onClick={requestClose}>
+          <Button color='danger' onClick={() => closeModal(id)}>
             Close
           </Button>
 
           <Button color='primary' onClick={() => {
             onSave({ nodes, edges })
             console.log({ nodes, edges })
-            requestClose()
+            closeModal(id)
           }}>
             Confirm
           </Button>

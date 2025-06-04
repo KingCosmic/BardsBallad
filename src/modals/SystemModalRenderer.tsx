@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';
 import ModalBody from '../components/Modal/Body';
@@ -10,22 +10,25 @@ import lz from 'lzutf8'
 import { PageData, SystemData } from '../storage/schemas/system';
 import { Character } from '../storage/schemas/character';
 import { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint';
+import { closeModal } from '../state/modals';
 
 type Props = {
-  data: any | null;
+  id: number;
+  state: BlueprintProcessorState;
+  updateState(updatedState: BlueprintProcessorState): void
   title?: string;
 
-  isOpen: boolean;
-  requestClose(): void;
   onSave(newData: string): void;
   onDelete?(): void;
 }
 
-const SystemModalRendererModal: React.FC<Props> = ({ data, title = 'Unknown Modal', isOpen, requestClose, onSave, onDelete }) => {
-  const { page, character, system, updateState } = data
+const SystemModalRendererModal: React.FC<Props> = ({ id, state, title = 'Unknown Modal', updateState, onSave, onDelete }) => {
+  const { page, character, system } = state
+
+  const requestClose = useCallback(() => closeModal(id), [id])
 
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title={title} onClose={requestClose} />
 
       <ModalBody>

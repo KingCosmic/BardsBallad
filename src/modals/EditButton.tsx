@@ -9,6 +9,7 @@ import ModalBody from '../components/Modal/Body';
 import ModalFooter from '../components/Modal/Footer';
 import TextInput from '../components/inputs/TextInput';
 import Button from '../components/inputs/Button';
+import BlueprintEditor from './BlueprintEditor';
 
 type Props = {
   data: { name: string; icon: string; blueprint: BlueprintData } | null;
@@ -41,12 +42,11 @@ function EditButtonModal({ data, isOpen, requestClose, onSave, onDelete }: Props
 
         {/* TODO: Icon Select. */}
 
-        <p onClick={() => openModal({
-          type: 'blueprint',
-          title: '',
-          data: blueprint,
-          onSave: (bp) => setBlueprint(bp)
-        })}>
+        <p onClick={() =>
+          openModal('blueprint', ({ id }) => (
+            <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setBlueprint(bp)} />
+          ))
+        }>
           On Click Action
         </p>
 

@@ -13,6 +13,8 @@ import { openModal } from '../state/modals'
 import Tabs from '../components/Tabs'
 import React from "react";
 import clearLocalStorage from '../utils/clearLocalStorage'
+import ConfirmModal from '../modals/ConfirmModal'
+import AuthModal from '../modals/Auth'
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {
@@ -54,12 +56,11 @@ const tabs = [
             <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-red-500 border'>
               <p className='text-lg'>Danger Zone</p>
               <p className='mb-4 text-red-500'>All local data is cleared (unsynced data will be lost)</p>
-              <Button color='danger' onClick={() => openModal({
-                type: 'confirm',
-                title: 'Logout',
-                data: { type: 'danger', message: 'All local data is cleared (unsynced data will be lost)' },
-                onSave: logout
-              })}>
+              <Button color='danger' onClick={() =>
+                openModal('confirm', ({ id }) => (
+                  <ConfirmModal id={id} title='Logout' type='danger' message='All local data is cleared (unsynced data will be lost)' onConfirm={logout} />
+                ))
+              }>
                 Logout
               </Button>
             </div>
@@ -68,14 +69,7 @@ const tabs = [
         <div className='flex flex-col items-center justify-center h-full'>
           <p className='text-lg'>You are not logged in</p>
           <p className='mb-4'>Login to access your profile</p>
-          <Button color='light' onClick={() => {
-            openModal({
-              type: 'authentication',
-              title: '',
-              data: null,
-              onSave: () => {},
-            })
-          }}>Login / Register</Button>
+          <Button color='light' onClick={() => openModal('auth', ({ id }) => <AuthModal id={id} />)}>Login / Register</Button>
         </div>
       )}
       </div>

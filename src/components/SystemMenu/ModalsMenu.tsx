@@ -19,6 +19,7 @@ import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, upd
 import { SystemData } from '../../storage/schemas/system'
 import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 import { useVersionEdits } from '../../hooks/useVersionEdits'
+import BlueprintEditor from '../../modals/BlueprintEditor'
 
 function ModalsMenu() {
   const editor = editorState.useValue()
@@ -163,12 +164,9 @@ function ModalsMenu() {
             </div>
 
             <Button color='light' onClick={() => 
-              openModal({
-                type: 'blueprint',
-                title: 'Page Blueprint',
-                data: page?.blueprint,
-                onSave: (bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'modal', editor.modalsPage, bp))
-              })
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'modal', editor.modalsPage, bp))} />
+              ))
             }>
               Edit Page Blueprint
             </Button>

@@ -8,6 +8,8 @@ import { get as charactersGet, bulkPut as charactersBulkPut, pull as charactersP
 import { get as subscriptionsGet, bulkPut as subscriptionsBulkPut, pull as subscriptionsPull, push as subscriptionsPush } from './subscriptions'
 import { setOnlineState, syncState } from '../state/sync'
 import { authState } from '../state/auth'
+import React from 'react'
+import HandleConflicts from '../modals/HandleConflicts'
 
 const batchSize = 10
 
@@ -72,12 +74,7 @@ async function handleConflicts(conflicts: { local: any, remote: any }[]): Promis
   if (conflicts.length === 0) return []
 
   return new Promise(resolve => {
-    openModal({
-      title: 'Handle Conflicts',
-      type: 'HandleConflicts',
-      data: conflicts,
-      onSave: resolve
-    })
+    openModal('handle-conflicts', ({ id }) => React.createElement(HandleConflicts, { data: conflicts, onSave: resolve }))
   })
 }
 

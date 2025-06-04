@@ -3,19 +3,20 @@ import ModalHeader from '../components/Modal/Header';
 import ModalBody from '../components/Modal/Body';
 import ModalFooter from '../components/Modal/Footer';
 import Button from '../components/inputs/Button';
-import Select from '../components/inputs/Select';
+import { useCallback } from 'react';
+import { closeModal } from '../state/modals';
 
 type Props = {
-  data: string | null;
-
-  isOpen: boolean;
-  requestClose(): void;
-  onSave(data: any): void;
+  id: number;
+  onSave(): void;
 }
 
-const SaveNewVersion: React.FC<Props> = ({ data, isOpen, requestClose, onSave }) => {
+const SaveNewVersion: React.FC<Props> = ({ id, onSave }) => {
+
+  const requestClose = useCallback(() => closeModal(id), [id])
+
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title='Save New Version' onClose={requestClose} />
 
       <ModalBody>
@@ -29,7 +30,7 @@ const SaveNewVersion: React.FC<Props> = ({ data, isOpen, requestClose, onSave })
         </Button>
 
         <Button color='primary' onClick={() => {
-          onSave(true)
+          onSave()
           requestClose()
         }}>Confirm</Button>
       </ModalFooter>

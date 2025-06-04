@@ -6,6 +6,7 @@ import { openModal } from '../state/modals'
 import importSystem from '../storage/methods/systems/importSystem'
 import { useSubscriptions } from '../hooks/useSubscriptions'
 import SubscriptionCard from '../components/Library/SubscriptionCard'
+import ImportFile from '../modals/ImportFile'
 
 const Library: React.FC = () => {
   const { subscriptions, isLoading } = useSubscriptions()
@@ -55,18 +56,11 @@ const Library: React.FC = () => {
         )}
 
         <FloatingActionButton isOpen={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} buttons={[
-          { name: 'Create System', icon: '', onClick: () => openModal({
-            type: 'create_subscription',
-            title: 'Create Subscription',
-            data: undefined,
-            onSave: () => {}
-            })
+          { name: 'Create System', icon: '', onClick: () =>
+              openModal('create-subscription', ({ id }) => <CreateSubscription id={id} onCreate={() => {}} />)
           },
-          { name: 'Import System', icon: '', onClick: () => openModal({
-              type: 'import_file',
-              title: 'Import System',
-              data: undefined,
-              onSave: async (fileContent: string) => {
+          { name: 'Import System', icon: '', onClick: () =>
+              openModal('import-system', ({ id }) => <ImportFile id={id} title='Import System' onSave={async (fileContent: string) => {
                 try {
                   const parsed = JSON.parse(fileContent)
                   if (parsed && parsed.system && parsed.version) {
@@ -75,8 +69,8 @@ const Library: React.FC = () => {
                 } catch (e) {
                   console.error(e)
                 }
-              }
-            })
+              }} />
+            )
           }
           ]}
         />

@@ -19,6 +19,7 @@ import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, upd
 import { SystemData } from '../../storage/schemas/system'
 import storeMutation from '../../storage/methods/versionedresources/storeMutation'
 import { useVersionEdits } from '../../hooks/useVersionEdits'
+import BlueprintEditor from '../../modals/BlueprintEditor'
 
 function EditorMenu() {
   const editor = editorState.useValue()
@@ -162,13 +163,10 @@ function EditorMenu() {
               <Button color='primary' onClick={() => setEditName(editor.characterPage)}>Rename</Button>
             </div>
 
-            <Button color='light' onClick={() => 
-              openModal({
-                type: 'blueprint',
-                title: 'Page Blueprint',
-                data: page?.blueprint,
-                onSave: (bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))
-              })
+            <Button color='light' onClick={() =>
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))} />
+              ))
             }>
               Edit Page Blueprint
             </Button>
