@@ -5,10 +5,10 @@ export default async (data: SystemData, pageType: 'character' | 'builder' | 'mod
   return produce(data, draft => {
     const pages = (pageType === 'character') ? draft.pages : (pageType === 'builder') ? draft.creator : draft.modals
 
-    const index = pages.findIndex(data => data.name === oldName)
+    const page = pages.find(data => data.name === oldName)
 
-    if (index === -1) return
+    if (!page) return
 
-    pages[index].name = newName
+    page.name = newName
   })
 }

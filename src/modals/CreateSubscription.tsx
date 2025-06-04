@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Modal from '../components/Modal';
 import ModalHeader from '../components/Modal/Header';
 import ModalBody from '../components/Modal/Body';
@@ -21,7 +21,7 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id, onCreate }) => {
   const requestClose = useCallback(() => closeModal(id), [id])
 
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title='Create Subscription' onClose={requestClose} />
 
       <ModalBody>

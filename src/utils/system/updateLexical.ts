@@ -3,15 +3,21 @@ import { editorState } from '../../state/editor';
 
 import lz from 'lzutf8';
 import { SystemData } from '../../storage/schemas/system';
+import { db } from '../../storage';
+import { VersionedResource } from '../../storage/schemas/versionedResource';
 
-export default async (data: SystemData, lexical: string) => {
+export default async (version_id: string, lexical: string) => {
   if (lexical === '{}') return
   
   const newLexical = lz.encodeBase64(lz.compress(lexical))
 
   const editor = editorState.get()
 
-  return produce(data, draft => {
+  const version = await db.versions.get(version_id) as Omit<VersionedResource, 'data'> & { data: SystemData }
+
+  if (!version) return
+
+  return produce(version.data, draft => {
     const pages = (editor.tab === 'editor') ? draft.pages : (editor.tab === 'creator') ? draft.creator : draft.modals
     const pageName = (editor.tab === 'editor') ? editor.characterPage : (editor.tab === 'creator') ? editor.creatorPage : editor.modalsPage
 

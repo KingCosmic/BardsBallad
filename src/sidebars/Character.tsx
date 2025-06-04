@@ -18,13 +18,13 @@ const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateS
       <div className='h-full flex flex-col px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-neutral-950'>
         <div className='py-4 mb-4 border-b border-neutral-200 dark:border-neutral-700'>
           <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
-            Actions
+            Quick Actions
           </span>
         </div>
 
         <div className='flex flex-col gap-2'>
           {actions?.map(a => (
-            <div key={a.name} className='bg-neutral-800 border border-neutral-700 p-2 rounded' onClick={() => {
+            <div key={a.name} className='bg-neutral-800 border border-neutral-700 p-2 rounded cursor-pointer hover:bg-neutral-700 hover:border-neutral-800' onClick={() => {
               const processor = new BlueprintProcessor(a.blueprint)
 
               const pageState = {

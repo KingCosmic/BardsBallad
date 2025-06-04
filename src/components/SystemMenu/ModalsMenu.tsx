@@ -6,7 +6,7 @@ import FAB from '../../designer/FloatingActionButton'
 import Text from '../../designer/components/Text/Editor'
 import Searchbar from '../../designer/Searchbar'
 import EditPageStateModal from '../../modals/EditPageState'
-import { editorState, setCharacterPage, setModal } from '../../state/editor'
+import { editorState, setModal } from '../../state/editor'
 import Divider from '../Divider'
 import DesignerDivider from '../../designer/components/Divider'
 import EditStringModal from '../../modals/EditString'
@@ -18,12 +18,15 @@ import { openModal } from '../../state/modals'
 import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '../../utils/system'
 import { SystemData } from '../../storage/schemas/system'
 import storeMutation from '../../storage/methods/versionedresources/storeMutation'
-import { useVersionEdits } from '../../hooks/useVersionEdits'
 import BlueprintEditor from '../../modals/BlueprintEditor'
+import { VersionedResource } from '../../storage/schemas/versionedResource'
 
-function ModalsMenu() {
+interface Props {
+  versionEdits: Omit<VersionedResource, 'data'> & { data: SystemData }
+}
+
+function ModalsMenu({ versionEdits }: Props) {
   const editor = editorState.useValue()
-  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
   const page = useMemo(() => versionEdits?.data.modals.find(p => p.name === editor.modalsPage), [versionEdits, editor.modalsPage])
 
@@ -31,11 +34,7 @@ function ModalsMenu() {
 
   const [editingState, setEditingState] = useState<{ name: string, type: any, value?: any } | null>(null)
 
-  const [editName, setEditName] = useState<any>(null)
-
-  const { connectors } = useEditor()
-
-  const { selected, actions } = useEditor((state, query) => {
+  const { selected, actions, connectors } = useEditor((state, query) => {
     const [currentNodeId] = state.events.selected
     let selected;
 
@@ -51,7 +50,7 @@ function ModalsMenu() {
     return { selected }
   })
 
-  if (!versionEdits) return <></>
+  if (!versionEdits) return <p>loading...</p>
 
   return (
     <>
@@ -145,14 +144,6 @@ function ModalsMenu() {
           </>
         ) : (tab === 'state') ? (
           <>
-            <EditStringModal data={editName} isOpen={editName !== null}
-              requestClose={() => setEditName(null)}
-              onSave={(newName) => {
-                storeMutation(editor.versionId, renamePage(versionEdits.data, 'modal', editor.modalsPage, newName))
-                setModal(newName)
-              }}
-            />
-
             <div className='inline-flex rounded-md shadow-sm my-2'>
               <Button color='danger' disabled={versionEdits.data.pages.length <= 1} onClick={() => {
                 storeMutation(editor.versionId, deletePage(versionEdits.data, 'modal', editor.modalsPage))
@@ -160,7 +151,12 @@ function ModalsMenu() {
                 Delete
               </Button>
 
-              <Button color='primary' onClick={() => setEditName(editor.modalsPage)}>Rename</Button>
+              <Button color='primary' onClick={() => openModal('rename-modal', ({ id }) => (
+                <EditStringModal id={id} title='Rename Page' data={editor.modalsPage} onSave={async newName => {
+                  await storeMutation(editor.versionId, renamePage(versionEdits.data, 'modal', editor.modalsPage, newName))
+                  setModal(newName)
+                }} />
+              ))}>Rename</Button>
             </div>
 
             <Button color='light' onClick={() => 

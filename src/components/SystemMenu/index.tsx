@@ -3,12 +3,13 @@ import DesignerMenu from './EditorMenu'
 
 import { editorState } from '../../state/editor'
 import CreatorMenu from './CreatorMenu'
-import { useVersionResource } from '../../hooks/useVersionResource'
 import ModalsMenu from './ModalsMenu'
+import { useVersionEdits } from '../../hooks/useVersionEdits'
+import { SystemData } from '../../storage/schemas/system'
 
 function SystemMenu() {
   const editor = editorState.useValue()
-  const versionedResource = useVersionResource(editor.versionId)
+  const versionedResource = useVersionEdits<SystemData>(editor.versionId)
 
   if (!versionedResource) return <></>
 
@@ -42,7 +43,7 @@ function SystemMenu() {
           ) : (editor.tab === 'creator') ? (
             <CreatorMenu />
           ) : (editor.tab === 'modals') ? (
-            <ModalsMenu />
+            <ModalsMenu versionEdits={versionedResource} />
           ) : (editor.tab === 'actions') && (
             <p>
               Quick actions such as long rest, reset spell slots, ect.

@@ -7,6 +7,7 @@ import importSystem from '../storage/methods/systems/importSystem'
 import { useSubscriptions } from '../hooks/useSubscriptions'
 import SubscriptionCard from '../components/Library/SubscriptionCard'
 import ImportFile from '../modals/ImportFile'
+import CreateSubscription from '../modals/CreateSubscription'
 
 const Library: React.FC = () => {
   const { subscriptions, isLoading } = useSubscriptions()

@@ -57,11 +57,11 @@ const System: React.FC = () => {
     Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider
   }), [Container, Text, EditorSelect, TextInput, FAB, Searchbar, DesignerDivider])
 
-  const handleNodeChange = useCallback((query: any) => {
+  const handleNodeChange = (query: any) => {
     if (!versionEdits) return
 
-    storeMutation(versionEdits.local_id, updateLexical(versionEdits.data, query.serialize()))
-  }, [versionEdits, storeMutation, updateLexical])
+    storeMutation(versionEdits.local_id, updateLexical(versionEdits.local_id, query.serialize()))
+  }
 
   if (!edits_id) return <>id not defined...</>
   if (!versionEdits) return <>Loading Edits...</>

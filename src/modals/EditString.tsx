@@ -9,7 +9,7 @@ import { closeModal } from '../state/modals';
 
 type Props = {
   id: number;
-  data: string | null;
+  data: string;
   title?: string;
 
   onSave(newData: string): void;
@@ -17,19 +17,13 @@ type Props = {
 }
 
 function EditStringModal({ id, data, title = 'Edit string', onSave, onDelete } : Props) {
-  const [string, setString] = useState('')
-
-  useEffect(() => {
-    if (!data) return
-  
-    setString(data)
-  }, [data])
+  const [string, setString] = useState(data)
 
   const requestClose = useCallback(() => closeModal(id), [id])
 
   return (
     <Modal isOpen onClose={requestClose}>
-      <ModalHeader title={title}onClose={requestClose} />
+      <ModalHeader title={title} onClose={requestClose} />
 
       <ModalBody>
         <TextInput id='name' label='String' placeholder='baba yaga' value={string} onChange={setString} isValid errorMessage='' />
