@@ -1,6 +1,6 @@
 import axios from 'axios'
-import {saveToken} from '@state/auth'
-import {AuthStorage} from './storage'
+import { saveToken } from '@state/auth'
+import { AuthStorage } from '@/lib/storage'
 import {isHostnameLocal} from "@utils/isHostnameLocal";
 
 const api = axios.create({

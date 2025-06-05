@@ -33,8 +33,8 @@ function CharacterCreatorModal(props: any) {
 
   const posthog = usePostHog()
 
-  const [system, setSystem] = useState<System | undefined>(systems[0])
-  const [version, setVersion] = useState<VersionedResource | undefined>(versions[0])
+  const [system, setSystem] = useState<System | undefined>()
+  const [version, setVersion] = useState<VersionedResource | undefined>()
 
   const [tab, setTab] = useState(0)
 
@@ -114,7 +114,7 @@ function CharacterCreatorModal(props: any) {
       <ModalHeader title='Error grabbing system' onClose={() => props.setIsOpen(false)} />
 
       <ModalBody>
-        <h3>There was an error grabbing a default system, please refresh to load base data or make / import something!</h3>
+        <h3>There was an error grabbing a default system, please subscribe to a system from the marketplace or import something!</h3>
       </ModalBody>
 
       <ModalFooter>

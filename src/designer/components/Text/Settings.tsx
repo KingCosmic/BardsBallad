@@ -11,6 +11,7 @@ import { useLocalState } from '@designer/hooks/useLocalState'
 import Select from '@components/inputs/Select'
 import styles from './styles'
 import globalStyles from '@designer/styles'
+import BlueprintEditor from '@modals/BlueprintEditor'
 
 export default function TextSettings() {
   const { id, actions: { setProp },
@@ -66,14 +67,12 @@ export default function TextSettings() {
 
         {
           useBlueprintValue ? (
-            <Button color='primary' onClick={() => openModal({
-              type: 'blueprint',
-              title: 'Text Value',
-              data: blueprint,
-              onSave: (blueprint) => setProp((props: any) => {
-                props.blueprint = blueprint
-              })
-            })}>
+            <Button color='primary' onClick={() =>
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={blueprint} onSave={(bp) => {
+                  setProp((props: any) => props.blueprint = bp)
+                }} />
+              ))}>
               Edit Blueprint Value
             </Button>
           ) : (

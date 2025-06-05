@@ -4,7 +4,7 @@ import ModalBody from '@components/Modal/Body';
 import ModalFooter from '@components/Modal/Footer';
 import Button from '@components/inputs/Button';
 import Select from '@components/inputs/Select';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useOurSystems } from '@hooks/useOurSystems';
 import Textarea from '@components/inputs/Textarea';
 import Checkbox from '@components/inputs/Checkbox';
@@ -12,13 +12,12 @@ import { useVersions } from '@hooks/useVersions';
 import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
 import { VersionedResource } from '@storage/schemas/versionedResource';
 import {getMarketplaceItem} from "@api/getMarketplaceItem";
+import { closeModal } from '@state/modals';
 
 type Props = {
-  data: string | null;
+  id: number;
 
-  isOpen: boolean;
-  requestClose(): void;
-  onSave(data: {
+  onPublish(data: {
     item: any;
     version: VersionedResource;
 
@@ -31,7 +30,7 @@ type Props = {
   }): void;
 }
 
-const PublishNewSystem: React.FC<Props> = ({ data, isOpen, requestClose, onSave }) => {
+const PublishNewSystem: React.FC<Props> = ({ id, onPublish }) => {
   const { systems, isLoading: isSystemsLoading } = useOurSystems()
   const { versions, isLoading: isVersionsLoading } = useVersions()
 
@@ -67,8 +66,10 @@ const PublishNewSystem: React.FC<Props> = ({ data, isOpen, requestClose, onSave 
     getItemData()
   }, [selectedSystem])
 
+  const requestClose = useCallback(() => closeModal(id), [id])
+
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title='Publish New System' onClose={requestClose} />
 
       <ModalBody>
@@ -99,7 +100,7 @@ const PublishNewSystem: React.FC<Props> = ({ data, isOpen, requestClose, onSave 
         </Button>
 
         <Button color='primary' onClick={() => {
-          onSave({
+          onPublish({
             item: selectedSystem,
             version: selectedVersion,
             changelog: changelog,

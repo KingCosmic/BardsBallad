@@ -1,9 +1,11 @@
 
 const ROLES: { [key:number]: string } = {
-  0: 'free',
-  1: 'premium',
-  2: 'fancy',
-  3: 'developer'
+  100: 'free',
+  101: 'verified',
+  200: 'premium',
+  300: 'ambassador',
+  800: 'developer',
+  900: 'admin'
 }
 
 export default function getPermsFromRole(role: number) {

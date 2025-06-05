@@ -3,12 +3,14 @@ import ModalManager from './components/ModalManager'
 import { sidebarState, closeSidebar, openSidebar } from './state/sidebar'
 import { authState } from './state/auth'
 import Button from './components/inputs/Button'
-import { closeModal, closeModalByTitle, openModal } from './state/modals'
+import { closeModal, closeModalByTag, openModal } from './state/modals'
 import { useEffect, useRef, useState } from 'react'
 import { Onboarding } from './components/Onboarding'
 import onboardingSteps from './lib/onboarding'
 import { MiscStorage } from './lib/storage'
 import ToastProvider from './components/ToastProvider'
+import WelcomeMessage from './modals/WelcomeMessage'
+import AuthModal from './modals/Auth'
 
 const topItems = [
   {
@@ -64,24 +66,21 @@ const Layout: React.FC = () => {
 
       if (hasCompletedOnboarding) return;
 
-      openModal({
-        type: 'onboarding',
-        data: null,
-        title: 'Welcome to BardsBallad!',
-        onDelete: () => {
-          MiscStorage.set('onboarding-completed', true)
-        },
-        onSave: () => {
+      openModal('onboarding', ({ id }) => <WelcomeMessage yes={() => {
+          closeModal(id)
           openSidebar()
           setShowOnboarding(true)
-        }
-      })
+        }} no={() => {
+          closeModal(id)
+          MiscStorage.set('onboarding-completed', true)
+        }} />
+      )
     }
     
     checkOnboardingCompleted()
 
     return () => {
-      closeModalByTitle('onboarding')
+      closeModalByTag('onboarding')
     }
   }, [])
 
@@ -181,12 +180,7 @@ const Layout: React.FC = () => {
                 {!auth.isLoggedIn && (
                   <li>
                     <Button className='w-full' color='primary' onClick={() => {
-                      openModal({
-                        type: 'authentication',
-                        title: '',
-                        data: null,
-                        onSave: () => {},
-                      })
+                      openModal('auth', ({ id }) => <AuthModal id={id} />)
                     }}>Login / Register</Button>
                   </li>
                 )}

@@ -94,13 +94,6 @@ This software uses the following open source packages:
 ## Related
 
 TODO
-<!-- [markdownify-web](https://github.com/amitmerchant1990/markdownify-web) - Web version of Markdownify -->
-
-<p>Or</p> 
-
-<a href="https://patreon.com/KingCosmic">
-	<img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
-</a>
 
 <!-- ## You may also like...
 

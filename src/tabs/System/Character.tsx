@@ -17,8 +17,6 @@ type CharacterProps = {
 const Character: React.FC<CharacterProps> = ({ editsId, versionedResource }) => {
   const [editData, setEditData] = useState<DataType | null>(null)
 
-  console.log(versionedResource)
-
   return (
     <>
       <EditSystemData

@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router';
 import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
 import JSONToFile from '@utils/JSONToFile';
 import DropdownButton from '@components/DropdownButton';
+import ConfirmModal from '@modals/ConfirmModal';
+
+import { openModal } from '@state/modals'
 
 type Props = {
   subscription: UserSubscription;
@@ -53,7 +56,7 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
   // we are considered the owner if our user id's match or if the subscription doesn't have a user id and server provided id
   const isOwner =
     (user && baseData.user_id && user.id === baseData.user_id) ||
-    (!baseData.user_id && !baseData.id);
+    (!user && baseData.user_id === 'none');
 
   return (
     <div
@@ -77,7 +80,8 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
+      <div className="flex justify-between items-center gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
+        <p>{new Date(versionData.created_at).toDateString()}</p>
         <DropdownButton label={isOwner ? 'Edit' : 'Fork'} onClick={() => {
             if (isOwner) {
               // direct to editor.
@@ -90,7 +94,7 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
             return forkSystem(baseData, versionData);
           }} options={[
             {
-              label: 'export',
+              label: 'Export',
               onClick: () => JSONToFile(
                 {
                   system: query.baseData,
@@ -98,22 +102,12 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
                 },
                 `${query.baseData.name}-${query.versionData.local_id}`
               )
+            },
+            {
+              label: 'Delete',
+              onClick: () => openModal('delete-subscription', ({ id }) => <ConfirmModal id={id} title='Delete Subscription' type='danger' message='Are you sure you want to delete this subscription?' onConfirm={() => {}} />)
             }
           ]} />
-          {/* <MenuItem
-            label="delete"
-            onClick={() =>
-              openModal({
-                type: 'confirm',
-                title: 'Delete Subscription',
-                data: {
-                  type: 'danger',
-                  message: 'Are you sure you want to delete this subscription?',
-                },
-                onSave: () => deleteCharacter(char.local_id),
-              })
-            }
-          /> */}
       </div>
     </div>
   );

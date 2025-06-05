@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Modal from '@components/Modal';
 import ModalHeader from '@components/Modal/Header';
 import ModalBody from '@components/Modal/Body';
@@ -7,8 +7,10 @@ import Checkbox from '@components/inputs/Checkbox';
 import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
 import DropdownButton from '@components/DropdownButton';
 import {getVersionsForItem} from "@api/getVersionsForItem";
+import { closeModal } from '@state/modals';
 
 type Props = {
+  id: number;
   data: {
     id: string,
     name: string,
@@ -28,15 +30,12 @@ type Props = {
   } | null;
   title?: string;
 
-  isOpen: boolean;
-  requestClose(): void;
-  onSave(newData: string): void;
-  onDelete?(): void;
+  onSubscribe(version_id: string): void;
 }
 
 type VersionData = { id: string, item_id: string, changelog: string, published_at: string, resource_id: string }
 
-const MarketplaceViewModal: React.FC<Props> = ({ data, title = 'Edit string', isOpen, requestClose, onSave, onDelete } : Props) => {
+const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name', onSubscribe } : Props) => {
   const [versions, setVersions] = useState<VersionData[]>([])
   const [autoUpdate, setAutoUpdate] = useState(true)
   
@@ -55,10 +54,12 @@ const MarketplaceViewModal: React.FC<Props> = ({ data, title = 'Edit string', is
     loadVersions()
   }, [])
 
+  const requestClose = useCallback(() => closeModal(id), [id])
+
   if (!data) return null
 
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title={title} onClose={requestClose} />
 
       <ModalBody>
@@ -74,7 +75,7 @@ const MarketplaceViewModal: React.FC<Props> = ({ data, title = 'Edit string', is
                 
                 <DropdownButton label={getVisualTextFromVersionID(selectedVersion.item_id)} onClick={() => {
                   requestClose()
-                  onSave(selectedVersion.item_id)
+                  onSubscribe(selectedVersion.item_id)
                 }}
                   options={versions.map(ver => ({
                     label: getVisualTextFromVersionID(ver.item_id),

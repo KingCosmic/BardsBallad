@@ -1,5 +1,5 @@
 import Header from '@components/Header'
-import { openModal } from '@state/modals';
+import { closeModal, openModal } from '@state/modals';
 import React, { useEffect, useState } from 'react';
 import { MiscStorage } from '@lib/storage';
 import FloatingActionButton from '@components/FloatingActionButton';
@@ -13,6 +13,9 @@ import { useToast } from '@hooks/useToast';
 import {getMarketplaceItems} from "@api/getMarketplaceItems";
 import {getSubscriptionData} from "@api/getSubscriptionData";
 import {publishItem} from "@api/publishItem";
+import MarketplaceViewModal from '@modals/MarketplaceView';
+import MarketplaceDisclaimer from '@modals/MarketplaceDisclaimer';
+import PublishNewSystem from '@modals/PublishItem';
 
 type MarketplaceItem = {
   id: string,
@@ -39,34 +42,33 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
     <div
       key={item.name}
       className="relative cursor-pointer flex flex-col max-w-96 p-4 tranasition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
-      onClick={() => openModal({
-        type: 'marketplace_view',
-        title: item.name,
-        data: item,
-        onSave: async (version_id: string) => {
-          try {
-            const subscriptionData = await getSubscriptionData(version_id)
+      onClick={() =>
+        openModal('view marketplace item', ({ id }) => (
+          <MarketplaceViewModal id={id} title={item.name} data={item} onSubscribe={async (version_id: string) => {
+            try {
+              const subscriptionData = await getSubscriptionData(version_id)
 
-            const { baseData, versionData } = subscriptionData
+              const { baseData, versionData } = subscriptionData
 
-            const sys = await saveSystem(baseData)
+              const sys = await saveSystem(baseData)
 
-            if (!sys) return addToast('Failed to create system.', 'error')
+              if (!sys) return addToast('Failed to create system.', 'error')
 
-            const vers = await saveVersionedResource(versionData)
+              const vers = await saveVersionedResource(versionData)
 
-            if (!vers) return addToast('Failed to create version.', 'error')
+              if (!vers) return addToast('Failed to create version.', 'error')
 
-            const sub = await createSubscription('system', sys.local_id, vers.local_id, false)
+              const sub = await createSubscription('system', sys.local_id, vers.local_id, false)
 
-            if (!sub) return addToast('Failed to create subscription.', 'error')
+              if (!sub) return addToast('Failed to create subscription.', 'error')
 
-            addToast('Subscription created!', 'success')
-          } catch(e) {
-            addToast(`Error creating subscription`, 'error')
-          }
-        }
-      })}
+              addToast('Subscription created!', 'success')
+            } catch(e) {
+              console.error(`Error creating subscription: ${e}`)
+              addToast(`Error creating subscription`, 'error')
+            }
+          }} />
+        ))}
     >
       <div className="flex items-start space-x-4">
         <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
@@ -111,14 +113,12 @@ const Marketplace: React.FC = () => {
 
       if (hasSeenDisclaimer) return
 
-      openModal({
-        title: '',
-        type: 'marketplace_disclaimer',
-        data: '',
-        onSave: () => {
+      openModal('marketplace-disclaimer', ({ id }) => (
+        <MarketplaceDisclaimer onAccept={() => {
+          closeModal(id)
           MiscStorage.set('seen-marketplace-disclaimer', true)
-        }
-      })
+        }} />
+      ))
     }
 
     disclaimer()
@@ -163,12 +163,9 @@ const Marketplace: React.FC = () => {
       
       {isLoggedIn && (
         <FloatingActionButton
-          onClick={() => openModal({
-            type: 'PublishItem',
-            title: 'none',
-            data: 'none',
-            onSave: publishItem
-          })}
+          onClick={() => openModal('publish-item', ({ id }) => (
+            <PublishNewSystem id={id} onPublish={publishItem} />
+          ))}
         />
       )}
     </div>

@@ -19,6 +19,7 @@ import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, upd
 import { SystemData } from '@storage/schemas/system'
 import storeMutation from '@storage/methods/versionedresources/storeMutation'
 import { useVersionEdits } from '@hooks/useVersionEdits'
+import BlueprintEditor from '@modals/BlueprintEditor'
 
 function EditorMenu() {
   const editor = editorState.useValue()
@@ -144,14 +145,6 @@ function EditorMenu() {
           </>
         ) : (tab === 'state') ? (
           <>
-            <EditStringModal data={editName} isOpen={editName !== null}
-              requestClose={() => setEditName(null)}
-              onSave={(newName) => {
-                storeMutation(versionEdits.local_id, renamePage(versionEdits.data, 'character', editName, newName))
-                setCharacterPage(newName)
-              }}
-            />
-
             <div className='inline-flex rounded-md shadow-sm my-2'>
               <Button color='danger' disabled={versionEdits.data.pages.length <= 1} onClick={() => {
                 storeMutation(versionEdits.local_id, deletePage(versionEdits.data, 'character', editor.characterPage))
@@ -159,16 +152,18 @@ function EditorMenu() {
                 Delete
               </Button>
 
-              <Button color='primary' onClick={() => setEditName(editor.characterPage)}>Rename</Button>
+              <Button color='primary' onClick={() => openModal('rename-modal', ({ id }) => (
+                <EditStringModal id={id} title='Rename Page' data={editor.characterPage} onSave={async newName => {
+                  await storeMutation(editor.versionId, renamePage(versionEdits.data, 'character', editor.characterPage, newName))
+                  setCharacterPage(newName)
+                }} />
+              ))}>Rename</Button>
             </div>
 
-            <Button color='light' onClick={() => 
-              openModal({
-                type: 'blueprint',
-                title: 'Page Blueprint',
-                data: page?.blueprint,
-                onSave: (bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))
-              })
+            <Button color='light' onClick={() =>
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))} />
+              ))
             }>
               Edit Page Blueprint
             </Button>

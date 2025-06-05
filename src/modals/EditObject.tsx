@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { produce } from 'immer'
 
@@ -17,14 +17,16 @@ import Select from '@components/inputs/Select';
 import { openModal } from '@state/modals';
 
 import { type SystemType, type TypeData } from '@storage/schemas/system'
+import BlueprintEditor from './BlueprintEditor';
 
 type ModalProps = {
   title: string;
   onDelete?(): void;
   onSave(newData: any): void;
-  
-  isVisible: boolean;
+
   requestClose(): void;
+
+  isVisible: boolean;
   data: any;
   types: SystemType[];
 
@@ -32,7 +34,7 @@ type ModalProps = {
   typeData?: TypeData;
 }
 
-function EditObject({ title, onDelete, onSave, isVisible, requestClose, data, types, type, typeData }: ModalProps) {
+function EditObject({ title, onDelete, onSave, isVisible, data, types, type, requestClose, typeData }: ModalProps) {
   const [dataCopy, setDataCopy] = useState<{ [key:string]: any } | null>(null)
 
   const setProperty = (key: string, obj: { [key:string]: any }, value: any) => {
@@ -147,12 +149,10 @@ export function RenderComponentFromType(types: SystemType[], type: string, data:
       )
     case 'blueprint':
       return (
-        <Button key={label} color='light' onClick={() => openModal({
-          title: 'Edit Blueprint',
-          type: 'blueprint',
-          data,
-          onSave: (val) => setProperty(label, dataCopy, val),
-        })}>Edit {label}</Button>
+        <Button key={label} color='light' onClick={() =>
+          openModal('blueprint', ({ id }) => (
+            <BlueprintEditor id={id} data={data} onSave={(bp) => setProperty(label, dataCopy, bp)} />
+          ))}>Edit {label}</Button>
       )
     default:
       return (

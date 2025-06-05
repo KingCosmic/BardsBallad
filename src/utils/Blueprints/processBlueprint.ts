@@ -115,6 +115,10 @@ class BlueprintProcessor {
     return this.params
   }
 
+  getState() {
+    return this.state
+  }
+
   getCharacter() {
     return this.state.character
   }

@@ -23,6 +23,9 @@ import isPremium from '@utils/isPremium';
 import DropdownButton from '@components/DropdownButton';
 import { Character } from '@storage/schemas/character';
 import {setSyncedCharacters} from "@api/setSyncedCharacters";
+import EditStringModal from '@modals/EditString';
+import ConfirmModal from '@modals/ConfirmModal';
+import ImportFile from '@modals/ImportFile';
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters();
@@ -47,27 +50,12 @@ const Characters: React.FC = () => {
       {
         label: 'rename',
         onClick: () =>
-          openModal({
-            type: 'edit_string',
-            title: 'Rename Character',
-            data: char.name,
-            onSave: (newName: string) => {
-              renameCharacter(char.local_id, newName);
-            },
-          }),
+          openModal('edit-string', ({ id }) => <EditStringModal id={id} title='Rename Character' data={char.name} onSave={(newName) => renameCharacter(char.local_id, newName)} />)
       },
       {
         label: 'delete',
         onClick: () =>
-          openModal({
-            type: 'confirm',
-            title: 'Delete Character',
-            data: {
-              type: 'danger',
-              message: 'Are you sure you want to delete this character?',
-            },
-            onSave: () => deleteCharacter(char.local_id),
-          }),
+          openModal('confirm', ({ id }) => <ConfirmModal id={id} title='Delete Character' type='danger' message='Are you sure you want to delete this character?' onConfirm={() => deleteCharacter(char.local_id)} />)
       },
     ];
 
@@ -166,21 +154,17 @@ const Characters: React.FC = () => {
               name: 'Import Character',
               icon: '',
               onClick: () =>
-                openModal({
-                  type: 'import_file',
-                  title: 'Import Character',
-                  data: undefined,
-                  onSave: async (fileContent: string) => {
-                    try {
-                      const parsed = JSON.parse(fileContent);
-                      if (parsed) {
-                        await importCharacter(parsed);
-                      }
-                    } catch (e) {
-                      console.error(e);
+                openModal('import-file', ({ id }) => <ImportFile id={id} title='Import Character' onSave={async (fileContent: string) => {
+                  try {
+                    const parsed = JSON.parse(fileContent);
+                    if (parsed) {
+                      await importCharacter(parsed);
                     }
-                  },
-                }),
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }} />
+              )
             },
           ]}
         />

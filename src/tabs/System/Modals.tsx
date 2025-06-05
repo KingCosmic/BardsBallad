@@ -23,12 +23,16 @@ const ModalsTab: React.FC<EditorTabProps> = ({ versionedResource }) => {
   const { actions } = useEditor()
 
   useEffect(() => {
-    let lexical = versionedResource.data.modals.find((p: PageData) => p.name === editor.characterPage)?.lexical
+    const page = versionedResource.data.modals.find((p: PageData) => p.name === editor.modalsPage);
+    if (!page) {
+      // Page not found, avoid deserializing or reset safely
+      console.warn('Modal page not found:', editor.modalsPage);
+      return;
+    }
 
-    if (!lexical) lexical = defaultLexical
-
-    actions.deserialize(lz.decompress(lz.decodeBase64(lexical)))
-  }, [editor.characterPage])
+    let lexical = page.lexical ?? defaultLexical;
+    actions.deserialize(lz.decompress(lz.decodeBase64(lexical)));
+  }, [editor.modalsPage, versionedResource.data.modals])
 
   return (
     <div className='mt-3 border-2 border-neutral-200 border-dashed rounded-lg dark:border-neutral-700'>

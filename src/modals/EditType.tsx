@@ -16,6 +16,7 @@ import { editorState } from '@state/editor'
 import { useSystem } from '@hooks/useSystem'
 import { SystemData, type TypeData } from '@storage/schemas/system'
 import { useVersionEdits } from '@hooks/useVersionEdits'
+import EditBlueprintParamModal from './EditBlueprintParam'
 
 type Props = {
   data: { key: string; typeData: TypeData, typeName: string } | null;
@@ -29,8 +30,6 @@ type Props = {
 const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, onDelete }) => {
   const [key, setKey] = useState('')
   const [propertyData, setPropertyData] = useState<TypeData>({ type: '', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] })
-
-  const [editOption, setEditOption] = useState<string | null>(null)
 
   const editor = editorState.useValue()
 
@@ -98,7 +97,22 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
               <div>
                 {propertyData.options?.map((item) => {
                   return (
-                    <div key={item} onClick={() => setEditOption(item)}>
+                    <div key={item} onClick={() => openModal('edit-string', ({ id }) => (
+                      <EditStringModal id={id} data={item}
+                        title='Edit Property Name'
+                        onSave={(data) => {
+                          let newOptions = [ ...propertyData.options || [] ]
+
+                          const index = newOptions.findIndex(o => o === item)
+
+                          if (index === -1) return
+
+                          newOptions[index] = data
+
+                          setPropertyData({ ...propertyData, options: newOptions })
+                        }}
+                      />
+                    ))}>
                       <p>{item}</p>
                     </div>
                   )
@@ -153,26 +167,23 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
                   return (
                     <div key={param.name}
                       className='bg-neutral-50 border border-neutral-300 text-neutral-900 p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:text-white'
-                      onClick={() => openModal({
-                        type: 'edit_blueprint_param',
-                        title: 'Edit Blueprint Param',
-                        data: param,
-                        onSave: (value: Param) => {
-                          let newInputs = [ ...propertyData.inputs || [] ]
-              
-                          const index = newInputs.findIndex(p => p.name === param.name)
-              
-                          if (index === -1) return
-              
-                          newInputs[index] = value
-              
-                          setPropertyData({ ...propertyData, inputs: newInputs })
-                        },
-                        onDelete: () => {
-                          const newInputs = propertyData.inputs?.filter(p => p.name !== param.name)
-                          setPropertyData({ ...propertyData, inputs: newInputs })
-                        }
-                      })}>
+                      onClick={() =>
+                        openModal('edit-blueprint-param', ({ id }) => (
+                          <EditBlueprintParamModal id={id} data={param} onSave={(value: Param) => {
+                            let newInputs = [ ...propertyData.inputs || [] ]
+                
+                            const index = newInputs.findIndex(p => p.name === param.name)
+                
+                            if (index === -1) return
+                
+                            newInputs[index] = value
+                
+                            setPropertyData({ ...propertyData, inputs: newInputs })
+                          }} onDelete={() => {
+                            const newInputs = propertyData.inputs?.filter(p => p.name !== param.name)
+                            setPropertyData({ ...propertyData, inputs: newInputs })
+                          }} />
+                        ))}>
                       <p>{param.name} - {param.type}{param.isArray ? '(Array)' : ''}</p>
                     </div>
                   )
@@ -181,21 +192,6 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
             </div>
           )
         }
-
-        <EditStringModal data={editOption} isOpen={editOption !== null}
-          requestClose={() => setEditOption(null)}
-          onSave={(data) => {
-            let newOptions = [ ...propertyData.options || [] ]
-
-            const index = newOptions.findIndex(o => o === editOption)
-
-            if (index === -1) return
-
-            newOptions[index] = data
-
-            setPropertyData({ ...propertyData, options: newOptions })
-          }}
-        />
       </ModalBody>
 
       <ModalFooter>

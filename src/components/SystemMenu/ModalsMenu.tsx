@@ -1,47 +1,40 @@
-import { useEffect, useMemo, useState } from 'react'
-import { editorState, setCreatorPage } from '@state/editor'
 import { useEditor, Element } from '@craftjs/core'
-import Select from '@components/inputs/Select'
-import React from 'react'
-import { getDefaultNodes } from '@blueprints/utils'
-import FAB from '@designer/FloatingActionButton'
-import Searchbar from '@designer/Searchbar'
-import EditPageStateModal from '@modals/EditPageState'
-import EditStringModal from '@modals/EditString'
-import { openModal } from '@state/modals'
-import Divider from '@components/Divider'
-import Button from '@components/inputs/Button'
 
-import Container from '@designer/components/Container/Editor'
-import DesignerDivider from '@designer/components/Divider'
-import Text from '@designer/components/Text/Editor'
+import React, { useMemo, useState } from 'react'
+import { getDefaultNodes } from '../../blueprints/utils'
+import FAB from '../../designer/FloatingActionButton'
+import Text from '../../designer/components/Text/Editor'
+import Searchbar from '../../designer/Searchbar'
+import EditPageStateModal from '../../modals/EditPageState'
+import { editorState, setModal } from '../../state/editor'
+import Divider from '../Divider'
+import DesignerDivider from '../../designer/components/Divider'
+import EditStringModal from '../../modals/EditString'
+import Container from '../../designer/components/Container/Editor'
+import Layers from '../../designer/Layers/Layers'
+import Select from '../inputs/Select'
+import Button from '../inputs/Button'
+import { openModal } from '../../state/modals'
+import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '../../utils/system'
+import { SystemData } from '../../storage/schemas/system'
+import storeMutation from '../../storage/methods/versionedresources/storeMutation'
+import BlueprintEditor from '../../modals/BlueprintEditor'
+import { VersionedResource } from '../../storage/schemas/versionedResource'
 
-import Layers from '@designer/Layers/Layers'
-import EditorSelect from '@designer/components/Select/Editor'
-import InputEditor from '@designer/components/Input/Editor'
-import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '@utils/system'
-import { SystemData } from '@storage/schemas/system'
-import storeMutation from '@storage/methods/versionedresources/storeMutation'
-import { useVersionEdits } from '@hooks/useVersionEdits'
-import BlueprintEditor from '@modals/BlueprintEditor'
+interface Props {
+  versionEdits: Omit<VersionedResource, 'data'> & { data: SystemData }
+}
 
-
-const CreatorMenu: React.FC = () => {
+function ModalsMenu({ versionEdits }: Props) {
   const editor = editorState.useValue()
 
-  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
-
-  const page = useMemo(() => versionEdits?.data.creator.find(p => p.name === editor.creatorPage), [versionEdits, editor.creatorPage])
+  const page = useMemo(() => versionEdits?.data.modals.find(p => p.name === editor.modalsPage), [versionEdits, editor.modalsPage])
 
   const [tab, setTab] = useState('components')
 
   const [editingState, setEditingState] = useState<{ name: string, type: any, value?: any } | null>(null)
 
-  const [editName, setEditName] = useState<any>(null)
-
-  const { connectors } = useEditor()
-
-  const { selected, actions } = useEditor((state, query) => {
+  const { selected, actions, connectors } = useEditor((state, query) => {
     const [currentNodeId] = state.events.selected
     let selected;
 
@@ -57,16 +50,16 @@ const CreatorMenu: React.FC = () => {
     return { selected }
   })
 
-  if (!versionEdits) return <></>
+  if (!versionEdits) return <p>loading...</p>
 
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Select id='page' label='Page' value={editor.creatorPage} onChange={setCreatorPage}>
-          {versionEdits.data.creator.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
+        <Select id='page' label='Page' value={editor.modalsPage} onChange={setModal}>
+          {versionEdits.data.modals.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
         </Select>
 
-        <button type='button' onClick={() => storeMutation(versionEdits.local_id, addPage(versionEdits.data, 'builder'))} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
+        <button type='button' onClick={() => storeMutation(editor.versionId, addPage(versionEdits.data, 'modal'))} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
           <svg
             className='w-5 h-5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
             <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />
@@ -120,22 +113,6 @@ const CreatorMenu: React.FC = () => {
                 </p>
               </div>
 
-              <div className='flex items-center p-4 border' ref={ref => connectors.create(ref!, <EditorSelect />)}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mr-4" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/><path fill="none" stroke="currentColor" strokeLinecap="round" strokeMiterlimit="10" strokeWidth="32" d="M338.29 338.29L448 448"/></svg>
-
-                <p className='text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base'>
-                  Select
-                </p>
-              </div>
-
-              <div className='flex items-center p-4 border' ref={ref => connectors.create(ref!, <InputEditor />)}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mr-4" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/><path fill="none" stroke="currentColor" strokeLinecap="round" strokeMiterlimit="10" strokeWidth="32" d="M338.29 338.29L448 448"/></svg>
-
-                <p className='text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base'>
-                  Text Input
-                </p>
-              </div>
-
               <div className='flex items-center p-4 border' ref={ref => connectors.create(ref!, <DesignerDivider />)}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mr-4" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M400 256H112"/></svg>
 
@@ -167,27 +144,24 @@ const CreatorMenu: React.FC = () => {
           </>
         ) : (tab === 'state') ? (
           <>
-            <EditStringModal data={editName} isOpen={editName !== null}
-              requestClose={() => setEditName(null)}
-              onSave={(newName) => {
-                storeMutation(versionEdits.local_id, renamePage(versionEdits.data, 'builder', editName, newName))
-                setCreatorPage(newName)
-              }}
-            />
-
             <div className='inline-flex rounded-md shadow-sm my-2'>
               <Button color='danger' disabled={versionEdits.data.pages.length <= 1} onClick={() => {
-                storeMutation(versionEdits.local_id, deletePage(versionEdits.data, 'builder', editor.creatorPage))
+                storeMutation(editor.versionId, deletePage(versionEdits.data, 'modal', editor.modalsPage))
               }}>
                 Delete
               </Button>
 
-              <Button color='light' onClick={() => setEditName(editor.creatorPage)}>Rename</Button>
+              <Button color='primary' onClick={() => openModal('rename-modal', ({ id }) => (
+                <EditStringModal id={id} title='Rename Page' data={editor.modalsPage} onSave={async newName => {
+                  await storeMutation(editor.versionId, renamePage(versionEdits.data, 'modal', editor.modalsPage, newName))
+                  setModal(newName)
+                }} />
+              ))}>Rename</Button>
             </div>
 
-            <Button color='light' onClick={() =>
+            <Button color='light' onClick={() => 
               openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'builder', editor.creatorPage, bp))} />
+                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'modal', editor.modalsPage, bp))} />
               ))
             }>
               Edit Page Blueprint
@@ -198,7 +172,7 @@ const CreatorMenu: React.FC = () => {
                 <h5>Page State</h5>
               </div>
 
-              <button onClick={() => storeMutation(versionEdits.local_id, addPageState(versionEdits.data, 'builder', editor.creatorPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], inputs: [], outputType: 'none', isOutputAnArray: false }))}
+              <button onClick={() => storeMutation(versionEdits.local_id, addPageState(versionEdits.data, 'modal', editor.modalsPage, 'newState', { type: 'string', isArray: false, useTextArea: false, options: [], outputType: 'string', isOutputAnArray: false, inputs: [] }))}
                 type='button'
                 className='text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'
               >
@@ -212,12 +186,9 @@ const CreatorMenu: React.FC = () => {
 
             <Divider />
 
-            <div className='pt-2 flex flex-col gap-y-2'>
+            <div>
               {page?.state.map((state) => (
-                <div key={state.name}
-                  className='bg-neutral-50 border border-neutral-300 text-neutral-900 p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:text-white'
-                  onClick={() => setEditingState(state)}
-                >
+                <div key={state.name} onClick={() => setEditingState(state)}>
                   <p>{state.name} | {state.type.type}{state.type.isArray ? '(Array)': ''}</p>
                 </div>
               ))}
@@ -225,8 +196,8 @@ const CreatorMenu: React.FC = () => {
 
             <EditPageStateModal isOpen={editingState !== null}
               requestClose={() => setEditingState(null)} data={editingState}
-              onSave={(newState) => storeMutation(versionEdits.local_id, updatePageState(versionEdits.data, 'builder', editor.creatorPage, editingState!.name, { ...newState, value: undefined }))}
-              onDelete={() => {}}
+              onSave={(newState) => storeMutation(versionEdits.local_id, updatePageState(versionEdits.data, 'modal', editor.modalsPage, editingState!.name, { ...newState, value: undefined }))}
+              onDelete={() => {}} // TODO:(Cosmic) Implement
             />
           </>
         ) : null
@@ -237,5 +208,4 @@ const CreatorMenu: React.FC = () => {
   )
 }
 
-export default CreatorMenu
-
+export default ModalsMenu

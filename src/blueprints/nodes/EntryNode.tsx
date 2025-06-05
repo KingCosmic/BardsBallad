@@ -14,7 +14,6 @@ import {
 import { Param } from '@blueprints/utils'
 
 import { editorState } from '@state/editor'
-import { useSystem } from '@hooks/useSystem'
 import { SystemData, type SystemType } from '@storage/schemas/system'
 import { useVersionEdits } from '@hooks/useVersionEdits'
 
@@ -36,7 +35,7 @@ const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:strin
 
     updateNodeData(id, { outputs })
     updateNodeInternals(id)
-  }, [params, version])
+  }, [params])
 
   return (
     <Card title='Entry'>
