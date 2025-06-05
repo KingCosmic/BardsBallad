@@ -1,11 +1,11 @@
 import { memo, PropsWithChildren, useCallback, useMemo } from 'react'
 
-import { AddData, useLocalData } from '../../renderer/Context'
-import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
+import { AddData, useLocalData } from '@designer/renderer/Context'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { ContainerProps } from './Editor'
 import styles from './styles'
-import globalStyles from '../../styles'
+import globalStyles from '@designer/styles'
 
 export default (props: PropsWithChildren<ContainerProps>) => {
   const localData = useLocalData()

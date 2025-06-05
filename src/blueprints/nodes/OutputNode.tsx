@@ -10,8 +10,8 @@ import {
   useUpdateNodeInternals
 } from '@xyflow/react'
 
-import { Param } from '../utils'
-import Card from '../../components/Card'
+import { Param } from '@blueprints/utils'
+import Card from '@components/Card'
  
 function OutputNode({ id, data: { param, inputType } }: NodeProps<Node<{ param: Param, inputType: string }>>) {
   const { updateNodeData } = useReactFlow()
@@ -66,3 +66,4 @@ function OutputNode({ id, data: { param, inputType } }: NodeProps<Node<{ param: 
 }
  
 export default memo(OutputNode)
+

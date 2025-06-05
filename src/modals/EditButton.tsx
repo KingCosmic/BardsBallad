@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { BlueprintData } from '../types/blueprint'
+import { BlueprintData } from '@/types/blueprint'
 
-import { openModal } from '../state/modals'
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import TextInput from '../components/inputs/TextInput';
-import Button from '../components/inputs/Button';
+import { openModal } from '@state/modals'
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import TextInput from '@components/inputs/TextInput';
+import Button from '@components/inputs/Button';
 import BlueprintEditor from './BlueprintEditor';
 
 type Props = {

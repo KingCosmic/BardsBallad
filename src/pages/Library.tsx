@@ -1,13 +1,13 @@
-import Header from '../components/Header'
+import Header from '@components/Header'
 
-import FloatingActionButton from '../components/FloatingActionButton'
+import FloatingActionButton from '@components/FloatingActionButton'
 import React, { useState } from 'react'
-import { openModal } from '../state/modals'
-import importSystem from '../storage/methods/systems/importSystem'
-import { useSubscriptions } from '../hooks/useSubscriptions'
-import SubscriptionCard from '../components/Library/SubscriptionCard'
-import ImportFile from '../modals/ImportFile'
-import CreateSubscription from '../modals/CreateSubscription'
+import { openModal } from '@state/modals'
+import importSystem from '@storage/methods/systems/importSystem'
+import { useSubscriptions } from '@hooks/useSubscriptions'
+import SubscriptionCard from '@components/Library/SubscriptionCard'
+import CreateSubscription from '@modals/CreateSubscription'
+import ImportFile from '@modals/ImportFile'
 
 const Library: React.FC = () => {
   const { subscriptions, isLoading } = useSubscriptions()
@@ -81,3 +81,4 @@ const Library: React.FC = () => {
 }
 
 export default Library
+

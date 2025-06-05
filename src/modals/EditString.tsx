@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
-import TextInput from '../components/inputs/TextInput';
-import { closeModal } from '../state/modals';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
+import TextInput from '@components/inputs/TextInput';
+import { closeModal } from '@state/modals';
 
 type Props = {
   id: number;

@@ -8,7 +8,7 @@ import {
   useReactFlow
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
+import Card from '@components/Card'
  
 function ConcatString({ id, data: { string1, string2 } }: NodeProps<Node<{ string1: string; string2: string; }>>) {
   const { updateNodeData } = useReactFlow()

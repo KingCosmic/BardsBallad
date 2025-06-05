@@ -9,12 +9,13 @@ import {
   useUpdateNodeInternals,
   useNodeConnections
 } from '@xyflow/react'
-import Card from '../../components/Card'
-import Select from '../../components/inputs/Select'
-import TextInput from '../../components/inputs/TextInput'
-import { editorState } from '../../state/editor'
-import { useVersionEdits } from '../../hooks/useVersionEdits'
-import { SystemData } from '../../storage/schemas/system'
+
+import Card from '@components/Card'
+import Select from '@components/inputs/Select'
+import TextInput from '@components/inputs/TextInput'
+import { editorState } from '@state/editor'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { SystemData } from '@storage/schemas/system'
 
 const OpenModal: React.FC<NodeProps<Node<{ type: string, title: string, inputType: string }>>> = ({ id, data: { type, title, inputType } }) => {
   const { updateNodeData } = useReactFlow()

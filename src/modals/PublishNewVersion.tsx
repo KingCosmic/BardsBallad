@@ -1,14 +1,14 @@
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
-import Select from '../components/inputs/Select';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
+import Select from '@components/inputs/Select';
 import { useEffect, useState } from 'react';
-import { useVersions } from '../hooks/useVersions';
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
-import { useOurSystems } from '../hooks/useOurSystems';
-import TextInput from '../components/inputs/TextInput';
+import { useVersions } from '@hooks/useVersions';
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
+import { useOurSystems } from '@hooks/useOurSystems';
+import TextInput from '@components/inputs/TextInput';
 
 type Props = {
   data: string | null;

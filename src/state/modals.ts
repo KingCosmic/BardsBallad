@@ -1,7 +1,5 @@
 import { newRidgeState } from 'react-ridge-state'
 
-import { ReactElement } from 'react'
-
 type ModalInfo = {
   id: number;
   tag: string;

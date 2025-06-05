@@ -1,18 +1,18 @@
-import { type UserSubscription } from '../../storage/schemas/userSubscription';
-import { useSubscriptionData } from '../../hooks/useSubscriptionData';
-import { authState } from '../../state/auth';
-import createSubscription from '../../storage/methods/subscriptions/createSubscription';
-import { createSystem } from '../../storage/methods/systems';
-import createVersionedResource from '../../storage/methods/versionedresources/createVersionedResource';
-import { System } from '../../storage/schemas/system';
-import { VersionedResource } from '../../storage/schemas/versionedResource';
+import { type UserSubscription } from '@storage/schemas/userSubscription';
+import { useSubscriptionData } from '@hooks/useSubscriptionData';
+import { authState } from '@state/auth';
+import createSubscription from '@storage/methods/subscriptions/createSubscription';
+import { createSystem } from '@storage/methods/systems';
+import createVersionedResource from '@storage/methods/versionedresources/createVersionedResource';
+import { System } from '@storage/schemas/system';
+import { VersionedResource } from '@storage/schemas/versionedResource';
 import { useNavigate } from 'react-router';
-import getVisualTextFromVersionID from '../../utils/getVisualTextFromVersionID';
-import JSONToFile from '../../utils/JSONToFile';
-import DropdownButton from '../DropdownButton';
-import ConfirmModal from '../../modals/ConfirmModal';
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
+import JSONToFile from '@utils/JSONToFile';
+import DropdownButton from '@components/DropdownButton';
+import ConfirmModal from '@modals/ConfirmModal';
 
-import { openModal } from '../../state/modals'
+import { openModal } from '@state/modals'
 
 type Props = {
   subscription: UserSubscription;
@@ -114,3 +114,4 @@ const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
 };
 
 export default SubscriptionCard;
+

@@ -4,14 +4,14 @@ import { Background, Connection, Controls, Edge, MiniMap, OnBeforeDelete, Panel,
  
 import '@xyflow/react/dist/style.css'
 
-import NodeContextMenu from '../blueprints/NodeContextMenu'
-import { BlueprintData } from '../types/blueprint'
-import ContextMenu from '../blueprints/ContextMenu'
+import NodeContextMenu from '@blueprints/NodeContextMenu'
+import { BlueprintData } from '@/types/blueprint'
+import ContextMenu from '@blueprints/ContextMenu'
 
-import nodeTypes from '../blueprints/nodeTypes'
-import Button from '../components/inputs/Button'
-import { useBlueprint } from '../hooks/useBlueprint'
-import { closeModal } from '../state/modals'
+import nodeTypes from '@blueprints/nodeTypes'
+import Button from '@components/inputs/Button'
+import { useBlueprint } from '@hooks/useBlueprint'
+import { closeModal } from '@state/modals'
 
 type ModalProps = {
   id: number;

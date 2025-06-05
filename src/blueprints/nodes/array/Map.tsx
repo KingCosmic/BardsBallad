@@ -10,11 +10,11 @@ import {
   useNodeConnections
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
-import Select from '../../../components/inputs/Select'
-import { editorState } from '../../../state/editor'
-import { useVersionEdits } from '../../../hooks/useVersionEdits'
-import { SystemData } from '../../../storage/schemas/system'
+import Card from '@components/Card'
+import Select from '@components/inputs/Select'
+import { editorState } from '@state/editor'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { SystemData } from '@storage/schemas/system'
  
 function Map({ id, data: { inputType, mapType } }: NodeProps<Node<{ inputType: string, mapType: string }>>) {
   const { updateNodeData } = useReactFlow()

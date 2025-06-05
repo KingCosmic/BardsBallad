@@ -1,6 +1,6 @@
 import React, { createContext, PropsWithChildren, useCallback, useState } from 'react';
 
-import { ToastContext } from '../hooks/useToast';
+import { ToastContext } from '@hooks/useToast';
 import Toast from './Toast';
 
 import { v4 as uuid } from "uuid";

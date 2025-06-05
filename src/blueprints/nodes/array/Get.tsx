@@ -11,10 +11,10 @@ import {
   useNodesData
 } from '@xyflow/react'
 
-import { editorState } from '../../../state/editor'
-import Card from '../../../components/Card'
-import system, { SystemData, type SystemType } from '../../../storage/schemas/system'
-import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import { editorState } from '@state/editor'
+import Card from '@components/Card'
+import system, { SystemData, type SystemType } from '@storage/schemas/system'
+import { useVersionEdits } from '@hooks/useVersionEdits'
 
  
 function Add({ id, data: { inputType } }: NodeProps<Node<{ inputType: string }>>) {

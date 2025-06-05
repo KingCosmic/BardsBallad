@@ -1,4 +1,4 @@
-import { openSidebar } from '../state/sidebar'
+import { openSidebar } from '@state/sidebar'
 
 const MenuButton: React.FC = () => {
   return (

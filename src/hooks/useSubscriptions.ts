@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../storage'
+import { db } from '@/storage'
 
 export function useSubscriptions() {
   const subscriptions = useLiveQuery(async () => {

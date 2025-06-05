@@ -9,12 +9,12 @@ import {
   useUpdateNodeInternals
 } from '@xyflow/react'
 
-import { editorState } from '../../../state/editor'
-import { SystemData, type TypeData } from '../../../storage/schemas/system'
+import { editorState } from '@state/editor'
+import { SystemData, type TypeData } from '@storage/schemas/system'
 
-import Select from '../../../components/inputs/Select'
-import Card from '../../../components/Card'
-import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import Select from '@components/inputs/Select'
+import Card from '@components/Card'
+import { useVersionEdits } from '@hooks/useVersionEdits'
  
 function GetPageDataNode({ id, data: { chosenState } }: NodeProps<Node<{ chosenState: { name: string, type: TypeData } | null }>>) {
   const { updateNodeData } = useReactFlow()

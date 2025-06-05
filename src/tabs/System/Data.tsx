@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react'
-import EditSystemData from '../../modals/EditSystemData'
-import FloatingActionButton from '../../components/FloatingActionButton'
-import { updateSystemData, deleteSystemData, addSystemData } from '../../utils/system'
+import EditSystemData from '@modals/EditSystemData'
+import FloatingActionButton from '@components/FloatingActionButton'
+import { updateSystemData, deleteSystemData, addSystemData } from '@utils/system'
 
-import { type DataType } from '../../storage/schemas/system'
-import { VersionedResource } from '../../storage/schemas/versionedResource'
-import storeMutation from '../../storage/methods/versionedresources/storeMutation'
+import { type DataType } from '@storage/schemas/system'
+import { VersionedResource } from '@storage/schemas/versionedResource'
+import storeMutation from '@storage/methods/versionedresources/storeMutation'
 
 type DataProps = {
   editsId: string
@@ -27,7 +27,7 @@ const Data: React.FC<DataProps> = ({ editsId, versionedResource }) => {
         requestClose={() => setEditData(null)}
         data={editData!}
       />
-      
+
       {/* TODO: Searchbar */}
 
       <div className='flex flex-col gap-1'>

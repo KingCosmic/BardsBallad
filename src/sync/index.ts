@@ -1,15 +1,16 @@
-import { checkInternetAccess, setSyncedCharacters } from '../lib/api'
-import { SyncStorage } from '../lib/storage'
-import { openModal } from '../state/modals'
+import { SyncStorage } from '@lib/storage'
+import { openModal } from '@state/modals'
 
 import { get as systemsGet, bulkPut as systemsBulkPut, pull as systemsPull, push as systemsPush } from './systems'
 import { get as versionsGet, bulkPut as versionsBulkPut, pull as versionsPull, push as versionsPush } from './versions'
 import { get as charactersGet, bulkPut as charactersBulkPut, pull as charactersPull, push as charactersPush } from './characters'
 import { get as subscriptionsGet, bulkPut as subscriptionsBulkPut, pull as subscriptionsPull, push as subscriptionsPush } from './subscriptions'
-import { setOnlineState, syncState } from '../state/sync'
-import { authState } from '../state/auth'
+import { setOnlineState, syncState } from '@state/sync'
+import { authState } from '@state/auth'
+import {setSyncedCharacters} from "@api/setSyncedCharacters";
+import {checkInternetAccess} from "@api/checkInternetAccess";
 import React from 'react'
-import HandleConflicts from '../modals/HandleConflicts'
+import HandleConflicts from '@modals/HandleConflicts'
 
 const batchSize = 10
 
@@ -193,7 +194,7 @@ window.addEventListener('online', async () => {
   const isOnline = await checkInternetAccess()
 
   setOnlineState(isOnline)
-  
+
   if (!isOnline) {
     console.log('not connected')
   }
@@ -205,6 +206,6 @@ window.addEventListener('offline', () => {
   console.log('offline')
 
   setOnlineState(false)
-  
+
   // TODO: not sure what to do here yet. Maybe just cancel the websocket connection?
 })

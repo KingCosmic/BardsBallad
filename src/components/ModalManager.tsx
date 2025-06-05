@@ -1,4 +1,4 @@
-import { modalState } from '../state/modals'
+import { modalState } from '@state/modals'
 
 const ModalManager = () => {
   const modals = modalState.useValue()

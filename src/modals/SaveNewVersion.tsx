@@ -1,10 +1,11 @@
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
+import Select from '@components/inputs/Select';
 import { useCallback } from 'react';
-import { closeModal } from '../state/modals';
+import { closeModal } from '@state/modals';
 
 type Props = {
   id: number;

@@ -1,7 +1,7 @@
 import { newRidgeState } from 'react-ridge-state'
 
 import { jwtDecode } from 'jwt-decode'
-import { AuthStorage, SyncStorage } from '../lib/storage';
+import { AuthStorage, SyncStorage } from '@lib/storage';
 
 type User = {
   id: string;
@@ -9,6 +9,7 @@ type User = {
   email: string;
   role: number;
   synced_characters: string[];
+  discord_id: string;
 }
 
 type AuthState = {
@@ -56,3 +57,4 @@ export const logout = () => {
 }
 
 loadToken()
+

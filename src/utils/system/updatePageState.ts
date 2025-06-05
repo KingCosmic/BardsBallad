@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import { SystemData, TypeData } from '../../storage/schemas/system';
+import { SystemData, TypeData } from '@storage/schemas/system';
 
 export default async (data: SystemData, pageType: 'character' | 'builder' | 'modal', pageName: string, oldName: string, state: { name: string, type: TypeData, value: any }) => {
   return produce(data, draft => {

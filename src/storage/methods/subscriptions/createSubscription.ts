@@ -1,13 +1,13 @@
-import SubcriptionSchema from '../../schemas/userSubscription'
-import { db } from '../../index'
+import SubscriptionSchema from '@/storage/schemas/userSubscription'
+import { db } from '@/storage'
 
 import { v4 as uuidv4 } from 'uuid'
-import { authState } from '../../../state/auth'
-import { AuthStorage } from '../../../lib/storage'
-import generateLocalId from '../../../utils/generateLocalId'
-import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
+import { authState } from '@state/auth'
+import { AuthStorage } from '@lib/storage'
+import generateLocalId from '@utils/generateLocalId'
+import ensureUniqueness from '@utils/db/ensureIdUniqueness'
 
-type Types = 'system' | 'character' | 'module' | 'plugin'
+type Types = 'system' | 'theme' | 'datapack'
 
 export default async (type: Types, resource_id: string, version_id: string, auto_update: boolean) => {
   try {
@@ -37,7 +37,7 @@ export default async (type: Types, resource_id: string, version_id: string, auto
       deleted_at: null,
     }
 
-    const result = SubcriptionSchema.safeParse(subscriptionData);
+    const result = SubscriptionSchema.safeParse(subscriptionData);
     if (!result.success) {
       console.log('Invalid subscription data:', result.error.format());
       return;

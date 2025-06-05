@@ -1,8 +1,8 @@
-import { VersionedResource } from '../../schemas/versionedResource'
-import { db } from '../../index'
-import generateLocalId from '../../../utils/generateLocalId'
-import { authState } from '../../../state/auth'
-import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
+import { VersionedResource } from '@storage/schemas/versionedResource'
+import { db } from '@/storage'
+import generateLocalId from '@utils/generateLocalId'
+import { authState } from '@state/auth'
+import ensureUniqueness from '@utils/db/ensureIdUniqueness'
 
 export default async (oldResource: VersionedResource, new_id?: string) => {
   try {

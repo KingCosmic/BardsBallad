@@ -2,22 +2,22 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'react-router'
 
-import RenderEditorData from '../designer/RenderEditorData'
+import RenderEditorData from '@designer/RenderEditorData'
 
-import Header from '../components/Header'
+import Header from '@components/Header'
 
-import Select from '../components/inputs/Select'
-import { useCharacter } from '../hooks/useCharacter'
+import Select from '@components/inputs/Select'
+import { useCharacter } from '@hooks/useCharacter'
 
 import lz from 'lzutf8'
-import { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
+import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 import { deepEqual } from 'fast-equals'
-import { updateCharacterData } from '../storage/methods/characters'
-import { Character } from '../storage/schemas/character'
+import { updateCharacterData } from '@storage/methods/characters'
+import { Character } from '@storage/schemas/character'
 
-import { type PageData, SystemData } from '../storage/schemas/system'
-import getVersionedResource from '../storage/methods/versionedresources/getVersionedResource'
-import CharacterSidebar from '../sidebars/Character'
+import { type PageData, SystemData } from '@storage/schemas/system'
+import getVersionedResource from '@storage/methods/versionedresources/getVersionedResource'
+import CharacterSidebar from '@sidebars/Character'
 
 const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()

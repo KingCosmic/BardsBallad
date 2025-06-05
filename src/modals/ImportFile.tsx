@@ -1,13 +1,13 @@
 import { string } from 'zod';
-import Button from '../components/inputs/Button';
-import TextInput from '../components/inputs/TextInput';
-import Modal from '../components/Modal';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import ModalHeader from '../components/Modal/Header';
-import FileUpload from '../components/inputs/FileUpload';
+import Button from '@components/inputs/Button';
+import TextInput from '@components/inputs/TextInput';
+import Modal from '@components/Modal';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import ModalHeader from '@components/Modal/Header';
+import FileUpload from '@components/inputs/FileUpload';
 import { useCallback, useState } from 'react';
-import { closeModal } from '../state/modals';
+import { closeModal } from '@state/modals';
 
 type Props = {
   id: number

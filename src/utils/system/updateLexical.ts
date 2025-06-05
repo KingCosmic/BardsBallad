@@ -1,10 +1,10 @@
 import { produce } from 'immer';
-import { editorState } from '../../state/editor';
+import { editorState } from '@state/editor';
 
 import lz from 'lzutf8';
-import { SystemData } from '../../storage/schemas/system';
-import { db } from '../../storage';
-import { VersionedResource } from '../../storage/schemas/versionedResource';
+import { SystemData } from '@storage/schemas/system';
+import { VersionedResource } from '@storage/schemas/versionedResource';
+import { db } from '@storage/index';
 
 export default async (version_id: string, lexical: string) => {
   if (lexical === '{}') return

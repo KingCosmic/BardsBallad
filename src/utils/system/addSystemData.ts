@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import { SystemData } from '../../storage/schemas/system';
+import { SystemData } from '@storage/schemas/system';
 
 export default async (data: SystemData) => {
   return produce(data, draft => {

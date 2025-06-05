@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
-import Button from '../components/inputs/Button'
-import TextInput from '../components/inputs/TextInput'
-import Modal from '../components/Modal'
-import ModalBody from '../components/Modal/Body'
-import ModalHeader from '../components/Modal/Header'
-import { login, register } from '../lib/api'
-import { closeModal } from '../state/modals'
+import Button from '@components/inputs/Button'
+import TextInput from '@components/inputs/TextInput'
+import Modal from '@components/Modal'
+import ModalBody from '@components/Modal/Body'
+import ModalHeader from '@components/Modal/Header'
+import { login } from "@api/login";
+import { register } from "@api/register";
+import { closeModal } from '@state/modals'
 
 type Props = {
   id: number
@@ -111,3 +112,4 @@ const AuthModal: React.FC<Props> = ({ id }) => {
 }
 
 export default AuthModal
+

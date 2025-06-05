@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 
 import { produce } from 'immer'
-import EditSystemData from '../../modals/EditSystemData'
-import FloatingActionButton from '../../components/FloatingActionButton'
-import { setDefaultCharacterData } from '../../utils/system'
+import EditSystemData from '@modals/EditSystemData'
+import FloatingActionButton from '@components/FloatingActionButton'
+import { setDefaultCharacterData } from '@utils/system'
 
-import { type SystemType, type TypeData, type DataType } from '../../storage/schemas/system'
-import { VersionedResource } from '../../storage/schemas/versionedResource'
-import storeMutation from '../../storage/methods/versionedresources/storeMutation'
+import { type SystemType, type TypeData, type DataType } from '@storage/schemas/system'
+import { VersionedResource } from '@storage/schemas/versionedResource'
+import storeMutation from '@storage/methods/versionedresources/storeMutation'
 
 type CharacterProps = {
   editsId: string
@@ -39,7 +39,7 @@ const Character: React.FC<CharacterProps> = ({ editsId, versionedResource }) => 
             delete draft[editData?.name || '']
 
             draft[key] = value
-            
+
             for (let i = 0; i < draft._type.properties.length; i++) {
               const type = (draft._type.properties[i] as { key: string; typeData: TypeData })
 

@@ -1,11 +1,11 @@
 
 import DesignerMenu from './EditorMenu'
 
-import { editorState } from '../../state/editor'
+import { editorState } from '@state/editor'
 import CreatorMenu from './CreatorMenu'
 import ModalsMenu from './ModalsMenu'
-import { useVersionEdits } from '../../hooks/useVersionEdits'
-import { SystemData } from '../../storage/schemas/system'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { SystemData } from '@storage/schemas/system'
 
 function SystemMenu() {
   const editor = editorState.useValue()

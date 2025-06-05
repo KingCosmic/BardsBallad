@@ -6,7 +6,7 @@ import {
   type Node,
   Position,
 } from '@xyflow/react'
-import Card from '../../../components/Card';
+import Card from '@components/Card';
  
 function Floor(_props: NodeProps<Node<{ number: number; }>>) {
   return (

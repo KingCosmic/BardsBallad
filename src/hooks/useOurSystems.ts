@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../storage'
-import { authState } from '../state/auth'
+import { db } from '@/storage'
+import { authState } from '@state/auth'
 
 export function useOurSystems() {
   const systems = useLiveQuery(() => db.systems.toArray(), [])
@@ -19,3 +19,4 @@ export function useOurSystems() {
 
   return { systems: filteredSystems || [], isLoading: (systems === undefined) }
 }
+

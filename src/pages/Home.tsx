@@ -1,4 +1,4 @@
-import Header from '../components/Header'
+import Header from '@components/Header'
 import React from "react";
 
 const items: { title: string; date: string; description: string; }[] = [
@@ -89,3 +89,4 @@ const Home: React.FC = () => {
 }
 
 export default Home
+

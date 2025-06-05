@@ -1,8 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
-import { pullUpdatesForCharacters, pushUpdatesForCharacters } from '../lib/api'
-import { AuthStorage, SyncStorage } from '../lib/storage'
-import { db } from '../storage'
-import { Character } from '../storage/schemas/character'
+import { AuthStorage, SyncStorage } from '@lib/storage'
+import { db } from '@/storage'
+import { Character } from '@storage/schemas/character'
+import {pullUpdatesForCharacters} from "@api/pullUpdatesForCharacters";
+import {pushUpdatesForCharacters} from "@api/pushUpdatesForCharacters";
 
 const CHECKPOINT = 'character-checkpoint'
 
@@ -22,9 +23,9 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   const characters = await db.characters.toArray()
 
   const user = jwtDecode<{ id: String, role: number }>(await AuthStorage.get('token'))
-  
+
   if (!user) return { conflicts: [], metadata: [] }
-  
+
   const isPremium = user.role > 0
 
   const updatedCharacters = await SyncStorage.get<string[]>('updated_characters') || []

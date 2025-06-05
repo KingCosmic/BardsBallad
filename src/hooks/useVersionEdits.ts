@@ -1,7 +1,7 @@
-import { db } from '../storage'
-import { VersionedResource } from '../storage/schemas/versionedResource'
+import { db } from '@/storage'
+import { VersionedResource } from '@storage/schemas/versionedResource'
 import { useMemo } from 'react'
-import duplicateVersionedResource from '../storage/methods/versionedresources/duplicateVersionedResource'
+import duplicateVersionedResource from '@storage/methods/versionedresources/duplicateVersionedResource'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 export function useVersionEdits<T>(edit_id: string | undefined): (Omit<VersionedResource, 'data'> & { data: T }) | undefined {

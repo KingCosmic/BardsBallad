@@ -1,20 +1,23 @@
-import Header from '../components/Header'
+import Header from '@components/Header'
 
-import Select from '../components/inputs/Select'
+import Select from '@components/inputs/Select'
 
-import { themesState } from '../state/themes'
-import { setErudaActive, setTheme, settingsState } from '../state/settings'
-import Checkbox from '../components/inputs/Checkbox'
-import Button from '../components/inputs/Button'
-import { logout, openBilling, subscribe } from '../lib/api'
-import { authState } from '../state/auth'
-import getPermsFromRole from '../utils/getPermsFromRole'
-import { openModal } from '../state/modals'
-import Tabs from '../components/Tabs'
+import { themesState } from '@state/themes'
+import { setErudaActive, setTheme, settingsState } from '@state/settings'
+import Checkbox from '@components/inputs/Checkbox'
+import Button from '@components/inputs/Button'
+import { authState } from '@state/auth'
+import getPermsFromRole from '@utils/getPermsFromRole'
+import { openModal } from '@state/modals'
+import Tabs from '@components/Tabs'
 import React from "react";
-import clearLocalStorage from '../utils/clearLocalStorage'
-import ConfirmModal from '../modals/ConfirmModal'
-import AuthModal from '../modals/Auth'
+import {subscribe} from "@api/subscribe";
+import {openBilling} from "@api/openBilling";
+import {logout} from "@api/logout";
+import {getDiscordLogin} from "@utils/getDiscordLogin";
+import ConfirmModal from '@modals/ConfirmModal'
+import AuthModal from '@modals/Auth'
+import clearLocalStorage from '@utils/clearLocalStorage'
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {
@@ -52,6 +55,21 @@ const tabs = [
                 {(user.role < 200) ? 'Subscribe' : (user.role < 300) ? 'Manage Subscription' : 'Thank you for everything!'}
               </Button>
             </div>
+
+            {!user.discord_id && (
+              <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-indigo-500 border'>
+                <p className='text-lg'>Discord Integration</p>
+                <p className='mb-4'>Link your Discord account to access additional features</p>
+                <Button color='primary' onClick={async () => {
+                  const url = await getDiscordLogin()
+                  if (url) {
+                    window.open(url, '_self')
+                  }
+                }}>
+                  Connect Discord Account
+                </Button>
+              </div>
+            )}
 
             <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-red-500 border'>
               <p className='text-lg'>Danger Zone</p>

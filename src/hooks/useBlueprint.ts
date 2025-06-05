@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Node, Edge, NodeChange, applyNodeChanges, EdgeChange, applyEdgeChanges, Connection, addEdge } from '@xyflow/react'
-import { BlueprintData } from '../types/blueprint'
+import { BlueprintData } from '@/types/blueprint'
 
 export function useBlueprint(data: BlueprintData) {
   const [nodes, setNodes] = useState<Node[]>([])

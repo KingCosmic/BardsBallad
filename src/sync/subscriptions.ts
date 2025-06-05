@@ -1,8 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
-import { pullUpdatesForSubscriptions, pushUpdatesForSubscriptions } from '../lib/api'
-import { AuthStorage, SyncStorage } from '../lib/storage'
-import { db } from '../storage'
-import { UserSubscription } from '../storage/schemas/userSubscription'
+import { AuthStorage, SyncStorage } from '@lib/storage'
+import { db } from '@/storage'
+import { UserSubscription } from '@storage/schemas/userSubscription'
+import {pushUpdatesForSubscriptions} from "@api/pushUpdatesForSubscriptions";
+import {pullUpdatesForSubscriptions} from "@api/pullUpdatesForSubscriptions";
 
 const CHECKPOINT = 'subscription-checkpoint'
 
@@ -58,3 +59,4 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 export const bulkPut = async (docs: UserSubscription[]) => db.subscriptions.bulkPut(docs)
 
 export const get = async () => await db.subscriptions.toArray()
+

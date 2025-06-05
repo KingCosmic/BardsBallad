@@ -9,11 +9,11 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 
-import { editorState } from '../../../state/editor'
-import Card from '../../../components/Card'
-import Select from '../../../components/inputs/Select'
-import { useVersionEdits } from '../../../hooks/useVersionEdits'
-import { SystemData } from '../../../storage/schemas/system'
+import { editorState } from '@state/editor'
+import Card from '@components/Card'
+import Select from '@components/inputs/Select'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { SystemData } from '@storage/schemas/system'
  
 function Create({ id, data: { outputType } }: NodeProps<Node<{ outputType: string }>>) {
   const { updateNodeData } = useReactFlow()

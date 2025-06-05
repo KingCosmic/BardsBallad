@@ -9,14 +9,14 @@ import {
   useUpdateNodeInternals
 } from '@xyflow/react'
 
-import getTypeFromProperty from '../../../utils/getTypeOfProperty'
+import getTypeFromProperty from '@utils/getTypeOfProperty'
 
-import TextInput from '../../../components/inputs/TextInput'
-import Card from '../../../components/Card'
-import { editorState } from '../../../state/editor'
-import { useSystem } from '../../../hooks/useSystem'
-import { useVersionEdits } from '../../../hooks/useVersionEdits'
-import system, { SystemData } from '../../../storage/schemas/system'
+import TextInput from '@components/inputs/TextInput'
+import Card from '@components/Card'
+import { editorState } from '@state/editor'
+import { useSystem } from '@hooks/useSystem'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import system, { SystemData } from '@storage/schemas/system'
  
 function SetCharacterDataNode({ id, data: { path, type } }: NodeProps<Node<{ path: string; type: string; }>>) {
   const { updateNodeData } = useReactFlow()

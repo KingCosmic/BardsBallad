@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import { SystemData } from '../../storage/schemas/system';
+import { SystemData } from '@storage/schemas/system';
 
 export default (data: SystemData, pageType: 'character' | 'builder' | 'modal', name: string) => {
   return produce(data, draft => {

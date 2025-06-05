@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Checkbox from '../components/inputs/Checkbox';
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
-import { getVersionsForItem } from '../lib/api';
-import DropdownButton from '../components/DropdownButton';
-import { closeModal } from '../state/modals';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Checkbox from '@components/inputs/Checkbox';
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
+import DropdownButton from '@components/DropdownButton';
+import {getVersionsForItem} from "@api/getVersionsForItem";
+import { closeModal } from '@state/modals';
 
 type Props = {
   id: number;
@@ -94,3 +94,4 @@ const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name', 
 }
 
 export default MarketplaceViewModal
+

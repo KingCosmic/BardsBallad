@@ -1,31 +1,31 @@
-import CharacterCreatorModal from '../modals/CharacterCreator';
+import CharacterCreatorModal from '@modals/CharacterCreator';
 
 import React, { useState } from 'react';
-import Header from '../components/Header';
+import Header from '@components/Header';
 import { NavLink, useNavigate } from 'react-router';
-import FloatingActionButton from '../components/FloatingActionButton';
-import { useCharacters } from '../hooks/useCharacters';
-import { openModal } from '../state/modals';
-import { authState } from '../state/auth';
+import FloatingActionButton from '@components/FloatingActionButton';
+import { useCharacters } from '@hooks/useCharacters';
+import { openModal } from '@state/modals';
+import { authState } from '@state/auth';
 
 import {
   renameCharacter,
   deleteCharacter,
   importCharacter,
-} from '../storage/methods/characters';
-import { setSyncedCharacters } from '../lib/api';
-import JSONToFile from '../utils/JSONToFile';
-import { useSystems } from '../hooks/useSystems';
-import { useVersions } from '../hooks/useVersions';
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
+} from '@storage/methods/characters';
+import JSONToFile from '@utils/JSONToFile';
+import { useSystems } from '@hooks/useSystems';
+import { useVersions } from '@hooks/useVersions';
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
 
-import { Menu, MenuItem } from '../components/DropdownMenu';
-import isPremium from '../utils/isPremium';
-import DropdownButton from '../components/DropdownButton';
-import { Character } from '../storage/schemas/character';
-import EditStringModal from '../modals/EditString';
-import ConfirmModal from '../modals/ConfirmModal';
-import ImportFile from '../modals/ImportFile';
+import { Menu, MenuItem } from '@components/DropdownMenu';
+import isPremium from '@utils/isPremium';
+import DropdownButton from '@components/DropdownButton';
+import { Character } from '@storage/schemas/character';
+import {setSyncedCharacters} from "@api/setSyncedCharacters";
+import EditStringModal from '@modals/EditString';
+import ConfirmModal from '@modals/ConfirmModal';
+import ImportFile from '@modals/ImportFile';
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters();

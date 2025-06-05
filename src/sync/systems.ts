@@ -1,8 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
-import { pullUpdatesForSystems, pushUpdatesForSystems } from '../lib/api'
-import { AuthStorage, SyncStorage } from '../lib/storage'
-import { db } from '../storage'
-import { System } from '../storage/schemas/system'
+import { AuthStorage, SyncStorage } from '@lib/storage'
+import { db } from '@/storage'
+import { System } from '@storage/schemas/system'
+import {pushUpdatesForSystems} from "@api/pushUpdatesForSystems";
+import {pullUpdatesForSystems} from "@api/pullUpdatesForSystems";
 
 const CHECKPOINT = 'system-checkpoint'
 
@@ -53,3 +54,4 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 export const bulkPut = async (docs: System[]) => db.systems.bulkPut(docs)
 
 export const get = async () => await db.systems.toArray()
+

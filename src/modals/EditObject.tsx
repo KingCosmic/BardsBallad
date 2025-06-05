@@ -2,21 +2,21 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { produce } from 'immer'
 
-import setNestedProperty from '../utils/setNestedProperty'
-import generateObject from '../utils/generateObject'
-import Divider from '../components/Divider';
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
-import TextInput from '../components/inputs/TextInput';
-import Textarea from '../components/inputs/Textarea';
-import Checkbox from '../components/inputs/Checkbox';
-import Select from '../components/inputs/Select';
-import { closeModal, openModal } from '../state/modals';
+import setNestedProperty from '@utils/setNestedProperty'
+import generateObject from '@utils/generateObject'
+import Divider from '@components/Divider';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
+import TextInput from '@components/inputs/TextInput';
+import Textarea from '@components/inputs/Textarea';
+import Checkbox from '@components/inputs/Checkbox';
+import Select from '@components/inputs/Select';
+import { openModal } from '@state/modals';
 
-import { type SystemType, type TypeData } from '../storage/schemas/system'
+import { type SystemType, type TypeData } from '@storage/schemas/system'
 import BlueprintEditor from './BlueprintEditor';
 
 type ModalProps = {

@@ -1,29 +1,29 @@
 import { useEffect, useMemo, useState } from 'react'
-import { editorState, setCreatorPage } from '../../state/editor'
+import { editorState, setCreatorPage } from '@state/editor'
 import { useEditor, Element } from '@craftjs/core'
-import Select from '../inputs/Select'
+import Select from '@components/inputs/Select'
 import React from 'react'
-import { getDefaultNodes } from '../../blueprints/utils'
-import FAB from '../../designer/FloatingActionButton'
-import Searchbar from '../../designer/Searchbar'
-import EditPageStateModal from '../../modals/EditPageState'
-import EditStringModal from '../../modals/EditString'
-import { openModal } from '../../state/modals'
-import Divider from '../Divider'
-import Button from '../inputs/Button'
+import { getDefaultNodes } from '@blueprints/utils'
+import FAB from '@designer/FloatingActionButton'
+import Searchbar from '@designer/Searchbar'
+import EditPageStateModal from '@modals/EditPageState'
+import EditStringModal from '@modals/EditString'
+import { openModal } from '@state/modals'
+import Divider from '@components/Divider'
+import Button from '@components/inputs/Button'
 
-import Container from '../../designer/components/Container/Editor'
-import DesignerDivider from '../../designer/components/Divider'
-import Text from '../../designer/components/Text/Editor'
+import Container from '@designer/components/Container/Editor'
+import DesignerDivider from '@designer/components/Divider'
+import Text from '@designer/components/Text/Editor'
 
-import Layers from '../../designer/Layers/Layers'
-import EditorSelect from '../../designer/components/Select/Editor'
-import InputEditor from '../../designer/components/Input/Editor'
-import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '../../utils/system'
-import { SystemData } from '../../storage/schemas/system'
-import storeMutation from '../../storage/methods/versionedresources/storeMutation'
-import { useVersionEdits } from '../../hooks/useVersionEdits'
-import BlueprintEditor from '../../modals/BlueprintEditor'
+import Layers from '@designer/Layers/Layers'
+import EditorSelect from '@designer/components/Select/Editor'
+import InputEditor from '@designer/components/Input/Editor'
+import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '@utils/system'
+import { SystemData } from '@storage/schemas/system'
+import storeMutation from '@storage/methods/versionedresources/storeMutation'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import BlueprintEditor from '@modals/BlueprintEditor'
 
 
 const CreatorMenu: React.FC = () => {
@@ -238,3 +238,4 @@ const CreatorMenu: React.FC = () => {
 }
 
 export default CreatorMenu
+
