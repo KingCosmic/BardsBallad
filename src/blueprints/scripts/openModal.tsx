@@ -53,7 +53,7 @@ export default {
       type: modal.name,
       renderElement: (id: number, processor: BlueprintProcessor, title: string, data: any, save: (nd: any) => void, cancel: () => void) => {
         return (
-          <SystemModalRendererModal id={id} state={processor.getState()} title={title} updateState={processor.callback} onSave={save} />
+          <SystemModalRendererModal id={id} state={{ ...processor.getState(), page: modal }} title={title} updateState={processor.callback} onSave={save} />
         )
       }
     })) ]
