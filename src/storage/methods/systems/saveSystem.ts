@@ -1,7 +1,7 @@
-import SystemSchema, { type System } from '@storage/schemas/system'
-import { db } from '@/storage'
+import SystemSchema from '@storage/schemas/system'
+import { db, Item } from '@/storage'
 
-export default async (sys: System): Promise<System | null> => {
+export default async (sys: Item): Promise<Item | null> => {
   try {
     if (await db.systems.get(sys.local_id)) {
       return null

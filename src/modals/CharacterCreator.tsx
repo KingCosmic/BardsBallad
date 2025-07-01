@@ -20,11 +20,12 @@ import { deepEqual } from 'fast-equals'
 import { useCharacters } from '@hooks/useCharacters'
 
 import { createCharacter } from '@storage/methods/characters'
-import { type System, type PageData } from '@storage/schemas/system'
+import { type PageData } from '@storage/schemas/system'
 
 import { usePostHog } from 'posthog-js/react'
 import { VersionedResource } from '@storage/schemas/versionedResource'
 import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID'
+import { Item } from '@storage/index'
 
 function CharacterCreatorModal(props: any) {
   const { systems } = useSystems()
@@ -33,7 +34,7 @@ function CharacterCreatorModal(props: any) {
 
   const posthog = usePostHog()
 
-  const [system, setSystem] = useState<System | undefined>()
+  const [system, setSystem] = useState<Item | undefined>()
   const [version, setVersion] = useState<VersionedResource | undefined>()
 
   const [tab, setTab] = useState(0)

@@ -11,10 +11,9 @@ export function useOurSystems() {
 
   // filter out deleted systems and systems not owned by us
   const filteredSystems = systems?.filter(sys => {
-    const wasDeleted = sys.deleted_at
     const doWeOwnIt = (sys.user_id === user_id)
 
-    return (!wasDeleted && doWeOwnIt)
+    return doWeOwnIt
   })
 
   return { systems: filteredSystems || [], isLoading: (systems === undefined) }

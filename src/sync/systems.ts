@@ -1,7 +1,6 @@
 import { jwtDecode } from 'jwt-decode'
 import { AuthStorage, SyncStorage } from '@lib/storage'
-import { db } from '@/storage'
-import { System } from '@storage/schemas/system'
+import { db, Item } from '@/storage'
 import {pushUpdatesForSystems} from "@api/pushUpdatesForSystems";
 import {pullUpdatesForSystems} from "@api/pullUpdatesForSystems";
 
@@ -39,7 +38,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 
     const pushedCharacterRef = characters.find(c => c.system.local_id === s.local_id && synced.includes)
 
-    // if a character we're syncing relies on this character we need to sync it too.
+    // if a character we're syncing relies on this system we need to sync it too.
     const referencedByChar = (pushedCharacterRef !== undefined)
 
     // if this system hasn't been synced and we're a premium user it should be synced.
@@ -51,7 +50,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   return await pushUpdatesForSystems(systemsToPush)
 }
 
-export const bulkPut = async (docs: System[]) => db.systems.bulkPut(docs)
+export const bulkPut = async (docs: Item[]) => db.systems.bulkPut(docs)
 
 export const get = async () => await db.systems.toArray()
 

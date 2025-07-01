@@ -1,11 +1,11 @@
-import SystemSchema, { type System } from '@storage/schemas/system'
-import { db } from '@/storage'
+import SystemSchema from '@storage/schemas/system'
+import { db, Item } from '@/storage'
 import generateLocalId from '@utils/generateLocalId'
 import { authState } from '@state/auth'
 import versionedResourceSchema, { VersionedResource } from '@storage/schemas/versionedResource'
 import ensureUniqueness from '@utils/db/ensureIdUniqueness'
 
-export default async (sys: System, version: VersionedResource) => {
+export default async (sys: Item, version: VersionedResource) => {
   try {
     let system_local_id = await generateLocalId()
 

@@ -10,13 +10,14 @@ import Select from '@components/inputs/Select';
 import { closeModal } from '@state/modals'
 import { useSystems } from '@hooks/useSystems';
 import { useVersions } from '@hooks/useVersions';
-import { System, SystemData } from '@storage/schemas/system';
+import { SystemData } from '@storage/schemas/system';
 import { VersionedResource } from '@storage/schemas/versionedResource';
 import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
 import createWholeSubscription from '@storage/methods/subscriptions/createWholeSubscription';
 import generateObject from '@utils/generateObject';
 
 import { sha256 } from 'js-sha256'
+import { Item } from '@storage/index';
 
 type Props = {
   id: number;
@@ -28,7 +29,7 @@ type SystemVersion = Omit<VersionedResource, 'data'> & { data?: SystemData }
 const CreateSubscriptionModal: React.FC<Props> = ({ id, onCreate }) => {
   const [name, setName] = useState('')
   const [type, setType] = useState<'system' | 'datapack'>('system')
-  const [system, setSystem] = useState<System | undefined>()
+  const [system, setSystem] = useState<Item | undefined>()
   const [version, setVersion] = useState<SystemVersion | undefined>()
 
   const { systems } = useSystems()

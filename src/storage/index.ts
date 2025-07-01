@@ -1,7 +1,6 @@
 import Dexie, { EntityTable } from 'dexie';
 
 import { type Character } from './schemas/character'
-import { type System } from './schemas/system'
 import { type UserSubscription } from './schemas/userSubscription'
 import { VersionedResource } from './schemas/versionedResource';
 
@@ -29,7 +28,7 @@ export type Item = z.infer<typeof itemSchema>;
 export const db = new Dexie('bardsballad') as Dexie & {
   characters: EntityTable<Character, 'local_id'>;
 
-  systems: EntityTable<System, 'local_id'>;
+  systems: EntityTable<Item, 'local_id'>;
   datapacks: EntityTable<Item, 'local_id'>;
 
   subscriptions: EntityTable<UserSubscription, 'local_id'>;

@@ -6,7 +6,7 @@ export function useSystems() {
     const sys = await db.systems.toArray()
 
     // filter out deleted characters
-    return sys.filter(sys => !sys.deleted_at)
+    return sys
   }, [])
 
   return { systems: systems || [], isLoading: (systems === undefined) }

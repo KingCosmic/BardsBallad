@@ -80,7 +80,7 @@
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 /* Track */
@@ -91,7 +91,7 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-600);
+  background: var(--neutral-600);
   border-radius: 5px;
 }
 

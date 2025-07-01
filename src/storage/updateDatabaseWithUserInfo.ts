@@ -1,6 +1,5 @@
-import { db } from '.'
+import { db, Item } from '.'
 import { type Character } from './schemas/character'
-import { System } from './schemas/system'
 import { UserSubscription } from './schemas/userSubscription'
 import { VersionedResource } from './schemas/versionedResource'
 
@@ -36,7 +35,7 @@ export async function updateDatabaseWithUserInfo(user_id: string, device_id: str
   })
 
   // These are updated docs (user_id, and local_id are updated. to reflect the user authentication.)
-  let updatedSystems: System[] = []
+  let updatedSystems: Item[] = []
   systems.forEach((sys) => {
     const [char_device_id, ...old_uuid] = sys.local_id.split('-')
 

@@ -1,5 +1,5 @@
-import {System} from "@storage/schemas/system";
 import api from "@lib/api";
+import { Item } from '@storage/index';
 
 /**
  * Sends a batch of system update items to the server for processing.
@@ -11,6 +11,6 @@ import api from "@lib/api";
  * @param {System[]} items - An array of system objects to be pushed to the server.
  * @returns {Promise<any>} A promise resolving to the response data from the API.
  */
-export const pushUpdatesForSystems = async (items: System[]): Promise<any> => {
+export const pushUpdatesForSystems = async (items: Item[]): Promise<any> => {
     return await api.post('/systems/push', items).then((response) => response.data)
 }

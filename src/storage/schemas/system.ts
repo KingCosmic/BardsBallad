@@ -90,6 +90,6 @@ export type ActionType = z.infer<typeof actionSchema>;
 export type TypeData = z.infer<typeof typeDataSchema>;
 export type PageData = z.infer<typeof pageDataSchema>;
 export type DataType = z.infer<typeof dataTypeSchema>;
-export type System = z.infer<typeof systemSchema>;
+// export type System = z.infer<typeof systemSchema>;
 
 export default systemSchema
