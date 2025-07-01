@@ -68,21 +68,21 @@ export function SelectSettings() {
           dynamicOptions ? (
             <Button color='light' onClick={() =>
               openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={optionsBlueprint} onSave={(bp) => {
+                <BlueprintEditor id={id} data={optionsBlueprint}onSave={(bp) => {
                   setProp((props: any) => {
-                  props.optionsBlueprint = bp
+                    props.optionsBlueprint = bp
 
-                  props.onChange = {
-                    edges: props.onChange.edges,
-                    nodes: updateParams(props.onChange.nodes, [ ...localParams, {
-                      name: 'selectedValue',
-                      type: getReturnTypeOfBlueprint(bp),
-                      isArray: false
-                    } ])
-                  }
+                    props.onChange = {
+                      edges: props.onChange.edges,
+                      nodes: updateParams(props.onChange.nodes, [ ...localParams, {
+                        name: 'selectedValue',
+                        type: getReturnTypeOfBlueprint(bp),
+                        isArray: false
+                      } ])
+                    }
 
-                  return props
-                })
+                    return props
+                  })
                 }} />
               ))}>
               Options Blueprint

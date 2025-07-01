@@ -114,7 +114,6 @@ export async function updateDatabaseWithUserInfo(user_id: string, device_id: str
     })
   })
 
-  // TODO: loop over new data and update references...
   updatedChars = updatedChars.map(char => ({
     ...char,
     system: { local_id: idMap.get(char.system.local_id)!, version_id: idMap.get(char.system.version_id)! }
@@ -122,15 +121,12 @@ export async function updateDatabaseWithUserInfo(user_id: string, device_id: str
 
   // Systems may need to be added at some point.
 
-  // These TODOS may become useless once we make the client make sure id's are completely unique across tables (since versions may reference different tables.)
-  // TODO: update this to grab new id based off resource_type.
   updatedSubscriptions = updatedSubscriptions.map(sub => ({
     ...sub,
     resource_id: idMap.get(sub.resource_id)!,
     version_id: idMap.get(sub.version_id)!
   }))
 
-  // TODO: update this to grab new id based off reference_type.
   updatedVersions = updatedVersions.map(ver => ({
     ...ver,
     reference_id: idMap.get(ver.reference_id)!

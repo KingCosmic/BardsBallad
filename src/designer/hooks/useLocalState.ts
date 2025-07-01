@@ -17,7 +17,8 @@ function getStateRecursive(query: any, id: string): any {
 
   const parent = query.node(node.data.parent).get()
 
-  // TODO: we need to combine these arrays while removing duplicate name entries.
+  return [ ...(parent.data.props.local || []), ...getStateRecursive(query, parent.id).filter((local: { name: string }) => (parent.data.props.local || []).find((pl: { name: string }) => pl.name === local.name)) ]
 
-  return [ ...(parent.data.props.local || []), ...getStateRecursive(query, parent.id) ]
+  // incase the above doesn't work.
+  // return [ ...(parent.data.props.local || []), ...getStateRecursive(query, parent.id) ]
 }

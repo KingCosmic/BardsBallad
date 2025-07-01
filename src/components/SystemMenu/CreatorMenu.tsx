@@ -167,14 +167,6 @@ const CreatorMenu: React.FC = () => {
           </>
         ) : (tab === 'state') ? (
           <>
-            <EditStringModal data={editName} isOpen={editName !== null}
-              requestClose={() => setEditName(null)}
-              onSave={(newName) => {
-                storeMutation(versionEdits.local_id, renamePage(versionEdits.data, 'builder', editName, newName))
-                setCreatorPage(newName)
-              }}
-            />
-
             <div className='inline-flex rounded-md shadow-sm my-2'>
               <Button color='danger' disabled={versionEdits.data.pages.length <= 1} onClick={() => {
                 storeMutation(versionEdits.local_id, deletePage(versionEdits.data, 'builder', editor.creatorPage))
@@ -182,7 +174,12 @@ const CreatorMenu: React.FC = () => {
                 Delete
               </Button>
 
-              <Button color='light' onClick={() => setEditName(editor.creatorPage)}>Rename</Button>
+              <Button color='light' onClick={() => openModal('rename-page', ({ id }) => (
+                <EditStringModal id={id} title='Rename Page' data={editor.characterPage} onSave={async newName => {
+                  await storeMutation(editor.versionId, renamePage(versionEdits.data, 'character', editor.characterPage, newName))
+                  setCreatorPage(newName)
+                }} />
+              ))}>Rename</Button>
             </div>
 
             <Button color='light' onClick={() =>

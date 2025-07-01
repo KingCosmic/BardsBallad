@@ -1,51 +1,61 @@
-import { type UserSubscription } from '@storage/schemas/userSubscription';
-import { useSubscriptionData } from '@hooks/useSubscriptionData';
-import { authState } from '@state/auth';
-import createSubscription from '@storage/methods/subscriptions/createSubscription';
-import { createSystem } from '@storage/methods/systems';
-import createVersionedResource from '@storage/methods/versionedresources/createVersionedResource';
-import { System } from '@storage/schemas/system';
-import { VersionedResource } from '@storage/schemas/versionedResource';
-import { useNavigate } from 'react-router';
-import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
-import JSONToFile from '@utils/JSONToFile';
-import DropdownButton from '@components/DropdownButton';
-import ConfirmModal from '@modals/ConfirmModal';
+import { type UserSubscription } from '@storage/schemas/userSubscription'
+import { useSubscriptionData } from '@hooks/useSubscriptionData'
+import { authState } from '@state/auth'
+import createSubscription from '@storage/methods/subscriptions/createSubscription'
+import { createSystem, deleteSystem } from '@storage/methods/systems'
+import createVersionedResource from '@storage/methods/versionedresources/createVersionedResource'
+import { System } from '@storage/schemas/system'
+import { VersionedResource } from '@storage/schemas/versionedResource'
+import { useNavigate } from 'react-router'
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID'
+import JSONToFile from '@utils/JSONToFile'
+import DropdownButton from '@components/DropdownButton'
+import ConfirmModal from '@modals/ConfirmModal'
 
 import { openModal } from '@state/modals'
+import { addToast } from '@state/toasts'
+import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource'
 
 type Props = {
   subscription: UserSubscription;
-};
+}
 
 const forkSystem = async (baseData: System, versionData: VersionedResource) => {
-  const newSys = await createSystem(baseData);
+  // TODO:(Cosmic) Make this fork function work with other data types.
+  const newSys = await createSystem(baseData)
 
-  if (!newSys) return;
+  if (!newSys) {
+    return addToast('Error creating forked system, try again.', 'error')
+  }
 
   const newVers = await createVersionedResource(
     'system',
     newSys.local_id,
     versionData.data
-  );
+  )
 
-  // TODO: if this check fails we should cleanup the system we just made :)
-  if (!newVers) return;
+  if (!newVers) {
+    deleteSystem(newSys.local_id, true)
+    return addToast('Error creating new version data for forked system, cleaning up...', 'error')
+  }
 
   const newSub = await createSubscription(
     'system',
     newSys.local_id,
     newVers.local_id,
     false
-  );
+  )
 
-  // TODO: if this check fails we should cleanup the system, and version we just made :)
-  if (!newSub) return;
-};
+  if (!newSub) {
+    deleteSystem(newSys.local_id, true)
+    deleteVersionedResource(newVers.local_id, true)
+    return addToast('Error creating subscription for new system, cleaning up...', 'error')
+  }
+}
 
 const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
   const { query, isLoading } = useSubscriptionData(subscription);
-  let navigate = useNavigate();
+  let navigate = useNavigate()
 
   const { user } = authState.useValue();
 

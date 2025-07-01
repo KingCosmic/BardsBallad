@@ -57,10 +57,10 @@ const Library: React.FC = () => {
         )}
 
         <FloatingActionButton isOpen={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} buttons={[
-          { name: 'Create System', icon: '', onClick: () =>
+          { name: 'Create', icon: '', onClick: () =>
               openModal('create-subscription', ({ id }) => <CreateSubscription id={id} onCreate={() => {}} />)
           },
-          { name: 'Import System', icon: '', onClick: () =>
+          { name: 'Import', icon: '', onClick: () =>
               openModal('import-system', ({ id }) => <ImportFile id={id} title='Import System' onSave={async (fileContent: string) => {
                 try {
                   const parsed = JSON.parse(fileContent)

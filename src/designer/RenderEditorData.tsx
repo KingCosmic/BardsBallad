@@ -1,6 +1,7 @@
 import ContainerPreview from './components/Container/Preview'
 import TextPreview from './components/Text/Preview'
 import { DividerPreview as Divider } from './components/Divider'
+import { SearchbarPreview } from './Searchbar'
 
 import { AddData } from './renderer/Context'
 import { FABPreview } from './FloatingActionButton'
@@ -53,6 +54,8 @@ const NodeRenderer: React.FC<RendererProps> = ({ node, data, state, updateState 
       return <SelectPreview {...node.props} state={state} updateState={updateState} />
     case 'TextInput':
       return <InputPreview {...node.props} state={state} updateState={updateState} />
+    case 'Searchbar':
+      return <SearchbarPreview />
     default:
       return <h1>No component for type {type}</h1> 
   }

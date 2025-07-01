@@ -31,8 +31,6 @@ function EditorMenu() {
 
   const [editingState, setEditingState] = useState<{ name: string, type: any, value?: any } | null>(null)
 
-  const [editName, setEditName] = useState<any>(null)
-
   const { connectors } = useEditor()
 
   const { selected, actions } = useEditor((state, query) => {

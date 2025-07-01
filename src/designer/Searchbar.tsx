@@ -1,5 +1,6 @@
 import { useNode } from '@craftjs/core'
 import { BlueprintData } from '@/types/blueprint'
+import CompSearchbar from '@components/Searchbar'
 
 type SearchbarProps = {
   placeholder: string;
@@ -10,7 +11,15 @@ function Searchbar({ placeholder }: SearchbarProps) {
   const { connectors: { connect, drag } } = useNode()
 
   return (
-    <div ref={ref => connect(drag(ref!))} />
+    <div ref={ref => connect(drag(ref!))}>
+      <CompSearchbar filters={[]} placeholder='testing' onSearch={() => {}} />
+    </div>
+  )
+}
+
+export function SearchbarPreview() {
+  return (
+    <CompSearchbar filters={[]} placeholder='testing' onSearch={() => {}} />
   )
 }
 

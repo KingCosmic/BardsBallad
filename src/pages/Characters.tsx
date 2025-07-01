@@ -91,55 +91,57 @@ const Characters: React.FC = () => {
       <div className="p-4">
         {/* TODO: Searchbar */}
 
-        {characters.length ? (
-          characters.map((char) => (
-            <div
-              key={char.local_id}
-              className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
-            >
-              <NavLink
-                to={char.local_id}
-                className="flex items-start space-x-4"
+        <div className='sm:flex md:flex md:grid-cols-2 lg:grid-cols-3 gap-4'>
+          {characters.length ? (
+            characters.map((char) => (
+              <div
+                key={char.local_id}
+                className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
               >
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
-                  <span className="text-xl font-bold text-white">
-                    {char.name[0]}
-                  </span>
-                </div>
+                <NavLink
+                  to={char.local_id}
+                  className="flex items-start space-x-4"
+                >
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
+                    <span className="text-xl font-bold text-white">
+                      {char.name[0]}
+                    </span>
+                  </div>
 
-                <div className="flex-1 min-w-0">
-                  <h5 className="text-xl font-semibold text-neutral-900 truncate dark:text-white">
-                    {char.name}
-                  </h5>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    {
-                      systems.find((s) => s.local_id === char.system.local_id)
-                        ?.name
-                    }{' '}
-                    • Version{' '}
-                    {getVisualTextFromVersionID(
-                      versions.find(
-                        (v) => v.local_id === char.system.version_id
-                      )?.local_id ?? ''
-                    )}
-                  </p>
-                </div>
-              </NavLink>
+                  <div className="flex-1 min-w-0">
+                    <h5 className="text-xl font-semibold text-neutral-900 truncate dark:text-white">
+                      {char.name}
+                    </h5>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                      {
+                        systems.find((s) => s.local_id === char.system.local_id)
+                          ?.name
+                      }{' '}
+                      • Version{' '}
+                      {getVisualTextFromVersionID(
+                        versions.find(
+                          (v) => v.local_id === char.system.version_id
+                        )?.local_id ?? ''
+                      )}
+                    </p>
+                  </div>
+                </NavLink>
 
-              <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
-                <DropdownButton
-                  label="Edit"
-                  onClick={() => navigate(char.local_id)}
-                  options={getOptions(char)}
-                />
+                <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
+                  <DropdownButton
+                    label="Edit"
+                    onClick={() => navigate(char.local_id)}
+                    options={getOptions(char)}
+                  />
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <h5>
-            Doesn't look like you have any characters yet? Try creating one!
-          </h5>
-        )}
+            ))
+          ) : (
+            <h5>
+              Doesn't look like you have any characters yet? Try creating one!
+            </h5>
+          )}
+        </div>
 
         <FloatingActionButton
           isOpen={isOpen}

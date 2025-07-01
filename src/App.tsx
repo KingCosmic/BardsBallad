@@ -13,27 +13,10 @@ import System from './pages/System'
 import { applyTheme } from './state/settings'
 import Settings from './pages/Settings'
 
-import { sync } from './sync'
 import SubscriptionConfirmation from './pages/SubscriptionConfirmation'
 import Marketplace from './pages/Marketplace'
-import { updateDatabaseWithUserInfo } from './storage/updateDatabaseWithUserInfo'
-import { authState } from './state/auth'
-import { AuthStorage } from './lib/storage'
 import { useEffect } from 'react'
-
-// TODO: get rid of these.
-// @ts-ignore
-window.trySync = sync
-
-// @ts-ignore
-window.updateFromAuth = async () => {
-  const { user } = authState.get()
-  const user_id = (user) ? user.id : 'none'
-
-  const device_id = await AuthStorage.get<string>('deviceId') || ''
-
-  await updateDatabaseWithUserInfo(user_id, device_id)
-}
+import DataPack from '@pages/DataPack'
 
 applyTheme()
 
@@ -68,6 +51,8 @@ const App: React.FC = () => {
             <Route index element={<Library />} />
 
             <Route path='system/:id' element={<System />} />
+
+            <Route path='datapack/:id' element={<DataPack />} />
           </Route>
 
           <Route path='settings' element={<Settings />} />

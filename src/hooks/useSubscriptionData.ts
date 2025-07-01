@@ -10,6 +10,9 @@ export function useSubscriptionData(sub: UserSubscription) {
       case 'system':
         baseData = await db.systems.where('local_id').equals(sub.resource_id).toArray()
         break
+      case 'datapack':
+        baseData = await db.datapacks.where('local_id').equals(sub.resource_id).toArray()
+        break
     }
 
     if (!baseData || baseData.length === 0) {

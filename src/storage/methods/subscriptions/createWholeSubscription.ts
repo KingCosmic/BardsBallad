@@ -1,38 +1,44 @@
-import SystemSchema, { type System } from '@storage/schemas/system'
-import { db } from '@/storage'
+import { db, itemSchema } from '@/storage'
 import generateLocalId from '@utils/generateLocalId'
 import { authState } from '@state/auth'
-import versionedResourceSchema, { VersionedResource } from '@storage/schemas/versionedResource'
+import versionedResourceSchema from '@storage/schemas/versionedResource'
 import ensureUniqueness from '@utils/db/ensureIdUniqueness'
+import { addToast } from '@state/toasts'
 
-export default async (sys: System, version: VersionedResource) => {
+export default async (name: string, type: 'system' | 'datapack', data: any) => {
   try {
-    let system_local_id = await generateLocalId()
+    let pack_local_id = await generateLocalId()
 
-    while (!await ensureUniqueness(system_local_id)) {
-      system_local_id = await generateLocalId()
+    while (!await ensureUniqueness(pack_local_id)) {
+      pack_local_id = await generateLocalId()
     }
-
 
     const { user } = authState.get()
     const user_id = (user) ? user.id : 'none'
 
-    const sysData = {
-      ...sys,
-      local_id: system_local_id,
+    const itemData = {
+      name,
+      local_id: pack_local_id,
       user_id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       deleted_at: null
     }
 
-    const systemResult = SystemSchema.safeParse(sysData);
+    const systemResult = itemSchema.safeParse(itemData);
     if (!systemResult.success) {
-      console.log('Invalid system data:', systemResult.error.format());
+      console.log('Invalid pack data:', systemResult.error.format());
       return;
     }
 
-    await db.systems.add(sysData);
+    switch (type) {
+      case 'system':
+        await db.systems.add(itemData)
+        break;
+      case 'datapack':
+        await db.datapacks.add(itemData)
+        break;
+    }
 
     let version_local_id = await generateLocalId()
 
@@ -41,9 +47,10 @@ export default async (sys: System, version: VersionedResource) => {
     }
 
     const versData = {
-      ...version,
+      data,
       local_id: version_local_id,
-      reference_id: system_local_id,
+      reference_id: pack_local_id,
+      reference_type: type,
       user_id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -70,8 +77,8 @@ export default async (sys: System, version: VersionedResource) => {
     
       user_id: user_id,
     
-      resource_type: 'system',
-      resource_id: system_local_id,
+      resource_type: type,
+      resource_id: pack_local_id,
       version_id: version_local_id,
       auto_update: false,
     
@@ -80,6 +87,7 @@ export default async (sys: System, version: VersionedResource) => {
       deleted_at: null,
     })
   } catch (e) {
-    console.log('Error importing system or version or creating subscription:', e);
+    addToast('Error creating subscription data. If this continues please post a issue in our discord.', 'error')
+    console.log('Error creating pack or version or creating subscription:', e);
   }
 }
