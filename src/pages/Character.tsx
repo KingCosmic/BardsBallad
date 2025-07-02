@@ -63,9 +63,10 @@ const CharacterPage: React.FC = () => {
   return (
     <div className='flex flex-col h-full w-full'>
       <p id='loading-text' className='hidden'>loading...</p>
+
       <Header title={character.name} hasSidebar />
 
-      <div className='p-4 sm:mr-64 flex flex-col flex-grow overflow-hidden lg:grid grid-cols-2'>
+      <div className='p-4 lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
 
         <div className='relative w-full h-full flex flex-col flex-grow overflow-hidden'>
           <div className='overflow-y-scroll p-2 max-h-full'>
@@ -73,7 +74,7 @@ const CharacterPage: React.FC = () => {
           </div>
         </div>
 
-        <div className='relative hidden flex-col lg:flex flex-grow overflow-hidden'>
+        <div className='relative hidden flex-col xl:flex flex-grow overflow-hidden'>
           <div className='overflow-y-scroll p-2 max-h-full'>
             <RenderTab className='second-tab-selector' system={system} character={character} updateState={updateState} />
           </div>

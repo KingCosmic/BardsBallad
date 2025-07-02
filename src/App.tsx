@@ -33,6 +33,32 @@ const App: React.FC = () => {
     return () => window.removeEventListener('resize', setVH);
   }, [])
 
+  useEffect(() => {
+    // Create floating particles
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 8 + 's';
+      particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+      document.getElementById('particleContainer')!.appendChild(particle);
+      
+      setTimeout(() => {
+        particle.remove();
+      }, 18200);
+    }
+
+    // Generate particles periodically
+    const interval = setInterval(createParticle, 2000);
+    
+    // Initial burst of particles
+    for (let i = 0; i < 5; i++) {
+      setTimeout(createParticle, i * 400);
+    }
+
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <BrowserRouter>
       <Routes>

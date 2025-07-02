@@ -25,7 +25,7 @@ const characterSchema = z.object({
   // a random hash, a quick glance at whether or not update conflicts are happening.
   version: z.string().optional(),
 
-  // TODO: add datapack support. should be array of objects with properties, pack_id and version_id
+  datapacks: z.array(z.object({ pack_id: z.string(), version_id: z.string() })),
 
   // some time stamps to keep track of actions.
   created_at: z.string().datetime({ offset: true }),
