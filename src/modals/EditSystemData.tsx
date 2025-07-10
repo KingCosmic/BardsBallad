@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { produce } from 'immer'
 
@@ -17,18 +17,18 @@ import Checkbox from '@components/inputs/Checkbox'
 import Textarea from '@components/inputs/Textarea'
 
 import { type SystemType, type TypeData, type DataType } from '@storage/schemas/system'
+import { closeModal, openModal } from '@state/modals'
 
 type ModalProps = {
+  id: number;
   onDelete?(): void;
   onSave(newData: any): void;
   
-  isVisible: boolean;
   data: DataType;
   types: SystemType[];
-  requestClose(): void;
 }
 
-function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data }: ModalProps) {
+function EditSystemData({ id, types, onDelete, onSave, data }: ModalProps) {
   const [dataCopy, setDataCopy] = useState<DataType>({ name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' })
 
   const [type, setType] = useState<SystemType | null>(types.find(type => type.name === dataCopy.typeData.type) || null)
@@ -48,10 +48,12 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
     setType(types.find(type => type.name === dc.typeData.type) || null)
   }, [data, setDataCopy, setType])
 
+  const requestClose = useCallback(() => closeModal(id), [id])
+
   if (!data) return <></>
 
   return (
-    <Modal isOpen={isVisible} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title={`Edit ${data.name}`} onClose={requestClose} />
 
       <ModalBody>
@@ -168,20 +170,8 @@ function getComponentFromType(type: SystemType, data: any, dataCopy: any, typeDa
 }
 
 function ArrayEdit({ types, title, data, type, onAdd, onChange, onDelete }: { types: SystemType[], title: string; data: any[]; type: SystemType; onAdd(data: any): void; onChange(path: string, value: any): void; onDelete(itemName:string): void; }) {
-  const [editData, setEditData] = useState<any>(null)
-
   return (
     <div>
-      <EditObject
-        title='Edit Data'
-        types={types}
-        onDelete={() => onDelete(editData.name)}
-        onSave={(item) => onChange(`${title}/${editData.name}`, item)}
-        isVisible={(editData !== null)}
-        requestClose={() => setEditData(null)}
-        data={editData}
-      />
-
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <p>{title}</p>
 
@@ -195,7 +185,16 @@ function ArrayEdit({ types, title, data, type, onAdd, onChange, onDelete }: { ty
           return (
             <div key={item.name}
               className='p-3 border border-neutral-600 dark:bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
-              onClick={() => setEditData(item)}
+              onClick={() => openModal('edit-object', ({ id }) => (
+                <EditObject
+                  id={id}
+                  title='Edit Data'
+                  types={types}
+                  onDelete={() => onDelete(item.name)}
+                  onSave={(newItem) => onChange(`${title}/${item.name}`, newItem)}
+                  data={item}
+                />
+              ))}
             >
               <p>{item.name}</p>
             </div>

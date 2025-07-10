@@ -172,7 +172,7 @@ export function ContainerSettings() {
 
         <Button color='light' onClick={() => 
           openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={blueprint} onSave={(bp) => {
+            <BlueprintEditor id={id} data={onPress} onSave={(bp) => {
               setProp((props: any) => props.onPress = bp)
             }} />
           ))}>

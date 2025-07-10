@@ -14,10 +14,10 @@ import React from "react";
 import {subscribe} from "@api/subscribe";
 import {openBilling} from "@api/openBilling";
 import {logout} from "@api/logout";
-import {getDiscordLogin} from "@utils/getDiscordLogin";
 import ConfirmModal from '@modals/ConfirmModal'
 import AuthModal from '@modals/Auth'
 import clearLocalStorage from '@utils/clearLocalStorage'
+import getLoginLink from '@api/discord/getLoginLink'
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {
@@ -27,13 +27,19 @@ const tabs = [
           <div className='my-2 flex flex-col gap-4 lg:grid lg:grid-cols-2 rtl:space-x-reverse flex-wrap'>
 
             <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-neutral-500 border'>
-              <p className='text-lg'>Username</p>
-              <p>{user.username}</p>
-            </div>
-
-            <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-neutral-500 border'>
-              <p className='text-lg'>Email</p>
-              <p>{user.email}</p>
+              {/* Header */}
+              <div className="flex items-center">
+                <div className="w-12 h-12 fantasy-accent-gradient rounded-xl flex items-center justify-center text-xl font-bold text-fantasy-dark mr-4 shadow-lg shadow-fantasy-accent/30">
+                  {user.username[0]}
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-fantasy-text mb-1">{user.username}</h3>
+                  <div className="flex items-center gap-2 text-xs text-fantasy-accent/70">
+                    <span>{user.email}</span>
+                    <span className="bg-fantasy-accent/20 px-1.5 py-0.5 rounded text-[10px]">{getPermsFromRole(user.role)}</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-brand-500 border'>
@@ -60,12 +66,7 @@ const tabs = [
               <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-indigo-500 border'>
                 <p className='text-lg'>Discord Integration</p>
                 <p className='mb-4'>Link your Discord account to access additional features</p>
-                <Button color='primary' onClick={async () => {
-                  const url = await getDiscordLogin()
-                  if (url) {
-                    window.open(url, '_self')
-                  }
-                }}>
+                <Button color='primary' onClick={getLoginLink}>
                   Connect Discord Account
                 </Button>
               </div>
@@ -100,7 +101,7 @@ const tabs = [
         {themes.map((t: any) => <option value={t.name}>{t.name}</option>)}
       </Select>
     )
-  }  },
+  }},
   { id: 'developer', label: 'Developer', Content: ({ settings }: any) => {
     return (
       <>
@@ -108,7 +109,7 @@ const tabs = [
         <Checkbox id='use-eruda' label='Load Eruda' checked={settings.isErudaActive} onChange={setErudaActive} />
 
         <p className='my-2'>Clear Local Storage</p>
-        <Button color='danger' onClick={clearLocalStorage} >Clear Local Storage</Button>
+        <Button color='danger' onClick={clearLocalStorage}>Clear Local Storage</Button>
       </>
     )
   }},

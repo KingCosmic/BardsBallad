@@ -35,6 +35,7 @@ import Modals from '@tabs/System/Modals'
 import ActionsModal from '@tabs/System/Actions'
 import SaveNewVersion from '@modals/SaveNewVersion'
 import { addToast } from '@state/toasts'
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -103,14 +104,21 @@ const System: React.FC = () => {
 
   return (
     <EditorContext resolver={resolver} onNodesChange={handleNodeChange}>
-      <div className='flex flex-col h-full'>
-        <Header title={system.name} options={[{
-          onClick: () =>
-            openModal('save-new-version', ({ id }) => (
-              <SaveNewVersion id={id} original={original} edits={versionEdits} edits_id={edits_id} />
-            )),
-          Content: () => <p className='block cursor-pointer py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500'>Save Version</p>
-        }]} hasSidebar />
+      <div className='flex flex-col h-full overflow-y-scroll'>
+        <Header title={system.name} subtitle={`Version: ${getVisualTextFromVersionID(original.local_id)}`}
+
+          options={[
+            {
+              onClick: () =>
+                openModal('save-new-version', ({ id }) => (
+                  <SaveNewVersion id={id} original={original} edits={versionEdits} edits_id={edits_id} />
+                )),
+              Content: () => <p>Save Version</p>
+            }
+          ]}
+
+          hasSidebar
+        />
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
           <Select id='tab-selector' label='' value={editor.tab} onChange={setTab}>

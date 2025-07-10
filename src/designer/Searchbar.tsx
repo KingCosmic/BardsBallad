@@ -1,6 +1,7 @@
 import { useNode } from '@craftjs/core'
 import { BlueprintData } from '@/types/blueprint'
 import CompSearchbar from '@components/Searchbar'
+import TextInput from '@components/inputs/TextInput';
 
 type SearchbarProps = {
   placeholder: string;
@@ -12,7 +13,7 @@ function Searchbar({ placeholder }: SearchbarProps) {
 
   return (
     <div ref={ref => connect(drag(ref!))}>
-      <CompSearchbar filters={[]} placeholder='testing' onSearch={() => {}} />
+      <CompSearchbar filters={[]} placeholder={placeholder} onSearch={() => {}} />
     </div>
   )
 }
@@ -31,7 +32,7 @@ function SearchbarSettings() {
 
   return (
     <>
-      
+      <TextInput id='searchbar-placeholder' label='Placeholder' value={placeholder} onChange={val => setProp((props: any) => props.placeholder = val)} isValid errorMessage='' />
     </>
   )
 }

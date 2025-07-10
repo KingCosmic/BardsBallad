@@ -17,8 +17,26 @@ import SubscriptionConfirmation from './pages/SubscriptionConfirmation'
 import Marketplace from './pages/Marketplace'
 import { useEffect } from 'react'
 import DataPack from '@pages/DataPack'
+import { db } from './storage'
+import storeHashes from '@storage/methods/hashes/storeHashes'
+import { sha256 } from 'js-sha256'
+import Garbage from '@pages/Garbage'
+import { deleteCharacter } from '@storage/methods/characters'
+import clearCharacter from '@storage/methods/characters/clearCharacter'
+import deleteItem from '@utils/items/deleteItem'
+import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource'
+import olderThanDays from '@utils/olderThanDays'
 
 applyTheme()
+
+// @ts-ignore
+window.generateHashes = async () => {
+  const versions = await db.versions.toArray()
+
+  versions.forEach(vers => {
+    storeHashes(vers.local_id, vers.data.types.map((typeData: any) => ({ name: typeData.name, hash: sha256(typeData.properties.sort((a: any, b: any) => a.key.localeCompare(b.key)).map((type: any) => JSON.stringify(type)).join('/')) })))
+  })
+}
 
 const App: React.FC = () => {
 
@@ -59,6 +77,48 @@ const App: React.FC = () => {
     return () => clearInterval(interval)
   }, [])
 
+  useEffect(() => {
+    async function clearOldDeletions() {
+      const [characters, subscriptions] = await Promise.all([
+        db.characters.toArray(),
+        db.subscriptions.toArray()
+      ])
+
+      characters.forEach(char => {
+        const isDeleted = char.deleted_at
+        const isCleared = !char.data
+
+        if (!isDeleted || isCleared) return
+
+        const isPastClearDate = olderThanDays(isDeleted, 7)
+
+        if (!isPastClearDate) return
+
+        clearCharacter(char.local_id)
+      })
+
+      subscriptions.forEach(sub => {
+        const isDeleted = sub.deleted_at
+
+        if (!isDeleted) return
+
+        const isPastClearDate = olderThanDays(isDeleted, 7)
+
+        if (!isPastClearDate) return
+
+        console.log(sub)
+
+        // TODO: Check if no other subs rely on this item before deleting it.
+        // deleteItem(sub.resource_type, sub.resource_id)
+        deleteVersionedResource(sub.version_id)
+      })
+    }
+
+    const interval = setInterval(clearOldDeletions, 60000)
+
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <BrowserRouter>
       <Routes>
@@ -80,6 +140,8 @@ const App: React.FC = () => {
 
             <Route path='datapack/:id' element={<DataPack />} />
           </Route>
+
+          <Route path='garbage' element={<Garbage />} />
 
           <Route path='settings' element={<Settings />} />
 

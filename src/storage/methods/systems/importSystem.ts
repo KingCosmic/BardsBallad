@@ -4,6 +4,7 @@ import generateLocalId from '@utils/generateLocalId'
 import { authState } from '@state/auth'
 import versionedResourceSchema, { VersionedResource } from '@storage/schemas/versionedResource'
 import ensureUniqueness from '@utils/db/ensureIdUniqueness'
+import deleteItem from '@utils/items/deleteItem'
 
 export default async (sys: Item, version: VersionedResource) => {
   try {
@@ -52,6 +53,8 @@ export default async (sys: Item, version: VersionedResource) => {
 
     const versionResult = versionedResourceSchema.safeParse(versData);
     if (!versionResult.success) {
+      // since the version didn't pass, we should delete the system we created.
+      deleteItem('system', system_local_id, true)
       console.log('Invalid Version data:', versionResult.error.format());
       return;
     }

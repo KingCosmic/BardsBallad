@@ -71,8 +71,7 @@ export default async (name: string, type: 'system' | 'datapack', data: any) => {
       subscription_local_id = await generateLocalId()
     }
 
-    // now we need to create a subscription for it.
-    await db.subscriptions.add({
+    const subData = {
       local_id: subscription_local_id,
     
       user_id: user_id,
@@ -85,7 +84,12 @@ export default async (name: string, type: 'system' | 'datapack', data: any) => {
       subscribed_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       deleted_at: null,
-    })
+    }
+
+    // now we need to create a subscription for it.
+    await db.subscriptions.add(subData)
+
+    return subData
   } catch (e) {
     addToast('Error creating subscription data. If this continues please post a issue in our discord.', 'error')
     console.log('Error creating pack or version or creating subscription:', e);

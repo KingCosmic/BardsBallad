@@ -33,6 +33,8 @@ export const db = new Dexie('bardsballad') as Dexie & {
 
   subscriptions: EntityTable<UserSubscription, 'local_id'>;
   versions: EntityTable<VersionedResource, 'local_id'>;
+
+  typeHashes: EntityTable<{ local_id: string, hashes: { name: string, hash: string }[] }, 'local_id'>;
 };
 
 db.version(1).stores({
@@ -43,4 +45,6 @@ db.version(1).stores({
 
   subscriptions: '&local_id, user_id, resource_id, version_id',
   versions: '&local_id, reference_id, id',
+
+  typeHashes: '&local_id',
 });

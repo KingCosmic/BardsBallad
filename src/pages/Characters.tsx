@@ -25,6 +25,8 @@ import {setSyncedCharacters} from "@api/setSyncedCharacters";
 import EditStringModal from '@modals/EditString';
 import ConfirmModal from '@modals/ConfirmModal';
 import ImportFile from '@modals/ImportFile';
+import ImportOrCreateModal from '@modals/ImportOrCreate';
+import { addToast } from '@state/toasts';
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters();
@@ -58,7 +60,7 @@ const Characters: React.FC = () => {
       },
     ];
 
-    if (isPremium(user?.role ?? 0)) return options
+    if (isPremium(user?.role ?? 0) || !isLoggedIn) return options
 
     const isSynced = synced_characters.includes(char.local_id)
 
@@ -85,25 +87,48 @@ const Characters: React.FC = () => {
     <div>
       <Header title='Your Adventuring Party' subtitle='Manage your heroes and their epic journeys' />
 
-      <CharacterCreatorModal isOpen={isCreating} setIsOpen={setIsCreating} />
-
       <div className="p-4">
         {/* TODO: Searchbar */}
 
         {/* Character Grid */}
         <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
           {/* Add character card */}
-          <div className="fantasy-add-gradient border-2 border-dashed border-fantasy-accent/30 rounded-2xl p-10 text-center cursor-pointer transition-all duration-300 min-h-[200px] flex flex-col justify-center items-center hover:border-fantasy-accent/60 hover:fantasy-add-gradient hover:-translate-y-1">
+          <div
+            className="fantasy-add-gradient border-2 border-dashed border-fantasy-accent/30 rounded-2xl p-10 text-center cursor-pointer transition-all duration-300 min-h-[200px] flex flex-col justify-center items-center hover:border-fantasy-accent/60 hover:fantasy-add-gradient hover:-translate-y-1"
+            onClick={() => openModal('import-or-create', ({ id }) => (
+              <ImportOrCreateModal id={id} type='character'
+                ImportModal={({ id }) => (
+                  <ImportFile id={id} title='Import Character'
+                    onSave={async (fileContent: string) => {
+                      try {
+                        const parsed = JSON.parse(fileContent);
+                        if (parsed) {
+                          await importCharacter(parsed);
+                        }
+                        addToast('Unable to parse character.', 'error')
+                      } catch (e) {
+                        addToast('Error parsing / importing character.', 'error')
+                        console.error(e);
+                      }
+                    }}
+                  />
+                )}
+                CreateModal={({ id }) => <CharacterCreatorModal id={id} />}
+              />
+            )
+            )}
+          >
             <div className="text-5xl text-fantasy-accent/60 mb-4">⚔️</div>
             <div className="text-fantasy-accent/80 text-base font-medium">Create New Hero</div>
           </div>
-
           
+          {/* Heros */}
           {characters.length ? (
-            characters.map((char) => (
+            characters.map((char, i) => (
               // Character Card
               <div
                 key={char.local_id}
+                style={{ zIndex: `${characters.length - i}`}}
                 className="fantasy-card-gradient card-top-border border border-fantasy-border rounded-2xl p-6 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:-translate-y-2 hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative"
               >
                 {/* Status Indicator */}
@@ -118,7 +143,7 @@ const Characters: React.FC = () => {
                     <h3 className="text-lg font-semibold text-fantasy-text mb-1">{char.name}</h3>
                     <div className="flex items-center gap-2 text-xs text-fantasy-accent/70">
                       <span>🏹 Ranger</span>
-                      <span className="bg-fantasy-accent/20 px-1.5 py-0.5 rounded text-[10px]">v6.6b9e1c484</span>
+                      <span className="bg-fantasy-accent/20 px-1.5 py-0.5 rounded text-[10px]">{getVisualTextFromVersionID(char.system.local_id)}</span>
                     </div>
                   </div>
                 </div>
@@ -147,18 +172,11 @@ const Characters: React.FC = () => {
                   >
                     Continue Adventure
                   </button>
-                  <button className="bg-white/10 text-fantasy-text border border-white/20 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 hover:bg-white/20">
-                    ⚙️
-                  </button>
-                </div>
-
-                {/* <div className="flex justify-end gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
                   <DropdownButton
-                    label="Edit"
-                    onClick={() => navigate(char.local_id)}
+                    label='⚙️'
                     options={getOptions(char)}
                   />
-                </div> */}
+                </div>
               </div>
             ))
           ) : (

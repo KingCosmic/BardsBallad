@@ -80,12 +80,13 @@
 
 /* width */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--neutral-400);
+  background: transparent;
   border-radius: 5px;
 }
 

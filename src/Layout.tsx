@@ -12,33 +12,32 @@ import ToastProvider from './components/ToastProvider'
 import WelcomeMessage from './modals/WelcomeMessage'
 import AuthModal from './modals/Auth'
 
-import { matchPath } from 'react-router'
-
 const topItems = [
   {
     icon: '🏠',
     name: 'Home',
-    path: '',
-    active: false,
+    path: ''
   },
   {
     icon: '🛒',
     name: 'Marketplace',
-    path: 'marketplace',
-    active: false,
+    path: 'marketplace'
   },
   {
     icon: '👥',
     name: 'Characters',
-    path: 'characters',
-    active: true,
+    path: 'characters'
   },
   {
     icon: '📚',
     name: 'Library',
-    path: 'library',
-    active: false,
+    path: 'library'
   },
+  {
+    icon: '🗑️',
+    name: 'Garbage',
+    path: 'garbage'
+  }
 ]
 
 const bottomItems = [

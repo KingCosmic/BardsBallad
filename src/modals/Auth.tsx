@@ -33,7 +33,7 @@ const AuthModal: React.FC<Props> = ({ id }) => {
   }
 
   return (
-      <Modal isOpen onClose={requestClose}>
+      <Modal isOpen onClose={requestClose} className=''>
         <ModalHeader title={title} onClose={requestClose} />
   
         <ModalBody>

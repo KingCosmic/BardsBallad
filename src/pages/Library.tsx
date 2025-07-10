@@ -1,67 +1,45 @@
 import Header from '@components/Header'
 
 import FloatingActionButton from '@components/FloatingActionButton'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { openModal } from '@state/modals'
 import importSystem from '@storage/methods/systems/importSystem'
-import { useSubscriptions } from '@hooks/useSubscriptions'
 import SubscriptionCard from '@components/Library/SubscriptionCard'
 import CreateSubscription from '@modals/CreateSubscription'
 import ImportFile from '@modals/ImportFile'
-import { UserSubscription } from '@storage/schemas/userSubscription'
-import getItem from '@utils/items/getItem'
-import { db, Item } from '@storage/index'
-import { useLiveQuery } from 'dexie-react-hooks'
+import useSubscriptionsWithData from '@hooks/useSubscriptionsWithData'
 
 const Library: React.FC = () => {
-  const subscriptions = useLiveQuery(async () => {
-    const subs = await db.subscriptions.toArray()
+  const { subscriptions, isLoading } = useSubscriptionsWithData()
 
-    if (!subs) return []
-
-    // filter out deleted characters
-    const filteredSubs = subs.filter(sub => !sub.deleted_at).sort((a, b) => new Date(a.subscribed_at) > new Date(b.subscribed_at) ? -1 : 1)
-
-    const grouped: { [local_id:string]: { item_id: string, item: Item, type: 'system' | 'theme' | 'datapack', versions: UserSubscription[] } } = {}
-    const failedGrabs: { [local_id:string]: boolean } = {}
-
-    for (let s = 0; s < filteredSubs.length; s++) {
-      const item = filteredSubs[s]
-
-      if (failedGrabs[item.resource_id]) continue
-
-      if (!grouped[item.resource_id]) {
-        const itemData = await getItem(item.resource_type, item.resource_id)
-        
-        if (!itemData) {
-          failedGrabs[item.resource_id] = true
-          continue
-        }
-
-        grouped[item.resource_id] = {
-          item_id: item.resource_id,
-          item: itemData, 
-          type: item.resource_type,
-          versions: []
-        }
-      }
-
-      grouped[item.resource_id].versions.push(item)
-    }
-
-    return Object.values(grouped)
-  }, [])
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false) 
 
   return (
     <div>
-      <Header title='Library' />
+      <Header title='Your Collection' subtitle='Manage your extra content' />
 
-      <div className='p-4'>
+      <div className='px-4'>
         {/* TODO: Searchbar */}
 
-        {/* <Searchbar placeholder='' onSearch={() => {}} /> */}
+        {/* <div className='mb-5'>
+          <Searchbar placeholder='' onSearch={() => {}} filters={[
+            {
+              title: 'systems',
+              property: 'type',
+              value: 'system'
+            },
+            {
+              title: 'datapacks',
+              property: 'type',
+              value: 'datapack'
+            },
+            {
+              title: 'themes',
+              property: 'type',
+              value: 'theme'
+            }
+          ]} />
+        </div> */}
 
         {!subscriptions ? (
           <h5 className='mb-4 text-xl'>Loading...</h5>
@@ -69,27 +47,27 @@ const Library: React.FC = () => {
           <h5 className='flex flex-col gap-4'>
             <div>
               <h4 className='mb-2 text-xl'>Subscribed Systems</h4>
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+              <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
                 {subscriptions.filter(sub => sub.type === 'system').map(item => (
-                  <SubscriptionCard key={item.item_id} itemData={item.item} versions={item.versions} />
+                  <SubscriptionCard key={item.item_id} itemData={item.item} subs={item.subscriptions} />
                 ))}
               </div>
             </div>
 
             <div>
               <h4 className='mb-2 text-xl'>Subscribed Datapacks</h4>
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+              <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
                 {subscriptions.filter(sub => sub.type === 'datapack').map(item => (
-                  <SubscriptionCard key={item.item_id} itemData={item.item} versions={item.versions} />
+                  <SubscriptionCard key={item.item_id} itemData={item.item} subs={item.subscriptions} />
                 ))}
               </div>
             </div>
 
             <div>
               <h4 className='mb-2 text-xl'>Subscribed Themes</h4>
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+              <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
                 {subscriptions.filter(sub => sub.type === 'theme').map(item => (
-                  <SubscriptionCard key={item.item_id} itemData={item.item} versions={item.versions} />
+                  <SubscriptionCard key={item.item_id} itemData={item.item} subs={item.subscriptions} />
                 ))}
               </div>
             </div>

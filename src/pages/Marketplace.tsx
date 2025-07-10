@@ -41,7 +41,7 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
   return (
     <div
       key={item.name}
-      className="relative cursor-pointer flex flex-col max-w-96 p-4 tranasition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
+      className="fantasy-card-gradient border border-fantasy-border rounded-2xl p-6 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:-translate-y-2 hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative"
       onClick={() =>
         openModal('view marketplace item', ({ id }) => (
           <MarketplaceViewModal id={id} title={item.name} data={item} onSubscribe={async (version_id: string) => {
@@ -89,7 +89,7 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
 };
 
 const Marketplace: React.FC = () => {
-  const [items, setItems] = useState<any[]>([])
+  const [items, setItems] = useState<MarketplaceItem[]>([])
 
   const { isLoggedIn } = authState.useValue()
 
@@ -138,25 +138,41 @@ const Marketplace: React.FC = () => {
 
   return (
     <div>
-      <Header title='Marketplace' />
+      <Header title='Marketplace' subtitle='Discover amazing systems, themes, and content created by the community' />
 
-      <div className='p-4'>
-        <div className='flex flex-col items-center justify-center'>
-          <div className='bg-brand-700 rounded-lg p-8 text-center w-full md:w-10/12 h-40 bg-[url("/marketplace.png")] bg-cover bg-no-repeat bg-top'>
-            <h2 className='text-2xl font-bold'>Welcome to the Marketplace!</h2>
-            <p className='text-neutral-100'>Explore and discover new systems and datapacks.</p>
+      <div className='px-4 pb-4'>
+        {/* Categories */}
+        <div>
+          <h3 className='text-3xl font-semibold mt-4'>Browse Categories</h3>
+          <div className='flex flex-wrap gap-3 mt-2'>
+            {[
+              '⚔️ Game Systems (40)',
+              '📦 Datapacks (100+)',
+              '🎨 Themes (32)',
+            ].map(item => (
+              <span key={item} className='cursor-pointer bg-gradient-to-br from-fantasy-accent/20 to-fantasy-accent-dark/10 border border-fantasy-accent/30 rounded-xl px-4 py-2 text-sm leading-relaxed'>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 className='text-3xl font-semibold mt-4 mb-2'>Featured Systems</h3>
+          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
+            {items.filter(i => i.resource_type === 'system').map((item, index) => <ItemCard key={index} item={item} />)}
           </div>
         </div>
         <div>
-          <h3 className='text-xl font-semibold mt-4'>Featured Systems</h3>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
-            {items.map((item, index) => <ItemCard key={index} item={item} />)}
+          <h3 className='text-3xl font-semibold mt-4'>Featured Datapacks</h3>
+          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
+            {items.filter(i => i.resource_type === 'datapack').map((item, index) => <ItemCard key={index} item={item} />)}
           </div>
         </div>
         <div>
-          <h3 className='text-xl font-semibold mt-4'>Featured Themes</h3>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
-            
+          <h3 className='text-3xl font-semibold mt-4'>Featured Themes</h3>
+          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
+            {items.filter(i => i.resource_type === 'datapack').map((item, index) => <ItemCard key={index} item={item} />)}
           </div>
         </div>
       </div>
