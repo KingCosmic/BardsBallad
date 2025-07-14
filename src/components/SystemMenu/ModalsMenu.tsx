@@ -59,7 +59,7 @@ function ModalsMenu({ versionEdits }: Props) {
           {versionEdits.data.modals.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
         </Select>
 
-        <button type='button' onClick={() => storeMutation(editor.versionId, addPage(versionEdits.data, 'modal'))} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
+        <button type='button' onClick={() => storeMutation(editor.versionId, addPage(versionEdits.data, 'modal'))} className='ml-2 text-fantasy-accent border border-fantasy-border hover:bg-fantasy-accent-dark focus:ring-4 focus:outline-none focus:ring-fantasy-accent font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2'>
           <svg
             className='w-5 h-5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
             <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />

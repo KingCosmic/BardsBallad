@@ -2,7 +2,7 @@ import { db, Item } from '@/storage'
 
 export default async (local_id: string, hashes: { name: string, hash: string }[]) => {
   try {
-    await db.typeHashes.put({
+    return await db.typeHashes.put({
       local_id,
       hashes
     })

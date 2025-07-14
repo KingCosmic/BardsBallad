@@ -26,6 +26,7 @@ import clearCharacter from '@storage/methods/characters/clearCharacter'
 import deleteItem from '@utils/items/deleteItem'
 import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource'
 import olderThanDays from '@utils/olderThanDays'
+import generateTypeHash from '@utils/generateTypeHash'
 
 applyTheme()
 
@@ -34,7 +35,7 @@ window.generateHashes = async () => {
   const versions = await db.versions.toArray()
 
   versions.forEach(vers => {
-    storeHashes(vers.local_id, vers.data.types.map((typeData: any) => ({ name: typeData.name, hash: sha256(typeData.properties.sort((a: any, b: any) => a.key.localeCompare(b.key)).map((type: any) => JSON.stringify(type)).join('/')) })))
+    storeHashes(vers.local_id, vers.data.types.map(generateTypeHash))
   })
 }
 

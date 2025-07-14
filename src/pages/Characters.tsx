@@ -28,6 +28,11 @@ import ImportFile from '@modals/ImportFile';
 import ImportOrCreateModal from '@modals/ImportOrCreate';
 import { addToast } from '@state/toasts';
 
+const syncColors = {
+  synced: 'bg-green-400 shadow-green-400/60',
+  notsynced: 'bg-red-400 shadow-red-400/60' 
+}
+
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters();
   const { systems } = useSystems();
@@ -46,7 +51,7 @@ const Characters: React.FC = () => {
     const options = [
       {
         label: 'export',
-        onClick: () => JSONToFile(char, `${char.name}-export`),
+        onClick: () => JSONToFile('character', char, `${char.name}-export`),
       },
       {
         label: 'rename',
@@ -132,7 +137,7 @@ const Characters: React.FC = () => {
                 className="fantasy-card-gradient card-top-border border border-fantasy-border rounded-2xl p-6 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:-translate-y-2 hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative"
               >
                 {/* Status Indicator */}
-                <div className="absolute top-4 right-4 w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/60"></div>
+                <div className={`absolute top-4 right-4 w-2 h-2 rounded-full shadow-lg ${synced_characters.includes(char.local_id) ? syncColors.synced : syncColors.notsynced}`} />
 
                 {/* Character Header */}
                 <div className="flex items-center mb-4">

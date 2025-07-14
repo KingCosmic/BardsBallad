@@ -8,6 +8,7 @@ import SubscriptionCard from '@components/Library/SubscriptionCard'
 import CreateSubscription from '@modals/CreateSubscription'
 import ImportFile from '@modals/ImportFile'
 import useSubscriptionsWithData from '@hooks/useSubscriptionsWithData'
+import importDatapack from '@storage/methods/datapacks/importDatapack'
 
 const Library: React.FC = () => {
   const { subscriptions, isLoading } = useSubscriptionsWithData()
@@ -82,8 +83,12 @@ const Library: React.FC = () => {
               openModal('import-system', ({ id }) => <ImportFile id={id} title='Import System' onSave={async (fileContent: string) => {
                 try {
                   const parsed = JSON.parse(fileContent)
-                  if (parsed && parsed.system && parsed.version) {
-                    await importSystem(parsed.system, parsed.version)
+
+                  switch (parsed.type) {
+                    case 'system':
+                      return await importSystem(parsed.item, parsed.version)
+                    case 'datapack':
+                      return await importDatapack(parsed.item, parsed.version)
                   }
                 } catch (e) {
                   console.error(e)

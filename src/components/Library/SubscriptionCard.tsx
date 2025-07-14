@@ -13,13 +13,15 @@ import ConfirmModal from '@modals/ConfirmModal'
 import { openModal } from '@state/modals'
 import { addToast } from '@state/toasts'
 import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource'
-import { Item } from '@storage/index'
+import { db, Item } from '@storage/index'
 import createItem from '@utils/items/createItem'
 import deleteItem from '@utils/items/deleteItem'
 import { useState } from 'react'
 import getVersionedResource from '@storage/methods/versionedresources/getVersionedResource'
 import ButtonWithDropdown from '@components/ButtonWithDropdown'
 import deleteSubscription from '@storage/methods/subscriptions/deleteSubscription'
+import storeHashes from '@storage/methods/hashes/storeHashes'
+import generateTypeHash from '@utils/generateTypeHash'
 
 type Props = {
   itemData: Item;
@@ -44,6 +46,14 @@ const forkItem = async (baseData: Item, versionData: VersionedResource) => {
     return addToast('Error creating new version data for forked content, cleaning up...', 'error')
   }
 
+  const hashes = await storeHashes(newVers.local_id, newVers.data.types.map(generateTypeHash))
+
+  if (!hashes) {
+    deleteItem(versionData.reference_type, newItem.local_id, true)
+    deleteVersionedResource(newVers.local_id, true)
+    return addToast('Error creating hashes for forked content, cleaning up...', 'error')
+  }
+
   const newSub = await createSubscription(
     versionData.reference_type,
     newItem.local_id,
@@ -54,6 +64,7 @@ const forkItem = async (baseData: Item, versionData: VersionedResource) => {
   if (!newSub) {
     deleteItem(versionData.reference_type, newItem.local_id, true)
     deleteVersionedResource(newVers.local_id, true)
+    db.typeHashes.delete(newVers.local_id)
     return addToast('Error creating subscription for forked content, cleaning up...', 'error')
   }
 }
@@ -76,7 +87,7 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
     <div className='fantasy-card-gradient card-top-border border border-fantasy-border rounded-2xl p-6 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:-translate-y-2 hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative'>
       <div className='flex items-center justify-between mb-4'>
         <div className='flex items-center gap-3'>
-          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-fantasy-accent-dark rounded-lg flex items-center justify-center">
             <span className="text-xl font-bold text-fantasy-text">
               {itemData.name[0]}
             </span>
@@ -85,7 +96,7 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
             <div className='text-lg font-semibold text-fantasy-text'>{itemData.name}</div>
           </div>
         </div>
-        <div className='bg-neutral-800 text-neutral-200 rounded-md text-xs font-medium px-1 py-2'>{subs.length} versions</div>
+        <div className='bg-fantasy-dark border border-fantasy-medium text-fantasy-text rounded-md text-xs font-medium px-1 py-2'>{subs.length} versions</div>
       </div>
       
       <div className='mb-4'>
@@ -130,8 +141,9 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
                           if (!versionData) return addToast('Error grabbing version data to export.', 'error')
 
                           JSONToFile(
+                            versionData.reference_type,
                             {
-                              system: itemData,
+                              item: itemData,
                               version: versionData,
                             },
                             `${itemData.name}-${versionData.local_id}`
@@ -178,8 +190,9 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
                 if (!latestVersion) return addToast('Error grabbing version info.', 'error')
 
                 JSONToFile(
+                  latestVersion.reference_type,
                   {
-                    system: itemData,
+                    item: itemData,
                     version: latestVersion,
                   },
                   `${itemData.name}-${latestVersion.local_id}`
@@ -199,61 +212,6 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
       </div>
     </div>
   )
-
-  // return (
-  //   <div
-  //     key={subscription.local_id}
-  //     className="relative flex flex-col max-w-96 p-4 transition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
-  //   >
-  //     <div className="flex items-start space-x-4">
-  //       <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
-  //         <span className="text-xl font-bold text-white">
-  //           {baseData.name[0]}
-  //         </span>
-  //       </div>
-
-  //       <div className="flex-1 min-w-0">
-  //         <h5 className="text-xl font-semibold text-neutral-900 truncate dark:text-white">
-  //           {baseData.name}
-  //         </h5>
-  //         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-  //           Version {getVisualTextFromVersionID(versionData.local_id)}
-  //         </p>
-  //       </div>
-  //     </div>
-
-  //     <div className="flex justify-between items-center gap-2 mt-4 border-t pt-3 dark:border-neutral-700">
-  //       <p>{new Date(versionData.created_at).toDateString()}</p>
-  //       <DropdownButton label={isOwner ? 'Edit' : 'Fork'} onClick={() => {
-  //           if (isOwner) {
-  //             // direct to editor.
-  //             return navigate(
-  //               `/library/${subscription.resource_type}/${versionData.local_id}`
-  //             );
-  //           }
-
-  //           // fork
-  //           return forkItem(baseData, versionData);
-  //         }} options={[
-  //           {
-  //             label: 'Export',
-  //             onClick: () => JSONToFile(
-  //               {
-  //                 system: query.baseData,
-  //                 version: query.versionData,
-  //               },
-  //               `${query.baseData.name}-${query.versionData.local_id}`
-  //             )
-  //           },
-  //           {
-  //             label: 'Delete',
-  //             onClick: () => openModal('delete-subscription', ({ id }) => <ConfirmModal id={id} title='Delete Subscription' type='danger' message='Are you sure you want to delete this subscription?' onConfirm={() => {}} />)
-  //           }
-  //         ]} />
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default SubscriptionCard;
-

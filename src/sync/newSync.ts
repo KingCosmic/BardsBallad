@@ -12,8 +12,9 @@ import {checkInternetAccess} from "@api/checkInternetAccess";
 import React from 'react'
 import HandleConflicts from '@modals/HandleConflicts'
 import { db } from '@storage/index'
-import storeHashes from '@storage/methods/hashes/storeHashes'
-import generateTypeHash from '@utils/generateTypeHash'
+import { addToast } from '@state/toasts'
+import { hasRole } from '@utils/roles/hasRole'
+import Roles from '@/const/roles'
 
 const batchSize = 10
 
@@ -44,7 +45,7 @@ const collectionsToSync = [
   },
   {
     name: 'Characters',
-    get: charactersGet,
+    get: db.characters.bulkGet,
     bulkPut: charactersBulkPut,
     pull: charactersPull,
     push: charactersPush
@@ -172,29 +173,87 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
 }
 
 export const sync = async () => {
-  const { isOnline } = syncState.get()
-  const { isLoggedIn } = authState.get()
+  try {
+    const { isOnline } = syncState.get()
+    const { isLoggedIn, user } = authState.get()
 
-  if (!isOnline || !isLoggedIn) return
+    if (!isOnline || !isLoggedIn || !user) return
 
-  // Update synced characters array first.
-  const synced = await SyncStorage.get<string[]>('synced_characters') || []
+    const isPremium = hasRole(user.role, Roles.PREMIUM)
 
-  await setSyncedCharacters(synced)
+    // Update synced characters array first.
+    const synced = await SyncStorage.get<string[]>('synced_characters') || []
 
-  for (let i = 0; i < collectionsToSync.length; i++) {
-    const coll = collectionsToSync[i]
+    await setSyncedCharacters(synced)
 
-    await handlePullUpdates(coll.bulkPut, coll.pull, await coll.get())
+    // now that we've updated our synced_characters list, lets sort all the items to sync.
+    const [subs, chars] = await Promise.all([
+      db.subscriptions.toArray(),
+      db.characters.toArray()
+    ])
 
-    await handlePushingUpdates(coll.bulkPut, coll.push, await coll.get())
+    const updatedSubs = await SyncStorage.get<string[]>('updated_subs') || []
+
+    let subsToPush = []
+    let sysToPush = []
+    let versToPush = []
+    // TODO: get characters to sync.
+    // let charsToPush = await SyncStorage.get()
+
+    for (let s = 0; s < subs.length; s++) {
+      const sub = subs[s]
+
+      const isOwned = (sub.user_id === user.id)
+
+      // we only need to worry about syncing subscriptions owned by us (no idea how this would actually proc, but ya know).
+      if (!isOwned) continue
+
+      const pushedCharacterRef = chars.find(c => {
+        const isCorrectSub = (c.system.version_id === sub.version_id && c.system.local_id === sub.resource_id)
+        const isSynced = synced.includes(c.local_id)
+        
+        return (isCorrectSub && isSynced)
+      })
+
+      if (pushedCharacterRef) {
+        sysToPush.push(sub.resource_id)
+        versToPush.push(sub.version_id)
+      }
+
+      const isSynced = (!!sub.id)
+
+      // if a character we're syncing relies on this version we need to sync it too.
+      const isReferencedByChar = (pushedCharacterRef !== undefined)
+
+      const wasUpdated = updatedSubs.includes(sub.local_id)
+
+      // if we're referenced by a character and not synced this subscription needs to sync.
+      if (!isSynced && isReferencedByChar) {
+        subsToPush.push(sub.local_id)
+      }
+
+      // if we're not synced and premium this should be pushed anyways.
+      if (!sub.id && isPremium) {
+        subsToPush.push(sub.local_id)
+      }
+
+      // and lastly, if this record was updated it should and we're premium it should be synced.
+      if (wasUpdated && isPremium) {
+        subsToPush.push(sub.local_id)
+      }
+    }
+
+    for (let i = 0; i < collectionsToSync.length; i++) {
+      const coll = collectionsToSync[i]
+
+      await handlePullUpdates(coll.bulkPut, coll.pull, await coll.get())
+
+      await handlePushingUpdates(coll.bulkPut, coll.push, await coll.get())
+    }
+  } catch (e) {
+    addToast(`Error occured while syncing. ${e}`, 'error')
+    return console.error(`Error occured while syncing. ${e}`)
   }
-
-  // TODO: only generate hashes for new items at some point. but this is a quick hack to make it work.
-  const versions = await db.versions.toArray()
-  versions.forEach(vers => {
-    storeHashes(vers.local_id, vers.data.types.map(generateTypeHash))
-  })
 
   // TODO: setup websocket connection for real-time updates.
 }
@@ -207,9 +266,10 @@ window.addEventListener('online', async () => {
   setOnlineState(isOnline)
 
   if (!isOnline) {
-    console.log('not connected')
+    return console.log('not connected')
   }
 
+  // once we come back online we need to run a sync.
   sync()
 })
 

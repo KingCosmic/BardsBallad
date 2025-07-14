@@ -4,6 +4,8 @@ import { db } from '@/storage'
 import { VersionedResource } from '@storage/schemas/versionedResource'
 import {pullUpdatesForVersions} from "@api/pullUpdatesForVersions";
 import {pushUpdatesForVersions} from "@api/pushUpdatesForVersions";
+import { hasRole } from '@utils/roles/hasRole';
+import Roles from '@/const/roles';
 
 const CHECKPOINT = 'version-checkpoint'
 
@@ -29,7 +31,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
   
-  const isPremium = user.role > 0
+  const isPremium = hasRole(user.role, Roles.PREMIUM)
 
   const versionsToPush = versions.filter(v => {
     const isOwned = (v.user_id === user.id)

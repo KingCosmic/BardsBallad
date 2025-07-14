@@ -10,6 +10,13 @@ import { closeModal } from '@state/modals';
 import ButtonWithDropdown from '@components/ButtonWithDropdown';
 import Button from '@components/inputs/Button';
 import DropdownButton from '@components/DropdownButton';
+import { getSubscriptionData } from '@api/getSubscriptionData';
+import { addToast } from '@state/toasts';
+import saveSystem from '@storage/methods/systems/saveSystem';
+import saveVersionedResource from '@storage/methods/versionedresources/saveVersionedResource';
+import storeHashes from '@storage/methods/hashes/storeHashes';
+import generateTypeHash from '@utils/generateTypeHash';
+import createSubscription from '@storage/methods/subscriptions/createSubscription';
 
 type Props = {
   id: number;
@@ -31,17 +38,18 @@ type Props = {
     is_public: boolean
   } | null;
   title?: string;
-
-  onSubscribe(version_id: string): void;
 }
 
 type VersionData = { id: string, item_id: string, changelog: string, published_at: string, resource_id: string }
 
-const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name', onSubscribe } : Props) => {
+const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name' } : Props) => {
   const [versions, setVersions] = useState<VersionData[]>([])
   const [autoUpdate, setAutoUpdate] = useState(true)
   
   const [selectedVersion, setSelectedVersion] = useState<VersionData>(versions[0])
+
+  const [isLoading, setIsLoading] = useState(false)
+
 
   useEffect(() => {
     const loadVersions = async () => {
@@ -88,12 +96,12 @@ const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name', 
                 {/* Header */}
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-3'>
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
-                    <span className="text-xl font-bold text-fantasy-text">
+                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-fantasy-border rounded-lg flex items-center justify-center">
+                      <span className="text-xl font-bold text-fantasy-text">
                         {/* {itemData.name[0]} */}
                         T
                       </span>
-                      </div>
+                    </div>
                     <div className='w-32'>
                       <div className='text-lg font-semibold text-fantasy-text'>Test Pack</div>
                     </div>
@@ -127,9 +135,44 @@ const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name', 
       <ModalFooter>
         <Button color='light' onClick={requestClose}>Cancel</Button>
 
-        <Button color='primary' onClick={() => {
-          requestClose()
-          onSubscribe(selectedVersion.item_id)
+        <Button color='primary' onClick={async () => {
+          try {
+            setIsLoading(true)
+            const { baseData, versionData } = await getSubscriptionData(selectedVersion.item_id)
+
+            if (!baseData || !versionData) return addToast('Failed to fetch item data.', 'error')
+
+            const sys = await saveSystem(baseData)
+
+            if (!sys) return addToast('Failed to create system.', 'error')
+
+            const vers = await saveVersionedResource(versionData)
+
+            if (!vers) {
+              // TODO: clean up system that we created.
+              return addToast('Failed to create version.', 'error')
+            }
+
+            const hashes = await storeHashes(vers.local_id, vers.data.types.map(generateTypeHash))
+            
+            if (!hashes) {
+              // TODO: cleanup the system and version.
+              return addToast('Error creating hashes for forked content, cleaning up...', 'error')
+            }
+
+            const sub = await createSubscription('system', sys.local_id, vers.local_id, false)
+
+            if (!sub) {
+              // TODO: cleanup both the system and version and hashes we created.
+              return addToast('Failed to create subscription.', 'error')
+            }
+
+            addToast('Subscription created!', 'success')
+          } catch(e) {
+            console.error(`Error creating subscription: ${e}`)
+            addToast(`Error creating subscription`, 'error')
+          }
+          setIsLoading(false)
         }}>Install</Button>
       </ModalFooter>
     </Modal>

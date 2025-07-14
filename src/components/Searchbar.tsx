@@ -44,7 +44,7 @@ const Searchbar: React.FC<SearchbarProps> = ({ filters, placeholder, onSearch })
           <input
             type='search'
             id='search-dropdown'
-            className='block p-2.5 w-full bg-transparent z-20 text-sm text-fantasy-text placeholder:text-fantasy-text-muted focus:ring-brand-500 focus:ring-1 focus:outline-none focus:ring-fantasy-accent-dark'
+            className='block p-2.5 w-full bg-transparent z-20 text-sm text-fantasy-text placeholder:text-fantasy-text-muted focus:ring-fantasy-accent focus:ring-1 focus:outline-none focus:ring-fantasy-accent-dark'
             placeholder={placeholder}
           />
         </div>

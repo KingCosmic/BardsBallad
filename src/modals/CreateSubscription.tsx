@@ -20,6 +20,7 @@ import { sha256 } from 'js-sha256'
 import { Item } from '@storage/index';
 import storeHashes from '@storage/methods/hashes/storeHashes';
 import useSubscriptionsWithData, { Grouped } from '@hooks/useSubscriptionsWithData';
+import generateTypeHash from '@utils/generateTypeHash';
 
 type Props = {
   id: number;
@@ -103,6 +104,7 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id, onCreate }) => {
       <ModalFooter>
         <Button color='primary' onClick={async () => {
           let data = {}
+          let types: { name: string, hash: string }[] = []
 
           switch (type) {
             case 'system':
@@ -117,13 +119,15 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id, onCreate }) => {
                 packData: version.data.data.map(data => ({ ...data, data: data.typeData.isArray ? [] : generateObject(version.data!.types, version.data?.types.find(t => t.name === data.typeData.type)!) }))
               }
 
+              types = version!.data!.types.map(generateTypeHash)
+
               break;
           }
 
           const sub = await createWholeSubscription(name, type, data)
 
-          if (sub && type === 'datapack') {
-            storeHashes(sub.local_id, version!.data!.types.map(typeData => ({ name: typeData.name, hash: sha256(typeData.properties.sort((a, b) => a.key.localeCompare(b.key)).map(type => JSON.stringify(type)).join('/')) })))
+          if (sub && ['datapack', 'system'].includes(type)) {
+            storeHashes(sub.version_id, types)
           }
 
           onCreate({ name, type })

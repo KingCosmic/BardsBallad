@@ -7,7 +7,7 @@ import { setErudaActive, setTheme, settingsState } from '@state/settings'
 import Checkbox from '@components/inputs/Checkbox'
 import Button from '@components/inputs/Button'
 import { authState } from '@state/auth'
-import getPermsFromRole from '@utils/getPermsFromRole'
+import roleToString from '@utils/roles/roleToString'
 import { openModal } from '@state/modals'
 import Tabs from '@components/Tabs'
 import React from "react";
@@ -18,6 +18,8 @@ import ConfirmModal from '@modals/ConfirmModal'
 import AuthModal from '@modals/Auth'
 import clearLocalStorage from '@utils/clearLocalStorage'
 import getLoginLink from '@api/discord/getLoginLink'
+import { hasRole } from '@utils/roles/hasRole'
+import Roles from '@/const/roles'
 
 const tabs = [
   { id: 'profile', label: 'Profile', Content: ({ isLoggedIn, user }: any) => {
@@ -36,29 +38,32 @@ const tabs = [
                   <h3 className="text-lg font-semibold text-fantasy-text mb-1">{user.username}</h3>
                   <div className="flex items-center gap-2 text-xs text-fantasy-accent/70">
                     <span>{user.email}</span>
-                    <span className="bg-fantasy-accent/20 px-1.5 py-0.5 rounded text-[10px]">{getPermsFromRole(user.role)}</span>
+                    <span className="bg-fantasy-accent/20 px-1.5 py-0.5 rounded text-[10px]">{roleToString(user.role)}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-brand-500 border'>
+            <div className='flex flex-col w-full bg-fantasy-dark p-4 rounded-lg border-fantasy-border border'>
               <p className='text-lg'>Subscription</p>
-              <p className='mb-4'>Current Tier: {getPermsFromRole(user.role)}</p>
+              <p className='mb-4'>Current Tier: {roleToString(user.role)}</p>
               <Button color='primary' onClick={async () => {
                 let url = ''
 
-                if (user.role < 200) {
+                const isPremium = hasRole(user.role, Roles.PREMIUM)
+                const isNormalUser = hasRole(user.role, Roles.FREE) || hasRole(user.role, Roles.PREMIUM)
+
+                if (isNormalUser && !isPremium) {
                   const { url: newUrl } = await subscribe()
                   url = newUrl
-                } else if (user.role < 300) {
+                } else if (isNormalUser && isPremium) {
                   const { url: newUrl } = await openBilling()
                   url = newUrl
                 }
 
                 window.open(url, '_self')
               }}>
-                {(user.role < 200) ? 'Subscribe' : (user.role < 300) ? 'Manage Subscription' : 'Thank you for everything!'}
+                {(hasRole(user.role, Roles.FREE)) ? 'Subscribe' : (hasRole(user.role, Roles.PREMIUM)) ? 'Manage Subscription' : 'Thank you for everything!'}
               </Button>
             </div>
 

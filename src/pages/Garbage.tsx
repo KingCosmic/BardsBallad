@@ -50,7 +50,7 @@ const GarbageCard = ({ sub }: { sub: UserSubscription }) => {
           options={[
             {
               label: 'export',
-              onClick: () => JSONToFile(item, `${item.name}-export`),
+              onClick: () => JSONToFile(sub.resource_type, item, `${item.name}-export`),
             },
             {
               label: 'force delete',
@@ -129,7 +129,7 @@ const Garbage: React.FC = () => {
                       options={[
                         {
                           label: 'export',
-                          onClick: () => JSONToFile(char, `${char.name}-export`),
+                          onClick: () => JSONToFile('character', char, `${char.name}-export`),
                         },
                         {
                           label: 'force delete',

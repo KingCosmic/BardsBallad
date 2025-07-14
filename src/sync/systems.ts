@@ -3,6 +3,8 @@ import { AuthStorage, SyncStorage } from '@lib/storage'
 import { db, Item } from '@/storage'
 import {pushUpdatesForSystems} from "@api/pushUpdatesForSystems";
 import {pullUpdatesForSystems} from "@api/pullUpdatesForSystems";
+import Roles from '@/const/roles';
+import { hasRole } from '@utils/roles/hasRole';
 
 const CHECKPOINT = 'system-checkpoint'
 
@@ -28,7 +30,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
   
-  const isPremium = user.role > 0
+  const isPremium = hasRole(user.role, Roles.PREMIUM)
 
   const systemsToPush = systems.filter(s => {
     const isOwned = (s.user_id === user.id)

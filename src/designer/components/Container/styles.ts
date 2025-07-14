@@ -14,9 +14,9 @@ const styles: Styles = {
     hover: 'cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700'
   },
   'primary': {
-    background: 'bg-white dark:bg-brand-800',
-    border: 'border border-brand-200 dark:border-brand-600',
-    hover: 'cursor-pointer hover:bg-brand-100 dark:hover:bg-brand-700'
+    background: 'bg-white dark:bg-fantasy-accent',
+    border: 'border border-fantasy-border',
+    hover: 'cursor-pointer hover:bg-fantasy-accent-dark'
   },
   'accent': {
     background: 'bg-white dark:bg-accent-800',

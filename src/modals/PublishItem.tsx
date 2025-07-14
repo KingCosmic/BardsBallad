@@ -16,23 +16,14 @@ import { closeModal } from '@state/modals';
 import { useSubscriptions } from '@hooks/useSubscriptions';
 import useSubscriptionsWithData from '@hooks/useSubscriptionsWithData';
 
+import { publishItem } from '@api/marketplace/publishItem';
+import { publishVersion } from '@api/marketplace/publishVersion';
+
 type Props = {
   id: number;
-
-  onPublish(data: {
-    item: any;
-    version: VersionedResource;
-
-    description: string
-    changelog: string
-    
-    resource_type: string
-
-    is_public: boolean
-  }): void;
 }
 
-const PublishNewSystem: React.FC<Props> = ({ id, onPublish }) => {
+const PublishNewSystem: React.FC<Props> = ({ id }) => {
   const { subscriptions, isLoading } = useSubscriptionsWithData()
 
   const [type, setType] = useState<string>('system')
@@ -41,10 +32,11 @@ const PublishNewSystem: React.FC<Props> = ({ id, onPublish }) => {
   const [selectedVersion, setSelectedVersion] = useState(selectedItem?.versions[0])
   
   const [description, setDescription] = useState('')
-  const [changelog, setChangelog] = useState('')
 
   const [isPublic, setIsPublic] = useState(true)
-  const [isFirstPublish, setIsFirstPublish] = useState(false)
+  const [isFirstPublish, setIsFirstPublish] = useState(true)
+
+  const [{ isPublishing, error }, setPublishing] = useState({ isPublishing: false, error: '' })
 
   useEffect(() => {
     if (!subscriptions) return
@@ -75,11 +67,19 @@ const PublishNewSystem: React.FC<Props> = ({ id, onPublish }) => {
 
   return (
     <Modal isOpen onClose={requestClose}>
-      <ModalHeader title='Publish New System' onClose={requestClose} />
+      <ModalHeader title={isFirstPublish ? 'Publish new Item' : 'Publish new version'} onClose={requestClose} />
 
       <ModalBody>
         {(isLoading || !subscriptions || !selectedItem || !selectedVersion) ? (
           <p>Loading...</p>
+        ) : (isPublishing || error) ? (
+          <div>
+            {isPublishing ? (
+              <p>Publishing...</p>
+            ) : (
+              <p>{error}</p>
+            )}
+          </div>
         ) : (
           <>
             <Select id='type-to-publish' label='Item Type' value={type} onChange={setType}>
@@ -91,9 +91,11 @@ const PublishNewSystem: React.FC<Props> = ({ id, onPublish }) => {
               {subscriptions.filter(sub => sub.type === type).map(sys => <option key={sys.item_id} value={sys.item_id}>{sys.item.name}</option>)}
             </Select>
             
-            <Textarea id='description' label='Description' value={description} onChange={setDescription} />
+            <Textarea id='description' label={isFirstPublish ? 'Description' : 'Changelog' } value={description} onChange={setDescription} />
 
-            <Checkbox id='is-public' label='Is public?' checked={isPublic} onChange={setIsPublic} />
+            {isFirstPublish && (
+              <Checkbox id='is-public' label='Is public?' checked={isPublic} onChange={setIsPublic} />
+            )}
 
             <Select id='version-to-publish' label='Version' value={selectedVersion?.local_id} onChange={val => setSelectedVersion(selectedItem.versions.find(ver => ver.local_id === val)!)}>
               {selectedItem.versions.map(vers => (
@@ -109,15 +111,36 @@ const PublishNewSystem: React.FC<Props> = ({ id, onPublish }) => {
           Close
         </Button>
 
-        <Button color='primary' disabled={(!selectedItem || !selectedVersion)} onClick={() => {
-          onPublish({
-            item: selectedItem!.item,
-            version: selectedVersion!,
-            changelog: changelog,
-            description: description,
-            resource_type: type,
-            is_public: isPublic
-          })
+        <Button color='primary' disabled={(!selectedItem || !selectedVersion)} onClick={async () => {
+          setPublishing({ isPublishing: true, error: '' })
+
+          let err = ''
+
+          switch (isFirstPublish) {
+            case true:
+              const { error: publishError } = await publishItem({
+                item: selectedItem!.item,
+                version: selectedVersion!,
+                description: description,
+                resource_type: type,
+                is_public: isPublic
+              })
+
+              if (publishError) err = publishError
+              break;
+            case false:
+              const { error: versionError } = await publishVersion(selectedItem!.item_id, {
+                item_id: selectedItem!.item_id,
+                version: selectedVersion!,
+                changelog: description
+              })
+
+              if (versionError) err = versionError
+              break;
+          }
+
+          if (err) setPublishing({ isPublishing: false, error: err })
+
           requestClose()
         }}>Publish</Button>
       </ModalFooter>

@@ -12,10 +12,13 @@ import { syncState } from '@state/sync';
 import { useToast } from '@hooks/useToast';
 import {getMarketplaceItems} from "@api/getMarketplaceItems";
 import {getSubscriptionData} from "@api/getSubscriptionData";
-import {publishItem} from "@api/publishItem";
 import MarketplaceViewModal from '@modals/MarketplaceView';
 import MarketplaceDisclaimer from '@modals/MarketplaceDisclaimer';
 import PublishNewSystem from '@modals/PublishItem';
+import storeHashes from '@storage/methods/hashes/storeHashes';
+import generateTypeHash from '@utils/generateTypeHash';
+import deleteItem from '@utils/items/deleteItem';
+import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource';
 
 type MarketplaceItem = {
   id: string,
@@ -44,34 +47,11 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
       className="fantasy-card-gradient border border-fantasy-border rounded-2xl p-6 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:-translate-y-2 hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative"
       onClick={() =>
         openModal('view marketplace item', ({ id }) => (
-          <MarketplaceViewModal id={id} title={item.name} data={item} onSubscribe={async (version_id: string) => {
-            try {
-              const subscriptionData = await getSubscriptionData(version_id)
-
-              const { baseData, versionData } = subscriptionData
-
-              const sys = await saveSystem(baseData)
-
-              if (!sys) return addToast('Failed to create system.', 'error')
-
-              const vers = await saveVersionedResource(versionData)
-
-              if (!vers) return addToast('Failed to create version.', 'error')
-
-              const sub = await createSubscription('system', sys.local_id, vers.local_id, false)
-
-              if (!sub) return addToast('Failed to create subscription.', 'error')
-
-              addToast('Subscription created!', 'success')
-            } catch(e) {
-              console.error(`Error creating subscription: ${e}`)
-              addToast(`Error creating subscription`, 'error')
-            }
-          }} />
+          <MarketplaceViewModal id={id} title={item.name} data={item} />
         ))}
     >
       <div className="flex items-start space-x-4">
-        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
+        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-fantasy-border rounded-lg flex items-center justify-center">
           <span className="text-xl font-bold text-white">{item.name[0]}</span>
         </div>
 
@@ -180,7 +160,7 @@ const Marketplace: React.FC = () => {
       {isLoggedIn && (
         <FloatingActionButton
           onClick={() => openModal('publish-item', ({ id }) => (
-            <PublishNewSystem id={id} onPublish={publishItem} />
+            <PublishNewSystem id={id} />
           ))}
         />
       )}
