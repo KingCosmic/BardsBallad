@@ -47,6 +47,6 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   return await pushUpdatesForCharacters(localCharactersToPush)
 }
 
-export const bulkPut = async (docs: Character[]) => db.characters.bulkPut(docs)
+export const bulkPut = (docs: Character[]) => db.characters.bulkPut(docs)
 
-export const get = async () => await db.characters.toArray()
+export const get = () => db.characters.toArray()

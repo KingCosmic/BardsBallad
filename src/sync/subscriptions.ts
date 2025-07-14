@@ -55,10 +55,11 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
     return (referencedByChar || notSyncedAndPremium)
   })
 
+  console.log('pushing subs')
   return await pushUpdatesForSubscriptions(subscriptionsToPush)
 }
 
-export const bulkPut = async (docs: UserSubscription[]) => db.subscriptions.bulkPut(docs)
+export const bulkPut = (docs: UserSubscription[]) => db.subscriptions.bulkPut(docs)
 
-export const get = async () => await db.subscriptions.toArray()
+export const get = () => db.subscriptions.toArray()
 

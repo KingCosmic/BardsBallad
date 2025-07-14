@@ -38,7 +38,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
     // we only need to worry about syncing systems owned by us.
     if (!isOwned) return false
 
-    const pushedCharacterRef = characters.find(c => c.system.local_id === s.local_id && synced.includes)
+    const pushedCharacterRef = characters.find(c => c.system.local_id === s.local_id && synced.includes(c.local_id))
 
     // if a character we're syncing relies on this system we need to sync it too.
     const referencedByChar = (pushedCharacterRef !== undefined)
@@ -52,7 +52,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   return await pushUpdatesForSystems(systemsToPush)
 }
 
-export const bulkPut = async (docs: Item[]) => db.systems.bulkPut(docs)
+export const bulkPut = (docs: Item[]) => db.systems.bulkPut(docs)
 
-export const get = async () => await db.systems.toArray()
+export const get = () => db.systems.toArray()
 

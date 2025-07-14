@@ -61,7 +61,7 @@ async function handleConflicts(conflicts: { local: any, remote: any }[]): Promis
   if (conflicts.length === 0) return []
 
   return new Promise(resolve => {
-    openModal('handle-conflicts', ({ id }) => React.createElement(HandleConflicts, { data: conflicts, onSave: resolve }))
+    openModal('handle-conflicts', ({ id }) => React.createElement(HandleConflicts, { id, data: conflicts, onSave: resolve }))
   })
 }
 
@@ -71,12 +71,14 @@ type BulkPut = (docs: any[]) => Promise<any>
 
 type PushFunction = () => Promise<{ conflicts: any[], metadata: any[] }>
 
-type Get = () => Promise<any[]>
-
 async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocuments: any[]) {
   let pullUpdates = true
   while (pullUpdates) {
     const documents = await pull()
+
+    if (documents.length < batchSize) {
+      pullUpdates = false
+    }
 
     console.log('sync documents', documents)
 
@@ -88,17 +90,13 @@ async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocu
       const local = new Date(localDocument.updated_at).getTime()
       const remote = new Date(doc.updated_at).getTime()
 
-      const doVersionsMatch = (localDocument.version === doc.version)
-      const wasUpdatedLocaly = (local >= remote)
+      const versionsDontMatch = (localDocument.version !== doc.version)
+      const wasUpdatedLocally = (local >= remote)
 
-      return (doVersionsMatch && wasUpdatedLocaly) ? [] : { local: localDocument, remote: doc }
+      return (versionsDontMatch && wasUpdatedLocally) ? { local: localDocument, remote: doc } : []
     })
 
     const chosen = await handleConflicts(pullConflicts)
-
-    if (documents.length < batchSize) {
-      pullUpdates = false
-    }
 
     const newDocs = documents.map(d => (chosen.find(c => c.local_id === d.local_id) || d))
 
@@ -113,11 +111,6 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
   while (pushUpdates) {
     const { conflicts, metadata } = await push()
 
-    if (conflicts.length === 0) {
-      pushUpdates = false
-      console.log('no conflicts')
-    }
-
     // we need to combine our metadata with our local documents (version hash updates, server id generation, etc.)
     const updatedDocs = metadata.map(data => {
       const localDoc = localDocuments.find(doc => doc.local_id === data.local_id)
@@ -131,6 +124,12 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
     // store our updated docs.
     await bulkPut(updatedDocs)
 
+    if (conflicts.length === 0) {
+      pushUpdates = false
+      console.log('no conflicts')
+      return
+    }
+
     const pushConflicts = conflicts.flatMap(doc => {
       const localDocument = localDocuments.find(localDoc => localDoc.local_id === doc.local_id)
 
@@ -143,7 +142,13 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
 
     console.log(chosen)
 
-    await bulkPut(chosen)
+    try {
+      const result = await bulkPut(chosen)
+      console.log('Success:', result);
+    } catch (error) {
+      console.error('BulkPut failed:', error);
+    }
+
     // TODO: we may need to reSync to push up our chosen conflict resolutions.
     // can possibly get away without a reSync if we just update the updated_at field so it gets picked up in the next sync cycle.
 
