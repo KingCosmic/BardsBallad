@@ -102,7 +102,6 @@ function EditSystemData({ id, types, onDelete, onSave, data }: ModalProps) {
               title='data'
               data={dataCopy.data}
               onAdd={(newItem) => {
-                console.log('adding item')
                 setProperty('data', dataCopy, [ ...dataCopy.data, newItem ])
               }}
               onChange={(path, newItemData) => setProperty(path, dataCopy, newItemData)}

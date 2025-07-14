@@ -43,8 +43,6 @@ const PublishNewSystem: React.FC<Props> = ({ id }) => {
 
     const item = subscriptions?.find(sub => sub.type === type)
 
-    console.log(item)
-
     setSelectedItem(item)
     setSelectedVersion(item?.versions[0])
   }, [subscriptions, type])

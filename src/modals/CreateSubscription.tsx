@@ -51,8 +51,6 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id, onCreate }) => {
 
     setSystem(sys)
     setVersion(version)
-
-    console.log('test')
   }, [subscriptions])
 
   const requestClose = useCallback(() => closeModal(id), [id])

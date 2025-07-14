@@ -12,8 +12,6 @@ const CHECKPOINT = 'subscription-checkpoint'
 export const pull = async () => {
   const cp = await SyncStorage.get<any>(CHECKPOINT)
 
-  console.log('pulling subscriptions')
-
   const { checkpoint, documents } = await pullUpdatesForSubscriptions(cp, 20)
 
   await SyncStorage.set(CHECKPOINT, checkpoint)
@@ -55,7 +53,6 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
     return (referencedByChar || notSyncedAndPremium)
   })
 
-  console.log('pushing subs')
   return await pushUpdatesForSubscriptions(subscriptionsToPush)
 }
 

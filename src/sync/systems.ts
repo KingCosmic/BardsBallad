@@ -11,8 +11,6 @@ const CHECKPOINT = 'system-checkpoint'
 export const pull = async () => {
   const cp = await SyncStorage.get<any>(CHECKPOINT)
 
-  console.log('pulling systems')
-
   const { checkpoint, documents } = await pullUpdatesForSystems(cp, 20)
 
   await SyncStorage.set(CHECKPOINT, checkpoint)

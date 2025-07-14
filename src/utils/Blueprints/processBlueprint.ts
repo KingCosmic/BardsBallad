@@ -57,7 +57,6 @@ class BlueprintProcessor {
   processNode(node: Node | undefined) {
     if (!node) return
 
-    // console.log('node type', node.type)
     const script = getNodeScript(node.type || '')
 
     if (!this.nodeState.get(node.id) && script.init) {
@@ -65,7 +64,6 @@ class BlueprintProcessor {
       script.init(this, node)
     }
 
-    // console.log('processing')
     const nextNode = script.process(this, node)
 
     return nextNode

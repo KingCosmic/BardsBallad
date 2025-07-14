@@ -12,8 +12,6 @@ const CHECKPOINT = 'character-checkpoint'
 export const pull = async () => {
   const cp = await SyncStorage.get<any>(CHECKPOINT)
 
-  console.log('pulling characters')
-
   const { checkpoint, documents } = await pullUpdatesForCharacters(cp, 20)
 
   await SyncStorage.set(CHECKPOINT, checkpoint)

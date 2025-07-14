@@ -27,8 +27,6 @@ const SystemModalRendererModal: React.FC<Props> = ({ id, state, title = 'Unknown
 
   const requestClose = useCallback(() => closeModal(id), [id])
 
-  console.log(state)
-
   return (
     <Modal isOpen onClose={requestClose}>
       <ModalHeader title={title} onClose={requestClose} />

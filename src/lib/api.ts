@@ -37,8 +37,6 @@ api.interceptors.response.use(
     if (apiKey) {
       AuthStorage.set('apiKey', apiKey)
     }
-
-    console.log(response.data)
   
     // Check if the response has the new format
     if (response.data && typeof response.data === 'object' && 'data' in response.data) {

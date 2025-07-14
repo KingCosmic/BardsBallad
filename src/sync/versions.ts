@@ -12,8 +12,6 @@ const CHECKPOINT = 'version-checkpoint'
 export const pull = async () => {
   const cp = await SyncStorage.get<any>(CHECKPOINT)
 
-  console.log('pulling versions')
-
   const { checkpoint, documents } = await pullUpdatesForVersions(cp, 20)
 
   await SyncStorage.set(CHECKPOINT, checkpoint)

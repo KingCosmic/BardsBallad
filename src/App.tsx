@@ -109,8 +109,6 @@ const App: React.FC = () => {
 
         if (!isPastClearDate) return
 
-        console.log(sub)
-
         // TODO: Check if no other subs rely on this item before deleting it.
         // deleteItem(sub.resource_type, sub.resource_id)
         deleteVersionedResource(sub.version_id)

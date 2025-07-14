@@ -163,8 +163,6 @@ export function RenderComponentFromType(types: SystemType[], type: string, data:
           <div className='h-2' />
           {
             systemType.properties.map(prop => RenderComponentFromType(types, prop.typeData.type, data[prop.key] ?? '', dataCopy, prop.typeData, prop.key, (p, o, v) => {
-              console.log(`${label}/${p}`)
-              console.table(o)
               setProperty(`${label}/${p}`, o, v)
             }))
           }

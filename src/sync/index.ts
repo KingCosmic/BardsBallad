@@ -80,8 +80,6 @@ async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocu
       pullUpdates = false
     }
 
-    console.log('sync documents', documents)
-
     const pullConflicts = documents.flatMap(doc => {
       const localDocument = localDocuments.find((localDoc) => localDoc.local_id === doc.local_id)
 
@@ -101,8 +99,6 @@ async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocu
     const newDocs = documents.map(d => (chosen.find(c => c.local_id === d.local_id) || d))
 
     await bulkPut(newDocs)
-
-    console.log('bulk put', documents.length)
   }
 }
 
@@ -126,7 +122,6 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
 
     if (conflicts.length === 0) {
       pushUpdates = false
-      console.log('no conflicts')
       return
     }
 
@@ -140,19 +135,10 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
 
     const chosen = await handleConflicts(pushConflicts)
 
-    console.log(chosen)
-
-    try {
-      const result = await bulkPut(chosen)
-      console.log('Success:', result);
-    } catch (error) {
-      console.error('BulkPut failed:', error);
-    }
+    await bulkPut(chosen)
 
     // TODO: we may need to reSync to push up our chosen conflict resolutions.
     // can possibly get away without a reSync if we just update the updated_at field so it gets picked up in the next sync cycle.
-
-    console.log('conflicts handled', pushConflicts.length)
   }
 }
 
