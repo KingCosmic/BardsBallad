@@ -27,6 +27,7 @@ import deleteItem from '@utils/items/deleteItem'
 import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource'
 import olderThanDays from '@utils/olderThanDays'
 import generateTypeHash from '@utils/generateTypeHash'
+import useSync from '@hooks/useSync'
 
 applyTheme()
 
@@ -40,6 +41,7 @@ window.generateHashes = async () => {
 }
 
 const App: React.FC = () => {
+  useSync()
 
   useEffect(() => {
     const setVH = () => {

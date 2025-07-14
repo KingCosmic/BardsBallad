@@ -6,7 +6,7 @@ interface Tab {
   Content: React.FC;
 }
 
-const DefaultComp = () => <p>hello</p>
+const DefaultComp = () => <p>No tab found for this id.</p>
 
 const Tabs: React.FC<{ tabs: Tab[], props: any }> = ({ tabs, props }) => {
   const [activeTab, setActiveTab] = useState(tabs[0].id);

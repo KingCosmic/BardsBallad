@@ -246,9 +246,9 @@ export const sync = async () => {
     for (let i = 0; i < collectionsToSync.length; i++) {
       const coll = collectionsToSync[i]
 
-      await handlePullUpdates(coll.bulkPut, coll.pull, await coll.get())
+      // await handlePullUpdates(coll.bulkPut, coll.pull, await coll.get())
 
-      await handlePushingUpdates(coll.bulkPut, coll.push, await coll.get())
+      // await handlePushingUpdates(coll.bulkPut, coll.push, await coll.get())
     }
   } catch (e) {
     addToast(`Error occured while syncing. ${e}`, 'error')

@@ -57,26 +57,6 @@ checkInternetAccess().then((val) => {
   setOnlineState(val)
 })
 
-const runSync = async () => {
-  try {
-    const isOnline = await checkInternetAccess()
-    const { isLoggedIn } = authState.get()
-
-    setOnlineState(isOnline)
-
-    if (isOnline && isLoggedIn) {
-      await sync()
-    }
-  } catch (e) {
-    console.error('Error in sync', e)
-  }
-
-  setTimeout(runSync, 10 * 1000) // every 10 seconds
-}
-
-// wait 2 seconds for our initial sync (lets our data load)
-setTimeout(runSync, 2 * 1000)
-
 async function handleConflicts(conflicts: { local: any, remote: any }[]): Promise<any[]> {
   if (conflicts.length === 0) return []
 
