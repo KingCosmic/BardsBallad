@@ -35,13 +35,8 @@ const syncColors = {
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters();
-  const { systems } = useSystems();
-  const { versions } = useVersions();
 
   const { isLoggedIn, user, synced_characters } = authState.useValue();
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
 
   const navigate = useNavigate();
 
@@ -128,7 +123,7 @@ const Characters: React.FC = () => {
           </div>
           
           {/* Heros */}
-          {characters.length ? (
+          {characters.length && (
             characters.map((char, i) => (
               // Character Card
               <div
@@ -184,40 +179,8 @@ const Characters: React.FC = () => {
                 </div>
               </div>
             ))
-          ) : (
-            <h5>
-              Doesn't look like you have any characters yet? Try creating one!
-            </h5>
           )}
         </div>
-
-        {/* <FloatingActionButton
-          isOpen={isOpen}
-          onClick={() => setIsOpen(!isOpen)}
-          buttons={[
-            {
-              name: 'Create Character',
-              icon: '',
-              onClick: () => setIsCreating(true),
-            },
-            {
-              name: 'Import Character',
-              icon: '',
-              onClick: () =>
-                openModal('import-file', ({ id }) => <ImportFile id={id} title='Import Character' onSave={async (fileContent: string) => {
-                  try {
-                    const parsed = JSON.parse(fileContent);
-                    if (parsed) {
-                      await importCharacter(parsed);
-                    }
-                  } catch (e) {
-                    console.error(e);
-                  }
-                }} />
-              )
-            },
-          ]}
-        /> */}
       </div>
     </div>
   );

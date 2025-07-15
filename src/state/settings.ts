@@ -4,6 +4,7 @@ import { SettingsStorage } from '@lib/storage'
 
 import { themesState } from './themes'
 import { loadEruda, removeEruda } from '@utils/eruda';
+import { startScanning, stopScanning } from '@utils/reactscan';
 
 enum ThemeEnum {
   LIGHT = 'light',
@@ -15,12 +16,14 @@ type SettingsState = {
   theme: string;
   scheme: ThemeEnum
   isErudaActive: boolean
+  isReactScanActive: boolean
 }
 
 export const settingsState = newRidgeState<SettingsState>({
   theme: 'BardsBallad',
   scheme: ThemeEnum.DARK,
-  isErudaActive: false
+  isErudaActive: false,
+  isReactScanActive: false
 }, {
   onSet: (newState, previousState) => {
     SettingsStorage.set('settings', newState)
@@ -29,6 +32,12 @@ export const settingsState = newRidgeState<SettingsState>({
       removeEruda()
     } else if (!previousState.isErudaActive && newState.isErudaActive) {
       loadEruda()
+    }
+
+    if (previousState.isReactScanActive && !newState.isReactScanActive) {
+      stopScanning()
+    } else if (!previousState.isReactScanActive && newState.isReactScanActive) {
+      startScanning()
     }
 
     if ((newState.theme !== previousState.theme) || (newState.scheme !== previousState.scheme)) applyTheme()
@@ -47,6 +56,10 @@ loadSettings()
 
 export const setErudaActive = (active: boolean) => {
   settingsState.set(prevState => ({ ...prevState, isErudaActive: active }))
+}
+
+export const setReactScanActive = (active: boolean) => {
+  settingsState.set(prevState => ({ ...prevState, isReactScanActive: active }))
 }
 
 export const setTheme = (theme: string) => {
