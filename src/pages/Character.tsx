@@ -93,16 +93,16 @@ const CharacterPage: React.FC = () => {
 
       <Header title={character.name} subtitle='Chaotic / Neutral' hasSidebar />
 
-      <div className='p-4 lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
+      <div className='lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
 
-        <div className='relative w-full h-full flex flex-col flex-grow overflow-hidden'>
-          <div className='overflow-y-scroll p-2 max-h-full'>
+        <div className='relative xl:p-4 w-full h-full flex flex-col flex-grow overflow-hidden'>
+          <div className='overflow-y-scroll max-h-full'>
             <RenderTab className='first-tab-selector' system={system} character={character} updateState={updateState} />
           </div>
         </div>
 
-        <div className='relative hidden flex-col xl:flex flex-grow overflow-hidden'>
-          <div className='overflow-y-scroll p-2 max-h-full'>
+        <div className='relative xl:p-4 hidden flex-col xl:flex flex-grow overflow-hidden'>
+          <div className='overflow-y-scroll max-h-full'>
             <RenderTab className='second-tab-selector' system={system} character={character} updateState={updateState} />
           </div>
         </div>
