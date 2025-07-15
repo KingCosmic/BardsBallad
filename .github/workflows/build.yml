@@ -2,7 +2,7 @@ name: Generate a build, publish and push to another branch.
 on:
   push:
     branches:
-      - master # The branch name to build deployments from.
+      - main # The branch name to build deployments from.
 
 jobs:
   build:
