@@ -3,7 +3,7 @@ import Header from '@components/Header'
 import Select from '@components/inputs/Select'
 
 import { themesState } from '@state/themes'
-import { setErudaActive, setTheme, settingsState } from '@state/settings'
+import { setErudaActive, setReactScanActive, setTheme, settingsState } from '@state/settings'
 import Checkbox from '@components/inputs/Checkbox'
 import Button from '@components/inputs/Button'
 import { authState } from '@state/auth'
@@ -112,6 +112,9 @@ const tabs = [
       <>
         <p className='my-2'><a className='underline' href='https://eruda.liriliri.io/' target='_blank'>Eruda</a> allows access to the development console on mobile.</p>
         <Checkbox id='use-eruda' label='Load Eruda' checked={settings.isErudaActive} onChange={setErudaActive} />
+
+        <p className='my-2'><a className='underline' href='https://react-scan.com/' target='_blank'>React Scan</a> helps to visually track down performance problems caused by rerenders.</p>
+        <Checkbox id='use-reactscan' label='Load ReactScan' checked={settings.isReactScanActive} onChange={setReactScanActive} />
 
         <p className='my-2'>Clear Local Storage</p>
         <Button color='danger' onClick={clearLocalStorage}>Clear Local Storage</Button>
