@@ -33,7 +33,7 @@ export const login = async (username: string, password: string): Promise<{ succe
     if (typeof response.data === 'string') return { success: false, error: 'Required parameters are missing' }
 
     // TODO: return better error from response.data
-    if (response.data.existing) return { success: false, error: 'Username and/or email alaready taken' }
+    if (response.data.existing) return { success: false, error: 'Username and/or email already taken' }
 
     // TODO: return better error from response.data
     return { success: false, error: 'Input validation failed' }

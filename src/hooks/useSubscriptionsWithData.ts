@@ -21,7 +21,7 @@ const useSubscriptionsWithData = (filters: ('system' | 'theme' | 'datapack')[] =
     if (!subs) return []
 
     // filter out deleted subscriptions
-    const filteredSubs = subs.filter(sub => (!sub.deleted_at || !filters.includes(sub.resource_type))).sort((a, b) => new Date(a.subscribed_at) > new Date(b.subscribed_at) ? -1 : 1)
+    const filteredSubs = subs.filter(sub => (!sub.deleted_at && !filters.includes(sub.resource_type))).sort((a, b) => new Date(a.subscribed_at) > new Date(b.subscribed_at) ? -1 : 1)
 
     const grouped: { [local_id:string]: Grouped } = {}
     const failedGrabs: { [local_id:string]: boolean } = {}

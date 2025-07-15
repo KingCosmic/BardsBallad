@@ -106,8 +106,18 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id, onCreate }) => {
 
           switch (type) {
             case 'system':
-              // TODO: fix this with the new implementation.
-              data = {}
+              data = {
+                creator: [],
+                modals: [],
+                pages: [],
+                version: '',
+                data: [],
+                defaultCharacterData: {
+                  _type: { name: 'CharacterData', properties: [] },
+                },
+                types: [],
+                actions: [],
+              }
               break;
             case 'datapack':
               if (!version || !version.data) return console.log('no version data')

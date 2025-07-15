@@ -15,6 +15,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import getItem from '@utils/items/getItem'
 import { UserSubscription } from '@storage/schemas/userSubscription'
 import clearSubscription from '@storage/methods/subscriptions/clearSubscription'
+import reviveSubscription from '@storage/methods/subscriptions/reviveSubscription'
 
 const GarbageCard = ({ sub }: { sub: UserSubscription }) => {
   const item = useLiveQuery(() => getItem(sub.resource_type, sub.resource_id), [sub])
@@ -41,7 +42,7 @@ const GarbageCard = ({ sub }: { sub: UserSubscription }) => {
       <div className="flex gap-2 mt-4">
         <button
           className="flex-1 fantasy-accent-gradient text-fantasy-dark px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-fantasy-accent/40"
-          onClick={() => {}}
+          onClick={() => reviveSubscription(sub.local_id)}
         >
           Revive {sub.resource_type}
         </button>

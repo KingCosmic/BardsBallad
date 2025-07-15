@@ -68,17 +68,17 @@ const System: React.FC = () => {
     }
 
     if (!versionEdits?.data.pages.find(p => p.name === editor.characterPage)) {
-      newPages.characterPage = versionEdits?.data.pages[0].name || ''
+      newPages.characterPage = versionEdits?.data.pages[0]?.name || ''
       changed = true
     }
 
     if (!versionEdits?.data.creator.find(p => p.name === editor.creatorPage)) {
-      newPages.creatorPage = versionEdits?.data.creator[0].name || ''
+      newPages.creatorPage = versionEdits?.data.creator[0]?.name || ''
       changed = true
     }
 
     if (!versionEdits?.data.modals.find(p => p.name === editor.modalsPage)) {
-      newPages.modalsPage = versionEdits?.data.modals[0].name || ''
+      newPages.modalsPage = versionEdits?.data.modals[0]?.name || ''
       changed = true
     }
 
