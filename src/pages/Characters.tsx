@@ -35,13 +35,8 @@ const syncColors = {
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters();
-  const { systems } = useSystems();
-  const { versions } = useVersions();
 
   const { isLoggedIn, user, synced_characters } = authState.useValue();
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
 
   const navigate = useNavigate();
 
