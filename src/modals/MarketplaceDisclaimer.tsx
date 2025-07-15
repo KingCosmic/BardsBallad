@@ -1,18 +1,16 @@
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
 
 type Props = {
-  isOpen: boolean;
-  requestClose(): void;
-  onAccept(val: any): void;
+  onAccept(): void;
 }
 
-const MarketplaceDisclaimer: React.FC<Props> = ({ isOpen, requestClose, onAccept }) => {
+const MarketplaceDisclaimer: React.FC<Props> = ({ onAccept }) => {
   return (
-    <Modal isOpen={isOpen}>
+    <Modal isOpen>
       <ModalHeader title='Disclaimer' />
 
       <ModalBody>
@@ -26,10 +24,7 @@ const MarketplaceDisclaimer: React.FC<Props> = ({ isOpen, requestClose, onAccept
       </ModalBody>
 
       <ModalFooter>
-        <Button color='primary' onClick={() => {
-          onAccept(true)
-          requestClose()
-        }}>I Understand</Button>
+        <Button color='primary' onClick={onAccept}>I Understand</Button>
       </ModalFooter>
     </Modal>
   )

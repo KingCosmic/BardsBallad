@@ -15,8 +15,8 @@ const styles: { colors: Styles, weight: Weight, sizes: Sizes } = {
       hover: 'group-hover:text-neutral-400 dark:group-hover:text-neutral-500'
     },
     'primary': {
-      text: 'text-brand-600 dark:text-brand-400',
-      hover: 'group-hover:text-brand-700 dark:group-hover:text-brand-300'
+      text: 'text-fantasy-accent',
+      hover: 'group-hover:text-fantasy-light'
     },
     'accent': {
       text: 'text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300',

@@ -7,7 +7,7 @@ import {
   Position,
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
+import Card from '@components/Card'
  
 function ToString(_props: NodeProps<Node<{ number: number; }>>) {
   return (

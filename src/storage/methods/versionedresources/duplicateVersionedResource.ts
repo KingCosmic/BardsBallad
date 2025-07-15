@@ -1,10 +1,10 @@
-import { VersionedResource } from '../../schemas/versionedResource'
-import { db } from '../../index'
-import generateLocalId from '../../../utils/generateLocalId'
-import { authState } from '../../../state/auth'
-import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
+import { VersionedResource } from '@storage/schemas/versionedResource'
+import { db } from '@/storage'
+import generateLocalId from '@utils/generateLocalId'
+import { authState } from '@state/auth'
+import ensureUniqueness from '@utils/db/ensureIdUniqueness'
 
-export default async (oldResource: VersionedResource, new_id?: string) => {
+export default async (oldResource: VersionedResource, new_id?: string, overwriteIfExists: boolean = false) => {
   try {
     const { user } = authState.get()
 
@@ -12,15 +12,17 @@ export default async (oldResource: VersionedResource, new_id?: string) => {
 
     let local_id = new_id ?? await generateLocalId()
 
-    while (!await ensureUniqueness(local_id)) {
-      local_id = await generateLocalId()
+    if (!overwriteIfExists) {
+      while (!await ensureUniqueness(local_id)) {
+        local_id = await generateLocalId()
+      }
     }
 
     const versionData = {
       ...oldResource,
       user_id,
       local_id,
-      id: undefined,
+      id: overwriteIfExists ? oldResource.id : undefined,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }

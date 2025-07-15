@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useLiveRect } from '../hooks/useLiveRect';
+import { useLiveRect } from '@hooks/useLiveRect';
 import { useNavigate } from 'react-router';
 
 function getTooltipPosition(targetRect: DOMRect | null, position: string) {
@@ -108,3 +108,4 @@ export const Onboarding = ({ steps, onFinish }: {
     document.body
   );
 };
+

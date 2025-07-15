@@ -1,4 +1,4 @@
-import { db } from '../../index'
+import { db } from '@/storage'
 
 export default async (local_id: string, newName: string) => {
   try {

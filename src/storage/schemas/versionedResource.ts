@@ -5,9 +5,9 @@ const versionedResourceSchema = z.object({
   local_id: z.string({ invalid_type_error: 'local_id must be a string' }).max(73, 'local_id must be 73 characters or less'),
   user_id: z.string(),
 
-  data: z.any(), // TODO: make schemas for each data type, and still do processing on import and upload to verify.
+  data: z.any(), // make schemas for each data type, and still do processing on import and upload to verify.
   reference_id: z.string({ invalid_type_error: 'reference_id must be a string' }),
-  reference_type: z.enum(['system', 'character']),
+  reference_type: z.enum(['system', 'datapack']),
 
   // a random hash, a quick glance at whether or not update conflicts are happening.
   version: z.string().optional(),

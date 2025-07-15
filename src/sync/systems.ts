@@ -1,15 +1,15 @@
 import { jwtDecode } from 'jwt-decode'
-import { pullUpdatesForSystems, pushUpdatesForSystems } from '../lib/api'
-import { AuthStorage, SyncStorage } from '../lib/storage'
-import { db } from '../storage'
-import { System } from '../storage/schemas/system'
+import { AuthStorage, SyncStorage } from '@lib/storage'
+import { db, Item } from '@/storage'
+import {pushUpdatesForSystems} from "@api/pushUpdatesForSystems";
+import {pullUpdatesForSystems} from "@api/pullUpdatesForSystems";
+import Roles from '@/const/roles';
+import { hasRole } from '@utils/roles/hasRole';
 
 const CHECKPOINT = 'system-checkpoint'
 
 export const pull = async () => {
   const cp = await SyncStorage.get<any>(CHECKPOINT)
-
-  console.log('pulling systems')
 
   const { checkpoint, documents } = await pullUpdatesForSystems(cp, 20)
 
@@ -28,7 +28,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
   
-  const isPremium = user.role > 0
+  const isPremium = hasRole(user.role, Roles.PREMIUM)
 
   const systemsToPush = systems.filter(s => {
     const isOwned = (s.user_id === user.id)
@@ -36,9 +36,9 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
     // we only need to worry about syncing systems owned by us.
     if (!isOwned) return false
 
-    const pushedCharacterRef = characters.find(c => c.system.local_id === s.local_id && synced.includes)
+    const pushedCharacterRef = characters.find(c => c.system.local_id === s.local_id && synced.includes(c.local_id))
 
-    // if a character we're syncing relies on this character we need to sync it too.
+    // if a character we're syncing relies on this system we need to sync it too.
     const referencedByChar = (pushedCharacterRef !== undefined)
 
     // if this system hasn't been synced and we're a premium user it should be synced.
@@ -50,6 +50,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   return await pushUpdatesForSystems(systemsToPush)
 }
 
-export const bulkPut = async (docs: System[]) => db.systems.bulkPut(docs)
+export const bulkPut = (docs: Item[]) => db.systems.bulkPut(docs)
 
-export const get = async () => await db.systems.toArray()
+export const get = () => db.systems.toArray()
+

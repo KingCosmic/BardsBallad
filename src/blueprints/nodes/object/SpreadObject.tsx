@@ -11,10 +11,10 @@ import {
   useNodesData
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
-import { editorState } from '../../../state/editor'
-import { SystemData, type SystemType } from '../../../storage/schemas/system'
-import { useVersionEdits } from '../../../hooks/useVersionEdits'
+import Card from '@components/Card'
+import { editorState } from '@state/editor'
+import { SystemData, type SystemType } from '@storage/schemas/system'
+import { useVersionEdits } from '@hooks/useVersionEdits'
  
 function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()
@@ -58,7 +58,7 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: Sy
 
     updateNodeData(id, { inputs: input, inputType: typeInput, outputs })
     updateNodeInternals(id)
-  }, [connections, nodes, version])
+  }, [connections, nodes])
 
   return (
     <Card title='Spread Object'>

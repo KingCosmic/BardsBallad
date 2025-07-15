@@ -1,29 +1,30 @@
 import { produce } from 'immer';
-import { editorState } from '../../state/editor';
+import { editorState } from '@state/editor';
 
 import lz from 'lzutf8';
-import { SystemData } from '../../storage/schemas/system';
+import { SystemData } from '@storage/schemas/system';
+import { VersionedResource } from '@storage/schemas/versionedResource';
+import { db } from '@storage/index';
 
-export default async (data: SystemData, lexical: string) => {
+export default async (version_id: string, lexical: string) => {
   if (lexical === '{}') return
   
   const newLexical = lz.encodeBase64(lz.compress(lexical))
 
   const editor = editorState.get()
 
-  return produce(data, draft => {
-    if (editor.tab === 'editor') {
-      const index = draft.pages.findIndex((data => data.name === editor.characterPage))
+  const version = await db.versions.get(version_id) as Omit<VersionedResource, 'data'> & { data: SystemData }
 
-      if (index === -1) return
+  if (!version) return
 
-      draft.pages[index].lexical = newLexical
-    } else if (editor.tab === 'creator') {
-      const index = draft.creator.findIndex((data => data.name === editor.creatorPage))
+  return produce(version.data, draft => {
+    const pages = (editor.tab === 'editor') ? draft.pages : (editor.tab === 'creator') ? draft.creator : draft.modals
+    const pageName = (editor.tab === 'editor') ? editor.characterPage : (editor.tab === 'creator') ? editor.creatorPage : editor.modalsPage
 
-      if (index === -1) return
+    const index = pages.findIndex(d => d.name === pageName)
 
-      draft.creator[index].lexical = newLexical
-    }
+    if (index === -1) return
+
+    pages[index].lexical = newLexical
   })
 }

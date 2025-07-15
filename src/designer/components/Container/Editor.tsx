@@ -2,12 +2,12 @@ import { PropsWithChildren, useMemo } from 'react'
 import { NodeHelpersType, Node, useNode, UserComponentConfig } from '@craftjs/core'
 
 
-import { getDefaultNodes } from '../../../blueprints/utils'
+import { getDefaultNodes } from '@blueprints/utils'
 import { ContainerSettings } from './Settings'
 import styles from './styles'
-import globalStyles from '../../styles'
-import { BlueprintProcessorState } from '../../../utils/Blueprints/processBlueprint'
-import { BlueprintData } from '../../../types/blueprint'
+import globalStyles from '@designer/styles'
+import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
+import { BlueprintData } from '@/types/blueprint'
 
 export type ContainerProps = {
   /* props that are only used in preview when processing blueprints */

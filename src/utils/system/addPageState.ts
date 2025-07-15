@@ -1,15 +1,9 @@
 import { produce } from 'immer'
-import { PageData, SystemData, type TypeData } from '../../storage/schemas/system'
+import { PageData, SystemData, type TypeData } from '@storage/schemas/system'
 
-export default async (data: SystemData, pageType: 'character' | 'builder', pageName: string, key: string, type: TypeData) => {
+export default async (data: SystemData, pageType: 'character' | 'builder' | 'modal', pageName: string, key: string, type: TypeData) => {
   return produce(data, (draft) => {
-    let pages: PageData[] = []
-    
-    if (pageType === 'builder') {
-      pages = draft.creator
-    } else if (pageType === 'character') {
-      pages = draft.pages
-    }
+    const pages = (pageType === 'character') ? draft.pages : (pageType === 'builder') ? draft.creator : draft.modals
 
     const index = pages.findIndex((data => data.name === pageName))
 
@@ -23,10 +17,6 @@ export default async (data: SystemData, pageType: 'character' | 'builder', pageN
       value: undefined
     }
 
-    if (pageType === 'builder') {
-      draft.creator[index].state.push(newState)
-    } else if (pageType === 'character') {
-      draft.pages[index].state.push(newState)
-    }
+    pages[index].state.push(newState)
   })
 }

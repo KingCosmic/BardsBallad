@@ -6,7 +6,7 @@ import {
   type Node,
   Position,
 } from '@xyflow/react'
-import Card from '../../../components/Card';
+import Card from '@components/Card';
 
 
 function Multiply(_props: NodeProps<Node<{ number1: number; number2: number; }>>) {

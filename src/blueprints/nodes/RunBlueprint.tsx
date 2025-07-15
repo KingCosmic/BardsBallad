@@ -10,11 +10,11 @@ import {
   useNodeConnections,
   useNodesData,
 } from '@xyflow/react'
-import Card from '../../components/Card'
+import Card from '@components/Card'
 
-import { getReturnTypeOfBlueprint } from '../../utils/Blueprints/getReturnTypeOfBlueprint'
-import { getParamsOfBlueprint } from '../../utils/Blueprints/getParamsOfBlueprint'
-import { Param } from '../utils'
+import { getReturnTypeOfBlueprint } from '@utils/Blueprints/getReturnTypeOfBlueprint'
+import { getParamsOfBlueprint } from '@utils/Blueprints/getParamsOfBlueprint'
+import { Param } from '@blueprints/utils'
 
 const RunBlueprint: React.FC<NodeProps<Node<{ params: Param[], returnType: string, inputs: { [key:string]: { type: string, data: any } }, outputs: { [key:string]: { type: string, data: any } } }>>> = ({ id, data: { params, returnType, inputs, outputs } }) => {
   const { updateNodeData } = useReactFlow()

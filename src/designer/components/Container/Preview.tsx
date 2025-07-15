@@ -1,16 +1,18 @@
-import { memo, PropsWithChildren, useCallback, useMemo } from 'react'
+import { PropsWithChildren, useCallback, useMemo, useRef } from 'react'
 
-import { AddData, useLocalData } from '../../renderer/Context'
-import BlueprintProcessor from '../../../utils/Blueprints/processBlueprint'
+import { AddData, useLocalData } from '@designer/renderer/Context'
+import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { ContainerProps } from './Editor'
 import styles from './styles'
-import globalStyles from '../../styles'
+import globalStyles from '@designer/styles'
+
+import { useVirtualizer } from '@tanstack/react-virtual'
 
 export default (props: PropsWithChildren<ContainerProps>) => {
   const localData = useLocalData()
 
-  const items = useMemo(() => {
+  const items: any[] = useMemo(() => {
     const processor = new BlueprintProcessor(props.blueprint!)
 
     const output = processor.processBlueprint(localData, props.state!, () => {}) ?? []
@@ -40,13 +42,23 @@ export default (props: PropsWithChildren<ContainerProps>) => {
   const borderClass = useMemo(() => styles[props.border!] ? styles[props.border!]?.border : '', [props.border])
   const hoverClass = useMemo(() => props.isInteractive ? styles[props.hover!]?.hover : '', [props.isInteractive])
 
+  const parentRef = useRef(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: items.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 35,
+    overscan: 4,
+  })
+
   return (
     <div
+      ref={parentRef}
       // @ts-ignore
       style={{
         display: isVisible ? props.display : 'none',
         // @ts-ignore
-        position: props.position!,
+        position: props.isList ? 'relative' : props.position!,
         top: props.top,
         right: props.right,
         bottom: props.bottom,
@@ -72,8 +84,10 @@ export default (props: PropsWithChildren<ContainerProps>) => {
         paddingBottom: globalStyles.spacing[props.paddingBottom!],
         paddingLeft: globalStyles.spacing[props.paddingLeft!],
 
-        height: globalStyles.size[props.height!],
-        width: globalStyles.size[props.width!],
+        // TODO: update this to allow for row lists.
+        // TODO: 8 needs to be update to be the gap size in pxs.
+        height: props.isList ? `${rowVirtualizer.getTotalSize() + items.length * 8}px` : globalStyles.size[props.height!],
+        width: props.isList ? '100%' : globalStyles.size[props.width!],
         maxHeight: globalStyles.size[props.maxHeight!],
         maxWidth: globalStyles.size[props.maxWidth!],
         minHeight: globalStyles.size[props.minHeight!],
@@ -84,12 +98,31 @@ export default (props: PropsWithChildren<ContainerProps>) => {
     >
       {
         props.isList ? (
-          items.map((item: any) => (
-            <AddData key={item.name} localData={{ [props.dataName!]: item }}>
-              {/* @ts-ignore */}
-              {props.children}
-            </AddData>
-          ))
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            transform: `translateY(${items[0]?.start ?? 8}px)`, // TODO: 8 needs to be converted to the containers margin top / padding top.
+            display: props.display,
+            // @ts-ignore
+            flexDirection: props.flexDirection,
+            gap: globalStyles.spacing[props.gap!], 
+          }}>
+            {/* Only the visible items in the virtualizer, manually positioned to be in view */}
+            {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+              const item = items[virtualItem.index]
+
+              return (
+                <div key={virtualItem.key} data-index={virtualItem.index} ref={rowVirtualizer.measureElement}>
+                  <AddData localData={{ [props.dataName!]: item }}>
+                    {/* @ts-ignore */}
+                    {props.children}
+                  </AddData>
+                </div>
+              )
+            })}
+          </div>
         ) : props.children
       }
     </div>

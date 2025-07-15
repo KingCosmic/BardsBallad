@@ -1,25 +1,24 @@
-import { useState } from 'react'
-import Button from '../components/inputs/Button'
-import Modal from '../components/Modal'
-import ModalBody from '../components/Modal/Body'
-import ModalFooter from '../components/Modal/Footer'
-import ModalHeader from '../components/Modal/Header'
+import { useCallback, useState } from 'react'
+import Button from '@components/inputs/Button'
+import Modal from '@components/Modal'
+import ModalBody from '@components/Modal/Body'
+import ModalFooter from '@components/Modal/Footer'
+import ModalHeader from '@components/Modal/Header'
+import { closeModal } from '@state/modals'
 
 type Props = {
+  id: number;
   data: { local: any, remote: any }[];
-
-  isOpen: boolean;
-  requestClose(): void;
   onSave(chars: any[]): void;
 }
 
-const HandleConflicts: React.FC<Props> = ({ data, isOpen, requestClose, onSave, }) => {
-  console.log(data)
-
+const HandleConflicts: React.FC<Props> = ({ id, data, onSave, }) => {
   const [conflictIndex, setConflictIndex] = useState(0)
   const [conflict, setConflict] = useState(data[0])
 
   const [chosenRevisions, setChosenRevisions] = useState<any[]>([])
+
+  const requestClose = useCallback(() => closeModal(id), [id])
 
   const nextConflict = (chosen: any, remote: any) => {
     const updatedRevisions = [...chosenRevisions, { ...chosen, version: remote.version, updated_at: new Date().toISOString() }]
@@ -36,8 +35,8 @@ const HandleConflicts: React.FC<Props> = ({ data, isOpen, requestClose, onSave, 
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
-      <ModalHeader title={`Conflicts for Local:${conflict.local.name} / Remote:${conflict.remote.name}`} onClose={requestClose} />
+    <Modal isOpen>
+      <ModalHeader title={`Conflicts for Local:${conflict.local.name} / Remote:${conflict.remote.name}`} />
 
       <ModalBody className="text-center">
         <div className="p-4">

@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { useNode, UserComponentConfig } from '@craftjs/core'
 
-import { getDefaultNodes } from '../../../blueprints/utils'
+import { getDefaultNodes } from '@blueprints/utils'
 import { SelectSettings } from './Settings'
 
-import globalStyles from '../../styles'
-import { BlueprintProcessorState } from '../../../utils/Blueprints/processBlueprint'
-import Select from '../../../components/inputs/Select'
-import { BlueprintData } from '../../../types/blueprint'
+import globalStyles from '@designer/styles'
+import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
+import Select from '@components/inputs/Select'
+import { BlueprintData } from '@/types/blueprint'
 
 export type SelectProps = {
   /* props that are only used in preview when processing blueprints */

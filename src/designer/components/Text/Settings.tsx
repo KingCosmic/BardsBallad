@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
-import { updateParams } from '../../../blueprints/utils'
-import Accordion from '../../../components/Accordion'
-import AccordionGroup from '../../../components/AccordionGroup'
-import Button from '../../../components/inputs/Button'
-import Checkbox from '../../../components/inputs/Checkbox'
-import TextInput from '../../../components/inputs/TextInput'
-import { openModal } from '../../../state/modals'
+import { updateParams } from '@blueprints/utils'
+import Accordion from '@components/Accordion'
+import AccordionGroup from '@components/AccordionGroup'
+import Button from '@components/inputs/Button'
+import Checkbox from '@components/inputs/Checkbox'
+import TextInput from '@components/inputs/TextInput'
+import { openModal } from '@state/modals'
 import { useNode } from '@craftjs/core'
-import { useLocalState } from '../../hooks/useLocalState'
-import Select from '../../../components/inputs/Select'
+import { useLocalState } from '@designer/hooks/useLocalState'
+import Select from '@components/inputs/Select'
 import styles from './styles'
-import globalStyles from '../../styles'
+import globalStyles from '@designer/styles'
+import BlueprintEditor from '@modals/BlueprintEditor'
 
 export default function TextSettings() {
   const { id, actions: { setProp },
@@ -66,14 +67,12 @@ export default function TextSettings() {
 
         {
           useBlueprintValue ? (
-            <Button color='primary' onClick={() => openModal({
-              type: 'blueprint',
-              title: 'Text Value',
-              data: blueprint,
-              onSave: (blueprint) => setProp((props: any) => {
-                props.blueprint = blueprint
-              })
-            })}>
+            <Button color='primary' onClick={() =>
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={blueprint} onSave={(bp) => {
+                  setProp((props: any) => props.blueprint = bp)
+                }} />
+              ))}>
               Edit Blueprint Value
             </Button>
           ) : (

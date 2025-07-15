@@ -1,13 +1,13 @@
-import SystemChema, { type System } from '../../schemas/system'
-import { db } from '../../index'
+import SystemSchema from '@storage/schemas/system'
+import { db, Item } from '@/storage'
 
-export default async (sys: System): Promise<System | null> => {
+export default async (sys: Item): Promise<Item | null> => {
   try {
     if (await db.systems.get(sys.local_id)) {
       return null
     }
 
-    const result = SystemChema.safeParse(sys);
+    const result = SystemSchema.safeParse(sys);
     if (!result.success) {
       console.log('Invalid system data:', result.error.format());
       return null

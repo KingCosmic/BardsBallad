@@ -6,7 +6,7 @@ const userSubscriptionSchema = z.object({
   local_id: z.string({ invalid_type_error: 'local_id must be a string' }).max(73, 'local_id must be 73 characters or less'),
   user_id: z.string({ invalid_type_error: 'user_id must be a string' }),
 
-  resource_type: z.enum(['system', 'character', 'module', 'plugin']),
+  resource_type: z.enum(['system', 'theme', 'datapack']),
   resource_id: z.string({ invalid_type_error: 'resource_id must be a string' }),
 
   version_id: z.string(),

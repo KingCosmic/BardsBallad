@@ -1,6 +1,6 @@
 
-export default (obj: any, filename: string) => {
-  const blob = new Blob([JSON.stringify(obj, null, 2)], {
+export default (type: 'character' | 'system' | 'datapack' | 'theme', obj: any, filename: string) => {
+  const blob = new Blob([JSON.stringify({ type, ...obj }, null, 2)], {
     type: 'application/json',
   });
 

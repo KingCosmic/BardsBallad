@@ -1,5 +1,5 @@
 import React from 'react';
-import { Node, useEditor } from '@craftjs/core';
+import { useEditor } from '@craftjs/core';
 import { 
   Layers, 
   Eye, 
@@ -49,7 +49,7 @@ const LayersPanel = () => {
           onMouseLeave={() => setHoveredNode('')}
         >
           {hasChildren ? (
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleExpanded(nodeId);

@@ -1,26 +1,27 @@
 import { string } from 'zod';
-import Button from '../components/inputs/Button';
-import TextInput from '../components/inputs/TextInput';
-import Modal from '../components/Modal';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import ModalHeader from '../components/Modal/Header';
-import FileUpload from '../components/inputs/FileUpload';
-import { useState } from 'react';
+import Button from '@components/inputs/Button';
+import TextInput from '@components/inputs/TextInput';
+import Modal from '@components/Modal';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import ModalHeader from '@components/Modal/Header';
+import FileUpload from '@components/inputs/FileUpload';
+import { useCallback, useState } from 'react';
+import { closeModal } from '@state/modals';
 
 type Props = {
+  id: number
   title: string;
-
-  isOpen: boolean;
-  requestClose(): void;
   onSave(importedJSON: any): void;
 }
 
-const ImportFile: React.FC<Props> = ({ isOpen, title, requestClose, onSave }) => {
+const ImportFile: React.FC<Props> = ({ id, title, onSave }) => {
   const [content, setContent] = useState<string>('')
 
+  const requestClose = useCallback(() => closeModal(id), [id])
+
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title={title}onClose={requestClose} />
 
       <ModalBody>

@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../storage'
-import { type UserSubscription } from '../storage/schemas/userSubscription'
+import { db } from '@/storage'
+import { type UserSubscription } from '@storage/schemas/userSubscription'
 
 export function useSubscriptionData(sub: UserSubscription) {
   const query = useLiveQuery(async () => {
@@ -9,6 +9,9 @@ export function useSubscriptionData(sub: UserSubscription) {
     switch (sub.resource_type) {
       case 'system':
         baseData = await db.systems.where('local_id').equals(sub.resource_id).toArray()
+        break
+      case 'datapack':
+        baseData = await db.datapacks.where('local_id').equals(sub.resource_id).toArray()
         break
     }
 
@@ -26,3 +29,4 @@ export function useSubscriptionData(sub: UserSubscription) {
 
   return { query, isLoading: (query === undefined) }
 }
+

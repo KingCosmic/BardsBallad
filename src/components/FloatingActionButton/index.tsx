@@ -40,7 +40,7 @@ const FloatingActionButton: React.FC<FABProps> = forwardRef(({ buttons, onClick,
         id='floating-action-button'
         onClick={() => ((onClick) ? onClick() : null)}
         type='button'
-        className='flex items-center justify-center text-white bg-brand-700 rounded-lg w-14 h-14 hover:bg-brand-800 dark:bg-brand-600 dark:hover:bg-brand-700'
+        className='flex items-center justify-center border border-fantasy-border text-fantasy-text bg-fantasy-glass rounded-lg w-14 h-14 transition-all duration-500 backdrop-blur-lg shadow-2xl hover:-translate-y-2 hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40'
       >
         <svg
           className={`${(!onClick) && 'group-hover:rotate-45 transition-transform'} w-5 h-5`}

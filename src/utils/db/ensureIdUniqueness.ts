@@ -1,4 +1,4 @@
-import { db } from '../../storage'
+import { db } from '@/storage'
 
 // This functions makes sure a id is unique across all database tables.
 const ensureUniqueness = async (id: string) => {

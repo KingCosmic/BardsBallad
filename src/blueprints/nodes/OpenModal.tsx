@@ -9,13 +9,20 @@ import {
   useUpdateNodeInternals,
   useNodeConnections
 } from '@xyflow/react'
-import Card from '../../components/Card'
-import Select from '../../components/inputs/Select'
-import TextInput from '../../components/inputs/TextInput'
+
+import Card from '@components/Card'
+import Select from '@components/inputs/Select'
+import TextInput from '@components/inputs/TextInput'
+import { editorState } from '@state/editor'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { SystemData } from '@storage/schemas/system'
 
 const OpenModal: React.FC<NodeProps<Node<{ type: string, title: string, inputType: string }>>> = ({ id, data: { type, title, inputType } }) => {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
+  const editor = editorState.useValue()
+  
+  const version = useVersionEdits<SystemData>(editor.versionId)
 
   useNodeConnections({
     handleType: 'target',
@@ -50,6 +57,8 @@ const OpenModal: React.FC<NodeProps<Node<{ type: string, title: string, inputTyp
         <option value='edit_object'>Edit Object</option>
         <option value='edit_number'>Edit Number</option>
         <option value='edit_string'>Edit String</option>
+
+        {version?.data.modals.map(m => (<option value={m.name}>{m.name}</option>))}
       </Select>
 
       <TextInput id='modal-title' label='Modal Title' value={title} onChange={title => updateNodeData(id, { title })} isValid errorMessage='' />

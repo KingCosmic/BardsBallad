@@ -1,23 +1,18 @@
-import Button from '../components/inputs/Button';
-import Modal from '../components/Modal';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import ModalHeader from '../components/Modal/Header';
+import Button from '@components/inputs/Button';
+import Modal from '@components/Modal';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import ModalHeader from '@components/Modal/Header';
 
 type Props = {
-  data: string | null;
-  title?: string;
-
-  isOpen: boolean;
-  requestClose(): void;
-  onSave(newData: boolean): void;
-  onDelete?(): void;
+  no(): void;
+  yes(): void;
 }
 
-const WelcomeMessage: React.FC<Props> = ({ data, title = 'Edit string', isOpen, requestClose, onSave, onDelete }) => {
+const WelcomeMessage: React.FC<Props> = ({ yes, no }) => {
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
-      <ModalHeader title={title}onClose={requestClose} />
+    <Modal isOpen onClose={no}>
+      <ModalHeader title='Welcome Adventurer' onClose={no} />
 
       <ModalBody>
         <div className='flex flex-col gap-2'>
@@ -27,19 +22,13 @@ const WelcomeMessage: React.FC<Props> = ({ data, title = 'Edit string', isOpen, 
       </ModalBody>
 
       <ModalFooter>
-        <Button color='light'
-          onClick={() => {
-            onDelete!()
-            requestClose()
-          }}
-        >
+        <Button color='light' onClick={no}>
           No Thank You
         </Button>
 
-        <Button color='primary' onClick={() => {
-          onSave(false)
-          requestClose()
-        }}>Yes Please!</Button>
+        <Button color='primary' onClick={yes}>
+          Yes Please!
+        </Button>
       </ModalFooter>
     </Modal>
   )

@@ -1,7 +1,7 @@
 import { newRidgeState } from 'react-ridge-state'
 
 import { jwtDecode } from 'jwt-decode'
-import { AuthStorage, SyncStorage } from '../lib/storage';
+import { AuthStorage, SyncStorage } from '@lib/storage';
 
 type User = {
   id: string;
@@ -9,6 +9,7 @@ type User = {
   email: string;
   role: number;
   synced_characters: string[];
+  discord_id: string;
 }
 
 type AuthState = {
@@ -38,7 +39,6 @@ export const saveToken = async (token: string) => {
   await AuthStorage.set('token', token)
 
   const user = jwtDecode<User>(token)
-  console.log('decoded', user)
 
   authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characters || [] })
 
@@ -56,3 +56,4 @@ export const logout = () => {
 }
 
 loadToken()
+

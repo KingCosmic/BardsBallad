@@ -1,28 +1,29 @@
 import { useEffect, useMemo, useState } from 'react'
-import { editorState, setCreatorPage } from '../../state/editor'
+import { editorState, setCreatorPage } from '@state/editor'
 import { useEditor, Element } from '@craftjs/core'
-import Select from '../inputs/Select'
+import Select from '@components/inputs/Select'
 import React from 'react'
-import { getDefaultNodes } from '../../blueprints/utils'
-import FAB from '../../designer/FloatingActionButton'
-import Searchbar from '../../designer/Searchbar'
-import EditPageStateModal from '../../modals/EditPageState'
-import EditStringModal from '../../modals/EditString'
-import { openModal } from '../../state/modals'
-import Divider from '../Divider'
-import Button from '../inputs/Button'
+import { getDefaultNodes } from '@blueprints/utils'
+import FAB from '@designer/FloatingActionButton'
+import Searchbar from '@designer/Searchbar'
+import EditPageStateModal from '@modals/EditPageState'
+import EditStringModal from '@modals/EditString'
+import { openModal } from '@state/modals'
+import Divider from '@components/Divider'
+import Button from '@components/inputs/Button'
 
-import Container from '../../designer/components/Container/Editor'
-import DesignerDivider from '../../designer/components/Divider'
-import Text from '../../designer/components/Text/Editor'
+import Container from '@designer/components/Container/Editor'
+import DesignerDivider from '@designer/components/Divider'
+import Text from '@designer/components/Text/Editor'
 
-import Layers from '../../designer/Layers/Layers'
-import EditorSelect from '../../designer/components/Select/Editor'
-import InputEditor from '../../designer/components/Input/Editor'
-import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '../../utils/system'
-import { SystemData } from '../../storage/schemas/system'
-import storeMutation from '../../storage/methods/versionedresources/storeMutation'
-import { useVersionEdits } from '../../hooks/useVersionEdits'
+import Layers from '@designer/Layers/Layers'
+import EditorSelect from '@designer/components/Select/Editor'
+import InputEditor from '@designer/components/Input/Editor'
+import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '@utils/system'
+import { SystemData } from '@storage/schemas/system'
+import storeMutation from '@storage/methods/versionedresources/storeMutation'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import BlueprintEditor from '@modals/BlueprintEditor'
 
 
 const CreatorMenu: React.FC = () => {
@@ -65,7 +66,7 @@ const CreatorMenu: React.FC = () => {
           {versionEdits.data.creator.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
         </Select>
 
-        <button type='button' onClick={() => storeMutation(versionEdits.local_id, addPage(versionEdits.data, 'builder'))} className='ml-2 text-brand-700 border border-brand-700 hover:bg-brand-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
+        <button type='button' onClick={() => storeMutation(versionEdits.local_id, addPage(versionEdits.data, 'builder'))} className='ml-2 text-fantasy-accent border border-fantasy-accent hover:bg-fantasy-accent hover:text-white focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:border-brand-500 dark:text-brand-500 dark:hover:text-white dark:focus:ring-brand-800 dark:hover:bg-brand-500'>
           <svg
             className='w-5 h-5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 18 18'>
             <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 1v16M1 9h16' />
@@ -166,14 +167,6 @@ const CreatorMenu: React.FC = () => {
           </>
         ) : (tab === 'state') ? (
           <>
-            <EditStringModal data={editName} isOpen={editName !== null}
-              requestClose={() => setEditName(null)}
-              onSave={(newName) => {
-                storeMutation(versionEdits.local_id, renamePage(versionEdits.data, 'builder', editName, newName))
-                setCreatorPage(newName)
-              }}
-            />
-
             <div className='inline-flex rounded-md shadow-sm my-2'>
               <Button color='danger' disabled={versionEdits.data.pages.length <= 1} onClick={() => {
                 storeMutation(versionEdits.local_id, deletePage(versionEdits.data, 'builder', editor.creatorPage))
@@ -181,16 +174,18 @@ const CreatorMenu: React.FC = () => {
                 Delete
               </Button>
 
-              <Button color='light' onClick={() => setEditName(editor.creatorPage)}>Rename</Button>
+              <Button color='light' onClick={() => openModal('rename-page', ({ id }) => (
+                <EditStringModal id={id} title='Rename Page' data={editor.characterPage} onSave={async newName => {
+                  await storeMutation(editor.versionId, renamePage(versionEdits.data, 'character', editor.characterPage, newName))
+                  setCreatorPage(newName)
+                }} />
+              ))}>Rename</Button>
             </div>
 
             <Button color='light' onClick={() =>
-              openModal({
-                type: 'blueprint',
-                title: 'Page Blueprint',
-                data: page?.blueprint,
-                onSave: (bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'builder', editor.creatorPage, bp))
-              })
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'builder', editor.creatorPage, bp))} />
+              ))
             }>
               Edit Page Blueprint
             </Button>
@@ -240,3 +235,4 @@ const CreatorMenu: React.FC = () => {
 }
 
 export default CreatorMenu
+

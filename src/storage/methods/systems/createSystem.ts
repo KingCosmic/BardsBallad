@@ -1,10 +1,10 @@
-import SystemChema, { type System } from '../../schemas/system'
-import { db } from '../../index'
-import generateLocalId from '../../../utils/generateLocalId'
-import { authState } from '../../../state/auth'
-import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
+import SystemSchema from '@storage/schemas/system'
+import { db, Item } from '@/storage'
+import generateLocalId from '@utils/generateLocalId'
+import { authState } from '@state/auth'
+import ensureUniqueness from '@utils/db/ensureIdUniqueness'
 
-export default async (sys: System) => {
+export default async (sys: Item) => {
   try {
     let local_id = await generateLocalId()
 
@@ -27,7 +27,7 @@ export default async (sys: System) => {
       deleted_at: null,
     }
 
-    const result = SystemChema.safeParse(sysData);
+    const result = SystemSchema.safeParse(sysData);
     if (!result.success) {
       console.log('Invalid character data:', result.error.format());
       return;

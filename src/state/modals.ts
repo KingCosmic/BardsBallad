@@ -1,42 +1,33 @@
 import { newRidgeState } from 'react-ridge-state'
-import { type SystemType } from '../storage/schemas/system'
-
-type ModalData = {
-  type: string;
-  title: string;
-  data: any;
-  types?: SystemType[];
-  onSave(value: any): void;
-  onDelete?(): void;
-}
 
 type ModalInfo = {
   id: number;
-  modal: ModalData;
+  tag: string;
+  Component: React.FC<{ id: number }>;
 }
 
 let idCounter = 0;
 
 export const modalState = newRidgeState<ModalInfo[]>([])
 
-export function openModal(modal: ModalData) {
+export function openModal(tag: string, Component: React.FC<{ id: number }>) {
   const id = idCounter++;
 
   modalState.set(
-    (prevState) => [...prevState, { id, modal }],
+    (prevState) => [...prevState, { id, tag, Component }],
   );
 
   return id
 }
 
-export function closeModalByTitle(title: string) {
-  modalState.set(
-    (prevState) => prevState.filter(modal => modal.modal.title !== title),
-  );
-}
-
 export function closeModal(id: number) {
   modalState.set(
     (prevState) => prevState.filter(modal => modal.id !== id),
+  );
+}
+
+export function closeModalByTag(tag: string) {
+  modalState.set(
+    (prevState) => prevState.filter(modal => modal.tag !== tag),
   );
 }

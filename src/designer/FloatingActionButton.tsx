@@ -1,18 +1,18 @@
-
 import { useNode, UserComponentConfig } from '@craftjs/core'
-import { BlueprintData } from '../types/blueprint'
-import { openModal } from '../state/modals'
-import Divider from '../components/Divider'
-import { getDefaultNodes } from '../blueprints/utils'
-import EditButtonModal from '../modals/EditButton'
+import { BlueprintData } from '@/types/blueprint'
+import { openModal } from '@state/modals'
+import Divider from '@components/Divider'
+import { getDefaultNodes } from '@blueprints/utils'
+import EditButtonModal from '@modals/EditButton'
 
 import {  useCallback, useState } from 'react'
 
-import BlueprintProcessor, { BlueprintProcessorState } from '../utils/Blueprints/processBlueprint'
+import BlueprintProcessor, { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 
 import { useLocalData } from './renderer/Context'
-import FloatingActionButton from '../components/FloatingActionButton'
-import Checkbox from '../components/inputs/Checkbox'
+import FloatingActionButton from '@components/FloatingActionButton'
+import Checkbox from '@components/inputs/Checkbox'
+import BlueprintEditor from '@modals/BlueprintEditor'
 
 type Button = {
   name: string;
@@ -137,12 +137,10 @@ function FABSettings() {
             })} onDelete={() => setProp((props: any) => props.buttons = props.buttons.filter((b: any) => b.name !== editData!.name))} />
           </>
         ) : (
-          <p onClick={() => openModal({
-            type: 'blueprint',
-            title: '',
-            data: blueprint,
-            onSave: (blueprint) => setProp((props: any) => props.blueprint = blueprint)
-          })}>
+          <p onClick={() => 
+            openModal('blueprint', ({ id }) => (
+              <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setProp((props: any) => props.blueprint = bp)} />
+            ))}>
             On Click
           </p>
         )

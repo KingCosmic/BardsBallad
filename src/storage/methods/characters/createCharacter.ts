@@ -1,11 +1,12 @@
-import { AuthStorage, SyncStorage } from '../../../lib/storage'
-import { authState } from '../../../state/auth'
-import ensureUniqueness from '../../../utils/db/ensureIdUniqueness'
-import generateLocalId from '../../../utils/generateLocalId'
-import { db } from '../../index'
-import CharacterSchema from '../../schemas/character'
+import { AuthStorage, SyncStorage } from '@lib/storage'
+import { authState } from '@state/auth'
+import ensureUniqueness from '@utils/db/ensureIdUniqueness'
+import generateLocalId from '@utils/generateLocalId'
+import { db } from '@/storage'
+import CharacterSchema from '@storage/schemas/character'
+import { addToast } from '@state/toasts'
 
-export default async (name: string, data: any, system: { local_id: string, version_id: string }) => {
+export default async (name: string, data: any, system: { local_id: string, version_id: string }, datapacks: { pack_id: string, version_id: string }[]) => {
   try {
     const { user } = authState.get()
 
@@ -21,13 +22,15 @@ export default async (name: string, data: any, system: { local_id: string, versi
     const characterData = {
       local_id,
 
-      user_id: user_id,
+      user_id,
 
-      name: name,
+      name,
 
-      data: data,
+      data,
 
-      system: system,
+      system,
+
+      datapacks,
       
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -46,6 +49,7 @@ export default async (name: string, data: any, system: { local_id: string, versi
 
     return await db.characters.add(characterData);
   } catch (e) {
+    addToast('Error creating Character.', 'error')
     console.log('Error creating character:', e);
   }
 }

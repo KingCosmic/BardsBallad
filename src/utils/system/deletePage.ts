@@ -1,18 +1,14 @@
 import { produce } from 'immer';
-import { SystemData } from '../../storage/schemas/system';
+import { SystemData } from '@storage/schemas/system';
 
-export default (data: SystemData, type: 'character' | 'builder', name: string) => {
+export default (data: SystemData, pageType: 'character' | 'builder' | 'modal', name: string) => {
   return produce(data, draft => {
-    const pages = (type === 'character') ? draft.pages : draft.creator
+    const pages = (pageType === 'character') ? draft.pages : (pageType === 'builder') ? draft.creator : draft.modals
 
     const index = pages.findIndex(data => data.name === name)
     
-    if (index !== -1) return
+    if (index === -1) return
 
-    if (type === 'character') {
-      draft.pages.splice(index, 1)
-    } else if (type === 'builder') {
-      draft.creator.splice(index, 1)
-    }
+    pages.slice(index, 1)
   })
 }

@@ -1,4 +1,4 @@
-import Header from '../components/Header'
+import Header from '@components/Header'
 import React from "react";
 
 const items: { title: string; date: string; description: string; }[] = [
@@ -29,9 +29,9 @@ type TimelineItemProps = {
 const TimelineItem: React.FC<TimelineItemProps> = ({ title, isLatest, date, description }) => {
   return (
     <li className='mb-10 ms-6'>
-      <span className='absolute flex items-center justify-center w-6 h-6 bg-brand-100 rounded-full -start-3 ring-8 ring-white dark:ring-neutral-900 dark:bg-brand-900'>
+      <span className='absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 ring-fantasy-dark bg-fantasy-medium'>
         <svg
-          className='w-2.5 h-2.5 text-brand-800 dark:text-brand-300'
+          className='w-2.5 h-2.5 text-fantasy-accent'
           aria-hidden='true'
           xmlns='http://www.w3.org/2000/svg'
           fill='currentColor'
@@ -40,20 +40,20 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ title, isLatest, date, desc
           <path d='M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z' />
         </svg>
       </span>
-      <h3 className='flex items-center mb-1 text-lg font-semibold text-neutral-900 dark:text-white'>
+      <h3 className='flex items-center mb-1 text-lg font-semibold text-fantasy-text'>
         {title}{isLatest ? (
           <>
             {' '}
-            <span className='bg-brand-100 text-brand-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-brand-900 dark:text-brand-300 ms-3'>
+            <span className='bg-fantasy-accent text-fantasy-dark text-sm font-medium me-2 px-2.5 py-0.5 rounded ms-3'>
               Latest
             </span>
           </>
         ) : null}
       </h3>
-      <time className='block mb-2 text-sm font-normal leading-none text-neutral-400 dark:text-neutral-500'>
+      <time className='block mb-2 text-sm font-normal leading-none text-fantasy-text-muted'>
         {date}
       </time>
-      <p className='mb-4 text-base font-normal text-neutral-500 dark:text-neutral-400'>
+      <p className='mb-4 text-base font-normal text-fantasy-text-muted'>
         {description}
       </p>
       {/* <a
@@ -81,7 +81,7 @@ const Home: React.FC = () => {
     <div>
       <Header title='Home' />
 
-      <ol className='relative m-10 border-s border-neutral-200 dark:border-neutral-700'>
+      <ol className='relative m-10 border-s border-fantasy-border'>
         {items.map((item, index) => <TimelineItem key={item.title} title={item.title} isLatest={index === 0} date={item.date} description={item.description} />)}
       </ol>
     </div>
@@ -89,3 +89,4 @@ const Home: React.FC = () => {
 }
 
 export default Home
+

@@ -1,16 +1,17 @@
 import { useEditor, useNode } from '@craftjs/core'
 import { useEffect, useState } from 'react'
-import { updateParams } from '../../../blueprints/utils'
-import AccordionGroup from '../../../components/AccordionGroup'
-import Accordion from '../../../components/Accordion'
-import Checkbox from '../../../components/inputs/Checkbox'
-import Select from '../../../components/inputs/Select'
-import TextInput from '../../../components/inputs/TextInput'
-import { openModal } from '../../../state/modals'
-import { useLocalState } from '../../hooks/useLocalState'
-import Button from '../../../components/inputs/Button'
-import globalStyles from '../../styles'
-import { getReturnTypeOfBlueprint } from '../../../utils/Blueprints/getReturnTypeOfBlueprint'
+import { updateParams } from '@blueprints/utils'
+import AccordionGroup from '@components/AccordionGroup'
+import Accordion from '@components/Accordion'
+import Checkbox from '@components/inputs/Checkbox'
+import Select from '@components/inputs/Select'
+import TextInput from '@components/inputs/TextInput'
+import { openModal } from '@state/modals'
+import { useLocalState } from '@designer/hooks/useLocalState'
+import Button from '@components/inputs/Button'
+import globalStyles from '@designer/styles'
+import BlueprintEditor from '@modals/BlueprintEditor'
+import { getReturnTypeOfBlueprint } from '@utils/Blueprints/getReturnTypeOfBlueprint'
 
 export function SelectSettings() {
   const { id, actions: { setProp },
@@ -65,27 +66,25 @@ export function SelectSettings() {
 
         {
           dynamicOptions ? (
-            <Button color='light' onClick={() => openModal({
-              type: 'blueprint',
-              title: '',
-              data: optionsBlueprint,
-              onSave: (blueprint) => {
-                setProp((props: any) => {
-                  props.optionsBlueprint = blueprint
+            <Button color='light' onClick={() =>
+              openModal('blueprint', ({ id }) => (
+                <BlueprintEditor id={id} data={optionsBlueprint}onSave={(bp) => {
+                  setProp((props: any) => {
+                    props.optionsBlueprint = bp
 
-                  props.onChange = {
-                    edges: props.onChange.edges,
-                    nodes: updateParams(props.onChange.nodes, [ ...localParams, {
-                      name: 'selectedValue',
-                      type: getReturnTypeOfBlueprint(blueprint),
-                      isArray: false
-                    } ])
-                  }
+                    props.onChange = {
+                      edges: props.onChange.edges,
+                      nodes: updateParams(props.onChange.nodes, [ ...localParams, {
+                        name: 'selectedValue',
+                        type: getReturnTypeOfBlueprint(bp),
+                        isArray: false
+                      } ])
+                    }
 
-                  return props
-                })
-              }
-            })}>
+                    return props
+                  })
+                }} />
+              ))}>
               Options Blueprint
             </Button>
           ) : (
@@ -95,14 +94,12 @@ export function SelectSettings() {
 
         <div className='h-2' />
 
-        <Button color='light' onClick={() => openModal({
-          type: 'blueprint',
-          title: '',
-          data: onChange,
-          onSave: (blueprint) => {
-            setProp((props: any) => props.onChange = blueprint)
-          }
-        })}>
+        <Button color='light' onClick={() =>
+          openModal('blueprint', ({ id }) => (
+            <BlueprintEditor id={id} data={onChange} onSave={(bp) => {
+              setProp((props: any) => props.onChange = bp)
+            }} />
+          ))}>
           onChange Blueprint
         </Button>
       </Accordion>

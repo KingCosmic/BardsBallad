@@ -1,5 +1,5 @@
-import { Param } from '../../blueprints/utils'
-import { BlueprintData } from '../../types/blueprint'
+import { Param } from '@blueprints/utils'
+import { BlueprintData } from '@/types/blueprint'
 import { findEntryNode } from './findEntryNode'
 
 export function getParamsOfBlueprint(bp: BlueprintData): Param[] {

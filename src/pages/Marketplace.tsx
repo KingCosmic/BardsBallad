@@ -1,16 +1,24 @@
-import Header from '../components/Header'
-import { openModal } from '../state/modals';
+import Header from '@components/Header'
+import { closeModal, openModal } from '@state/modals';
 import React, { useEffect, useState } from 'react';
-import { MiscStorage } from '../lib/storage';
-import FloatingActionButton from '../components/FloatingActionButton';
-import { getMarketplaceItems, getSubscriptionData, publishItem } from '../lib/api';
-import getVisualTextFromVersionID from '../utils/getVisualTextFromVersionID';
-import createSubscription from '../storage/methods/subscriptions/createSubscription';
-import saveSystem from '../storage/methods/systems/saveSystem';
-import saveVersionedResource from '../storage/methods/versionedresources/saveVersionedResource';
-import { authState } from '../state/auth';
-import { syncState } from '../state/sync';
-import { useToast } from '../hooks/useToast';
+import { MiscStorage } from '@lib/storage';
+import FloatingActionButton from '@components/FloatingActionButton';
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
+import createSubscription from '@storage/methods/subscriptions/createSubscription';
+import saveSystem from '@storage/methods/systems/saveSystem';
+import saveVersionedResource from '@storage/methods/versionedresources/saveVersionedResource';
+import { authState } from '@state/auth';
+import { syncState } from '@state/sync';
+import { useToast } from '@hooks/useToast';
+import {getMarketplaceItems} from "@api/getMarketplaceItems";
+import {getSubscriptionData} from "@api/getSubscriptionData";
+import MarketplaceViewModal from '@modals/MarketplaceView';
+import MarketplaceDisclaimer from '@modals/MarketplaceDisclaimer';
+import PublishNewSystem from '@modals/PublishItem';
+import storeHashes from '@storage/methods/hashes/storeHashes';
+import generateTypeHash from '@utils/generateTypeHash';
+import deleteItem from '@utils/items/deleteItem';
+import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource';
 
 type MarketplaceItem = {
   id: string,
@@ -36,38 +44,14 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
   return (
     <div
       key={item.name}
-      className="relative cursor-pointer flex flex-col max-w-96 p-4 tranasition-all duration-200 bg-white border rounded-xl hover:shadow-lg dark:bg-neutral-800 dark:border-neutral-700 hover:transform hover:scale-[1.02]"
-      onClick={() => openModal({
-        type: 'marketplace_view',
-        title: item.name,
-        data: item,
-        onSave: async (version_id: string) => {
-          try {
-            const subscriptionData = await getSubscriptionData(version_id)
-
-            const { baseData, versionData } = subscriptionData
-
-            const sys = await saveSystem(baseData)
-
-            if (!sys) return addToast('Failed to create system.', 'error')
-
-            const vers = await saveVersionedResource(versionData)
-
-            if (!vers) return addToast('Failed to create version.', 'error')
-
-            const sub = await createSubscription('system', sys.local_id, vers.local_id, false)
-
-            if (!sub) return addToast('Failed to create subscription.', 'error')
-
-            addToast('Subscription created!', 'success')
-          } catch(e) {
-            addToast(`Error creating subscription`, 'error')
-          }
-        }
-      })}
+      className="fantasy-card-gradient border border-fantasy-border rounded-2xl p-6 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:-translate-y-2 hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative"
+      onClick={() =>
+        openModal('view marketplace item', ({ id }) => (
+          <MarketplaceViewModal id={id} title={item.name} data={item} />
+        ))}
     >
       <div className="flex items-start space-x-4">
-        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
+        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-fantasy-border rounded-lg flex items-center justify-center">
           <span className="text-xl font-bold text-white">{item.name[0]}</span>
         </div>
 
@@ -85,7 +69,7 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
 };
 
 const Marketplace: React.FC = () => {
-  const [items, setItems] = useState<any[]>([])
+  const [items, setItems] = useState<MarketplaceItem[]>([])
 
   const { isLoggedIn } = authState.useValue()
 
@@ -109,14 +93,12 @@ const Marketplace: React.FC = () => {
 
       if (hasSeenDisclaimer) return
 
-      openModal({
-        title: '',
-        type: 'marketplace_disclaimer',
-        data: '',
-        onSave: () => {
+      openModal('marketplace-disclaimer', ({ id }) => (
+        <MarketplaceDisclaimer onAccept={() => {
+          closeModal(id)
           MiscStorage.set('seen-marketplace-disclaimer', true)
-        }
-      })
+        }} />
+      ))
     }
 
     disclaimer()
@@ -136,37 +118,50 @@ const Marketplace: React.FC = () => {
 
   return (
     <div>
-      <Header title='Marketplace' />
+      <Header title='Marketplace' subtitle='Discover amazing systems, themes, and content created by the community' />
 
-      <div className='p-4'>
-        <div className='flex flex-col items-center justify-center'>
-          <div className='bg-brand-700 rounded-lg p-8 text-center w-full md:w-10/12 h-40 bg-[url("/marketplace.png")] bg-cover bg-no-repeat bg-top'>
-            <h2 className='text-2xl font-bold'>Welcome to the Marketplace!</h2>
-            <p className='text-neutral-100'>Explore and discover new systems and datapacks.</p>
+      <div className='px-4 pb-4'>
+        {/* Categories */}
+        <div>
+          <h3 className='text-3xl font-semibold mt-4'>Browse Categories</h3>
+          <div className='flex flex-wrap gap-3 mt-2'>
+            {[
+              '⚔️ Game Systems (40)',
+              '📦 Datapacks (100+)',
+              '🎨 Themes (32)',
+            ].map(item => (
+              <span key={item} className='cursor-pointer bg-gradient-to-br from-fantasy-accent/20 to-fantasy-accent-dark/10 border border-fantasy-accent/30 rounded-xl px-4 py-2 text-sm leading-relaxed'>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 className='text-3xl font-semibold mt-4 mb-2'>Featured Systems</h3>
+          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
+            {items.filter(i => i.resource_type === 'system').map((item, index) => <ItemCard key={index} item={item} />)}
           </div>
         </div>
         <div>
-          <h3 className='text-xl font-semibold mt-4'>Featured Systems</h3>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
-            {items.map((item, index) => <ItemCard key={index} item={item} />)}
+          <h3 className='text-3xl font-semibold mt-4'>Featured Datapacks</h3>
+          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
+            {items.filter(i => i.resource_type === 'datapack').map((item, index) => <ItemCard key={index} item={item} />)}
           </div>
         </div>
         <div>
-          <h3 className='text-xl font-semibold mt-4'>Featured Themes</h3>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
-            
+          <h3 className='text-3xl font-semibold mt-4'>Featured Themes</h3>
+          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
+            {items.filter(i => i.resource_type === 'datapack').map((item, index) => <ItemCard key={index} item={item} />)}
           </div>
         </div>
       </div>
       
       {isLoggedIn && (
         <FloatingActionButton
-          onClick={() => openModal({
-            type: 'PublishItem',
-            title: 'none',
-            data: 'none',
-            onSave: publishItem
-          })}
+          onClick={() => openModal('publish-item', ({ id }) => (
+            <PublishNewSystem id={id} />
+          ))}
         />
       )}
     </div>
@@ -174,3 +169,4 @@ const Marketplace: React.FC = () => {
 }
 
 export default Marketplace
+

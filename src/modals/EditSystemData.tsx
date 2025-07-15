@@ -1,43 +1,37 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { produce } from 'immer'
 
-import setNestedProperty from '../utils/setNestedProperty'
-import generateObject from '../utils/generateObject'
+import setNestedProperty from '@utils/setNestedProperty'
+import generateObject from '@utils/generateObject'
 
 import EditObject from './EditObject'
-import Modal from '../components/Modal'
-import ModalHeader from '../components/Modal/Header'
-import ModalBody from '../components/Modal/Body'
-import ModalFooter from '../components/Modal/Footer'
-import TextInput from '../components/inputs/TextInput'
-import Select from '../components/inputs/Select'
-import Button from '../components/inputs/Button'
-import Checkbox from '../components/inputs/Checkbox'
-import Textarea from '../components/inputs/Textarea'
-import { editorState } from '../state/editor'
-import { useSystem } from '../hooks/useSystem'
+import Modal from '@components/Modal'
+import ModalHeader from '@components/Modal/Header'
+import ModalBody from '@components/Modal/Body'
+import ModalFooter from '@components/Modal/Footer'
+import TextInput from '@components/inputs/TextInput'
+import Select from '@components/inputs/Select'
+import Button from '@components/inputs/Button'
+import Checkbox from '@components/inputs/Checkbox'
+import Textarea from '@components/inputs/Textarea'
 
-import { type SystemType, type TypeData, type DataType, SystemData } from '../storage/schemas/system'
-import { useVersionEdits } from '../hooks/useVersionEdits'
+import { type SystemType, type TypeData, type DataType } from '@storage/schemas/system'
+import { closeModal, openModal } from '@state/modals'
 
 type ModalProps = {
+  id: number;
   onDelete?(): void;
   onSave(newData: any): void;
   
-  isVisible: boolean;
   data: DataType;
   types: SystemType[];
-  requestClose(): void;
 }
 
-function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data }: ModalProps) {
-  const editor = editorState.useValue()
-  const version = useVersionEdits<SystemData>(editor.versionId)
-
+function EditSystemData({ id, types, onDelete, onSave, data }: ModalProps) {
   const [dataCopy, setDataCopy] = useState<DataType>({ name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' })
 
-  const [type, setType] = useState<SystemType | null>(version?.data?.types.find(type => type.name === dataCopy.typeData.type) || null)
+  const [type, setType] = useState<SystemType | null>(types.find(type => type.name === dataCopy.typeData.type) || null)
 
   const setProperty = (key:string, obj: DataType, value:any) => {
     setDataCopy(produce(obj, (draft: DataType) => {
@@ -51,13 +45,15 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
     const dc = data ? data : { name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' }
 
     setDataCopy(dc)
-    setType(version?.data?.types.find(type => type.name === dc.typeData.type) || null)
+    setType(types.find(type => type.name === dc.typeData.type) || null)
   }, [data, setDataCopy, setType])
+
+  const requestClose = useCallback(() => closeModal(id), [id])
 
   if (!data) return <></>
 
   return (
-    <Modal isOpen={isVisible} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title={`Edit ${data.name}`} onClose={requestClose} />
 
       <ModalBody>
@@ -66,7 +62,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
         {/* <div className='h-4' /> */}
 
         <Select id='data-type' label='Type' value={type?.name || ''} onChange={val => {
-          const t = version?.data?.types.find(type => type.name === val) || null
+          const t = types.find(type => type.name === val) || null
 
           setType(t)
           setDataCopy({ ...dataCopy, data: dataCopy.typeData.isArray ? [] : generateObject(types, t || val), typeData: { ...dataCopy.typeData, type: val } })
@@ -79,7 +75,7 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
           
           <option value='enum'>enum</option>
 
-          {version?.data?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+          {types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
         </Select>
 
         {
@@ -106,7 +102,6 @@ function EditSystemData({ types, onDelete, onSave, isVisible, requestClose, data
               title='data'
               data={dataCopy.data}
               onAdd={(newItem) => {
-                console.log('adding item')
                 setProperty('data', dataCopy, [ ...dataCopy.data, newItem ])
               }}
               onChange={(path, newItemData) => setProperty(path, dataCopy, newItemData)}
@@ -174,20 +169,8 @@ function getComponentFromType(type: SystemType, data: any, dataCopy: any, typeDa
 }
 
 function ArrayEdit({ types, title, data, type, onAdd, onChange, onDelete }: { types: SystemType[], title: string; data: any[]; type: SystemType; onAdd(data: any): void; onChange(path: string, value: any): void; onDelete(itemName:string): void; }) {
-  const [editData, setEditData] = useState<any>(null)
-
   return (
     <div>
-      <EditObject
-        title='Edit Data'
-        types={types}
-        onDelete={() => onDelete(editData.name)}
-        onSave={(item) => onChange(`${title}/${editData.name}`, item)}
-        isVisible={(editData !== null)}
-        requestClose={() => setEditData(null)}
-        data={editData}
-      />
-
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <p>{title}</p>
 
@@ -201,7 +184,16 @@ function ArrayEdit({ types, title, data, type, onAdd, onChange, onDelete }: { ty
           return (
             <div key={item.name}
               className='p-3 border border-neutral-600 dark:bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
-              onClick={() => setEditData(item)}
+              onClick={() => openModal('edit-object', ({ id }) => (
+                <EditObject
+                  id={id}
+                  title='Edit Data'
+                  types={types}
+                  onDelete={() => onDelete(item.name)}
+                  onSave={(newItem) => onChange(`${title}/${item.name}`, newItem)}
+                  data={item}
+                />
+              ))}
             >
               <p>{item.name}</p>
             </div>

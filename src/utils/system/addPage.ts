@@ -1,16 +1,10 @@
 import { produce } from 'immer';
-import { getDefaultNodes } from '../../blueprints/utils';
-import { PageData, SystemData } from '../../storage/schemas/system';
+import { getDefaultNodes } from '@blueprints/utils';
+import { PageData, SystemData } from '@storage/schemas/system';
 
-export default async (data: SystemData, type: 'character' | 'builder') => {
+export default async (data: SystemData, pageType: 'character' | 'builder' | 'modal') => {
   return produce(data, (draft) => {
-    let pages: PageData[] = []
-
-    if (type === 'builder') {
-      pages = draft.creator
-    } else if (type === 'character') {
-      pages = draft.pages
-    }
+    const pages = (pageType === 'character') ? draft.pages : (pageType === 'builder') ? draft.creator : draft.modals
 
     const index = pages.findIndex((data => data.name === 'New Page'))
 
@@ -23,10 +17,6 @@ export default async (data: SystemData, type: 'character' | 'builder') => {
       state: []
     }
 
-    if (type === 'builder') {
-      draft.creator.push(data)
-    } else if (type === 'character') {
-      draft.pages.push(data)
-    }
+    pages.push(data)
   })
 }

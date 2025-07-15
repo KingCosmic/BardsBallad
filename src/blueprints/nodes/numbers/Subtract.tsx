@@ -7,7 +7,7 @@ import {
   Position,
 } from '@xyflow/react'
 
-import Card from '../../../components/Card'
+import Card from '@components/Card'
  
 function Subtract(_props: NodeProps<Node<{ number1: number; number2: number; }>>) {
   return (

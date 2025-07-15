@@ -1,6 +1,7 @@
-import { db } from '../../index'
+import { db } from '@/storage'
+import { VersionedResource } from '@storage/schemas/versionedResource';
 
-export default async (local_id: string) => {
+export default async <T>(local_id: string): Promise<Omit<VersionedResource, 'data'> & { data?: T } | undefined> => {
   try {
     return await db.versions.get(local_id);
   } catch (e) {

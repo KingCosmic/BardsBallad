@@ -1,28 +1,27 @@
-import { useEffect, useState } from 'react'
-import Modal from '../components/Modal';
-import ModalHeader from '../components/Modal/Header';
-import ModalBody from '../components/Modal/Body';
-import ModalFooter from '../components/Modal/Footer';
-import Button from '../components/inputs/Button';
-import TextInput from '../components/inputs/TextInput';
-import Select from '../components/inputs/Select';
-import Checkbox from '../components/inputs/Checkbox';
-import { editorState } from '../state/editor';
-import { useSystem } from '../hooks/useSystem';
-import { Param } from '../blueprints/utils';
-import { useVersionEdits } from '../hooks/useVersionEdits';
-import { SystemData } from '../storage/schemas/system';
+import { useCallback, useEffect, useState } from 'react'
+import Modal from '@components/Modal';
+import ModalHeader from '@components/Modal/Header';
+import ModalBody from '@components/Modal/Body';
+import ModalFooter from '@components/Modal/Footer';
+import Button from '@components/inputs/Button';
+import TextInput from '@components/inputs/TextInput';
+import Select from '@components/inputs/Select';
+import Checkbox from '@components/inputs/Checkbox';
+import { editorState } from '@state/editor';
+import { Param } from '@blueprints/utils';
+import { useVersionEdits } from '@hooks/useVersionEdits';
+import { SystemData } from '@storage/schemas/system';
+import { closeModal } from '@state/modals';
 
 type Props = {
   data: Param;
+  id: number;
 
-  isOpen: boolean;
-  requestClose(): void;
   onSave(newData: Param): void;
-  onDelete?(): void;
+  onDelete(): void;
 }
 
-function EditBlueprintParamModal({ data, isOpen, requestClose, onSave, onDelete } : Props) {
+function EditBlueprintParamModal({ id, data, onSave, onDelete } : Props) {
   const editor = editorState.useValue()
   const version = useVersionEdits<SystemData>(editor.versionId)
 
@@ -34,9 +33,11 @@ function EditBlueprintParamModal({ data, isOpen, requestClose, onSave, onDelete 
     setParam(data)
   }, [data])
 
+  const requestClose = useCallback(() => closeModal(id), [id])
+
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
-      <ModalHeader title='Edit Type Property' onClose={requestClose} />
+    <Modal isOpen onClose={requestClose}>
+      <ModalHeader title='Edit Blueprint Param' onClose={requestClose} />
 
       <ModalBody>
         <TextInput id='name' label='Name' placeholder='baba yaga' value={param.name} onChange={name => setParam({ ...param, name })} isValid errorMessage='' />
@@ -62,11 +63,11 @@ function EditBlueprintParamModal({ data, isOpen, requestClose, onSave, onDelete 
       <ModalFooter>
         <Button color='danger'
           onClick={() => {
-            if (onDelete) onDelete()
+            onDelete()
             requestClose()
           }}
         >
-          {(onDelete) ? 'Delete' : 'Close'}
+          Delete
         </Button>
 
         <Button color='primary' onClick={() => {

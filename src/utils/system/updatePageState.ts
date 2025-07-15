@@ -1,9 +1,9 @@
 import { produce } from 'immer';
-import { SystemData, TypeData } from '../../storage/schemas/system';
+import { SystemData, TypeData } from '@storage/schemas/system';
 
-export default async (data: SystemData, pageType: 'character' | 'builder', pageName: string, oldName: string, state: { name: string, type: TypeData, value: any }) => {
+export default async (data: SystemData, pageType: 'character' | 'builder' | 'modal', pageName: string, oldName: string, state: { name: string, type: TypeData, value: any }) => {
   return produce(data, draft => {
-    const pages = (pageType === 'character') ? draft.pages : draft.creator
+    const pages = (pageType === 'character') ? draft.pages : (pageType === 'builder') ? draft.creator : draft.modals
 
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i]

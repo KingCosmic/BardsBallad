@@ -7,7 +7,7 @@ import {
   Position,
   useReactFlow
 } from '@xyflow/react'
-import Card from '../../../components/Card';
+import Card from '@components/Card';
  
 function StringIncludes({ id, data: { string1, string2 } }: NodeProps<Node<{ string1: string; string2: string; }>>) {
   const { updateNodeData } = useReactFlow()
