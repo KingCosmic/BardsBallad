@@ -4,13 +4,13 @@ import { db } from '@/storage'
 import { Character } from '@storage/schemas/character'
 import {pullUpdatesForCharacters} from "@api/pullUpdatesForCharacters";
 import {pushUpdatesForCharacters} from "@api/pushUpdatesForCharacters";
+import { hasRole } from '@utils/roles/hasRole';
+import Roles from '@/const/roles';
 
 const CHECKPOINT = 'character-checkpoint'
 
 export const pull = async () => {
   const cp = await SyncStorage.get<any>(CHECKPOINT)
-
-  console.log('pulling characters')
 
   const { checkpoint, documents } = await pullUpdatesForCharacters(cp, 20)
 
@@ -26,7 +26,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 
   if (!user) return { conflicts: [], metadata: [] }
 
-  const isPremium = user.role > 0
+  const isPremium = hasRole(user.role, Roles.PREMIUM)
 
   const updatedCharacters = await SyncStorage.get<string[]>('updated_characters') || []
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
@@ -45,6 +45,6 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   return await pushUpdatesForCharacters(localCharactersToPush)
 }
 
-export const bulkPut = async (docs: Character[]) => db.characters.bulkPut(docs)
+export const bulkPut = (docs: Character[]) => db.characters.bulkPut(docs)
 
-export const get = async () => await db.characters.toArray()
+export const get = () => db.characters.toArray()

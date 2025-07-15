@@ -35,7 +35,7 @@ const EntryNode: React.FC<NodeProps<Node<{ params: Param[], inputs: { [key:strin
 
     updateNodeData(id, { outputs })
     updateNodeInternals(id)
-  }, [params])
+  }, [params, version])
 
   return (
     <Card title='Entry'>

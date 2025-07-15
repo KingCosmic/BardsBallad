@@ -1,14 +1,13 @@
-import SystemSchema, { type System } from '@storage/schemas/system'
-import { db } from '@/storage'
+import SystemSchema from '@storage/schemas/system'
+import { db, Item } from '@/storage'
 import generateLocalId from '@utils/generateLocalId'
 import { authState } from '@state/auth'
 import versionedResourceSchema, { VersionedResource } from '@storage/schemas/versionedResource'
 import ensureUniqueness from '@utils/db/ensureIdUniqueness'
+import deleteItem from '@utils/items/deleteItem'
+import storeHashes from '../hashes/storeHashes'
 
-// TODO: check if local_id includes 'none' if so we need to update it if we're logged in.
-// TODO:(Cosmic) Give this a once over to make sure we aren't doing stupid stuff.
-// (like we override the local_id if one doesn't exist but don't touch id or user_id)
-export default async (sys: System, version: VersionedResource) => {
+export default async (sys: Item, version: VersionedResource) => {
   try {
     let system_local_id = await generateLocalId()
 
@@ -55,11 +54,15 @@ export default async (sys: System, version: VersionedResource) => {
 
     const versionResult = versionedResourceSchema.safeParse(versData);
     if (!versionResult.success) {
+      // since the version didn't pass, we should delete the system we created.
+      deleteItem('system', system_local_id, true)
       console.log('Invalid Version data:', versionResult.error.format());
       return;
     }
 
     await db.versions.add(versData);
+
+    storeHashes(versData.local_id, versData.data.types)
 
     let subscription_local_id = await generateLocalId()
 

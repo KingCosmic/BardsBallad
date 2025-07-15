@@ -29,8 +29,6 @@ const PublishNewVersion: React.FC<Props> = ({ data, isOpen, requestClose, onSave
 
   const [changelog, setChangelog] = useState('')
 
-  console.log(systems)
-
   useEffect(() => {
     if (!systems) return
 

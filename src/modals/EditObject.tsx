@@ -14,7 +14,7 @@ import TextInput from '@components/inputs/TextInput';
 import Textarea from '@components/inputs/Textarea';
 import Checkbox from '@components/inputs/Checkbox';
 import Select from '@components/inputs/Select';
-import { openModal } from '@state/modals';
+import { closeModal, openModal } from '@state/modals';
 
 import { type SystemType, type TypeData } from '@storage/schemas/system'
 import BlueprintEditor from './BlueprintEditor';
@@ -24,9 +24,8 @@ type ModalProps = {
   onDelete?(): void;
   onSave(newData: any): void;
 
-  requestClose(): void;
+  id: number
 
-  isVisible: boolean;
   data: any;
   types: SystemType[];
 
@@ -34,8 +33,10 @@ type ModalProps = {
   typeData?: TypeData;
 }
 
-function EditObject({ title, onDelete, onSave, isVisible, data, types, type, requestClose, typeData }: ModalProps) {
+function EditObject({ id, title, onDelete, onSave, data, types, type, typeData }: ModalProps) {
   const [dataCopy, setDataCopy] = useState<{ [key:string]: any } | null>(null)
+
+  const requestClose = useCallback(() => closeModal(id), [id])
 
   const setProperty = (key: string, obj: { [key:string]: any }, value: any) => {
     setDataCopy(produce(obj, draft => {
@@ -57,7 +58,7 @@ function EditObject({ title, onDelete, onSave, isVisible, data, types, type, req
   if (!dataCopy) return <></>
 
   return (
-    <Modal isOpen={isVisible} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title={title} onClose={requestClose} />
 
       <ModalBody>
@@ -162,8 +163,6 @@ export function RenderComponentFromType(types: SystemType[], type: string, data:
           <div className='h-2' />
           {
             systemType.properties.map(prop => RenderComponentFromType(types, prop.typeData.type, data[prop.key] ?? '', dataCopy, prop.typeData, prop.key, (p, o, v) => {
-              console.log(`${label}/${p}`)
-              console.table(o)
               setProperty(`${label}/${p}`, o, v)
             }))
           }
@@ -177,25 +176,6 @@ function ArrayEdit({ title, data, type, types, onAdd, onChange, onDelete }: { ti
 
   return (
     <div key={editData?.name} className='mt-3'>
-      <EditObject
-        types={types}
-        title={`Edit ${editData?.name}`}
-        onDelete={() => onDelete(editData?.name)}
-        onSave={(item) => {
-          const newItems = [ ...data ]
-
-          const index = newItems.findIndex(v => v.name === editData?.name)
-
-          newItems[index] = item
-
-          onChange(`${title}`, newItems)
-        }}
-        isVisible={(editData !== null)}
-        requestClose={() => setEditData(null)}
-        data={editData}
-      />
-
-
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <p>{title}</p>
 
@@ -210,7 +190,24 @@ function ArrayEdit({ title, data, type, types, onAdd, onChange, onDelete }: { ti
         {data.map(item => (
           <div key={item.name}
             className='p-3 border border-neutral-600 dark:bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
-            onClick={() => setEditData(item)}
+            onClick={() => openModal('edit-object', ({ id }) => (
+              <EditObject
+                id={id}
+                title={`Edit ${item.name}`}
+                types={types}
+                onDelete={() => onDelete(item.name)}
+                onSave={(newItem) => {
+                  const newItems = [ ...data ]
+
+                  const index = newItems.findIndex(v => v.name === item.name)
+
+                  newItems[index] = newItem
+
+                  onChange(`${title}`, newItems)
+                }}
+                data={item}
+              />
+            ))}
           >
             <p>{item.name}</p>
           </div>

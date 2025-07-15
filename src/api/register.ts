@@ -1,8 +1,9 @@
-import {getDeviceIdentifier} from "@utils/getDeviceName";
-import {saveToken} from "@state/auth";
-import {AuthStorage} from "@lib/storage";
-import {updateDatabaseWithUserInfo} from "@storage/updateDatabaseWithUserInfo";
+import { getDeviceIdentifier } from "@utils/getDeviceName";
+import { saveToken } from "@state/auth";
+import { AuthStorage } from "@lib/storage";
+import { updateDatabaseWithUserInfo } from "@storage/updateDatabaseWithUserInfo";
 import api from "@lib/api";
+import { addToast } from '@state/toasts';
 
 /**
  * Registers a new user by sending their credentials to the authentication API.
@@ -15,22 +16,35 @@ import api from "@lib/api";
  * @param {string} password - The password provided by the user for registration.
  * @returns {Promise<void>} A promise that resolves once the registration process is completed.
  */
-export const register = async (username: string, email: string, password: string): Promise<void> => {
-    const response = await api.post('/auth/register', {
-        username,
-        email,
-        password,
-        deviceName: await getDeviceIdentifier()
-    })
+export const register = async (username: string, email: string, password: string): Promise<{ success: boolean, error?: string }> => {
+  const response = await api.post('/auth/register', {
+    username,
+    email,
+    password,
+    deviceName: await getDeviceIdentifier()
+  })
 
-    const {accessToken, apiKey, deviceId} = response.data
+  if (response.status === 400) {
+    return { success: false, error: response.data }
+  } else if (response.status === 403) {
+    return { success: false, error: 'Invalid username/email or password' }
+  }
 
-    if (!(accessToken && apiKey && deviceId)) return
+  const { accessToken, apiKey, deviceId } = response.data
 
-    const user = await saveToken(accessToken)
+  if (!(accessToken && apiKey && deviceId)) {
+    // Register Response Failed Validation
+    addToast('please report this code: #RRFV', 'error')
 
-    AuthStorage.set('apiKey', apiKey)
-    AuthStorage.set('deviceId', deviceId)
+    return { success: false, error: 'please report this code: #RRFV' }
+  }
 
-    updateDatabaseWithUserInfo(user.id, deviceId)
+  const user = await saveToken(accessToken)
+
+  AuthStorage.set('apiKey', apiKey)
+  AuthStorage.set('deviceId', deviceId)
+
+  updateDatabaseWithUserInfo(user.id, deviceId)
+
+  return { success: true }
 }

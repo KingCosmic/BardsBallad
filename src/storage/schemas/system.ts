@@ -11,7 +11,7 @@ const typeDataSchema = z.object({
   inputs: z.array(z.any()).optional()
 })
 
-const dataType = z.object({
+export const dataTypeSchema = z.object({
   name: z.string(),
   typeData: typeDataSchema,
   data: z.any()
@@ -31,7 +31,7 @@ const pageDataSchema = z.object({
   }))
 })
 
-const systemTypeSchema = z.object({
+export const systemTypeSchema = z.object({
   name: z.string(),
   properties: z.array(z.object({
     key: z.string(),
@@ -56,7 +56,7 @@ const systemDataSchema = z.object({
   pages: z.array(pageDataSchema),
 
   version: z.string(),
-  data: z.array(dataType),
+  data: z.array(dataTypeSchema),
 
   defaultCharacterData: z.any(),
 
@@ -89,7 +89,7 @@ export type SystemType = z.infer<typeof systemTypeSchema>;
 export type ActionType = z.infer<typeof actionSchema>;
 export type TypeData = z.infer<typeof typeDataSchema>;
 export type PageData = z.infer<typeof pageDataSchema>;
-export type DataType = z.infer<typeof dataType>;
-export type System = z.infer<typeof systemSchema>;
+export type DataType = z.infer<typeof dataTypeSchema>;
+// export type System = z.infer<typeof systemSchema>;
 
 export default systemSchema

@@ -129,7 +129,6 @@ const BlueprintEditor: React.FC<ModalProps> = ({ id, data, onSave }) => {
 
           <Button color='primary' onClick={() => {
             onSave({ nodes, edges })
-            console.log({ nodes, edges })
             closeModal(id)
           }}>
             Confirm

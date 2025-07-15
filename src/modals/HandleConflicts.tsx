@@ -1,22 +1,24 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Button from '@components/inputs/Button'
 import Modal from '@components/Modal'
 import ModalBody from '@components/Modal/Body'
 import ModalFooter from '@components/Modal/Footer'
 import ModalHeader from '@components/Modal/Header'
+import { closeModal } from '@state/modals'
 
 type Props = {
+  id: number;
   data: { local: any, remote: any }[];
   onSave(chars: any[]): void;
 }
 
-const HandleConflicts: React.FC<Props> = ({ data, onSave, }) => {
-  console.log(data)
-
+const HandleConflicts: React.FC<Props> = ({ id, data, onSave, }) => {
   const [conflictIndex, setConflictIndex] = useState(0)
   const [conflict, setConflict] = useState(data[0])
 
   const [chosenRevisions, setChosenRevisions] = useState<any[]>([])
+
+  const requestClose = useCallback(() => closeModal(id), [id])
 
   const nextConflict = (chosen: any, remote: any) => {
     const updatedRevisions = [...chosenRevisions, { ...chosen, version: remote.version, updated_at: new Date().toISOString() }]
@@ -25,6 +27,7 @@ const HandleConflicts: React.FC<Props> = ({ data, onSave, }) => {
 
     if (newIndex >= data.length) {
       onSave(updatedRevisions)
+      requestClose()
     } else {
       setConflictIndex(newIndex)
       setConflict(data[newIndex])

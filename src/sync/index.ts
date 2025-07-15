@@ -11,8 +11,14 @@ import {setSyncedCharacters} from "@api/setSyncedCharacters";
 import {checkInternetAccess} from "@api/checkInternetAccess";
 import React from 'react'
 import HandleConflicts from '@modals/HandleConflicts'
+import { db } from '@storage/index'
+import storeHashes from '@storage/methods/hashes/storeHashes'
+import generateTypeHash from '@utils/generateTypeHash'
 
 const batchSize = 10
+
+// TODO: We could probably sync based of subscriptions instead of each collection...
+// or atleast pull our stuff to sync from subscriptions and just build out the id's to sync at once instead of multiple for loops and checks.
 
 const collectionsToSync = [
   {
@@ -51,31 +57,11 @@ checkInternetAccess().then((val) => {
   setOnlineState(val)
 })
 
-const runSync = async () => {
-  try {
-    const isOnline = await checkInternetAccess()
-    const { isLoggedIn } = authState.get()
-
-    setOnlineState(isOnline)
-
-    if (isOnline && isLoggedIn) {
-      await sync()
-    }
-  } catch (e) {
-    console.error('Error in sync', e)
-  }
-
-  setTimeout(runSync, 10 * 1000) // every 10 seconds
-}
-
-// wait 2 seconds for our initial sync (lets our data load)
-setTimeout(runSync, 2 * 1000)
-
 async function handleConflicts(conflicts: { local: any, remote: any }[]): Promise<any[]> {
   if (conflicts.length === 0) return []
 
   return new Promise(resolve => {
-    openModal('handle-conflicts', ({ id }) => React.createElement(HandleConflicts, { data: conflicts, onSave: resolve }))
+    openModal('handle-conflicts', ({ id }) => React.createElement(HandleConflicts, { id, data: conflicts, onSave: resolve }))
   })
 }
 
@@ -85,14 +71,14 @@ type BulkPut = (docs: any[]) => Promise<any>
 
 type PushFunction = () => Promise<{ conflicts: any[], metadata: any[] }>
 
-type Get = () => Promise<any[]>
-
 async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocuments: any[]) {
   let pullUpdates = true
   while (pullUpdates) {
     const documents = await pull()
 
-    console.log('sync documents', documents)
+    if (documents.length < batchSize) {
+      pullUpdates = false
+    }
 
     const pullConflicts = documents.flatMap(doc => {
       const localDocument = localDocuments.find((localDoc) => localDoc.local_id === doc.local_id)
@@ -102,23 +88,17 @@ async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocu
       const local = new Date(localDocument.updated_at).getTime()
       const remote = new Date(doc.updated_at).getTime()
 
-      const doVersionsMatch = (localDocument.version === doc.version)
-      const wasUpdatedLocaly = (local >= remote)
+      const versionsDontMatch = (localDocument.version !== doc.version)
+      const wasUpdatedLocally = (local >= remote)
 
-      return (doVersionsMatch && wasUpdatedLocaly) ? [] : { local: localDocument, remote: doc }
+      return (versionsDontMatch && wasUpdatedLocally) ? { local: localDocument, remote: doc } : []
     })
 
     const chosen = await handleConflicts(pullConflicts)
 
-    if (documents.length < batchSize) {
-      pullUpdates = false
-    }
-
     const newDocs = documents.map(d => (chosen.find(c => c.local_id === d.local_id) || d))
 
     await bulkPut(newDocs)
-
-    console.log('bulk put', documents.length)
   }
 }
 
@@ -126,11 +106,6 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
   let pushUpdates = true
   while (pushUpdates) {
     const { conflicts, metadata } = await push()
-
-    if (conflicts.length === 0) {
-      pushUpdates = false
-      console.log('no conflicts')
-    }
 
     // we need to combine our metadata with our local documents (version hash updates, server id generation, etc.)
     const updatedDocs = metadata.map(data => {
@@ -145,6 +120,11 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
     // store our updated docs.
     await bulkPut(updatedDocs)
 
+    if (conflicts.length === 0) {
+      pushUpdates = false
+      return
+    }
+
     const pushConflicts = conflicts.flatMap(doc => {
       const localDocument = localDocuments.find(localDoc => localDoc.local_id === doc.local_id)
 
@@ -155,13 +135,10 @@ async function handlePushingUpdates(bulkPut: BulkPut, push: PushFunction, localD
 
     const chosen = await handleConflicts(pushConflicts)
 
-    console.log(chosen)
-
     await bulkPut(chosen)
+
     // TODO: we may need to reSync to push up our chosen conflict resolutions.
     // can possibly get away without a reSync if we just update the updated_at field so it gets picked up in the next sync cycle.
-
-    console.log('conflicts handled', pushConflicts.length)
   }
 }
 
@@ -176,7 +153,6 @@ export const sync = async () => {
 
   await setSyncedCharacters(synced)
 
-
   for (let i = 0; i < collectionsToSync.length; i++) {
     const coll = collectionsToSync[i]
 
@@ -184,6 +160,12 @@ export const sync = async () => {
 
     await handlePushingUpdates(coll.bulkPut, coll.push, await coll.get())
   }
+
+  // TODO: only generate hashes for new items at some point. but this is a quick hack to make it work.
+  const versions = await db.versions.toArray()
+  versions.forEach(vers => {
+    storeHashes(vers.local_id, vers.data.types.map(generateTypeHash))
+  })
 
   // TODO: setup websocket connection for real-time updates.
 }

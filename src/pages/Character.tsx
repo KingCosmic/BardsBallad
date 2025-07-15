@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useParams } from 'react-router'
+import { data, useParams } from 'react-router'
 
 import RenderEditorData from '@designer/RenderEditorData'
 
@@ -15,9 +15,11 @@ import { deepEqual } from 'fast-equals'
 import { updateCharacterData } from '@storage/methods/characters'
 import { Character } from '@storage/schemas/character'
 
-import { type PageData, SystemData } from '@storage/schemas/system'
+import { DataType, type PageData, SystemData, SystemType } from '@storage/schemas/system'
 import getVersionedResource from '@storage/methods/versionedresources/getVersionedResource'
 import CharacterSidebar from '@sidebars/Character'
+import { addToast } from '@state/toasts'
+import { DataPack } from '@storage/schemas/datapack'
 
 const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -45,13 +47,38 @@ const CharacterPage: React.FC = () => {
     const loadSystem = async () => {
       if (!character) return
 
-      const systemData = await getVersionedResource(character.system.version_id)
+      const systemData = await getVersionedResource<SystemData>(character.system.version_id)
 
-      if (!systemData) return
+      if (!systemData) return addToast(`Error grabbing system, version: ${character.system.version_id}`, 'error')
 
       if (deepEqual(system, systemData.data)) return
 
-      setSystem(systemData.data)
+      let datapacks: DataType[] = []
+
+      for (let d = 0; d < character.datapacks.length; d++) {
+        const pack = character.datapacks[d]
+
+        const packData = await getVersionedResource<DataPack>(pack.version_id)
+
+        if (!packData) return addToast(`Error grabbing datapack, version: ${pack.version_id}`, 'error')
+
+        datapacks = [ ...datapacks, ...packData.data!.packData ]
+      }
+
+      const combined = systemData.data!.data.map(systemItem => {
+        // Collect packData from all datapacks that match this system item's name
+        const matchingPackData = datapacks
+          .flat()
+          .filter(dp => dp.name === systemItem.name)
+          .flatMap(dp => dp.data);
+        
+        return {
+          ...systemItem,
+          data: [...systemItem.data, ...matchingPackData]
+        };
+      });
+
+      setSystem({ ...systemData.data!, data: combined })
     }
 
     loadSystem()
@@ -63,18 +90,19 @@ const CharacterPage: React.FC = () => {
   return (
     <div className='flex flex-col h-full w-full'>
       <p id='loading-text' className='hidden'>loading...</p>
-      <Header title={character.name} hasSidebar />
 
-      <div className='p-4 sm:mr-64 relative flex flex-col flex-grow overflow-hidden lg:grid grid-cols-2'>
+      <Header title={character.name} subtitle='Chaotic / Neutral' hasSidebar />
 
-        <div className='relative w-full max-h-full flex flex-col'>
-          <div className='overflow-y-scroll p-4'>
+      <div className='p-4 lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
+
+        <div className='relative w-full h-full flex flex-col flex-grow overflow-hidden'>
+          <div className='overflow-y-scroll p-2 max-h-full'>
             <RenderTab className='first-tab-selector' system={system} character={character} updateState={updateState} />
           </div>
         </div>
 
-        <div className='relative hidden flex-col lg:flex max-h-full'>
-          <div className='overflow-y-scroll p-4'>
+        <div className='relative hidden flex-col xl:flex flex-grow overflow-hidden'>
+          <div className='overflow-y-scroll p-2 max-h-full'>
             <RenderTab className='second-tab-selector' system={system} character={character} updateState={updateState} />
           </div>
         </div>

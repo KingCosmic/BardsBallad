@@ -19,7 +19,7 @@ const supported_modals: Modal[] = [
       const system = processor.getSystem()
 
       return (
-        <EditObject title={title} data={data} types={system.types} isVisible={true} requestClose={() => closeModal(id)} onSave={save} onDelete={cancel} />
+        <EditObject id={id} title={title} data={data} types={system.types} onSave={save} onDelete={cancel} />
       )
     }
   },

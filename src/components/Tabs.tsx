@@ -6,7 +6,7 @@ interface Tab {
   Content: React.FC;
 }
 
-const DefaultComp = () => <p>hello</p>
+const DefaultComp = () => <p>No tab found for this id.</p>
 
 const Tabs: React.FC<{ tabs: Tab[], props: any }> = ({ tabs, props }) => {
   const [activeTab, setActiveTab] = useState(tabs[0].id);
@@ -20,10 +20,10 @@ const Tabs: React.FC<{ tabs: Tab[], props: any }> = ({ tabs, props }) => {
             onClick={() => {
               setActiveTab(tab.id)
             }}
-            className={`py-2 px-4 text-sm font-medium transition-colors border-brand-500 ${
+            className={`py-2 px-4 text-sm font-medium transition-colors border-fantasy-accent ${
               activeTab === tab.id
-                ? "border-b-2 text-brand-500"
-                : "text-neutral-400 hover:text-brand-400"
+                ? "border-b-2 text-fantasy-accent"
+                : "text-fantasy-text-muted hover:text-fantasy-accent"
             }`}
           >
             {tab.label}

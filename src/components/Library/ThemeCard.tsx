@@ -17,7 +17,7 @@ const ThemeCard: React.FC<Props> = ({ theme }) => {
         to={`systems/${theme.name}`}
         className="flex items-start space-x-4"
       >
-        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-brand-600 rounded-lg flex items-center justify-center">
+        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-fantasy-accent rounded-lg flex items-center justify-center">
           <span className="text-xl font-bold text-white">{theme.name[0]}</span>
         </div>
 

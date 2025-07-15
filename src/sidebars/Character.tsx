@@ -12,10 +12,10 @@ interface Props {
 const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateState }) => {
   return (
     <aside
-      className='border-l border-neutral-500 dark:border-neutral-700 fixed top-0 right-0 z-40 w-64 h-screen transition-transform translate-x-full sm:-translate-x-0'
+      className='bg-fantasy-glass backdrop-blur-lg border-l border-fantasy-border shadow-2xl fixed top-0 right-0 z-40 w-64 h-screen transition-transform translate-x-full lg:-translate-x-0'
       aria-label='Character Sidebar'
     >
-      <div className='h-full flex flex-col px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-neutral-950'>
+      <div className='h-full flex flex-col px-3 py-4 overflow-y-auto'>
         <div className='py-4 mb-4 border-b border-neutral-200 dark:border-neutral-700'>
           <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
             Quick Actions
@@ -24,7 +24,7 @@ const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateS
 
         <div className='flex flex-col gap-2'>
           {actions?.map(a => (
-            <div key={a.name} className='bg-neutral-800 border border-neutral-700 p-2 rounded cursor-pointer hover:bg-neutral-700 hover:border-neutral-800' onClick={() => {
+            <div key={a.name} className='fantasy-card-gradient border border-fantasy-border rounded px-4 py-2 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative' onClick={() => {
               const processor = new BlueprintProcessor(a.blueprint)
 
               const pageState = {

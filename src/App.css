@@ -80,22 +80,98 @@
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
+  height: 4px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--neutral-400);
+  background: transparent;
   border-radius: 5px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-600);
+  background: var(--neutral-600);
   border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--neutral-400);
+}
+
+/* Custom styles for elements that need more complex styling */
+.fantasy-gradient {
+  background: linear-gradient(135deg, #1a2332 0%, #2d3b52 50%, #1e2a3a 100%);
+}
+
+.fantasy-card-gradient {
+  background: linear-gradient(145deg, rgba(45, 59, 82, 0.8), rgba(30, 42, 58, 0.9));
+}
+
+.fantasy-accent-gradient {
+  background: linear-gradient(135deg, #ffa500, #ff8c00);
+}
+
+.fantasy-add-gradient {
+  background: linear-gradient(145deg, rgba(255, 165, 0, 0.1), rgba(255, 140, 0, 0.05));
+}
+
+.fantasy-atmospheric::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+      radial-gradient(circle at 20% 80%, rgba(255, 165, 0, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(70, 130, 180, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 215, 0, 0.6);
+  border-radius: 50%;
+  animation: float 8s infinite linear;
+  transform: translateY(-1vh);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(101vh) translateX(0px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-10px) translateX(100px);
+    opacity: 0;
+  }
+}
+
+.card-top-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ffa500, transparent);
+  border-radius: 16px 16px 0 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-top-border:hover::before {
+  opacity: 1;
 }

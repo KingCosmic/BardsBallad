@@ -1,5 +1,5 @@
-import {System} from "@storage/schemas/system";
 import api from "@lib/api";
+import { Item } from '@storage/index';
 
 /**
  * Fetches updates for systems starting from a given checkpoint.
@@ -23,7 +23,7 @@ export const pullUpdatesForSystems = async (checkpointOrNull: {
     updated_at: number,
     id: string
 } | null, batchSize: number): Promise<{
-    documents: System[];
+    documents: Item[];
     checkpoint: { id: number, updated_at: string };
 }> => {
     const updated_at = checkpointOrNull?.updated_at || 0

@@ -39,7 +39,6 @@ export const saveToken = async (token: string) => {
   await AuthStorage.set('token', token)
 
   const user = jwtDecode<User>(token)
-  console.log('decoded', user)
 
   authState.set({ isLoggedIn: true, user, synced_characters: user.synced_characters || [] })
 

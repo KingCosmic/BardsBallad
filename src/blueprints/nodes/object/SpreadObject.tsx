@@ -58,7 +58,7 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: Sy
 
     updateNodeData(id, { inputs: input, inputType: typeInput, outputs })
     updateNodeInternals(id)
-  }, [connections, nodes, version])
+  }, [connections, nodes])
 
   return (
     <Card title='Spread Object'>

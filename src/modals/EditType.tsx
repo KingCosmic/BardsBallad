@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import EditStringModal from './EditString'
 import Modal from '@components/Modal'
@@ -10,7 +10,7 @@ import Button from '@components/inputs/Button'
 import TextInput from '@components/inputs/TextInput'
 import Select from '@components/inputs/Select'
 import Checkbox from '@components/inputs/Checkbox'
-import { openModal } from '@state/modals'
+import { closeModal, openModal } from '@state/modals'
 import { Param } from '@blueprints/utils'
 import { editorState } from '@state/editor'
 import { useSystem } from '@hooks/useSystem'
@@ -19,15 +19,14 @@ import { useVersionEdits } from '@hooks/useVersionEdits'
 import EditBlueprintParamModal from './EditBlueprintParam'
 
 type Props = {
-  data: { key: string; typeData: TypeData, typeName: string } | null;
+  id: number;
+  data: { key: string; typeData: TypeData, typeName: string }
 
-  isOpen: boolean;
-  requestClose(): void;
   onSave(newData: { key: string; typeData: TypeData }): void;
   onDelete(): void;
 }
 
-const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, onDelete }) => {
+const EditTypeModal: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
   const [key, setKey] = useState('')
   const [propertyData, setPropertyData] = useState<TypeData>({ type: '', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] })
 
@@ -44,8 +43,10 @@ const EditTypeModal: React.FC<Props> = ({ data, isOpen, requestClose, onSave, on
     setPropertyData({ ...{ useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, ...data.typeData })
   }, [data])
 
+  const requestClose = useCallback(() => closeModal(id), [id])
+
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
+    <Modal isOpen onClose={requestClose}>
       <ModalHeader title='Edit Type Property' onClose={requestClose} />
 
       <ModalBody>

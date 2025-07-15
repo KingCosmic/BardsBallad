@@ -30,7 +30,7 @@ function GetSystemDataNode({ id, data: { path, type }, }: NodeProps<Node<{ path:
 
     updateNodeData(id, { path: name, type })
     updateNodeInternals(id)
-  }, [id, updateNodeData, updateNodeInternals])
+  }, [id, updateNodeData, updateNodeInternals, version])
 
   useEffect(() => {
     if (path) return

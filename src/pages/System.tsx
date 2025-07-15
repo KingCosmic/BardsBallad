@@ -34,6 +34,8 @@ import { useVersionResource } from '@hooks/useVersionResource'
 import Modals from '@tabs/System/Modals'
 import ActionsModal from '@tabs/System/Actions'
 import SaveNewVersion from '@modals/SaveNewVersion'
+import { addToast } from '@state/toasts'
+import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -50,8 +52,40 @@ const System: React.FC = () => {
   useEffect(() => {
     if (!edits_id || (edits_id === editor.versionId)) return
 
-    editorState.set((prev) => ({ ...prev, versionId: edits_id }))
-  }, [edits_id, editor])
+    const defaultCharPage = versionEdits?.data.pages[0].name || ''
+    const defaultBuilderPage = versionEdits?.data.creator[0].name || ''
+    const defaultModal = versionEdits?.data.modals[0].name || ''
+
+    editorState.set((prev) => ({ ...prev, versionId: edits_id, characterPage: defaultCharPage, creatorPage: defaultBuilderPage, modalsPage: defaultModal }))
+  }, [edits_id, editor, versionEdits])
+
+  useEffect(() => {
+    let changed = false
+    let newPages = {
+      characterPage: editor.characterPage,
+      creatorPage: editor.creatorPage,
+      modalsPage: editor.modalsPage
+    }
+
+    if (!versionEdits?.data.pages.find(p => p.name === editor.characterPage)) {
+      newPages.characterPage = versionEdits?.data.pages[0]?.name || ''
+      changed = true
+    }
+
+    if (!versionEdits?.data.creator.find(p => p.name === editor.creatorPage)) {
+      newPages.creatorPage = versionEdits?.data.creator[0]?.name || ''
+      changed = true
+    }
+
+    if (!versionEdits?.data.modals.find(p => p.name === editor.modalsPage)) {
+      newPages.modalsPage = versionEdits?.data.modals[0]?.name || ''
+      changed = true
+    }
+
+    if (!changed) return
+
+    editorState.set(prev => ({ ...prev, ...newPages }))
+  }, [editor, versionEdits])
 
   const resolver = useMemo(() => ({
     Container, Text, Select: EditorSelect, TextInput, FAB, Searchbar, DesignerDivider
@@ -64,41 +98,27 @@ const System: React.FC = () => {
   }
 
   if (!edits_id) return <>id not defined...</>
+  if (!original) return <>Loading Original...</>
   if (!versionEdits) return <>Loading Edits...</>
   if (!system) return <>Loading System...</>
 
   return (
     <EditorContext resolver={resolver} onNodesChange={handleNodeChange}>
-      <div className='flex flex-col h-full'>
-        <Header title={system.name} options={[{
-          onClick: () =>
-            openModal('save-new-version', ({ id }) => (
-              <SaveNewVersion id={id} onSave={async () => {
-                const newVersion = await duplicateVersionedResource(versionEdits)
+      <div className='flex flex-col h-full overflow-y-scroll'>
+        <Header title={system.name} subtitle={`Version: ${getVisualTextFromVersionID(original.local_id)}`}
 
-                if (!newVersion) return // TODO:(Cosmic) Show error.
+          options={[
+            {
+              onClick: () =>
+                openModal('save-new-version', ({ id }) => (
+                  <SaveNewVersion id={id} original={original} edits={versionEdits} edits_id={edits_id} />
+                )),
+              Content: () => <p>Save Version</p>
+            }
+          ]}
 
-                const newSub = await createSubscription('system', newVersion.reference_id, newVersion.local_id, false)
-
-                if (!newSub) return // TODO:(Cosmic) Show error. and remove new version.
-
-                // I'm not entirely sure how this would happen?
-                // possibly a user unsubs from the original but then the ui *shouldn't* allow a user to get into this editing scenario.
-                // TODO:(Cosmic) Make sure we clear up edits when unsubbing from a resourec :)
-                if (!original) return
-
-                // TODO:(Cosmic) if we want to we could reset the edits back inline with the original (to allow for some versioning incase they wanted to
-                // make edits off this version again.) will need to update duplicate function to not care of new_id is taken. and make sure that doesn't collide
-                // elsewhere
-                // await duplicateVersionedResource(original, edits_id)
-
-                // TODO: show confirmation
-
-                navigate('/library')
-              }} />
-            )),
-          Content: () => <p className='block cursor-pointer py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500'>Save Version</p>
-        }]} hasSidebar />
+          hasSidebar
+        />
 
         <div className='p-4 sm:mr-64 relative flex flex-col flex-grow'>
           <Select id='tab-selector' label='' value={editor.tab} onChange={setTab}>

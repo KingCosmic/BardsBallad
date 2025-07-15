@@ -1,4 +1,4 @@
-import DropdownButton from '@components/DropdownButton'
+import ButtonWithDropdown from '@components/ButtonWithDropdown'
 import FloatingActionButton from '@components/FloatingActionButton'
 import BlueprintEditor from '@modals/BlueprintEditor'
 import ConfirmModal from '@modals/ConfirmModal'
@@ -29,7 +29,7 @@ const ActionsModal: React.FC<Props> = ({ editsId, versionedResource }) => {
                 <p>{action.name}</p>
                 <p>{action.description}</p>
               </div>
-              <DropdownButton label='Edit' onClick={() =>
+              <ButtonWithDropdown label='Edit' onClick={() =>
                 openModal('blueprint', ({ id }) => (
                   <BlueprintEditor id={id} data={action.blueprint} onSave={bp => storeMutation(editsId, editActionBlueprint(versionedResource.data, action.name, bp))} />
                 ))}

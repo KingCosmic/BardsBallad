@@ -20,21 +20,57 @@ import { deepEqual } from 'fast-equals'
 import { useCharacters } from '@hooks/useCharacters'
 
 import { createCharacter } from '@storage/methods/characters'
-import { type System, type PageData } from '@storage/schemas/system'
+import { type PageData } from '@storage/schemas/system'
 
 import { usePostHog } from 'posthog-js/react'
 import { VersionedResource } from '@storage/schemas/versionedResource'
 import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID'
+import { db, Item } from '@storage/index'
+import { closeModal } from '@state/modals'
+import MultiSelect from '@components/MultiSelect'
+import useSubscriptionsWithData, { Grouped } from '@hooks/useSubscriptionsWithData'
 
-function CharacterCreatorModal(props: any) {
-  const { systems } = useSystems()
-  const { versions } = useVersions()
+interface Props {
+  id: number;
+}
+
+function CharacterCreatorModal({ id }: Props) {
   const { characters } = useCharacters()
+
+  const { subscriptions, isLoading } = useSubscriptionsWithData(['theme'])
+
+  const systems = useMemo(() => (subscriptions || []).filter(sub => sub.type === 'system'), [subscriptions])
 
   const posthog = usePostHog()
 
-  const [system, setSystem] = useState<System | undefined>()
+  const [system, setSystem] = useState<Grouped | undefined>()
   const [version, setVersion] = useState<VersionedResource | undefined>()
+  const [activePacks, setActivePacks] = useState<VersionedResource[]>([])
+
+  const datapacks = useMemo(() => (subscriptions || []).filter(sub => {
+    const isDataPack = (sub.type === 'datapack')
+
+    if (!isDataPack || !system || !version) return false
+
+    return true
+  }).map(pack => ({ label: pack.item.name, value: pack.versions.filter(v => {
+    if (!system || !version) return false
+    
+    const sysHashTypes = system.hashes[version.local_id]
+
+    const hashTypes = pack.hashes[v.local_id]
+
+    for (let h = 0; h < hashTypes.length; h++) {
+      const hashType = hashTypes[h]
+      const sysHash = sysHashTypes.find(h => h.name === hashType.name)
+
+      if (!sysHash) return false
+
+      if (hashType.hash !== sysHash.hash) return false
+    }
+
+    return true
+  })[0] })), [subscriptions, system])
 
   const [tab, setTab] = useState(0)
 
@@ -42,10 +78,12 @@ function CharacterCreatorModal(props: any) {
     local_id: '',
     user_id: 'none',
   
-    name: 'Aliza Cartwight',
+    name: '',
     data: version?.data.defaultCharacterData ?? {},
 
     system: { local_id: '', version_id: '' },
+
+    datapacks: [],
   
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -81,44 +119,29 @@ function CharacterCreatorModal(props: any) {
   useEffect(() => {
     const sys = systems[0]
 
-    if (!sys || sys.local_id === system?.local_id) return
+    if (!sys || sys.item_id === system?.item_id) return
     setSystem(sys)
 
-    let vers;
-
-    const filteredVersions = versions.filter(ver => {
-      const forSystem = (ver.reference_id === sys.local_id)
-      
-      return forSystem
-    }).sort((a, b) => {
-      if (!a || !b) return 0
-
-      const aCreated = new Date(a.created_at)
-      const bCreated = new Date(b.created_at)
-
-      return (aCreated > bCreated) ? 1 : 0
-    })
-
-    vers = filteredVersions[0]
+    let vers = sys.versions[0];
 
     if (!vers || vers.local_id === version?.local_id) return
 
     setVersion(vers)
-    setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.local_id, version_id: vers.local_id } })
-  }, [systems, versions])
+    setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.item_id, version_id: vers.local_id }, datapacks: [] })
+  }, [systems])
 
-  if (!props.isOpen) return <></>
+  const requestClose = useCallback(() => closeModal(id), [id])
 
   if (!system) return (
-    <Modal isOpen={props.isOpen} onClose={() => props.setIsOpen(false)}>
-      <ModalHeader title='Error grabbing system' onClose={() => props.setIsOpen(false)} />
+    <Modal isOpen onClose={requestClose}>
+      <ModalHeader title='Error grabbing system' onClose={requestClose} />
 
       <ModalBody>
         <h3>There was an error grabbing a default system, please subscribe to a system from the marketplace or import something!</h3>
       </ModalBody>
 
       <ModalFooter>
-        <Button color='primary' onClick={() => props.setIsOpen(false)}>
+        <Button color='primary' onClick={requestClose}>
           Close
         </Button>
       </ModalFooter>
@@ -126,47 +149,41 @@ function CharacterCreatorModal(props: any) {
   )
 
   return (
-    <Modal isOpen={props.isOpen} onClose={() => props.setIsOpen(false)}>
-      <ModalHeader title='Create Character' onClose={() => props.setIsOpen(false)} />
+    <Modal isOpen onClose={requestClose}>
+      <ModalHeader title='Create Character' onClose={requestClose} />
 
       <ModalBody>
         {tab === 0 && (
           <>
-            <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={(!characters.find(c => c.name === characterData.name) && (characterData.name.length > 0))} errorMessage='Names must be unique and not empty.' />
+            <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={(!characters.find(c => c.name === characterData.name))} errorMessage='Names must be unique' />
 
-            <Select id='character-system' label='Tabletop System' value={system.local_id} onChange={(local_id) => {
-              const sys = systems.find(s => s.local_id === local_id)
+            <Select id='character-system' label='Tabletop System' value={system.item_id} onChange={(local_id) => {
+              const sys = systems.find(s => s.item_id === local_id)
               if (!sys) return
 
-              const vers = versions.filter(ver => {
-                const forSystem = (ver.reference_id === sys.local_id)
-                
-                return forSystem
-              }).sort((a, b) => {
-                const aCreated = new Date(a.created_at)
-                const bCreated = new Date(b.created_at)
-          
-                return (aCreated > bCreated) ? 1 : 0
-              })[0]
+              const vers = sys.versions[0]
           
               if (!vers) return
           
               setSystem(sys)
               setVersion(vers)
-              setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.local_id, version_id: vers.local_id } })
+              setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.item_id, version_id: vers.local_id } })
             }}>
-              {systems.map((sys) => <option key={sys.local_id} value={sys.local_id}>{sys.name}</option>)}
+              {systems.map((sys) => <option key={sys.item_id} value={sys.item_id}>{sys.item.name}</option>)}
             </Select>
 
             <Select id='character-system-version' label='System Version' value={version?.local_id ?? ''} onChange={(local_id) => {
-              const vers = versions.find(v => v.local_id === local_id)
+              const vers = system.versions.find(v => v.local_id === local_id)
               if (!vers) return
 
               setVersion(vers)
-              setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: system.local_id, version_id: vers.local_id } })
+              setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: system.item_id, version_id: vers.local_id } })
             }}>
-              {versions.map((ver) => <option key={ver.local_id} value={ver.local_id}>{getVisualTextFromVersionID(ver.local_id)}</option>)}
+              {system.versions.map((ver) => <option key={ver.local_id} value={ver.local_id}>{getVisualTextFromVersionID(ver.local_id)}</option>)}
             </Select>
+
+            <p>Datapacks</p>
+            <MultiSelect options={datapacks} value={activePacks} onChange={vals => setActivePacks(vals)} />
           </>
         )}
 
@@ -179,7 +196,7 @@ function CharacterCreatorModal(props: any) {
         <nav className='flex flex-grow mr-4' aria-label='Breadcrumb'>
           <ol className='inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse'>
             <li className='inline-flex items-center cursor-pointer' onClick={() => setTab(0)}>
-              <p className='inline-flex items-center text-sm font-medium text-neutral-700 hover:text-brand-600 dark:text-neutral-400 dark:hover:text-white'>
+              <p className='inline-flex items-center text-sm font-medium text-fantasy-text-muted hover:text-fantasy-text'>
                 <svg className='w-3 h-3 me-2.5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 20 20'>
                   <path d='m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z'/>
                 </svg>
@@ -190,12 +207,12 @@ function CharacterCreatorModal(props: any) {
               if (tab < (i + 1)) return <></>
 
               return (
-                <li className='cursor-pointer' onClick={() => setTab(i + 1)}>
+                <li key={i} className='cursor-pointer' onClick={() => setTab(i + 1)}>
                   <div className='flex items-center'>
-                    <svg className='rtl:rotate-180 w-3 h-3 text-neutral-400 mx-1' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 6 10'>
+                    <svg className='rtl:rotate-180 w-3 h-3 text-fantasy-text-muted mx-1' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 6 10'>
                       <path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='m1 9 4-4-4-4'/>
                     </svg>
-                    <p className='ms-1 text-sm font-medium text-neutral-700 hover:text-brand-600 md:ms-2 dark:text-neutral-400 dark:hover:text-white'>{page.name}</p>
+                    <p className='ms-1 text-sm font-medium text-fantasy-text-muted hover:bg-fantasy-text'>{page.name}</p>
                   </div>
                 </li>
               )
@@ -223,10 +240,10 @@ function CharacterCreatorModal(props: any) {
           </Button>
         )} */}
 
-        <Button id='create-character-button' color='primary' onClick={async () => {
-          await createCharacter(characterData.name, characterData.data, characterData.system)
+        <Button id='create-character-button' color='primary' disabled={characterData.name.length === 0} onClick={async () => {
+          await createCharacter(characterData.name, characterData.data, characterData.system, activePacks.map(pack => ({ pack_id: pack.reference_id, version_id: pack.local_id })))
           setSystem(systems[0])
-          props.setIsOpen(false)
+          requestClose()
           posthog.capture('character_created', { character_name: characterData.name })
         }}>
           Create

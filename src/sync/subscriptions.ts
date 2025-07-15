@@ -4,13 +4,13 @@ import { db } from '@/storage'
 import { UserSubscription } from '@storage/schemas/userSubscription'
 import {pushUpdatesForSubscriptions} from "@api/pushUpdatesForSubscriptions";
 import {pullUpdatesForSubscriptions} from "@api/pullUpdatesForSubscriptions";
+import Roles from '@/const/roles';
+import { hasRole } from '@utils/roles/hasRole';
 
 const CHECKPOINT = 'subscription-checkpoint'
 
 export const pull = async () => {
   const cp = await SyncStorage.get<any>(CHECKPOINT)
-
-  console.log('pulling subscriptions')
 
   const { checkpoint, documents } = await pullUpdatesForSubscriptions(cp, 20)
 
@@ -29,7 +29,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
   
-  const isPremium = user.role > 0
+  const isPremium = hasRole(user.role, Roles.PREMIUM)
 
   const subscriptionsToPush = subscriptions.filter(v => {
     const isOwned = (v.user_id === user.id)
@@ -56,7 +56,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   return await pushUpdatesForSubscriptions(subscriptionsToPush)
 }
 
-export const bulkPut = async (docs: UserSubscription[]) => db.subscriptions.bulkPut(docs)
+export const bulkPut = (docs: UserSubscription[]) => db.subscriptions.bulkPut(docs)
 
-export const get = async () => await db.subscriptions.toArray()
+export const get = () => db.subscriptions.toArray()
 

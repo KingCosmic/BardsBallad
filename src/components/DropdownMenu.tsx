@@ -151,7 +151,7 @@ export const MenuComponent = React.forwardRef<
         data-open={isOpen ? "" : undefined}
         data-nested={isNested ? "" : undefined}
         data-focus-inside={hasFocusInside ? "" : undefined}
-        className='bg-neutral-800 text-neutral-50 dark:bg-neutral-500 dark:text-neutral-50 hover:bg-neutral-800 hover:text-neutral-50 dark:hover:bg-neutral-200 dark:hover:text-neutral-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 rounded-lg px-4 py-2 text-sm font-medium'
+        className='bg-neutral-800 text-neutral-50 dark:bg-neutral-500 dark:text-neutral-50 hover:bg-neutral-800 hover:text-neutral-50 dark:hover:bg-neutral-200 dark:hover:text-neutral-950 focus:outline-none focus:ring-2 focus:ring-fantasy-accent focus:ring-offset-2 rounded-lg px-4 py-2 text-sm font-medium'
         // className={isNested ? "MenuItem" : "RootMenu"}
         {...getReferenceProps(
           parent.getItemProps({

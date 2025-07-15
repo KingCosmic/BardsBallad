@@ -4,13 +4,13 @@ import { db } from '@/storage'
 import { VersionedResource } from '@storage/schemas/versionedResource'
 import {pullUpdatesForVersions} from "@api/pullUpdatesForVersions";
 import {pushUpdatesForVersions} from "@api/pushUpdatesForVersions";
+import { hasRole } from '@utils/roles/hasRole';
+import Roles from '@/const/roles';
 
 const CHECKPOINT = 'version-checkpoint'
 
 export const pull = async () => {
   const cp = await SyncStorage.get<any>(CHECKPOINT)
-
-  console.log('pulling versions')
 
   const { checkpoint, documents } = await pullUpdatesForVersions(cp, 20)
 
@@ -29,7 +29,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
   
-  const isPremium = user.role > 0
+  const isPremium = hasRole(user.role, Roles.PREMIUM)
 
   const versionsToPush = versions.filter(v => {
     const isOwned = (v.user_id === user.id)
@@ -37,7 +37,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
     // we only need to worry about syncing versions owned by us.
     if (!isOwned) return false
 
-    const pushedCharacterRef = characters.find(c => c.system.version_id === v.local_id && synced.includes)
+    const pushedCharacterRef = characters.find(c => c.system.version_id === v.local_id && synced.includes(c.local_id))
 
     // if a character we're syncing relies on this version we need to sync it too.
     const referencedByChar = (pushedCharacterRef !== undefined)
@@ -51,7 +51,7 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   return await pushUpdatesForVersions(versionsToPush)
 }
 
-export const bulkPut = async (docs: VersionedResource[]) => db.versions.bulkPut(docs)
+export const bulkPut = (docs: VersionedResource[]) => db.versions.bulkPut(docs)
 
-export const get = async () => await db.versions.toArray()
+export const get = () => db.versions.toArray()
 
