@@ -9,6 +9,7 @@ on:
 
 jobs:
   publish-tauri:
+    environment: 'Tauri Build'
     permissions:
       contents: write
     strategy:
