@@ -82,7 +82,7 @@ async function handleConflicts(conflicts: { local: any, remote: any }[]): Promis
   if (conflicts.length === 0) return []
 
   return new Promise(resolve => {
-    openModal('handle-conflicts', ({ id }) => React.createElement(HandleConflicts, { data: conflicts, onSave: resolve }))
+    openModal('handle-conflicts', ({ id }) => React.createElement(HandleConflicts, { id, data: conflicts, onSave: resolve }))
   })
 }
 
