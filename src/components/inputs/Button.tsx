@@ -5,7 +5,8 @@ type ButtonProps = {
   className?: string;
   color: string;
   disabled?: boolean;
-  onClick(): void;
+  type?: 'button' | 'submit' | 'reset' | undefined;
+  onClick?(): void;
 }
 
 const styles: { [key:string]: string } = {
@@ -15,11 +16,11 @@ const styles: { [key:string]: string } = {
   'disabled': 'border-neutral-600 bg-neutral-400 text-fantasy-text-muted cursor-not-allowed opacity-50'
 }
 
-const Button: React.FC<PropsWithChildren<ButtonProps>> = ({ children, className = '', color, disabled = false, onClick, id }) => {
+const Button: React.FC<PropsWithChildren<ButtonProps>> = ({ children, className = '', type = 'button', color, disabled = false, onClick, id }) => {
   return (
     <button
+      type={type}
       id={id}
-      type='button'
       className={`${disabled ? styles['disabled'] : styles[color]} me-2.5 focus:ring-4 border focus:outline-none font-medium rounded-lg transition text-sm px-4 py-2 text-center ${className}`}
       onClick={disabled ? undefined : onClick}
     >

@@ -117,7 +117,9 @@ const tabs = [
         <Checkbox id='use-reactscan' label='Load ReactScan' checked={settings.isReactScanActive} onChange={setReactScanActive} />
 
         <p className='my-2'>Clear Local Storage</p>
-        <Button color='danger' onClick={clearLocalStorage}>Clear Local Storage</Button>
+        <Button color='danger' onClick={() => openModal('clear-local-storage', ({ id }) => (
+          <ConfirmModal id={id} title='Clear Local Storage' type='danger' message='Clearing local storage will remove everything from this device. all unsynced data will be lost.' onConfirm={clearLocalStorage} />
+        ))}>Clear Local Storage</Button>
       </>
     )
   }},
