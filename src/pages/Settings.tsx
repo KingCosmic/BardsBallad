@@ -54,10 +54,10 @@ const tabs = [
                 const isNormalUser = hasRole(user.role, Roles.FREE) || hasRole(user.role, Roles.PREMIUM)
 
                 if (isNormalUser && !isPremium) {
-                  const { url: newUrl } = await subscribe()
+                  const { data: newUrl } = await subscribe()
                   url = newUrl
                 } else if (isNormalUser && isPremium) {
-                  const { url: newUrl } = await openBilling()
+                  const { data: newUrl } = await openBilling()
                   url = newUrl
                 }
 
