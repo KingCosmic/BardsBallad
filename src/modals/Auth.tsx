@@ -81,21 +81,7 @@ const AuthModal: React.FC<Props> = ({ id }) => {
       <ModalHeader title={title} onClose={requestClose} />
 
       <ModalBody>
-        <form onSubmit={async () => {
-          const func = isSignUp ? handleSignUp : handleLogin
-
-          if (!validPassword) return
-          
-          try {
-             setSubState({ isSaving: true, saveSuccessful: false, error: '' })
-        
-            const { success, error } = await func()
-            
-            setSubState({ isSaving: true, saveSuccessful: success, error: error || '' })
-          } catch (e) {
-            setSubState({ isSaving: true, saveSuccessful: false, error: 'Error occured during authentication, try again please.' })
-          }
-        }}>
+        <form>
           <TextInput id='username' autoComplete='username' label={isSignUp ? 'Username' : 'Username or Email'} placeholder='Username' value={username} onChange={setUsername} isValid errorMessage='' />
 
           {isSignUp && (
@@ -108,7 +94,21 @@ const AuthModal: React.FC<Props> = ({ id }) => {
             <TextInput id='confirmPassword' autoComplete='new-password' label='Confirm Password' type='password' placeholder='OogaBooga1234' value={confirmPassword} onChange={setConfirmPassword} isValid={(confirmPassword.length === 0 || confirmPassword === password)} errorMessage={`Passwords don't match`} />
           )}
 
-          <Button id='signup' color='primary' type='submit'>
+          <Button id='signup' color='primary' onClick={async () => {
+            const func = isSignUp ? handleSignUp : handleLogin
+
+            if (!validPassword) return
+            
+            try {
+              setSubState({ isSaving: true, saveSuccessful: false, error: '' })
+          
+              const { success, error } = await func()
+              
+              setSubState({ isSaving: true, saveSuccessful: success, error: error || '' })
+            } catch (e) {
+              setSubState({ isSaving: true, saveSuccessful: false, error: 'Error occured during authentication, try again please.' })
+            }
+          }}>
             {title}
           </Button>
 
