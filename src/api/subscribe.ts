@@ -11,6 +11,6 @@ import api from "@lib/api";
  * @function subscribe
  * @returns {Promise<{ url: string }>} A Promise that resolves to an object containing the checkout session URL.
  */
-export const subscribe = async (): Promise<{ url: string }> => {
+export const subscribe = async (): Promise<{ data: string }> => {
     return await api.get('/stripe/create-checkout-session')
 }
