@@ -123,7 +123,7 @@ const Characters: React.FC = () => {
           </div>
           
           {/* Heros */}
-          {characters.length && (
+          {characters && (
             characters.map((char, i) => (
               // Character Card
               <div
