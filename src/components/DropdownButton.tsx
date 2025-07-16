@@ -16,7 +16,7 @@ interface Props {
   options: { label: string; onClick(): void }[]
 }
 
-const SplitButton: React.FC<Props> = ({ label, options, containerClassName = '' }) => {
+const DropdownButton: React.FC<Props> = ({ label, options, containerClassName = '' }) => {
   const [open, setOpen] = useState(false);
 
   const {
@@ -78,4 +78,4 @@ const SplitButton: React.FC<Props> = ({ label, options, containerClassName = '' 
   );
 };
 
-export default SplitButton;
+export default DropdownButton;

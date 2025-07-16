@@ -48,8 +48,7 @@ const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name' }
   
   const [selectedVersion, setSelectedVersion] = useState<VersionData>(versions[0])
 
-  const [isLoading, setIsLoading] = useState(false)
-
+  const [subState, setSubState] = useState({ isSaving: false, saveSuccessful: false, error: '' })
 
   useEffect(() => {
     const loadVersions = async () => {
@@ -67,6 +66,29 @@ const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name' }
   const requestClose = useCallback(() => closeModal(id), [id])
 
   if (!data) return null
+
+  if (subState.isSaving) {
+    const inProcess = (subState.isSaving && !subState.saveSuccessful && !subState.error)
+
+    return (
+      <Modal isOpen onClose={requestClose}>
+        <ModalHeader title='Install System' onClose={requestClose} />
+
+        <ModalBody>
+          {inProcess ? (
+            <h4>Saving Data...</h4>
+          ) : (subState.error && !subState.saveSuccessful) ? (
+            <>
+              <h4>Error Saving Data.</h4>
+              <p>{subState.error}</p>
+            </>
+          ) : (
+            <h4>Item Saved Successfully!.</h4>
+          )}
+        </ModalBody>
+      </Modal>
+    )
+  }
 
   return (
     <Modal isOpen onClose={requestClose}>
@@ -137,42 +159,42 @@ const MarketplaceViewModal: React.FC<Props> = ({ id, data, title = 'Item Name' }
 
         <Button color='primary' onClick={async () => {
           try {
-            setIsLoading(true)
+            setSubState({ isSaving: true, saveSuccessful: false, error: '' })
             const { baseData, versionData } = await getSubscriptionData(selectedVersion.item_id)
 
             if (!baseData || !versionData) return addToast('Failed to fetch item data.', 'error')
 
             const sys = await saveSystem(baseData)
 
-            if (!sys) return addToast('Failed to create system.', 'error')
+            if (!sys) return setSubState({ isSaving: true, saveSuccessful: false, error: 'Failed to save system data.' })
 
             const vers = await saveVersionedResource(versionData)
 
             if (!vers) {
               // TODO: clean up system that we created.
-              return addToast('Failed to create version.', 'error')
+              return setSubState({ isSaving: true, saveSuccessful: false, error: 'Failed to save version data.' })
             }
 
             const hashes = await storeHashes(vers.local_id, vers.data.types.map(generateTypeHash))
             
             if (!hashes) {
               // TODO: cleanup the system and version.
-              return addToast('Error creating hashes for forked content, cleaning up...', 'error')
+              return setSubState({ isSaving: true, saveSuccessful: false, error: 'Error creating hashes for forked content' })
             }
 
             const sub = await createSubscription('system', sys.local_id, vers.local_id, false)
 
             if (!sub) {
               // TODO: cleanup both the system and version and hashes we created.
-              return addToast('Failed to create subscription.', 'error')
+              return setSubState({ isSaving: true, saveSuccessful: false, error: 'Failed creating subscription for data.' })
             }
 
-            addToast('Subscription created!', 'success')
+            setSubState({ isSaving: true, saveSuccessful: true, error: '' })
           } catch(e) {
             console.error(`Error creating subscription: ${e}`)
-            addToast(`Error creating subscription`, 'error')
+            // @ts-ignore
+            setSubState({ isSaving: true, saveSuccessful: false, error: e })
           }
-          setIsLoading(false)
         }}>Install</Button>
       </ModalFooter>
     </Modal>

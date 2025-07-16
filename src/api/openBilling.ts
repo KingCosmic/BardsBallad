@@ -7,5 +7,5 @@ import api from "@lib/api";
  * @returns {Promise<{ url: string }>} A promise that resolves to an object containing the URL of the billing portal session.
  */
 export const openBilling = async (): Promise<{ url: string }> => {
-    return await api.get('/stripe/create-portal-session').then((response) => response.data)
+    return await api.get('/stripe/create-portal-session')
 }
