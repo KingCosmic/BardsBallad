@@ -6,6 +6,8 @@ import CreatorMenu from './CreatorMenu'
 import ModalsMenu from './ModalsMenu'
 import { useVersionEdits } from '@hooks/useVersionEdits'
 import { SystemData } from '@storage/schemas/system'
+import DropdownButton from '@components/DropdownButton'
+import Button from '@components/inputs/Button'
 
 function SystemMenu() {
   const editor = editorState.useValue()
@@ -18,11 +20,13 @@ function SystemMenu() {
       className='bg-fantasy-glass backdrop-blur-lg border-l border-fantasy-border shadow-2xl fixed top-0 right-0 z-40 w-64 h-screen transition-transform translate-x-full lg:-translate-x-0'
       aria-label='Editor Sidebar'
     >
-      <div className='h-full flex flex-col px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-neutral-950'>
+      <div className='h-full flex flex-col px-3 py-4 overflow-y-auto'>
         <div className='py-4 mb-4 border-b border-neutral-200 dark:border-neutral-700'>
           <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
             Details
           </span>
+
+          {/* <Button color='light'>Help</Button> */}
         </div>
 
         {
