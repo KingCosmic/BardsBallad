@@ -87,14 +87,13 @@ const AuthModal: React.FC<Props> = ({ id }) => {
           if (!validPassword) return
           
           try {
-            setIsLoading(true)
+             setSubState({ isSaving: true, saveSuccessful: false, error: '' })
         
             const { success, error } = await func()
-            setWasSuccess(success)
-            if (error) setError(error)
+            
+            setSubState({ isSaving: true, saveSuccessful: success, error: error || '' })
           } catch (e) {
-            setWasSuccess(false)
-            setError('Error occured during authentication, try again please.')
+            setSubState({ isSaving: true, saveSuccessful: false, error: 'Error occured during authentication, try again please.' })
           }
         }}>
           <TextInput id='username' autoComplete='username' label={isSignUp ? 'Username' : 'Username or Email'} placeholder='Username' value={username} onChange={setUsername} isValid errorMessage='' />
