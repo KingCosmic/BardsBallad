@@ -22,7 +22,7 @@ const passwordValidation = z
   );
 
 export function validatePassword(password: string) {
-  if (!password) return;
+  if (!password) return [];
   return passwordValidation.safeParse(password).join('<br />');
 }
 
