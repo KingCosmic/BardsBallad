@@ -17,12 +17,13 @@ const passwordValidation = z
   .regex(/.*[a-z].*/, 'Password must contain a lowercase letter.')
   .regex(/.*\d.*/, 'Password must contain a number.')
   .regex(
-    /.*[~`!@#$%^&*()_+\-=[{\]}|\\;:'",<.>\/?].*/,
+    /.*[~`!@#$%^&*()_+\-=\[{\]}|\\;:'",<.>\/?].*/,
     'Password must contain a special character.',
   );
 
 export function validatePassword(password: string) {
-  return passwordValidation.safeParse(password);
+  if (!password) return;
+  return passwordValidation.safeParse(password).join('<br />');
 }
 
 type Props = {
@@ -69,7 +70,7 @@ const AuthModal: React.FC<Props> = ({ id }) => {
               <p>{subState.error}</p>
             </>
           ) : (
-            <h4>Authentication Successfully!.</h4>
+            <h4>Authentication Successful!</h4>
           )}
         </ModalBody>
       </Modal>
@@ -106,7 +107,7 @@ const AuthModal: React.FC<Props> = ({ id }) => {
               
               setSubState({ isSaving: true, saveSuccessful: success, error: error || '' })
             } catch (e) {
-              setSubState({ isSaving: true, saveSuccessful: false, error: 'Error occured during authentication, try again please.' })
+              setSubState({ isSaving: true, saveSuccessful: false, error: 'Error occurred during authentication, try again please.' })
             }
           }}>
             {title}
