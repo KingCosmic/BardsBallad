@@ -22,8 +22,7 @@ const passwordValidation = z
   );
 
 export function validatePassword(password: string) {
-  if (!password) return [];
-  return passwordValidation.safeParse(password).join('<br />');
+  return passwordValidation.safeParse(password);
 }
 
 type Props = {
@@ -32,7 +31,7 @@ type Props = {
 
 const AuthModal: React.FC<Props> = ({ id }) => {
   const [isSignUp, setIsSignUp] = useState(false);
-  
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -89,7 +88,7 @@ const AuthModal: React.FC<Props> = ({ id }) => {
             <TextInput id='email' autoComplete='email' label='Email' placeholder='support@bardsballad.com' value={email} onChange={setEmail} isValid errorMessage='' />
           )}
 
-          <TextInput id='password' label='Password' type='password' autoComplete={isSignUp ? 'new-password' : 'current-password'} placeholder='OogaBooga1234' value={password} onChange={setPassword} isValid={validPassword} errorMessage={validationError?.errors.map(e => e.message).join('\n') || ''} />
+          <TextInput id='password' label='Password' type='password' autoComplete={isSignUp ? 'new-password' : 'current-password'} placeholder='OogaBooga1234' value={password} onChange={setPassword} isValid={validPassword} errorMessage={password === '' ? '' : validationError?.errors.map(e => e.message).join('\n') || ''} />
 
           {isSignUp && (
             <TextInput id='confirmPassword' autoComplete='new-password' label='Confirm Password' type='password' placeholder='OogaBooga1234' value={confirmPassword} onChange={setConfirmPassword} isValid={(confirmPassword.length === 0 || confirmPassword === password)} errorMessage={`Passwords don't match`} />
@@ -99,12 +98,12 @@ const AuthModal: React.FC<Props> = ({ id }) => {
             const func = isSignUp ? handleSignUp : handleLogin
 
             if (!validPassword) return
-            
+
             try {
               setSubState({ isSaving: true, saveSuccessful: false, error: '' })
-          
+
               const { success, error } = await func()
-              
+
               setSubState({ isSaving: true, saveSuccessful: success, error: error || '' })
             } catch (e) {
               setSubState({ isSaving: true, saveSuccessful: false, error: 'Error occurred during authentication, try again please.' })
@@ -168,4 +167,3 @@ const AuthModal: React.FC<Props> = ({ id }) => {
 }
 
 export default AuthModal
-
