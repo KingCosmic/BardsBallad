@@ -15,9 +15,6 @@ type DataProps = {
 }
 
 const Data: React.FC<DataProps> = ({ editsId, versionedResource }) => {
-
-  const [editData, setEditData] = useState<DataType | null>(null)
-
   return (
     <>
       {/* TODO: Searchbar */}
@@ -27,14 +24,13 @@ const Data: React.FC<DataProps> = ({ editsId, versionedResource }) => {
           versionedResource.data.data.map((data: DataType) => {
             return (
               <div key={data.name} className='mb-4 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700 cursor-pointer'
-                // onClick={() => setEditData(data)}
                 onClick={() => openModal('edit-system-data', ({ id }) => (
                   <EditSystemData
                     id={id}
                     types={versionedResource.data.types}
-                    onDelete={() => storeMutation(editsId, deleteSystemData(versionedResource.data, editData!.name))}
-                    onSave={(newData) => storeMutation(editsId, updateSystemData(versionedResource.data, editData!.name, newData))}
-                    data={editData!}
+                    onDelete={() => storeMutation(editsId, deleteSystemData(versionedResource.data, data.name))}
+                    onSave={(newData) => storeMutation(editsId, updateSystemData(versionedResource.data, data.name, newData))}
+                    data={data}
                   />
                 ))}
               >

@@ -44,13 +44,17 @@ function EditSystemData({ id, types, onDelete, onSave, data }: ModalProps) {
   useEffect(() => {
     const dc = data ? data : { name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' }
 
+    if (
+      dc.name === dataCopy.name
+      &&
+      dc.typeData.type === type?.name
+    ) return
+
     setDataCopy(dc)
     setType(types.find(type => type.name === dc.typeData.type) || null)
   }, [data, setDataCopy, setType])
 
   const requestClose = useCallback(() => closeModal(id), [id])
-
-  if (!data) return <></>
 
   return (
     <Modal isOpen onClose={requestClose}>
