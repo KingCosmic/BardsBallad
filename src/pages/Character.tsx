@@ -71,6 +71,8 @@ const CharacterPage: React.FC = () => {
           .flat()
           .filter(dp => dp.name === systemItem.name)
           .flatMap(dp => dp.data);
+
+        // TODO: stop crashing on system data that isn't arrays.
         
         return {
           ...systemItem,

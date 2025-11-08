@@ -13,7 +13,7 @@ const Modal: React.FC<PropsWithChildren<ModalProps>> = ({ children, isOpen, onCl
       className={`${isOpen ? 'flex' : 'hidden'} bg-black/70 absolute top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-screen max-h-screen`}
       onClick={onClose}
     >
-      <div className='relative min-w-96 max-w-2xl' onClick={(e) => e.stopPropagation()}>
+      <div className='relative min-w-[32rem] max-w-2xl' onClick={(e) => e.stopPropagation()}>
         {/* <!-- Modal content --> */}
         <div className={`relative rounded-lg shadow bg-fantasy-light border border-fantasy-border ${className}`}>
           {children}

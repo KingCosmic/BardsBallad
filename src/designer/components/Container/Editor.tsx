@@ -110,7 +110,7 @@ function Container(props: PropsWithChildren<ContainerProps>) {
         minWidth: globalStyles.size[props.minWidth!],
       }}
 
-      className={`${backgroundClass} ${borderClass} ${hoverClass}`}
+      className={`${backgroundClass} ${borderClass} ${hoverClass} rounded-lg`}
     >
       {
         props.children ? props.children : (props.showPlaceholder) ? (

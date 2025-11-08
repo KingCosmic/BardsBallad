@@ -89,10 +89,10 @@ const Types: React.FC<TypesProps> = ({ editsId, versionedResource }) => {
       </AccordionGroup>
 
       <FloatingActionButton onClick={async () => {
-        await storeMutation(editsId, addSystemType(versionedResource.data, 'New Type'))
+        const newData = await addSystemType(versionedResource.data, 'New Type')
         openModal('edit-string', ({ id }) => (
           <EditStringModal id={id} data='New Type'
-            onSave={(data) => storeMutation(editsId, renameSystemType(versionedResource.data, 'New Type', data))}
+            onSave={(data) => storeMutation(editsId, renameSystemType(newData, 'New Type', data))}
           />
         ))
       }} />

@@ -180,6 +180,9 @@ export default function ContextMenu({
               <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('string_concat')}>
                 Concat
               </li>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('string_limit')}>
+                Limit
+              </li>
             </ul>
           )}
         </li>
@@ -228,6 +231,9 @@ export default function ContextMenu({
               </li>
               <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('enum_compare')}>
                 Compare Enum
+              </li>
+              <li className='hover:bg-gray-700 p-2 cursor-pointer' onClick={() => createNode('enum_toString')}>
+                Enum To String
               </li>
             </ul>
           )}

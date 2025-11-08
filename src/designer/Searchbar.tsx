@@ -2,6 +2,9 @@ import { useNode } from '@craftjs/core'
 import { BlueprintData } from '@/types/blueprint'
 import CompSearchbar from '@components/Searchbar'
 import TextInput from '@components/inputs/TextInput';
+import Button from '@components/inputs/Button';
+import { openModal } from '@state/modals';
+import BlueprintEditor from '@modals/BlueprintEditor';
 
 type SearchbarProps = {
   placeholder: string;
@@ -33,6 +36,10 @@ function SearchbarSettings() {
   return (
     <>
       <TextInput id='searchbar-placeholder' label='Placeholder' value={placeholder} onChange={val => setProp((props: any) => props.placeholder = val)} isValid errorMessage='' />
+    
+      <Button color='primary' onClick={() => openModal('edit-blueprint', ({ id }) => (
+        <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setProp((props: any) => props.blueprint = bp)} />
+      ))} />
     </>
   )
 }

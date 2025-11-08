@@ -93,7 +93,7 @@ export default (props: PropsWithChildren<ContainerProps>) => {
         minHeight: globalStyles.size[props.minHeight!],
         minWidth: globalStyles.size[props.minWidth!],
       }}
-      className={`${backgroundClass} ${borderClass} ${hoverClass}`}
+      className={`${backgroundClass} ${borderClass} ${hoverClass} rounded-lg`}
       onClick={onClick}
     >
       {

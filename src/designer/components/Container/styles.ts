@@ -9,9 +9,9 @@ const styles: Styles = {
     hover: ''
   },
   'light': {
-    background: 'bg-white dark:bg-neutral-800',
-    border: 'border border-neutral-200 dark:border-neutral-600',
-    hover: 'cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700'
+    background: 'bg-white/10 text-fantasy-text',
+    border: 'border border-white/20',
+    hover: 'cursor-pointer transition-all duration-300 hover:bg-white/20'
   },
   'primary': {
     background: 'bg-white dark:bg-fantasy-accent',
@@ -19,9 +19,9 @@ const styles: Styles = {
     hover: 'cursor-pointer hover:bg-fantasy-accent-dark'
   },
   'accent': {
-    background: 'bg-white dark:bg-accent-800',
-    border: 'border border-accent-200 dark:border-accent-600',
-    hover: 'cursor-pointer hover:bg-accent-100 dark:hover:bg-accent-700'
+    background: 'bg-white dark:bg-sky-800',
+    border: 'border border-sky-200 dark:border-sky-600',
+    hover: 'cursor-pointer hover:bg-sky-100 dark:hover:bg-sky-700'
   },
   'confirmation': {
     background: 'bg-white dark:bg-green-800',

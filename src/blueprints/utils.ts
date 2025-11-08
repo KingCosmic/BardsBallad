@@ -127,6 +127,8 @@ export function getDefaultDataForType(type: string) {
       return { string1: '', string2: '' }
     case 'string_concat':
       return { string1: '', string2: '' }
+    case 'string_limit':
+      return { input: '', limitLength: 12 }
     case 'number_to_string':
       return { number: 0 }
     case 'new_number':
@@ -144,6 +146,8 @@ export function getDefaultDataForType(type: string) {
     case 'new_enum':
       return { value: '' }
     case 'enum_compare':
+      return { input: '' }
+    case 'enum_toString':
       return { input: '' }
     case 'boolean_new':
       return { value: false }
