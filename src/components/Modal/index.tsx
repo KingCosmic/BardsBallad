@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 
 type ModalProps = {
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose?(): void;
 
   className?: string
@@ -10,7 +10,7 @@ type ModalProps = {
 const Modal: React.FC<PropsWithChildren<ModalProps>> = ({ children, isOpen, onClose, className = '' }) => {
   return (
     <div tabIndex={-1} aria-hidden='true'
-      className={`${isOpen ? 'flex' : 'hidden'} bg-black/70 absolute top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-screen max-h-screen`}
+      className={`flex bg-black/70 absolute top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-screen max-h-screen`}
       onClick={onClose}
     >
       <div className='relative min-w-[32rem] max-w-2xl' onClick={(e) => e.stopPropagation()}>

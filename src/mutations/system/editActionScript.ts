@@ -1,8 +1,7 @@
 import { produce } from 'immer';
 import { SystemData } from '@storage/schemas/system';
-import { BlueprintData } from '@/types/blueprint';
 
-export default async (data: SystemData, name: string, blueprint: BlueprintData) => {
+export default async (data: SystemData, name: string, script: string) => {
   return produce(data, draft => {
     if (!draft.actions) draft.actions = []
 
@@ -10,6 +9,6 @@ export default async (data: SystemData, name: string, blueprint: BlueprintData) 
 
     if (index === -1) return
 
-    draft.actions[index].blueprint = blueprint
+    draft.actions[index].script = script
   })
 }

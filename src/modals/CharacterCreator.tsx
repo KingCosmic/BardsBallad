@@ -55,6 +55,8 @@ function CharacterCreatorModal({ id }: Props) {
     return true
   }).map(pack => ({ label: pack.item.name, value: pack.versions.filter(v => {
     if (!system || !version) return false
+
+    console.log(system)
     
     const sysHashTypes = system.hashes[version.local_id]
 

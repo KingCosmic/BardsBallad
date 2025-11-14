@@ -1,5 +1,5 @@
 import { useNode } from '@craftjs/core'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { updateParams } from '@blueprints/utils'
 import AccordionGroup from '@components/AccordionGroup'
 import Accordion from '@components/Accordion'
@@ -12,13 +12,16 @@ import { useLocalState } from '@designer/hooks/useLocalState'
 import styles from './styles'
 import Button from '@components/inputs/Button'
 import globalStyles from '@designer/styles'
-import BlueprintEditor from '@modals/BlueprintEditor'
+import ScriptEditor from '@modals/ScriptEditor'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { editorState } from '@state/editor'
+import { SystemData } from '@storage/schemas/system'
 
 export function ContainerSettings() {
   const { id, actions: { setProp },
     showPlaceholder,
-    isVisible, dynamicVisibility, visibilityBlueprint,
-    isList, dataName, blueprint,
+    isVisible, dynamicVisibility, visibilityScript,
+    isList, dataName, script, returnType,
     isInteractive, onPress,
     display, position, top, right, bottom, left,
     flexDirection, alignItems, justifyContent, gap,
@@ -32,11 +35,12 @@ export function ContainerSettings() {
     isVisible: node.data.props.isVisible,
 
     dynamicVisibility: node.data.props.dynamicVisibility,
-    visibilityBlueprint: node.data.props.visibilityBlueprint,
+    visibilityScript: node.data.props.visibilityScript,
 
     isList: node.data.props.isList,
     dataName: node.data.props.dataName,
-    blueprint: node.data.props.blueprint,
+    script: node.data.props.script,
+    returnType: node.data.props.returnType,
     
     isInteractive: node.data.props.isInteractive,
     onPress: node.data.props.onPress,
@@ -76,26 +80,11 @@ export function ContainerSettings() {
   const [openAccordion, setOpenAccordion] = useState(-1)
 
   const localParams = useLocalState(id)
-  useEffect(() => {
-    setProp((props: any) => {
-      props.blueprint = {
-        edges: props.blueprint.edges,
-        nodes: updateParams(props.blueprint.nodes, localParams)
-      }
 
-      props.visibilityBlueprint = { 
-        edges: props.visibilityBlueprint.edges,
-        nodes: updateParams(props.visibilityBlueprint.nodes, localParams)
-      }
-      
-      props.onPress = {
-        edges: props.onPress.edges,
-        nodes: updateParams(props.onPress.nodes, localParams)
-      }
-    
-      return props
-    })
-  }, [localParams])
+  const editor = editorState.useValue()
+  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
+
+  const types = useMemo(() => versionEdits?.data.types ?? [], [versionEdits])
 
   return (
     <AccordionGroup>
@@ -106,10 +95,14 @@ export function ContainerSettings() {
 
         {
           dynamicVisibility ? (
-            <p onClick={() => 
-              openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={visibilityBlueprint} onSave={(bp) => setProp((props: any) => props.visibilityBlueprint = bp)} />
-              ))}>
+            <p onClick={() => {
+              openModal('script', ({ id }) => (
+                <ScriptEditor id={id} code={visibilityScript}
+                  onSave={({ result }) => setProp((props: any) => props.visibilityScript = result)}
+                  globals={localParams} expectedType='boolean' types={types}
+                />
+              ))
+            }}>
               Visibility Blueprint
             </p>
           ) : (
@@ -125,7 +118,7 @@ export function ContainerSettings() {
             props.local = val ? [
               {
                 name: dataName,
-                type: getReturnTypeOfBlueprint(blueprint),
+                type: returnType,
                 isArray: false
               }
             ] : []
@@ -148,35 +141,38 @@ export function ContainerSettings() {
           })
         }} />
 
-        <Button color='light' onClick={() => 
-          openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={blueprint} onSave={(bp) => {
+        <Button color='light' onClick={() => {
+          openModal('script', ({ id }) => (
+            <ScriptEditor id={id} code={script} onSave={({ result, returnType }) => {
               setProp((props: any) => {
-                props.blueprint = bp
+                props.script = result
     
                 const index = props.local.findIndex((localProp: any) => localProp.name === dataName)
     
                 if (index === -1) return
     
-                props.local[index].type = getReturnTypeOfBlueprint(bp)
+                props.local[index].type = result.isCorrect ? returnType.slice(0, -2) : returnType
     
                 return props
               })
-            }} />
-          ))}>
-          List Data Blueprint
+            }} globals={localParams} expectedType='any[]' types={types} />
+          ))
+        }}>
+          List Data Script
         </Button>
       </Accordion>
       <Accordion id='input' title='Input' isOpen={openAccordion === 2} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 2 : -1)}>
         <Checkbox id='is-interactive' label='Is Interactive?' checked={isInteractive} onChange={interactive => setProp((props: any) => props.isInteractive = interactive)} />
 
-        <Button color='light' onClick={() => 
-          openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={onPress} onSave={(bp) => {
-              setProp((props: any) => props.onPress = bp)
-            }} />
-          ))}>
-          On Press Blueprint
+        <Button color='light' onClick={() => {
+          openModal('script', ({ id }) => (
+            <ScriptEditor id={id} code={onPress}
+              onSave={(script) => setProp((props: any) => props.onPress = script)}
+              globals={localParams} expectedType='null' types={types}
+            />
+          ))
+        }}>
+          On Press Script
         </Button>
       </Accordion>
 

@@ -17,7 +17,7 @@ import Select from '@components/inputs/Select';
 import { closeModal, openModal } from '@state/modals';
 
 import { type SystemType, type TypeData } from '@storage/schemas/system'
-import BlueprintEditor from './BlueprintEditor';
+import ScriptEditor from './ScriptEditor';
 
 type ModalProps = {
   title: string;
@@ -150,10 +150,14 @@ export function RenderComponentFromType(types: SystemType[], type: string, data:
       )
     case 'blueprint':
       return (
-        <Button key={label} color='light' onClick={() =>
-          openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={data} onSave={(bp) => setProperty(label, dataCopy, bp)} />
-          ))}>Edit {label}</Button>
+        <Button key={label} color='light' onClick={() => {
+          // openModal('blueprint', ({ id }) => (
+          //   <BlueprintEditor id={id} data={data} onSave={(bp) => setProperty(label, dataCopy, bp)} />
+          // ))
+          openModal('script', ({ id }) => (
+            <ScriptEditor id={id} code={data} onSave={(script) => setProperty(label, dataCopy, script)} />
+          ))
+        }}>Edit {label}</Button>
       )
     default:
       return (

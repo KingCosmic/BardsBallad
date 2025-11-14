@@ -19,11 +19,11 @@ import Text from '@designer/components/Text/Editor'
 import Layers from '@designer/Layers/Layers'
 import EditorSelect from '@designer/components/Select/Editor'
 import InputEditor from '@designer/components/Input/Editor'
-import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '@utils/system'
+import { addPage, addPageState, deletePage, renamePage, updatePageScript, updatePageState } from '@utils/system'
 import { SystemData } from '@storage/schemas/system'
 import storeMutation from '@storage/methods/versionedresources/storeMutation'
 import { useVersionEdits } from '@hooks/useVersionEdits'
-import BlueprintEditor from '@modals/BlueprintEditor'
+import ScriptEditor from '@modals/ScriptEditor'
 
 
 const CreatorMenu: React.FC = () => {
@@ -36,8 +36,6 @@ const CreatorMenu: React.FC = () => {
   const [tab, setTab] = useState('components')
 
   const [editingState, setEditingState] = useState<{ name: string, type: any, value?: any } | null>(null)
-
-  const [editName, setEditName] = useState<any>(null)
 
   const { connectors } = useEditor()
 
@@ -183,11 +181,14 @@ const CreatorMenu: React.FC = () => {
             </div>
 
             <Button color='light' onClick={() =>
-              openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'builder', editor.creatorPage, bp))} />
+              // openModal('blueprint', ({ id }) => (
+              //   <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'builder', editor.creatorPage, bp))} />
+              // ))
+              openModal('script', ({ id }) => (
+                <ScriptEditor id={id} code={page!.script} onSave={(script) => storeMutation(versionEdits.local_id, updatePageScript(versionEdits.data, 'builder', editor.creatorPage, script))} />
               ))
             }>
-              Edit Page Blueprint
+              Edit Page Script
             </Button>
 
             <div className='flex items-center justify-between my-2 px-2'>

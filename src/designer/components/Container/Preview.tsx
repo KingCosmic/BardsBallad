@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback, useMemo, useRef } from 'react'
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { AddData, useLocalData } from '@designer/renderer/Context'
 import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
@@ -8,34 +8,44 @@ import styles from './styles'
 import globalStyles from '@designer/styles'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
+import runCode from '@utils/verse/runCode'
 
 export default (props: PropsWithChildren<ContainerProps>) => {
   const localData = useLocalData()
 
-  const items: any[] = useMemo(() => {
-    const processor = new BlueprintProcessor(props.blueprint!)
+  const [items, setItems] = useState<any[]>([])
+  const [isVisible, setIsVisible] = useState(true)
 
-    const output = processor.processBlueprint(localData, props.state!, () => {}) ?? []
+  useEffect(() => {
+    async function rc() {
+      if (!props.script.isCorrect) return setItems([])
+    
+      const output = await runCode<any[]>(props.script.compiled, localData)
 
-    return output
+      setItems(output.result ?? [])
+    }
+
+    rc()
   }, [localData, props.state])
 
-  const isVisible = useMemo(() => {
-    if (!props.dynamicVisibility) return props.isVisible
+  useEffect(() => {
+    async function rc() {
+      if (!props.dynamicVisibility) return setIsVisible(props.isVisible!)
 
-    const processor = new BlueprintProcessor(props.visibilityBlueprint!)
+      if (!props.visibilityScript.isCorrect) return setIsVisible(props.isVisible!)
 
-    const isVisible = processor.processBlueprint(localData, props.state!, () => {}) || false
+      const output = await runCode<boolean>(props.visibilityScript.compiled, localData)
 
-    return isVisible
-  }, [localData, props.state])
+      setIsVisible(output.result ?? props.isVisible!)
+    }
+
+    rc()
+  }, [])
 
   const onClick = useCallback(() => {
-    if (!props.isInteractive) return
+    if (!props.isInteractive || !props.onPress.isCorrect) return
 
-    const processor = new BlueprintProcessor(props.onPress!)
-
-    processor.processBlueprint(localData, props.state!, props.updateState!)
+    runCode(props.onPress.compiled, localData)
   }, [props.onPress, localData, props.state, props.updateState])
 
   const backgroundClass = useMemo(() => styles[props.background!] ? styles[props.background!]?.background : '', [props.background])

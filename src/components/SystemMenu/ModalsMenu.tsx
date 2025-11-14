@@ -15,11 +15,11 @@ import Layers from '../../designer/Layers/Layers'
 import Select from '../inputs/Select'
 import Button from '../inputs/Button'
 import { openModal } from '../../state/modals'
-import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '../../utils/system'
+import { addPage, addPageState, deletePage, renamePage, updatePageScript, updatePageState } from '../../utils/system'
 import { SystemData } from '../../storage/schemas/system'
 import storeMutation from '../../storage/methods/versionedresources/storeMutation'
-import BlueprintEditor from '../../modals/BlueprintEditor'
 import { VersionedResource } from '../../storage/schemas/versionedResource'
+import ScriptEditor from '@modals/ScriptEditor'
 
 interface Props {
   versionEdits: Omit<VersionedResource, 'data'> & { data: SystemData }
@@ -160,8 +160,11 @@ function ModalsMenu({ versionEdits }: Props) {
             </div>
 
             <Button color='light' onClick={() => 
-              openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'modal', editor.modalsPage, bp))} />
+              // openModal('blueprint', ({ id }) => (
+                // <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'modal', editor.modalsPage, bp))} />
+              // ))
+              openModal('script', ({ id }) => (
+                <ScriptEditor id={id} code={page!.script} onSave={(script) => storeMutation(versionEdits.local_id, updatePageScript(versionEdits.data, 'modal', editor.modalsPage, script))} />
               ))
             }>
               Edit Page Blueprint

@@ -13,6 +13,7 @@
     "screenshots": "node screenshots/grabScreenshots.js"
   },
   "dependencies": {
+    "@bardsballad/verse": "^0.1.9",
     "@craftjs/core": "^0.2.11",
     "@floating-ui/react": "^0.27.8",
     "@ionic/storage": "^4.0.0",
@@ -30,7 +31,9 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.469.0",
     "lzutf8": "^0.6.3",
+    "monaco-editor": "^0.54.0",
     "posthog-js": "^1.232.6",
+    "quickjs-emscripten": "^0.31.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ridge-state": "^4.2.9",

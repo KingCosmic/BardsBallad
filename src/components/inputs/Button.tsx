@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 type ButtonProps = {
   id?: string;
   className?: string;
-  color: string;
+  color: 'primary' | 'light' | 'danger' | 'disabled';
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset' | undefined;
   onClick?(): void;
@@ -21,7 +21,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({ children, className 
     <button
       type={type}
       id={id}
-      className={`${disabled ? styles['disabled'] : styles[color]} me-2.5 focus:ring-4 border focus:outline-none font-medium rounded-lg transition text-sm px-4 py-2 text-center ${className}`}
+      className={`${disabled ? styles['disabled'] : styles[color]} me-2.5 focus:ring-4 border focus:outline-none font-medium rounded-lg transition text-sm p-2 text-center ${className}`}
       onClick={disabled ? undefined : onClick}
     >
       {children}

@@ -1,17 +1,17 @@
 import ButtonWithDropdown from '@components/ButtonWithDropdown'
 import FloatingActionButton from '@components/FloatingActionButton'
-import BlueprintEditor from '@modals/BlueprintEditor'
 import ConfirmModal from '@modals/ConfirmModal'
 import EditStringModal from '@modals/EditString'
+import ScriptEditor from '@modals/ScriptEditor'
 import addCharacterAction from '@mutations/system/addCharacterAction'
 import deleteAction from '@mutations/system/deleteAction'
-import editActionBlueprint from '@mutations/system/editActionBlueprint'
 import editActionDescription from '@mutations/system/editActionDescription'
 import editActionName from '@mutations/system/editActionName'
 import { openModal } from '@state/modals'
 import storeMutation from '@storage/methods/versionedresources/storeMutation'
 import { ActionType } from '@storage/schemas/system'
 import { VersionedResource } from '@storage/schemas/versionedResource'
+import editActionScript from '@mutations/system/editActionScript'
 
 interface Props {
   editsId: string
@@ -29,10 +29,14 @@ const ActionsModal: React.FC<Props> = ({ editsId, versionedResource }) => {
                 <p>{action.name}</p>
                 <p>{action.description}</p>
               </div>
-              <ButtonWithDropdown label='Edit' onClick={() =>
-                openModal('blueprint', ({ id }) => (
-                  <BlueprintEditor id={id} data={action.blueprint} onSave={bp => storeMutation(editsId, editActionBlueprint(versionedResource.data, action.name, bp))} />
-                ))}
+              <ButtonWithDropdown label='Edit' onClick={() => {
+                  // openModal('blueprint', ({ id }) => (
+                    // <BlueprintEditor id={id} data={action.blueprint} onSave={bp => storeMutation(editsId, editActionBlueprint(versionedResource.data, action.name, bp))} />
+                  // ))
+                  openModal('script', ({ id }) => (
+                    <ScriptEditor id={id} code={action.script} onSave={(script) => storeMutation(editsId, editActionScript(versionedResource.data, action.name, script))} />
+                  ))
+                }}
                 options={[
                 {
                   label: 'Rename',

@@ -15,11 +15,11 @@ import Layers from '@designer/Layers/Layers'
 import Select from '@components/inputs/Select'
 import Button from '@components/inputs/Button'
 import { openModal } from '@state/modals'
-import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '@utils/system'
+import { addPage, addPageState, deletePage, renamePage, updatePageScript, updatePageState } from '@utils/system'
 import { SystemData } from '@storage/schemas/system'
 import storeMutation from '@storage/methods/versionedresources/storeMutation'
 import { useVersionEdits } from '@hooks/useVersionEdits'
-import BlueprintEditor from '@modals/BlueprintEditor'
+import ScriptEditor from '@modals/ScriptEditor'
 
 function EditorMenu() {
   const editor = editorState.useValue()
@@ -159,11 +159,14 @@ function EditorMenu() {
             </div>
 
             <Button color='light' onClick={() =>
-              openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))} />
+              // openModal('blueprint', ({ id }) => (
+              //   <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))} />
+              // ))
+              openModal('script', ({ id }) => (
+                <ScriptEditor id={id} code={page!.script} onSave={(script) => storeMutation(versionEdits.local_id, updatePageScript(versionEdits.data, 'character', editor.characterPage, script))} />
               ))
             }>
-              Edit Page Blueprint
+              Edit Page Script
             </Button>
 
             <div className='flex items-center justify-between my-2 px-2'>

@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useLocalData } from '@designer/renderer/Context'
 import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
@@ -6,26 +6,34 @@ import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 import { SelectProps } from './Editor'
 import globalStyles from '@designer/styles'
 import Select from '@components/inputs/Select'
+import runCode from '@utils/verse/runCode'
 
 export default (props: SelectProps) => {
   const localData = useLocalData()
 
   const [value, setValue] = useState('default')
+  const [options, setOptions] = useState<any[]>([])
 
-  const options = useMemo(() => {
-    if (!props.dynamicOptions) return props.options!
+  useEffect(() => {
+    async function rc() {
+      if (!props.dynamicOptions) return setOptions(props.options!)
 
-    const processor = new BlueprintProcessor(props.optionsBlueprint!)
+      if (!props.optionsScript.isCorrect) return setOptions([])
+      
+      const output = await runCode<any[]>(props.optionsScript.compiled, localData);
+  
+      // const output = (processor.processBlueprint(localData, props.state!, props.updateState!) ?? []) as any[]
 
-    const output = (processor.processBlueprint(localData, props.state!, props.updateState!) ?? []) as any[]
+      setOptions(output.result ?? [])
+    }
 
-    return output
+    rc()
   }, [localData, props.state, props.updateState])
 
   const onChange = useCallback((value: any) => {
-    const processor = new BlueprintProcessor(props.onChange!)
+    if (!props.onChange?.isCorrect) return
 
-    processor.processBlueprint({ ...localData, ['selectedValue']: value }, props.state!, props.updateState!)
+    runCode(props.onChange.compiled, { ...localData, ['selectedValue']: value })
   }, [props.onChange, localData, props.state, props.updateState])
 
   return (

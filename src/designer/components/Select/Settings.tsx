@@ -1,5 +1,5 @@
 import { useEditor, useNode } from '@craftjs/core'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { updateParams } from '@blueprints/utils'
 import AccordionGroup from '@components/AccordionGroup'
 import Accordion from '@components/Accordion'
@@ -10,13 +10,16 @@ import { openModal } from '@state/modals'
 import { useLocalState } from '@designer/hooks/useLocalState'
 import Button from '@components/inputs/Button'
 import globalStyles from '@designer/styles'
-import BlueprintEditor from '@modals/BlueprintEditor'
 import { getReturnTypeOfBlueprint } from '@utils/Blueprints/getReturnTypeOfBlueprint'
+import ScriptEditor from '@modals/ScriptEditor'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { editorState } from '@state/editor'
+import { SystemData } from '@storage/schemas/system'
 
 export function SelectSettings() {
   const { id, actions: { setProp },
     label,
-    dynamicOptions, optionsBlueprint, onChange,
+    dynamicOptions, optionsScript, onChange,
 
     marginTop, marginRight, marginBottom, marginLeft,
     width, maxWidth, minWidth
@@ -24,7 +27,7 @@ export function SelectSettings() {
     label: node.data.props.label,
 
     dynamicOptions: node.data.props.dynamicOptions,
-    optionsBlueprint: node.data.props.optionsBlueprint,
+    optionsScript: node.data.props.optionsScript,
     options: node.data.props.options,
     onChange: node.data.props.onChange,
 
@@ -40,21 +43,11 @@ export function SelectSettings() {
   const [openAccordion, setOpenAccordion] = useState(-1)
 
   const localParams = useLocalState(id)
-  useEffect(() => {
-    setProp((props: any) => {
-      props.optionsBlueprint = {
-        edges: props.optionsBlueprint.edges,
-        nodes: updateParams(props.optionsBlueprint.nodes, localParams)
-      }
 
-      props.onChange = {
-        edges: props.onChange.edges,
-        nodes: updateParams(props.onChange.nodes, localParams)
-      }
+  const editor = editorState.useValue()
+  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
-      return props
-    })
-  }, [localParams])
+  const types = useMemo(() => versionEdits?.data.types ?? [], [versionEdits])
 
   return (
     <AccordionGroup>
@@ -66,25 +59,21 @@ export function SelectSettings() {
 
         {
           dynamicOptions ? (
-            <Button color='light' onClick={() =>
-              openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={optionsBlueprint}onSave={(bp) => {
+            <Button color='light' onClick={() => {
+              openModal('script', ({ id }) => (
+                <ScriptEditor id={id} code={optionsScript} onSave={({ result }) => {
                   setProp((props: any) => {
-                    props.optionsBlueprint = bp
+                    props.optionsScript = result
 
-                    props.onChange = {
-                      edges: props.onChange.edges,
-                      nodes: updateParams(props.onChange.nodes, [ ...localParams, {
-                        name: 'selectedValue',
-                        type: getReturnTypeOfBlueprint(bp),
-                        isArray: false
-                      } ])
-                    }
+                    props.local = [
+                      { name: 'selectedValue', type: 'string', isArray: false }
+                    ]
 
                     return props
                   })
-                }} />
-              ))}>
+                }} globals={localParams} expectedType='string[]' types={types} />
+              ))
+            }}>
               Options Blueprint
             </Button>
           ) : (
@@ -94,12 +83,14 @@ export function SelectSettings() {
 
         <div className='h-2' />
 
-        <Button color='light' onClick={() =>
-          openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={onChange} onSave={(bp) => {
-              setProp((props: any) => props.onChange = bp)
-            }} />
-          ))}>
+        <Button color='light' onClick={() => {
+          openModal('script', ({ id }) => (
+            <ScriptEditor id={id} code={onChange}
+              onSave={({ result }) => setProp((props: any) => props.onChange = result)}
+              globals={localParams} expectedType='null' types={types}
+            />
+          ))
+        }}>
           onChange Blueprint
         </Button>
       </Accordion>

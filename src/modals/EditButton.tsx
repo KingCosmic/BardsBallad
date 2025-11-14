@@ -9,10 +9,10 @@ import ModalBody from '@components/Modal/Body';
 import ModalFooter from '@components/Modal/Footer';
 import TextInput from '@components/inputs/TextInput';
 import Button from '@components/inputs/Button';
-import BlueprintEditor from './BlueprintEditor';
+import ScriptEditor from './ScriptEditor';
 
 type Props = {
-  data: { name: string; icon: string; blueprint: BlueprintData } | null;
+  data: { name: string; icon: string; script: string } | null;
 
   isOpen: boolean;
   requestClose(): void;
@@ -23,14 +23,14 @@ type Props = {
 function EditButtonModal({ data, isOpen, requestClose, onSave, onDelete }: Props) {
   const [name, setName] = useState('')
   const [icon, setIcon] = useState('')
-  const [blueprint, setBlueprint] = useState<BlueprintData>({ nodes: [], edges: [] })
+  const [script, setScript] = useState<string>('')
 
   useEffect(() => {
     if (!data) return
   
     setName(data.name)
     setIcon(data.icon)
-    setBlueprint(data.blueprint)
+    setScript(data.script)
   }, [data])
 
   return (
@@ -42,11 +42,14 @@ function EditButtonModal({ data, isOpen, requestClose, onSave, onDelete }: Props
 
         {/* TODO: Icon Select. */}
 
-        <p onClick={() =>
-          openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setBlueprint(bp)} />
+        <p onClick={() => {
+          // openModal('blueprint', ({ id }) => (
+          //   <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setBlueprint(bp)} />
+          // ))
+          openModal('script', ({ id }) => (
+            <ScriptEditor id={id} code={script} onSave={(script) => setScript(script)} />
           ))
-        }>
+        }}>
           On Click Action
         </p>
 
@@ -59,7 +62,7 @@ function EditButtonModal({ data, isOpen, requestClose, onSave, onDelete }: Props
         }}>Delete</Button>
 
         <Button color='primary' onClick={() => {         
-          onSave({ name, icon, blueprint })
+          onSave({ name, icon, script })
           requestClose()
         }}>Update</Button>
       </ModalFooter>

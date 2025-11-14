@@ -20,6 +20,8 @@ import getVersionedResource from '@storage/methods/versionedresources/getVersion
 import CharacterSidebar from '@sidebars/Character'
 import { addToast } from '@state/toasts'
 import { DataPack } from '@storage/schemas/datapack'
+import { CompilerContext } from '@hooks/useCompiler'
+import { VerseScriptCompiler } from '@bardsballad/verse'
 
 const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -86,6 +88,10 @@ const CharacterPage: React.FC = () => {
     loadSystem()
   }, [character])
 
+  const compiler = useMemo(() => {
+    return new VerseScriptCompiler()
+  }, [])
+
   if (!character) return <p id='loading-text' className='text-center text-2xl'>loading character data...</p>
   if (!system) return <p id='loading-text' className='text-center text-2xl'>loading system data...</p>
 
@@ -125,7 +131,7 @@ const RenderTab = ({ system, character, updateState, className }: { system: Syst
           system.pages.map(page => <option key={page.name} value={page.name}>{page.name}</option>)
         }
       </Select>
-
+      
       {
         system.pages.map(page => <RenderPage key={page.name} character={character} system={system} page={page} currentTab={tab} updateState={updateState} />)
       }

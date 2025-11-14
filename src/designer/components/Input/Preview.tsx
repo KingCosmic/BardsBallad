@@ -1,25 +1,33 @@
-import { memo, useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useLocalData } from '@designer/renderer/Context'
-import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { InputProps } from './Editor'
 import globalStyles from '@designer/styles'
 import TextInput from '@components/inputs/TextInput'
+import runCode from '@utils/verse/runCode'
 
 export default (props: InputProps) => {
   const localData = useLocalData()
 
-  const value = useMemo(() => {
-    const processor = new BlueprintProcessor(props.getValue!)
+  const [value, setValue] = useState('')
 
-    return processor.processBlueprint(localData, props.state!, props.updateState!)
+  useEffect(() => {
+    async function rc() {
+      if (!props.getValue.isCorrect) return setValue('')
+
+      const output = await runCode<string>(props.getValue.compiled, localData)
+
+      setValue(output.result ?? '')
+    }
+
+    rc()
   }, [props.getValue, localData, props.state, props.updateState])
 
   const onChange = useCallback((value: any) => {
-    const processor = new BlueprintProcessor(props.onChange!)
+    if (!props.onChange.isCorrect) return
 
-    processor.processBlueprint({ ...localData, ['field value']: value }, props.state!, props.updateState!)
+    runCode(props.onChange.compiled, { ...localData, ['field value']: value })
   }, [props.onChange, localData, props.state, props.updateState])
 
   return (

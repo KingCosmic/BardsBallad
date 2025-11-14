@@ -1,23 +1,28 @@
 import { useNode, UserComponentConfig } from '@craftjs/core'
-import { BlueprintData } from '@/types/blueprint'
 import { openModal } from '@state/modals'
 import Divider from '@components/Divider'
 import { getDefaultNodes } from '@blueprints/utils'
 import EditButtonModal from '@modals/EditButton'
 
-import {  useCallback, useState } from 'react'
+import {  useCallback, useMemo, useState } from 'react'
 
-import BlueprintProcessor, { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
+import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 
 import { useLocalData } from './renderer/Context'
 import FloatingActionButton from '@components/FloatingActionButton'
 import Checkbox from '@components/inputs/Checkbox'
-import BlueprintEditor from '@modals/BlueprintEditor'
+import ScriptEditor from '@modals/ScriptEditor'
+import { Script } from '@/types/script'
+import runCode from '@utils/verse/runCode'
+import { useLocalState } from './hooks/useLocalState'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { editorState } from '@state/editor'
+import { SystemData } from '@storage/schemas/system'
 
 type Button = {
   name: string;
   icon: string;
-  blueprint: BlueprintData;
+  script: Script;
 }
 
 type FABProps = {
@@ -27,7 +32,7 @@ type FABProps = {
 
   isList?: boolean;
   buttons?: Button[];
-  blueprint?: BlueprintData;
+  script: Script;
 
   // Local state this component will pass to its children.
   local?: any;
@@ -44,7 +49,7 @@ function FAB({ buttons }: FABProps) {
   )
 }
 
-export function FABPreview({ blueprint, isList, buttons, state, updateState }: FABProps) {
+export function FABPreview({ script, isList, buttons, state, updateState }: FABProps) {
   const localData = useLocalData()
 
   const [isOpen, setIsOpen] = useState(false)
@@ -52,28 +57,42 @@ export function FABPreview({ blueprint, isList, buttons, state, updateState }: F
   const onClick = useCallback(() => {
     if (isList) return setIsOpen(!isOpen)
 
-    const processor = new BlueprintProcessor(blueprint!)
+    if (!script.isCorrect) return
 
-    processor.processBlueprint(localData, state!, updateState!)
-  }, [blueprint, localData, state, updateState, isOpen, isList])
+    runCode(script.compiled, localData)
+  }, [script, localData, state, updateState, isOpen, isList])
 
   return (
     <FloatingActionButton
       isOpen={isOpen}
       onClick={onClick}
-      buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => new BlueprintProcessor(btn.blueprint!).processBlueprint(localData, state!, updateState!) }))}
+      buttons={buttons?.map(btn => ({
+        name: btn.name, icon: btn.icon,
+        onClick: () => {
+          if (!btn.script.isCorrect) return
+
+          runCode(btn.script.compiled, localData)
+        }
+      }))}
     />
   )
 }
 
 function FABSettings() {
-  const { actions: { setProp }, isList, buttons, blueprint } = useNode(node => ({
+  const { id, actions: { setProp }, isList, buttons, script } = useNode(node => ({
     isList: node.data.props.isList,
     buttons: node.data.props.buttons,
-    blueprint: node.data.props.blueprint
+    script: node.data.props.script
   }))
 
   const [editData, setEditData] = useState<any | null>(null)
+
+  const localParams = useLocalState(id)
+
+  const editor = editorState.useValue()
+  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
+
+  const types = useMemo(() => versionEdits?.data.types ?? [], [versionEdits])
 
   return (
     <div>
@@ -137,10 +156,14 @@ function FABSettings() {
             })} onDelete={() => setProp((props: any) => props.buttons = props.buttons.filter((b: any) => b.name !== editData!.name))} />
           </>
         ) : (
-          <p onClick={() => 
-            openModal('blueprint', ({ id }) => (
-              <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setProp((props: any) => props.blueprint = bp)} />
-            ))}>
+          <p onClick={() => {
+            openModal('script', ({ id }) => (
+              <ScriptEditor id={id} code={script}
+                onSave={({ result }) => setProp((props: any) => props.script = result)}
+                globals={localParams} expectedType='null' types={types}
+              />
+            ))
+          }}>
             On Click
           </p>
         )
@@ -153,9 +176,11 @@ const CraftSettings: Partial<UserComponentConfig<FABProps>> = {
   defaultProps: {
     isList: false,
     buttons: [],
-    blueprint: {
-      nodes: getDefaultNodes(),
-      edges: []
+    script: {
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
   },
   related: {
