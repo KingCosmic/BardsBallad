@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useLocalData } from '@designer/renderer/Context'
 import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
@@ -6,27 +6,40 @@ import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 import { SelectProps } from './Editor'
 import globalStyles from '@designer/styles'
 import Select from '@components/inputs/Select'
+import runCode from '@utils/verse/runCode'
+import { useScriptRunner } from '@components/ScriptRunnerContext'
 
 export default (props: SelectProps) => {
   const localData = useLocalData()
+  const { isReady, runScript } = useScriptRunner()
 
   const [value, setValue] = useState('default')
+  const [options, setOptions] = useState<any[]>([])
 
-  const options = useMemo(() => {
-    if (!props.dynamicOptions) return props.options!
+  const state = useMemo(() => ({
+    ...props.state,
+    ...localData,
+  }), [localData, props.state])
 
-    const processor = new BlueprintProcessor(props.optionsBlueprint!)
+  useEffect(() => {
+    async function rc() {
+      if (!props.dynamicOptions || !isReady) return setOptions(props.options!)
 
-    const output = (processor.processBlueprint(localData, props.state!, props.updateState!) ?? []) as any[]
+      if (!props.optionsScript!.isCorrect) return setOptions([])
+      
+      const output = await runScript<any[]>(props.optionsScript!.compiled, state, props.updateState!);
 
-    return output
-  }, [localData, props.state, props.updateState])
+      setOptions(output.result ?? [])
+    }
+
+    rc()
+  }, [state, props.dynamicOptions, props.optionsScript, props.updateState])
 
   const onChange = useCallback((value: any) => {
-    const processor = new BlueprintProcessor(props.onChange!)
+    if (!props.onChange?.isCorrect || !isReady) return
 
-    processor.processBlueprint({ ...localData, ['selectedValue']: value }, props.state!, props.updateState!)
-  }, [props.onChange, localData, props.state, props.updateState])
+    runScript(props.onChange.compiled, { ...state, ['selectedValue']: value }, props.updateState!)
+  }, [props.onChange, state, props.updateState])
 
   return (
     <Select

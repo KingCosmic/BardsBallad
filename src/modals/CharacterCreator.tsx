@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect } from 'react'
+import React, { useCallback, useMemo, useState, useEffect } from 'react'
 
 import TextInput from '@components/inputs/TextInput'
 import Select from '@components/inputs/Select'
@@ -26,9 +26,13 @@ import { usePostHog } from 'posthog-js/react'
 import { VersionedResource } from '@storage/schemas/versionedResource'
 import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID'
 import { db, Item } from '@storage/index'
-import { closeModal } from '@state/modals'
+import {closeModal, openModal} from '@state/modals'
 import MultiSelect from '@components/MultiSelect'
 import useSubscriptionsWithData, { Grouped } from '@hooks/useSubscriptionsWithData'
+import {useNavigate} from "react-router";
+import ImportFile from "@modals/ImportFile";
+import importSystem from "@storage/methods/systems/importSystem";
+import importDatapack from "@storage/methods/datapacks/importDatapack";
 
 interface Props {
   id: number;
@@ -43,9 +47,12 @@ function CharacterCreatorModal({ id }: Props) {
 
   const posthog = usePostHog()
 
+  const [slug, setSlug] = useState('')
   const [system, setSystem] = useState<Grouped | undefined>()
   const [version, setVersion] = useState<VersionedResource | undefined>()
   const [activePacks, setActivePacks] = useState<VersionedResource[]>([])
+
+  const navigate = useNavigate();
 
   const datapacks = useMemo(() => (subscriptions || []).filter(sub => {
     const isDataPack = (sub.type === 'datapack')
@@ -55,7 +62,7 @@ function CharacterCreatorModal({ id }: Props) {
     return true
   }).map(pack => ({ label: pack.item.name, value: pack.versions.filter(v => {
     if (!system || !version) return false
-    
+
     const sysHashTypes = system.hashes[version.local_id]
 
     const hashTypes = pack.hashes[v.local_id]
@@ -77,21 +84,21 @@ function CharacterCreatorModal({ id }: Props) {
   const [characterData, setCharacterData] = useState<Character>({
     local_id: '',
     user_id: 'none',
-  
+
     name: '',
     data: version?.data.defaultCharacterData ?? {},
 
     system: { local_id: '', version_id: '' },
 
     datapacks: [],
-  
+
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   })
 
   // const updateState = useCallback((state: BlueprintProcessorState) => {
   //   const index = state.system.creator.findIndex(c => c.name === state.page.name)
-    
+
   //   if (
   //     deepEqual(characterData, state.character) &&
   //     deepEqual(system, state.system) &&
@@ -131,18 +138,40 @@ function CharacterCreatorModal({ id }: Props) {
   }, [systems])
 
   const requestClose = useCallback(() => closeModal(id), [id])
+  const requestMarketplace = () => {
+    closeModal(id);
+    navigate('/marketplace');
+  }
+  const requestImport = () => {
+    closeModal(id);
+    openModal('import-system', ({ id }) => <ImportFile id={id} title='Import System' onSave={async (fileContent: string) => {
+      try {
+        const parsed = JSON.parse(fileContent)
+
+        switch (parsed.type) {
+          case 'system':
+            return await importSystem(parsed.item, parsed.version)
+          case 'datapack':
+            return await importDatapack(parsed.item, parsed.version)
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }} />)
+  }
 
   if (!system) return (
     <Modal isOpen onClose={requestClose}>
       <ModalHeader title='Error grabbing system' onClose={requestClose} />
-
       <ModalBody>
         <h3>There was an error grabbing a default system, please subscribe to a system from the marketplace or import something!</h3>
       </ModalBody>
-
       <ModalFooter>
-        <Button color='primary' onClick={requestClose}>
-          Close
+        <Button color='primary' onClick={requestMarketplace}>
+          Marketplace
+        </Button>
+        <Button color='primary' onClick={requestImport}>
+          Import System
         </Button>
       </ModalFooter>
     </Modal>
@@ -156,15 +185,16 @@ function CharacterCreatorModal({ id }: Props) {
         {tab === 0 && (
           <>
             <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={(!characters.find(c => c.name === characterData.name))} errorMessage='Names must be unique' />
+              <TextInput id='slug' label='Character Motto' placeholder="They will all pay." value={slug} onChange={(slug) => setSlug(slug)} isValid errorMessage='' />
 
             <Select id='character-system' label='Tabletop System' value={system.item_id} onChange={(local_id) => {
               const sys = systems.find(s => s.item_id === local_id)
               if (!sys) return
 
               const vers = sys.versions[0]
-          
+
               if (!vers) return
-          
+
               setSystem(sys)
               setVersion(vers)
               setCharacterData({ ...characterData, data: structuredClone(vers.data.defaultCharacterData), system: { local_id: sys.item_id, version_id: vers.local_id } })
@@ -219,7 +249,7 @@ function CharacterCreatorModal({ id }: Props) {
             })}
           </ol>
         </nav>
-        
+
         {/* {(tab > 0) && (
           <Button color='light' onClick={() => setTab(tab - 1)}>
             Back
@@ -241,7 +271,7 @@ function CharacterCreatorModal({ id }: Props) {
         )} */}
 
         <Button id='create-character-button' color='primary' disabled={characterData.name.length === 0} onClick={async () => {
-          await createCharacter(characterData.name, characterData.data, characterData.system, activePacks.map(pack => ({ pack_id: pack.reference_id, version_id: pack.local_id })))
+          await createCharacter(characterData.name, slug, characterData.data, characterData.system, activePacks.map(pack => ({ pack_id: pack.reference_id, version_id: pack.local_id })))
           setSystem(systems[0])
           requestClose()
           posthog.capture('character_created', { character_name: characterData.name })

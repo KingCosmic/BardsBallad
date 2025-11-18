@@ -31,7 +31,10 @@ function EditStringModal({ id, data, title = 'Edit string', onSave, onDelete } :
 
       <ModalFooter>
         <Button color='danger'
-          onClick={requestClose}
+          onClick={() => {
+            if (onDelete) onDelete()
+            requestClose()
+          }}
         >
           {(onDelete) ? 'Delete' : 'Close'}
         </Button>

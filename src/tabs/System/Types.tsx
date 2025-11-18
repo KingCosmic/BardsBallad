@@ -51,12 +51,12 @@ const Types: React.FC<TypesProps> = ({ editsId, versionedResource }) => {
                   }
                 }
 
-                await storeMutation(editsId, addTypeProperty(versionedResource.data, type.name, newProperty))
+                const newData = await addTypeProperty(versionedResource.data, type.name, newProperty)
 
                 openModal('edit-type', ({ id }) => (
                   <EditTypeModal id={id} data={{ ...newProperty, typeName: type.name }}
-                    onSave={(data) => storeMutation(editsId, updateTypeProperty(versionedResource.data, type.name, newProperty.key, data))}
-                    onDelete={() => storeMutation(editsId, deleteTypeProperty(versionedResource.data, type.name, newProperty.key))}
+                    onSave={(data) => storeMutation(editsId, updateTypeProperty(newData, type.name, newProperty.key, data))}
+                    onDelete={() => storeMutation(editsId, deleteTypeProperty(newData, type.name, newProperty.key))}
                   />
                 ))
               }}>Add Property</Button>
@@ -89,10 +89,10 @@ const Types: React.FC<TypesProps> = ({ editsId, versionedResource }) => {
       </AccordionGroup>
 
       <FloatingActionButton onClick={async () => {
-        await storeMutation(editsId, addSystemType(versionedResource.data, 'New Type'))
+        const newData = await addSystemType(versionedResource.data, 'New Type')
         openModal('edit-string', ({ id }) => (
           <EditStringModal id={id} data='New Type'
-            onSave={(data) => storeMutation(editsId, renameSystemType(versionedResource.data, 'New Type', data))}
+            onSave={(data) => storeMutation(editsId, renameSystemType(newData, 'New Type', data))}
           />
         ))
       }} />

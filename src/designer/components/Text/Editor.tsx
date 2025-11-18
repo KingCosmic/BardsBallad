@@ -7,14 +7,15 @@ import styles from './styles'
 import { useMemo } from 'react'
 import globalStyles from '@designer/styles'
 import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
+import { Script } from '@/types/script'
 
 export interface TextProps {
   /* props that are only used in preview when processing blueprints */
   state?: BlueprintProcessorState;
   updateState?(newState: BlueprintProcessorState): void;
   
-  useBlueprintValue?: boolean;
-  blueprint?: BlueprintData;
+  useScriptValue?: boolean;
+  script?: Script;
 
   text?: string;
   color?: string;
@@ -84,8 +85,13 @@ function Text(props: TextProps) {
 
 const CraftSettings: Partial<UserComponentConfig<TextProps>> = {
   defaultProps: {
-    useBlueprintValue: false,
-    blueprint: { nodes: getDefaultNodes([], { name: 'output', type: 'string', isArray: false }), edges: [] },
+    useScriptValue: false,
+    script: {
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
+    },
 
     text: 'hello world',
     color: 'base',

@@ -16,6 +16,7 @@ import SpreadObject from './nodes/object/SpreadObject'
 import StringIncludes from './nodes/strings/Include'
 import StringCompare from './nodes/strings/Compare'
 import StringConcat from './nodes/strings/Concat'
+import StringLimit from './nodes/strings/Limit'
 
 /* Array Imports */
 import RemoveFromArray from './nodes/array/Remove'
@@ -33,6 +34,7 @@ import Add from './nodes/numbers/Add'
 import Multiply from './nodes/numbers/Multiply'
 import NumberToString from './nodes/numbers/ToString'
 
+import EnumToString from './nodes/enums/ToString'
 import EnumCompare from './nodes/enums/Compare'
 import Enum from './nodes/enums/Enum'
 
@@ -76,6 +78,7 @@ const nodeTypes: NodeTypes = {
   string_includes: StringIncludes,
   string_compare: StringCompare,
   string_concat: StringConcat,
+  string_limit: StringLimit,
 
   /* Number Nodes */
   new_number: Number,
@@ -89,6 +92,7 @@ const nodeTypes: NodeTypes = {
   /* Enum Nodes */
   new_enum: Enum,
   enum_compare: EnumCompare,
+  enum_toString: EnumToString,
 
   /* Boolean Nodes */
   boolean_new: Boolean,

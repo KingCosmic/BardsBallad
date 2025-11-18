@@ -7,7 +7,7 @@ import { ContainerSettings } from './Settings'
 import styles from './styles'
 import globalStyles from '@designer/styles'
 import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
-import { BlueprintData } from '@/types/blueprint'
+import { Script } from '@/types/script'
 
 export type ContainerProps = {
   /* props that are only used in preview when processing blueprints */
@@ -17,15 +17,16 @@ export type ContainerProps = {
   showPlaceholder?: boolean;
 
   dynamicVisibility?: boolean;
-  visibilityBlueprint?: BlueprintData;
+  visibilityScript?: Script;
   isVisible?: boolean;
 
   isList?: boolean;
   dataName?: string;
-  blueprint?: BlueprintData;
+  script?: Script;
+  returnType?: string;
 
   isInteractive?: boolean;
-  onPress?: BlueprintData;
+  onPress?: Script;
 
   background?: string;
   border?: string;
@@ -110,7 +111,7 @@ function Container(props: PropsWithChildren<ContainerProps>) {
         minWidth: globalStyles.size[props.minWidth!],
       }}
 
-      className={`${backgroundClass} ${borderClass} ${hoverClass}`}
+      className={`${backgroundClass} ${borderClass} ${hoverClass} rounded-lg`}
     >
       {
         props.children ? props.children : (props.showPlaceholder) ? (
@@ -127,38 +128,30 @@ const CraftSettings: Partial<UserComponentConfig<PropsWithChildren<ContainerProp
   defaultProps: {
     showPlaceholder: true,
     dynamicVisibility: false,
-    visibilityBlueprint: {
-      nodes: getDefaultNodes(
-        [],
-        {
-          name: 'isVisible',
-          type: 'boolean',
-          isArray: false
-        }
-      ),
-      edges: []
+    visibilityScript: {
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
     isVisible: true,
     isList: false,
     dataName: 'listItem',
-    blueprint: {
-      nodes: getDefaultNodes(
-        [],
-        {
-          name: 'listItem',
-          type: 'any',
-          isArray: true
-        }
-      ),
-      edges: []
+    script: {
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
 
     local: [],
 
     isInteractive: false,
     onPress: {
-      nodes: getDefaultNodes([]),
-      edges: [],
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
 
     display: 'flex',

@@ -12,12 +12,7 @@ export default async (data: SystemData, typeName: string, oldKey: string, proper
 
       if (index === -1) return
 
-      if (oldKey !== property.key) {
-        type.properties.splice(index, 1)
-        type.properties.push(property)
-      } else {
-        type.properties[index] = property
-      }
+      type.properties[index] = property
     }
   })
 }

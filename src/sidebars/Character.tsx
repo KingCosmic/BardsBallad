@@ -1,15 +1,26 @@
+import { useScriptRunner } from '@components/ScriptRunnerContext'
 import { Character } from '@storage/schemas/character'
 import { ActionType, SystemData } from '@storage/schemas/system'
-import BlueprintProcessor, { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
+import { useMemo } from 'react'
 
 interface Props {
   actions: ActionType[],
   system: SystemData,
   character: Character,
-  updateState(state: BlueprintProcessorState): void,
+  updateState(state: any): void,
 }
 
 const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateState }) => {
+  const { isReady, runScript } = useScriptRunner()
+
+  const state = useMemo(() => {
+    let sys: Record<string, any> = {}
+
+    system.data.forEach(d => sys[d.name] = d.data)
+
+    return { character: character.data, system: sys, page: {} }
+  }, [character, system])
+
   return (
     <aside
       className='bg-fantasy-glass backdrop-blur-lg border-l border-fantasy-border shadow-2xl fixed top-0 right-0 z-40 w-64 h-screen transition-transform translate-x-full lg:-translate-x-0'
@@ -24,18 +35,11 @@ const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateS
 
         <div className='flex flex-col gap-2'>
           {actions?.map(a => (
-            <div key={a.name} className='fantasy-card-gradient border border-fantasy-border rounded px-4 py-2 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative' onClick={() => {
-              const processor = new BlueprintProcessor(a.blueprint)
-
-              const pageState = {
-                name: 'null page',
-                blueprint: { nodes: [], edges: [] },
-                lexical: '',
-                state: []
-              }
-
-              processor.processBlueprint({}, { system, character, page: pageState }, updateState)
-            }}>
+            <div key={a.name} className='fantasy-card-gradient border border-fantasy-border rounded px-4 py-2 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative'
+              onClick={() => {
+                runScript(a.script.compiled, state, updateState)
+              }}
+            >
               <p className='text-neutral-100'>{a.name}</p>
               <p className='text-sm text-neutral-300'>{a.description}</p>
             </div>

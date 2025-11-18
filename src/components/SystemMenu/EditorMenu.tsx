@@ -15,11 +15,11 @@ import Layers from '@designer/Layers/Layers'
 import Select from '@components/inputs/Select'
 import Button from '@components/inputs/Button'
 import { openModal } from '@state/modals'
-import { addPage, addPageState, deletePage, renamePage, updatePageBlueprint, updatePageState } from '@utils/system'
+import { addPage, addPageState, deletePage, renamePage, updatePageScript, updatePageState } from '@utils/system'
 import { SystemData } from '@storage/schemas/system'
 import storeMutation from '@storage/methods/versionedresources/storeMutation'
 import { useVersionEdits } from '@hooks/useVersionEdits'
-import BlueprintEditor from '@modals/BlueprintEditor'
+import ScriptEditor from '@modals/ScriptEditor'
 
 function EditorMenu() {
   const editor = editorState.useValue()
@@ -98,13 +98,7 @@ function EditorMenu() {
                 </p>
               </div>
 
-              <div className='flex items-center p-4 border' ref={ref => connectors.create(ref!, <Searchbar placeholder='Search...' blueprint={{ nodes: getDefaultNodes([
-                    {
-                      name: 'searchText',
-                      type: 'string',
-                      isArray: false
-                    }
-                  ]), edges: [] }} />)}>
+              <div className='flex items-center p-4 border' ref={ref => connectors.create(ref!, <Searchbar placeholder='Search...' />)}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mr-4" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/><path fill="none" stroke="currentColor" strokeLinecap="round" strokeMiterlimit="10" strokeWidth="32" d="M338.29 338.29L448 448"/></svg>
 
                 <p className='text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base'>
@@ -120,7 +114,7 @@ function EditorMenu() {
                 </p>
               </div>
 
-              <div className='flex items-center p-4 border' ref={ref => connectors.create(ref!, <FAB isList={false} buttons={[]} blueprint={{ nodes: getDefaultNodes(), edges: [] }} />)}>
+              <div className='flex items-center p-4 border' ref={ref => connectors.create(ref!, <FAB isList={false} buttons={[]} />)}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mr-4" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M256 176v160M336 256H176"/></svg>
 
                 <p className='text-sm font-medium capitalize font-body text-white lg:text-lg md:text-base'>
@@ -158,12 +152,15 @@ function EditorMenu() {
               ))}>Rename</Button>
             </div>
 
-            <Button color='light' onClick={() =>
-              openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))} />
-              ))
+            <Button color='light' onClick={() => {}
+              // openModal('blueprint', ({ id }) => (
+              //   <BlueprintEditor id={id} data={page!.blueprint} onSave={(bp) => storeMutation(versionEdits.local_id, updatePageBlueprint(versionEdits.data, 'character', editor.characterPage, bp))} />
+              // ))
+              // openModal('script', ({ id }) => (
+              //   <ScriptEditor id={id} code={page!.script} onSave={(script) => storeMutation(versionEdits.local_id, updatePageScript(versionEdits.data, 'character', editor.characterPage, script))} />
+              // ))
             }>
-              Edit Page Blueprint
+              Edit Page Script
             </Button>
 
             <div className='flex items-center justify-between my-2 px-2'>

@@ -10,7 +10,7 @@ import deleteTypeProperty from './deleteTypeProperty';
 import renamePage from './renamePage';
 import renameSystemType from './renameSystemType';
 import setDefaultCharacterData from './setDefaultCharacterData';
-import updatePageBlueprint from './updatePageBlueprint';
+import updatePageScript from './updatePageScript';
 import updatePageState from './updatePageState';
 import updateLexical from './updateLexical';
 import updateSystemData from './updateSystemData';
@@ -25,7 +25,7 @@ export {
   addTypeProperty,
   deletePage,
   renamePage,
-  updatePageBlueprint,
+  updatePageScript,
   updatePageState,
   deleteSystemData,
   deleteSystemType,

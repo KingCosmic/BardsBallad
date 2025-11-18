@@ -37,7 +37,7 @@ const EditTypeModal: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
   const parentType = useMemo(() => version?.data.types.find(t => t.name === data?.typeName), [data, version])
 
   useEffect(() => {
-    if (!data) return
+    if (!data || data.key === key) return
   
     setKey(data.key)
     setPropertyData({ ...{ useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, ...data.typeData })
@@ -66,7 +66,12 @@ const EditTypeModal: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
           {version?.data.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
         </Select>
 
-        <Checkbox id='is-array' label='Is Array?' checked={propertyData.isArray} onChange={val => setPropertyData({ ...propertyData, isArray: val })} />
+        {!['string', 'number', 'boolean', 'enum', 'blueprint'].includes(propertyData.type) && (
+          <>
+            {/* Check the type and see if it has a name property (arrays are required to have them) */}
+            <Checkbox id='is-array' label='Is Array?' checked={propertyData.isArray} onChange={val => setPropertyData({ ...propertyData, isArray: val })} />
+          </>
+        )}
 
         {
           ((propertyData.type === 'string') && (!propertyData.isArray)) && (
@@ -98,9 +103,9 @@ const EditTypeModal: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
               <div>
                 {propertyData.options?.map((item) => {
                   return (
-                    <div key={item} onClick={() => openModal('edit-string', ({ id }) => (
+                    <div key={item} onClick={() => openModal('edit-option', ({ id }) => (
                       <EditStringModal id={id} data={item}
-                        title='Edit Property Name'
+                        title='Edit Option'
                         onSave={(data) => {
                           let newOptions = [ ...propertyData.options || [] ]
 
@@ -109,6 +114,11 @@ const EditTypeModal: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
                           if (index === -1) return
 
                           newOptions[index] = data
+
+                          setPropertyData({ ...propertyData, options: newOptions })
+                        }}
+                        onDelete={() => {
+                          let newOptions = [ ...propertyData.options || [] ].filter(o => o !== item)
 
                           setPropertyData({ ...propertyData, options: newOptions })
                         }}

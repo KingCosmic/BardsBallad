@@ -19,10 +19,7 @@ export const dataTypeSchema = z.object({
 
 const pageDataSchema = z.object({
   name: z.string(),
-  blueprint: z.object({
-    nodes: z.array(z.any()),
-    edges: z.array(z.any())
-  }),
+  script: z.string(),
   lexical: z.string(),
   state: z.array(z.object({
     name: z.string(),
@@ -42,10 +39,7 @@ export const systemTypeSchema = z.object({
 const actionSchema = z.object({
   name: z.string(),
   description: z.string(),
-  blueprint: z.object({
-    nodes: z.array(z.any()),
-    edges: z.array(z.any())
-  })
+  script: z.any()
 })
 
 const systemDataSchema = z.object({

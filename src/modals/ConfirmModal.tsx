@@ -34,6 +34,7 @@ const ConfirmModal: React.FC<Props> = ({ id, title, type, message, onConfirm }) 
 
       <ModalFooter>
         <Button
+          // @ts-ignore
           color={type}
           onClick={() => {
             onConfirm();

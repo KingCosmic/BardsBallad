@@ -1,5 +1,5 @@
 import { useNode } from '@craftjs/core'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { updateParams } from '@blueprints/utils'
 import AccordionGroup from '@components/AccordionGroup'
 import Accordion from '@components/Accordion'
@@ -9,7 +9,10 @@ import { openModal } from '@state/modals'
 import { useLocalState } from '@designer/hooks/useLocalState'
 import Button from '@components/inputs/Button'
 import globalStyles from '@designer/styles'
-import BlueprintEditor from '@modals/BlueprintEditor'
+import ScriptEditor from '@modals/ScriptEditor'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { editorState } from '@state/editor'
+import { SystemData, SystemType } from '@storage/schemas/system'
 
 export function SelectSettings() {
   const { id, actions: { setProp },
@@ -46,17 +49,19 @@ export function SelectSettings() {
   const localParams = useLocalState(id)
   useEffect(() => {
     setProp((props: any) => {
-      props.getValue = {
-        edges: props.getValue.edges,
-        nodes: updateParams(props.getValue.nodes, localParams, { name: 'value', type: (type === 'text') ? 'string' : 'number', isArray: false })
-      }
-
-      props.onChange = {
-        edges: props.onChange.edges,
-        nodes: updateParams(props.onChange.nodes, [ ...localParams, { name: 'field value', type: (type === 'text') ? 'string' : 'number', isArray: false } ])
-      }
+      props.local = [
+        { name: 'inputValue', type: (type === 'text') ? 'string' : 'number', isArray: false }
+      ]
     })
-  }, [localParams])
+  }, [type])
+
+  const editor = editorState.useValue()
+  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
+
+  const types: SystemType[] = useMemo(() => [
+    versionEdits?.data.defaultCharacterData._type,
+    ...(versionEdits?.data.types ?? [])
+  ], [versionEdits])
 
   return (
     <AccordionGroup>
@@ -68,11 +73,6 @@ export function SelectSettings() {
         <Select id='input-type' label='Type' value={type} onChange={t => {
           setProp((props: any) => {
             props.type = t
-
-            props.getValue.nodes = updateParams(props.getValue.nodes, localParams, { name: 'value', type: (t === 'text') ? 'string' : 'number', isArray: false })
-            props.onChange.nodes = updateParams(props.onChange.nodes, [ ...localParams, { name: 'field value', type: (t === 'text') ? 'string' : 'number', isArray: false } ])
-
-            return props
           })
         }}>
           {['text', 'number'].map(type => (<option key={type} value={type}>{type}</option>))}
@@ -85,21 +85,25 @@ export function SelectSettings() {
           </>
         )}
 
-        <Button color='light' onClick={() => 
-          openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={getValue} onSave={(bp) => {
-              setProp((props: any) => props.getValue = bp)
-            }} />
-          ))}>
+        <Button color='light' onClick={() => {
+          openModal('script', ({ id }) => (
+            <ScriptEditor id={id} code={getValue}
+              onSave={({ result }) => setProp((props: any) => props.getValue = result)}
+              globals={localParams} expectedType='string' types={types}
+            />
+          ))
+        }}>
           Get Value Blueprint
         </Button>
 
-        <Button color='light' onClick={() => 
-          openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={onChange} onSave={(bp) => {
-              setProp((props: any) => props.onChange = bp)
-            }} />
-          ))}>
+        <Button color='light' onClick={() => {
+          openModal('script', ({ id }) => (
+            <ScriptEditor id={id} code={onChange}
+              onSave={({ result }) => setProp((props: any) => props.onChange = result)}
+              globals={localParams} expectedType='null' types={types}
+            />
+          ))
+        }}>
           onChange Blueprint
         </Button>
       </Accordion>

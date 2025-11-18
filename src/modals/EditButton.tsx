@@ -2,51 +2,60 @@ import { useEffect, useState } from 'react'
 
 import { BlueprintData } from '@/types/blueprint'
 
-import { openModal } from '@state/modals'
+import { closeModal, openModal } from '@state/modals'
 import Modal from '@components/Modal';
 import ModalHeader from '@components/Modal/Header';
 import ModalBody from '@components/Modal/Body';
 import ModalFooter from '@components/Modal/Footer';
 import TextInput from '@components/inputs/TextInput';
 import Button from '@components/inputs/Button';
-import BlueprintEditor from './BlueprintEditor';
+import ScriptEditor from './ScriptEditor';
+import { Script } from '@/types/script';
+import { SystemType } from '@storage/schemas/system';
 
 type Props = {
-  data: { name: string; icon: string; blueprint: BlueprintData } | null;
+  id: number;
+  data: { name: string; icon: string; script: Script } | null;
 
   isOpen: boolean;
-  requestClose(): void;
+  types: SystemType[];
+  globals: any[];
   onSave(newData: any): void;
   onDelete(): void;
 }
 
-function EditButtonModal({ data, isOpen, requestClose, onSave, onDelete }: Props) {
+function EditButtonModal({ id, types, globals, data, isOpen, onSave, onDelete }: Props) {
   const [name, setName] = useState('')
   const [icon, setIcon] = useState('')
-  const [blueprint, setBlueprint] = useState<BlueprintData>({ nodes: [], edges: [] })
+  const [script, setScript] = useState<Script>(data?.script || {
+    compiled: '',
+    isCorrect: true,
+    source: '',
+    blueprint: { nodes: [], edges: [] }
+  })
 
   useEffect(() => {
     if (!data) return
   
     setName(data.name)
     setIcon(data.icon)
-    setBlueprint(data.blueprint)
+    setScript(data.script)
   }, [data])
 
   return (
-    <Modal isOpen={isOpen} onClose={requestClose}>
-      <ModalHeader title='Edit Button State' onClose={requestClose} />
+    <Modal isOpen={isOpen} onClose={() => closeModal(id)}>
+      <ModalHeader title='Edit Button State' onClose={() => closeModal(id)} />
 
       <ModalBody>
         <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={name} onChange={(name) => setName(name)} isValid errorMessage='Names must be unique' />
 
         {/* TODO: Icon Select. */}
 
-        <p onClick={() =>
-          openModal('blueprint', ({ id }) => (
-            <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setBlueprint(bp)} />
+        <p onClick={() => {
+          openModal('script', ({ id }) => (
+            <ScriptEditor id={id} types={types} globals={globals} code={script} onSave={(script) => setScript(script.result)} expectedType='null' />
           ))
-        }>
+        }}>
           On Click Action
         </p>
 
@@ -55,12 +64,12 @@ function EditButtonModal({ data, isOpen, requestClose, onSave, onDelete }: Props
       <ModalFooter>
         <Button color='danger' onClick={() => {
           onDelete()
-          requestClose()
+          closeModal(id)
         }}>Delete</Button>
 
         <Button color='primary' onClick={() => {         
-          onSave({ name, icon, blueprint })
-          requestClose()
+          onSave({ name, icon, script })
+          closeModal(id)
         }}>Update</Button>
       </ModalFooter>
     </Modal>

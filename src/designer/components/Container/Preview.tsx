@@ -1,42 +1,55 @@
-import { PropsWithChildren, useCallback, useMemo, useRef } from 'react'
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { AddData, useLocalData } from '@designer/renderer/Context'
-import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { ContainerProps } from './Editor'
 import styles from './styles'
 import globalStyles from '@designer/styles'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
+import { useScriptRunner } from '@components/ScriptRunnerContext'
 
 export default (props: PropsWithChildren<ContainerProps>) => {
   const localData = useLocalData()
+  const { isReady, runScript } = useScriptRunner()
 
-  const items: any[] = useMemo(() => {
-    const processor = new BlueprintProcessor(props.blueprint!)
+  const state = useMemo(() => ({
+    ...props.state,
+    ...localData,
+  }), [localData, props.state])
 
-    const output = processor.processBlueprint(localData, props.state!, () => {}) ?? []
+  const [items, setItems] = useState<any[]>([])
+  const [isVisible, setIsVisible] = useState(true)
 
-    return output
-  }, [localData, props.state])
+  useEffect(() => {
+    async function rc() {
+      if (!props.script!.isCorrect || !props.isList || !isReady) return setItems([])
 
-  const isVisible = useMemo(() => {
-    if (!props.dynamicVisibility) return props.isVisible
+      runScript<any[]>(props.script!.compiled, state, props.updateState!).then(output => setItems(output.result ?? []))
+    }
 
-    const processor = new BlueprintProcessor(props.visibilityBlueprint!)
+    rc()
+  }, [state, props.script, props.isList, props.updateState])
 
-    const isVisible = processor.processBlueprint(localData, props.state!, () => {}) || false
+  useEffect(() => {
+    async function rc() {
+      if (!props.dynamicVisibility || !isReady) return setIsVisible(props.isVisible!)
 
-    return isVisible
-  }, [localData, props.state])
+      if (!props.visibilityScript!.isCorrect) return setIsVisible(props.isVisible!)
+
+      const output = await runScript<boolean>(props.visibilityScript!.compiled, state, props.updateState!)
+
+      setIsVisible(output.result ?? props.isVisible!)
+    }
+
+    rc()
+  }, [state, props.isVisible, props.visibilityScript, props.updateState])
 
   const onClick = useCallback(() => {
-    if (!props.isInteractive) return
-
-    const processor = new BlueprintProcessor(props.onPress!)
-
-    processor.processBlueprint(localData, props.state!, props.updateState!)
-  }, [props.onPress, localData, props.state, props.updateState])
+    if (!props.isInteractive || !props.onPress!.isCorrect || !isReady) return
+ 
+    runScript(props.onPress!.compiled, state, props.updateState!)
+  }, [state, props.isInteractive, props.onPress, props.updateState])
 
   const backgroundClass = useMemo(() => styles[props.background!] ? styles[props.background!]?.background : '', [props.background])
   const borderClass = useMemo(() => styles[props.border!] ? styles[props.border!]?.border : '', [props.border])
@@ -79,21 +92,23 @@ export default (props: PropsWithChildren<ContainerProps>) => {
         marginBottom: globalStyles.spacing[props.marginBottom!],
         marginLeft: globalStyles.spacing[props.marginLeft!],
 
-        paddingTop: globalStyles.spacing[props.paddingTop!],
-        paddingRight: globalStyles.spacing[props.paddingRight!],
-        paddingBottom: globalStyles.spacing[props.paddingBottom!],
-        paddingLeft: globalStyles.spacing[props.paddingLeft!],
+        ...(props.isList ? {} : ({
+          paddingTop: globalStyles.spacing[props.paddingTop!],
+          paddingRight: globalStyles.spacing[props.paddingRight!],
+          paddingBottom: globalStyles.spacing[props.paddingBottom!],
+          paddingLeft: globalStyles.spacing[props.paddingLeft!],
+        })),
 
         // TODO: update this to allow for row lists.
         // TODO: 8 needs to be update to be the gap size in pxs.
         height: props.isList ? `${rowVirtualizer.getTotalSize() + items.length * 8}px` : globalStyles.size[props.height!],
-        width: props.isList ? '100%' : globalStyles.size[props.width!],
+        width: props.isList ? '' : globalStyles.size[props.width!],
         maxHeight: globalStyles.size[props.maxHeight!],
         maxWidth: globalStyles.size[props.maxWidth!],
         minHeight: globalStyles.size[props.minHeight!],
         minWidth: globalStyles.size[props.minWidth!],
       }}
-      className={`${backgroundClass} ${borderClass} ${hoverClass}`}
+      className={`${backgroundClass} ${borderClass} ${hoverClass} rounded-lg`}
       onClick={onClick}
     >
       {
@@ -102,6 +117,11 @@ export default (props: PropsWithChildren<ContainerProps>) => {
             position: 'absolute',
             top: 0,
             left: 0,
+
+            paddingTop: globalStyles.spacing[props.paddingTop!],
+            paddingRight: globalStyles.spacing[props.paddingRight!],
+            paddingBottom: globalStyles.spacing[props.paddingBottom!],
+            paddingLeft: globalStyles.spacing[props.paddingLeft!],
             width: '100%',
             transform: `translateY(${items[0]?.start ?? 8}px)`, // TODO: 8 needs to be converted to the containers margin top / padding top.
             display: props.display,

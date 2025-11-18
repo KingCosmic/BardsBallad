@@ -12,7 +12,7 @@ export default async (data: SystemData, pageType: 'character' | 'builder' | 'mod
 
     let data: PageData = {
       name: 'New Page',
-      blueprint: { nodes: getDefaultNodes(), edges: [] },
+      script: '',
       lexical: '',
       state: []
     }

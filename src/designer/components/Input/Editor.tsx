@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useNode, UserComponentConfig } from '@craftjs/core'
 
 import { getDefaultNodes } from '@blueprints/utils'
@@ -8,6 +7,7 @@ import globalStyles from '@designer/styles'
 import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 import { BlueprintData } from '@/types/blueprint'
 import TextInput from '@components/inputs/TextInput'
+import { Script } from '@/types/script'
 
 export type InputProps = {
   /* props that are only used in preview when processing blueprints */
@@ -21,8 +21,8 @@ export type InputProps = {
   minNumber?: number;
   maxNumber?: number;
 
-  getValue?: BlueprintData;
-  onChange?: BlueprintData;
+  getValue?: Script;
+  onChange?: Script;
 
   marginTop?: string;
   marginRight?: string;
@@ -73,18 +73,16 @@ const CraftSettings: Partial<UserComponentConfig<InputProps>> = {
     maxNumber: 100,
 
     getValue: {
-      nodes: getDefaultNodes([], { name: 'value', type: 'string', isArray: false }),
-      edges: [],
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
     onChange: {
-      nodes: getDefaultNodes([
-        {
-          name: 'field value',
-          type: 'string',
-          isArray: false
-        }
-      ]),
-      edges: [],
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
 
     marginTop: '0',

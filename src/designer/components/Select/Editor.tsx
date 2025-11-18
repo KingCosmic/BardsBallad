@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 import { useNode, UserComponentConfig } from '@craftjs/core'
 
-import { getDefaultNodes } from '@blueprints/utils'
 import { SelectSettings } from './Settings'
 
 import globalStyles from '@designer/styles'
 import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 import Select from '@components/inputs/Select'
-import { BlueprintData } from '@/types/blueprint'
+import { Script } from '@/types/script'
 
 export type SelectProps = {
   /* props that are only used in preview when processing blueprints */
@@ -18,9 +17,9 @@ export type SelectProps = {
   label?: string;
 
   dynamicOptions?: boolean;
-  optionsBlueprint?: BlueprintData;
+  optionsScript?: Script;
   options?: [];
-  onChange?: BlueprintData;
+  onChange?: Script;
 
   marginTop?: string;
   marginRight?: string;
@@ -67,20 +66,18 @@ const CraftSettings: Partial<UserComponentConfig<SelectProps>> = {
     label: 'Select',
 
     dynamicOptions: false,
-    optionsBlueprint: {
-      nodes: getDefaultNodes([], { name: 'options', type: 'any', isArray: true }),
-      edges: []
+    optionsScript: {
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
     options: [],
     onChange: {
-      nodes: getDefaultNodes([
-        {
-          name: 'selectedValue',
-          type: 'object',
-          isArray: false
-        }
-      ]),
-      edges: [],
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
 
     marginTop: '0',

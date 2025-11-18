@@ -44,13 +44,17 @@ function EditSystemData({ id, types, onDelete, onSave, data }: ModalProps) {
   useEffect(() => {
     const dc = data ? data : { name: '', typeData: { type: 'string', useTextArea: false, isArray: false, options: [], outputType: 'none', isOutputAnArray: false, inputs: [] }, data: 'test' }
 
+    if (
+      dc.name === dataCopy.name
+      &&
+      dc.typeData.type === type?.name
+    ) return
+
     setDataCopy(dc)
     setType(types.find(type => type.name === dc.typeData.type) || null)
   }, [data, setDataCopy, setType])
 
   const requestClose = useCallback(() => closeModal(id), [id])
-
-  if (!data) return <></>
 
   return (
     <Modal isOpen onClose={requestClose}>
@@ -172,14 +176,30 @@ function ArrayEdit({ types, title, data, type, onAdd, onChange, onDelete }: { ty
   return (
     <div>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <p>{title}</p>
-
-        <p onClick={() => onAdd(generateObject(types, type))}>Add</p>
+        <p>Items</p>
       </div>
 
       <p style={{ height: 1, width: '100%', backgroundColor: 'white', marginTop: 4, marginBottom: 4 }} />
 
       <div className='flex flex-col gap-1 mt-3'>
+        <div
+          className='fantasy-add-gradient border-2 border-dashed border-fantasy-accent/30 rounded-lg p-3 text-center cursor-pointer transition-all duration-300 flex flex-col justify-center items-center hover:border-fantasy-accent/60 hover:fantasy-add-gradient hover:-translate-y-1'
+          onClick={() => {
+            const newItem = generateObject(types, type)
+
+            openModal('edit-object', ({ id }) => (
+              <EditObject
+                id={id}
+                title='Edit Item'
+                types={types}
+                onSave={(newItemData) => onAdd(newItemData)}
+                data={newItem}
+              />
+            ))
+          }}
+        >
+          <div className="text-fantasy-accent/80 text-base font-medium">Add Item</div>
+        </div>
         {data.map((item) => {
           return (
             <div key={item.name}

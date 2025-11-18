@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { updateParams } from '@blueprints/utils'
+import { useMemo, useState } from 'react'
 import Accordion from '@components/Accordion'
 import AccordionGroup from '@components/AccordionGroup'
 import Button from '@components/inputs/Button'
@@ -11,19 +10,22 @@ import { useLocalState } from '@designer/hooks/useLocalState'
 import Select from '@components/inputs/Select'
 import styles from './styles'
 import globalStyles from '@designer/styles'
-import BlueprintEditor from '@modals/BlueprintEditor'
+import ScriptEditor from '@modals/ScriptEditor'
+import { editorState } from '@state/editor'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { SystemData, SystemType } from '@storage/schemas/system'
 
 export default function TextSettings() {
   const { id, actions: { setProp },
-    useBlueprintValue, blueprint,
+    useScriptValue, script,
     text, color,
     fontSize, fontWeight,
     textAlign, textDecoration, textTransform,
     marginTop, marginRight, marginBottom, marginLeft,
     paddingTop, paddingRight, paddingBottom, paddingLeft,
   } = useNode(node => ({
-    useBlueprintValue: node.data.props.useBlueprintValue || false,
-    blueprint: node.data.props.blueprint,
+    useScriptValue: node.data.props.useScriptValue || false,
+    script: node.data.props.script,
 
     text: node.data.props.text || '',
     color: node.data.props.color,
@@ -49,31 +51,32 @@ export default function TextSettings() {
   const [openAccordion, setOpenAccordion] = useState(-1)
 
   const localParams = useLocalState(id)
-  useEffect(() => {
-    setProp((props: any) => {
-      props.blueprint = {
-        edges: props.blueprint.edges,
-        nodes: updateParams(props.blueprint.nodes, localParams)
-      }
-    
-      return props
-    })
-  }, [])
+
+  const editor = editorState.useValue()
+  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
+
+  const types: SystemType[] = useMemo(() => [
+    versionEdits?.data.defaultCharacterData._type,
+    ...(versionEdits?.data.types ?? [])
+  ], [versionEdits])
   
   return (
     <AccordionGroup>
       <Accordion id='content' title='Content' isOpen={openAccordion === 0} toggleState={shouldOpen => setOpenAccordion(shouldOpen ? 0 : -1)}>
-        <Checkbox id='use-blueprint-value' label='Use Blueprint Value?' checked={useBlueprintValue} onChange={(value) => setProp((props: any) => props.useBlueprintValue = value)} />
+        <Checkbox id='use-blueprint-value' label='Use Script Value?' checked={useScriptValue} onChange={(value) => setProp((props: any) => props.useScriptValue = value)} />
 
         {
-          useBlueprintValue ? (
-            <Button color='primary' onClick={() =>
-              openModal('blueprint', ({ id }) => (
-                <BlueprintEditor id={id} data={blueprint} onSave={(bp) => {
-                  setProp((props: any) => props.blueprint = bp)
-                }} />
-              ))}>
-              Edit Blueprint Value
+          useScriptValue ? (
+            <Button color='primary' onClick={() => {
+              // provide both the state and the local params passed down by the parent components
+              openModal('script', ({ id }) => (
+                <ScriptEditor id={id} code={script} expectedType='string'
+                  onSave={({ result }) => setProp((props: any) => props.script = result)}
+                  globals={localParams} types={types}
+                />
+              ))
+            }}>
+              Edit Script Value
             </Button>
           ) : (
             <TextInput id='text' label='Text' placeholder='lorem ipsum' value={text} onChange={val => setProp((props: any) => props.text = val)} isValid errorMessage='' />

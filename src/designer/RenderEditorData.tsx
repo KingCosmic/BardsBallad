@@ -13,7 +13,7 @@ import { Character } from '@storage/schemas/character'
 type Props = {
   data: any
   style?: any
-  state: { page: PageData, character: Character, system: SystemData }
+  state: { page: PageData, character: Record<string, any>, system: Record<string, any> }
   updateState: any
 }
 
@@ -32,7 +32,7 @@ const RenderEditorData: React.FC<Props> = ({ data, style, state, updateState }) 
 type RendererProps = {
   data: any
   node: any
-  state: { page: PageData, character: Character, system: SystemData }
+  state: { page: PageData, character: Record<string, any>, system: Record<string, any> }
   updateState: any
 }
 
