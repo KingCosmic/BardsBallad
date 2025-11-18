@@ -1,31 +1,34 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocalData } from '@designer/renderer/Context'
 import { TextProps } from './Editor'
 
 import styles from './styles'
 import globalStyles from '@designer/styles'
-import runCode from '@utils/verse/runCode'
+import { useScriptRunner } from '@components/ScriptRunnerContext'
 
 export default (props: TextProps) => {
   const localData = useLocalData()
+  const { isReady, runScript } = useScriptRunner()
 
   const [text, setText] = useState('SE')
 
+  const state = useMemo(() => ({
+    ...props.state,
+    ...localData,
+  }), [localData, props.state])
+
   useEffect(() => {
-    async function rc() {
+    function rc() {
+      if (!isReady) return
       if (!props.useScriptValue) return setText(props.text!)
 
       if (!props.script.isCorrect) return setText('SE')
 
-      const output = await runCode<string>(props.script.compiled, localData);
-
-      console.log(output)
-
-      setText(output.result ?? '')
+      runScript<string>(props.script.compiled, state, props.updateState!).then(output => setText(output.result ?? ''));
     }
 
     rc()
-  }, [props.script, localData, props.useScriptValue, props.text])
+  }, [props.script, state, props.useScriptValue, props.text, props.updateState])
 
   const colorClass = useMemo(() => styles.colors[props.color!] ? styles.colors[props.color!]?.text : '', [props.color])
   const weightClass = useMemo(() => styles.weight[props.fontWeight!] ? styles.weight[props.fontWeight!] : '', [props.fontWeight])

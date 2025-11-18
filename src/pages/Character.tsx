@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { data, useParams } from 'react-router'
+import { useParams } from 'react-router'
 
 import RenderEditorData from '@designer/RenderEditorData'
 
@@ -12,7 +12,6 @@ import { useCharacter } from '@hooks/useCharacter'
 import lz from 'lzutf8'
 import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 import { deepEqual } from 'fast-equals'
-import { updateCharacterData } from '@storage/methods/characters'
 import { Character } from '@storage/schemas/character'
 
 import { DataType, type PageData, SystemData, SystemType } from '@storage/schemas/system'
@@ -20,8 +19,9 @@ import getVersionedResource from '@storage/methods/versionedresources/getVersion
 import CharacterSidebar from '@sidebars/Character'
 import { addToast } from '@state/toasts'
 import { DataPack } from '@storage/schemas/datapack'
-import { CompilerContext } from '@hooks/useCompiler'
-import { VerseScriptCompiler } from '@bardsballad/verse'
+import { ScriptRunnerProvider, useScriptRunner } from '@components/ScriptRunnerContext'
+import { updateCharacterData } from '@storage/methods/characters'
+import { useScriptTypes } from '@hooks/useScriptTypes'
 
 const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -30,19 +30,40 @@ const CharacterPage: React.FC = () => {
 
   const [system, setSystem] = useState<SystemData | null>(null)
 
-  const updateState = useCallback((state: BlueprintProcessorState) => {
+  const { setScriptTypes } = useScriptTypes()
+  useEffect(() => {
+    setScriptTypes([
+      // character data
+      system?.defaultCharacterData._type,
+      // system data
+      { name: 'SystemData', properties: system?.data.map(d => ({ key: d.name, typeData: d.typeData })) },
+      // "page data",
+      { name: 'PageData', properties: [] },
+      // all custom types.
+      ...(system?.types ?? [])
+    ])
+
+    return () => setScriptTypes([])
+  }, [system])
+
+  const updateState = useCallback((state: any) => {
+    // console.log(state)
     if (!character || !system) return
 
-    const index = state.system.pages.findIndex((c: any) => c.name === state.page.name)
+    // const index = state.system.pages.findIndex((c: any) => c.name === state.page.name)
 
-    if (
-      deepEqual(character, state.character) &&
-      deepEqual(system, state.system) &&
-      deepEqual(state.system.pages[index], state.page)
-    ) return
+    if (JSON.stringify(character.data) !== JSON.stringify(state.character)) {
+      updateCharacterData(character.local_id, state.character)
+    }
 
-    updateCharacterData(character.local_id, state.character.data)
-    setSystem({ ...state.system, pages: state.system.pages.map((c: any) => c.name === state.page.name ? state.page : c )})
+    // if (
+    //   deepEqual(character, state.character) &&
+    //   deepEqual(system, state.system) &&
+    //   deepEqual(state.system.pages[index], state.page)
+    // ) return
+
+    // updateCharacterData(character.local_id, state.character.data)
+    // setSystem({ ...state.system, pages: state.system.pages.map((c: any) => c.name === state.page.name ? state.page : c )})
   }, [character, system])
 
   useEffect(() => {
@@ -88,41 +109,41 @@ const CharacterPage: React.FC = () => {
     loadSystem()
   }, [character])
 
-  const compiler = useMemo(() => {
-    return new VerseScriptCompiler()
-  }, [])
-
   if (!character) return <p id='loading-text' className='text-center text-2xl'>loading character data...</p>
   if (!system) return <p id='loading-text' className='text-center text-2xl'>loading system data...</p>
 
   return (
-    <div className='flex flex-col h-full w-full'>
-      <p id='loading-text' className='hidden'>loading...</p>
+    <ScriptRunnerProvider>
+      <div className='flex flex-col h-full w-full'>
+        <Header title={character.name} subtitle={character.slug} hasSidebar />
 
-      <Header title={character.name} subtitle='Chaotic / Neutral' hasSidebar />
+        <div className='lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
 
-      <div className='lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
+          <div className='relative xl:p-4 w-full h-full flex flex-col flex-grow overflow-hidden'>
+            <div className='overflow-y-scroll max-h-full'>
+              <RenderTab className='first-tab-selector' system={system} character={character} updateState={updateState} />
+            </div>
+          </div>
 
-        <div className='relative xl:p-4 w-full h-full flex flex-col flex-grow overflow-hidden'>
-          <div className='overflow-y-scroll max-h-full'>
-            <RenderTab className='first-tab-selector' system={system} character={character} updateState={updateState} />
+          <div className='relative xl:p-4 hidden flex-col xl:flex flex-grow overflow-hidden'>
+            <div className='overflow-y-scroll max-h-full'>
+              <RenderTab className='second-tab-selector' system={system} character={character} updateState={updateState} />
+            </div>
           </div>
         </div>
 
-        <div className='relative xl:p-4 hidden flex-col xl:flex flex-grow overflow-hidden'>
-          <div className='overflow-y-scroll max-h-full'>
-            <RenderTab className='second-tab-selector' system={system} character={character} updateState={updateState} />
-          </div>
-        </div>
+        <CharacterSidebar actions={system.actions} system={system} character={character} updateState={updateState} />
       </div>
-
-      <CharacterSidebar actions={system.actions} system={system} character={character} updateState={updateState} />
-    </div>
+    </ScriptRunnerProvider>
   )
 }
 
-const RenderTab = ({ system, character, updateState, className }: { system: SystemData, character: Character, updateState(state: BlueprintProcessorState): void, className: string }) => {
+const RenderTab = memo(({ system, character, updateState, className }: { system: SystemData, character: Character, updateState(state: BlueprintProcessorState): void, className: string }) => {
   const [tab, setTab] = useState(system.pages[0].name)
+
+  const { isReady } = useScriptRunner()
+
+  if (!isReady) return <></>
 
   return (
     <>
@@ -137,7 +158,7 @@ const RenderTab = ({ system, character, updateState, className }: { system: Syst
       }
     </>
   )
-}
+})
 
 function RenderPage({ page, character, system, currentTab, updateState }: { page: PageData, character: Character, system: SystemData, currentTab: string, updateState(state: BlueprintProcessorState): void }) {
   const data = useMemo(() => {
@@ -146,10 +167,18 @@ function RenderPage({ page, character, system, currentTab, updateState }: { page
     return JSON.parse(lz.decompress(lz.decodeBase64(page.lexical)))
   }, [page.lexical])
 
+  const state = useMemo(() => {
+    let sys: Record<string, any> = {}
+
+    system.data.forEach(d => sys[d.name] = d.data)
+
+    return { character: character.data, system: sys, page }
+  }, [character, system, page])
+
   if ((currentTab !== page.name)) return <></>
 
   return (
-    <RenderEditorData data={data} state={{ character, system, page }} updateState={updateState} />
+    <RenderEditorData data={data} state={state} updateState={updateState} />
   )
 }
 

@@ -81,6 +81,7 @@ function CharacterCreatorModal({ id }: Props) {
     user_id: 'none',
   
     name: '',
+    slug: '',
     data: version?.data.defaultCharacterData ?? {},
 
     system: { local_id: '', version_id: '' },
@@ -158,6 +159,7 @@ function CharacterCreatorModal({ id }: Props) {
         {tab === 0 && (
           <>
             <TextInput id='character-name' label='Character Name' placeholder='Aliza Cartwight' value={characterData.name} onChange={(name) => setCharacterData({ ...characterData, name })} isValid={(!characters.find(c => c.name === characterData.name))} errorMessage='Names must be unique' />
+              <TextInput id='slug' label='Character Motto' placeholder="They will all pay." value={characterData.slug} onChange={(slug) => setCharacterData({ ...characterData, slug })} isValid errorMessage='' />
 
             <Select id='character-system' label='Tabletop System' value={system.item_id} onChange={(local_id) => {
               const sys = systems.find(s => s.item_id === local_id)
@@ -243,7 +245,7 @@ function CharacterCreatorModal({ id }: Props) {
         )} */}
 
         <Button id='create-character-button' color='primary' disabled={characterData.name.length === 0} onClick={async () => {
-          await createCharacter(characterData.name, characterData.data, characterData.system, activePacks.map(pack => ({ pack_id: pack.reference_id, version_id: pack.local_id })))
+          await createCharacter(characterData.name, characterData.slug, characterData.data, characterData.system, activePacks.map(pack => ({ pack_id: pack.reference_id, version_id: pack.local_id })))
           setSystem(systems[0])
           requestClose()
           posthog.capture('character_created', { character_name: characterData.name })

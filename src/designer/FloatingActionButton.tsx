@@ -17,7 +17,8 @@ import runCode from '@utils/verse/runCode'
 import { useLocalState } from './hooks/useLocalState'
 import { useVersionEdits } from '@hooks/useVersionEdits'
 import { editorState } from '@state/editor'
-import { SystemData } from '@storage/schemas/system'
+import { SystemData, SystemType } from '@storage/schemas/system'
+import { useScriptRunner } from '@components/ScriptRunnerContext'
 
 type Button = {
   name: string;
@@ -40,27 +41,35 @@ type FABProps = {
   calculateLocalState?: any;
 }
 
-function FAB({ buttons }: FABProps) {
+function FAB({ buttons, isList }: FABProps) {
   const { connectors: { connect, drag } } = useNode()
+
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     // @ts-ignore
-    <FloatingActionButton ref={ref => connect(drag(ref!))} buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => {} }))} isOpen={true} />
+    <FloatingActionButton ref={ref => connect(drag(ref!))} buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => {} }))} isOpen={isOpen} onClick={() => isList ? setIsOpen(!isOpen) : false} />
   )
 }
 
 export function FABPreview({ script, isList, buttons, state, updateState }: FABProps) {
   const localData = useLocalData()
+  const { isReady, runScript } = useScriptRunner()
 
   const [isOpen, setIsOpen] = useState(false)
+
+  const s = useMemo(() => ({
+    ...state,
+    ...localData,
+  }), [localData, state])
 
   const onClick = useCallback(() => {
     if (isList) return setIsOpen(!isOpen)
 
-    if (!script.isCorrect) return
+    if (!script.isCorrect || !isReady) return
 
-    runCode(script.compiled, localData)
-  }, [script, localData, state, updateState, isOpen, isList])
+    runScript(script.compiled, s, updateState!)
+  }, [script, s, updateState, isOpen, isList, updateState])
 
   return (
     <FloatingActionButton
@@ -69,9 +78,9 @@ export function FABPreview({ script, isList, buttons, state, updateState }: FABP
       buttons={buttons?.map(btn => ({
         name: btn.name, icon: btn.icon,
         onClick: () => {
-          if (!btn.script.isCorrect) return
+          if (!btn.script.isCorrect || !isReady) return
 
-          runCode(btn.script.compiled, localData)
+          runScript(btn.script.compiled, s, updateState!)
         }
       }))}
     />
@@ -85,14 +94,15 @@ function FABSettings() {
     script: node.data.props.script
   }))
 
-  const [editData, setEditData] = useState<any | null>(null)
-
   const localParams = useLocalState(id)
 
   const editor = editorState.useValue()
   const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
-  const types = useMemo(() => versionEdits?.data.types ?? [], [versionEdits])
+  const types: SystemType[] = useMemo(() => [
+    versionEdits?.data.defaultCharacterData._type,
+    ...(versionEdits?.data.types ?? [])
+  ], [versionEdits])
 
   return (
     <div>
@@ -110,7 +120,7 @@ function FABSettings() {
                   onClick={() => setProp((props: any) => {
                     if (!props.buttons.find((b: Button) => b.name === 'new button'))
 
-                    props.buttons.push({ name: 'new button', icon: '', blueprint: { nodes: getDefaultNodes(), edges: [] } })
+                    props.buttons.push({ name: 'new button', icon: '', script: { compiled: '', source: '', isCorrect: true, returnType: 'null', blueprint: { nodes: getDefaultNodes(), edges: [] } } })
 
                     return props
                   })}
@@ -139,21 +149,26 @@ function FABSettings() {
 
             {
               buttons.map((button: Button) => (
-                <p key={button.name} onClick={() => setEditData(button)}>
+                <p key={button.name} onClick={() => {
+                  openModal('button', ({ id }) => (
+                    <EditButtonModal id={id} data={button} isOpen={true}
+                      types={types}
+                      globals={localParams}
+                      onSave={(newButton) => setProp((props: any) => {
+                      for (let i = 0; i < props.buttons.length; i++) {
+                        if (props.buttons[i].name !== button.name) continue
+
+                        props.buttons[i] = newButton
+                      }
+
+                      return props
+                    })} onDelete={() => setProp((props: any) => props.buttons = props.buttons.filter((b: any) => b.name !== button.name))} />
+                  ))
+                }}>
                   {button.name}
                 </p>
               ))
             }
-
-            <EditButtonModal data={editData} isOpen={editData !== null} requestClose={() => setEditData(null)} onSave={(newButton) => setProp((props: any) => {
-              for (let i = 0; i < props.buttons.length; i++) {
-                if (props.buttons[i].name !== editData!.name) continue
-
-                props.buttons[i] = newButton
-              }
-
-              return props
-            })} onDelete={() => setProp((props: any) => props.buttons = props.buttons.filter((b: any) => b.name !== editData!.name))} />
           </>
         ) : (
           <p onClick={() => {

@@ -1,52 +1,57 @@
 import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { AddData, useLocalData } from '@designer/renderer/Context'
-import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { ContainerProps } from './Editor'
 import styles from './styles'
 import globalStyles from '@designer/styles'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
-import runCode from '@utils/verse/runCode'
+import { useScriptRunner } from '@components/ScriptRunnerContext'
 
 export default (props: PropsWithChildren<ContainerProps>) => {
   const localData = useLocalData()
+  const { isReady, runScript } = useScriptRunner()
+
+  const state = useMemo(() => ({
+    ...props.state,
+    ...localData,
+  }), [localData, props.state])
 
   const [items, setItems] = useState<any[]>([])
   const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
     async function rc() {
-      if (!props.script.isCorrect) return setItems([])
-    
-      const output = await runCode<any[]>(props.script.compiled, localData)
+      console.log(props.script.isCorrect, props.isList, isReady)
+      console.log(props.script.source)
+      if (!props.script.isCorrect || !props.isList || !isReady) return setItems([])
 
-      setItems(output.result ?? [])
+      runScript<any[]>(props.script.compiled, state, props.updateState!).then(output => setItems(output.result ?? []))
     }
 
     rc()
-  }, [localData, props.state])
+  }, [state, props.script, props.isList, props.updateState])
 
   useEffect(() => {
     async function rc() {
-      if (!props.dynamicVisibility) return setIsVisible(props.isVisible!)
+      if (!props.dynamicVisibility || !isReady) return setIsVisible(props.isVisible!)
 
       if (!props.visibilityScript.isCorrect) return setIsVisible(props.isVisible!)
 
-      const output = await runCode<boolean>(props.visibilityScript.compiled, localData)
+      const output = await runScript<boolean>(props.visibilityScript.compiled, state, props.updateState!)
 
       setIsVisible(output.result ?? props.isVisible!)
     }
 
     rc()
-  }, [])
+  }, [state, props.isVisible, props.visibilityScript, props.updateState])
 
   const onClick = useCallback(() => {
-    if (!props.isInteractive || !props.onPress.isCorrect) return
-
-    runCode(props.onPress.compiled, localData)
-  }, [props.onPress, localData, props.state, props.updateState])
+    if (!props.isInteractive || !props.onPress.isCorrect || !isReady) return
+ 
+    runScript(props.onPress.compiled, state, props.updateState!)
+  }, [state, props.isInteractive, props.onPress, props.updateState])
 
   const backgroundClass = useMemo(() => styles[props.background!] ? styles[props.background!]?.background : '', [props.background])
   const borderClass = useMemo(() => styles[props.border!] ? styles[props.border!]?.border : '', [props.border])

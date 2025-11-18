@@ -15,7 +15,7 @@ import globalStyles from '@designer/styles'
 import ScriptEditor from '@modals/ScriptEditor'
 import { useVersionEdits } from '@hooks/useVersionEdits'
 import { editorState } from '@state/editor'
-import { SystemData } from '@storage/schemas/system'
+import { SystemData, SystemType } from '@storage/schemas/system'
 
 export function ContainerSettings() {
   const { id, actions: { setProp },
@@ -84,7 +84,16 @@ export function ContainerSettings() {
   const editor = editorState.useValue()
   const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
-  const types = useMemo(() => versionEdits?.data.types ?? [], [versionEdits])
+  const types: SystemType[] = useMemo(() => [
+    // character data
+    versionEdits?.data.defaultCharacterData._type,
+    // system data
+    { name: 'SystemData', properties: versionEdits?.data.data.map(d => ({ key: d.name, typeData: d.typeData })) },
+    // "page data",
+    { name: 'PageData', properties: [] },
+    // all custom types.
+    ...(versionEdits?.data.types ?? [])
+   ], [versionEdits])
 
   return (
     <AccordionGroup>
@@ -167,7 +176,7 @@ export function ContainerSettings() {
         <Button color='light' onClick={() => {
           openModal('script', ({ id }) => (
             <ScriptEditor id={id} code={onPress}
-              onSave={(script) => setProp((props: any) => props.onPress = script)}
+              onSave={(script) => setProp((props: any) => props.onPress = script.result)}
               globals={localParams} expectedType='null' types={types}
             />
           ))

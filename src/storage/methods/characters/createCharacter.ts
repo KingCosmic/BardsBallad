@@ -6,7 +6,7 @@ import { db } from '@/storage'
 import CharacterSchema from '@storage/schemas/character'
 import { addToast } from '@state/toasts'
 
-export default async (name: string, data: any, system: { local_id: string, version_id: string }, datapacks: { pack_id: string, version_id: string }[]) => {
+export default async (name: string, slug: string, data: any, system: { local_id: string, version_id: string }, datapacks: { pack_id: string, version_id: string }[]) => {
   try {
     const { user } = authState.get()
 
@@ -25,6 +25,7 @@ export default async (name: string, data: any, system: { local_id: string, versi
       user_id,
 
       name,
+      slug,
 
       data,
 

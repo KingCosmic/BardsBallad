@@ -9,7 +9,7 @@ import { Script } from '@/types/script';
 import { useLocalState } from './hooks/useLocalState';
 import { useVersionEdits } from '@hooks/useVersionEdits';
 import { editorState } from '@state/editor';
-import { SystemData } from '@storage/schemas/system';
+import { SystemData, SystemType } from '@storage/schemas/system';
 import { useMemo } from 'react';
 
 type SearchbarProps = {
@@ -44,7 +44,10 @@ function SearchbarSettings() {
   const editor = editorState.useValue()
   const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
-  const types = useMemo(() => versionEdits?.data.types ?? [], [versionEdits])
+  const types: SystemType[] = useMemo(() => [
+    versionEdits?.data.defaultCharacterData._type,
+    ...(versionEdits?.data.types ?? [])
+  ], [versionEdits])
 
   return (
     <>

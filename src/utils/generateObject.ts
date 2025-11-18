@@ -6,9 +6,7 @@ export default function generateObject(types: SystemType[], typeDef: SystemType 
   if (typeof typeDef === 'string') return getRandomDataFromType(types, { type: typeDef, useTextArea: false, isArray: false, options: [], isOutputAnArray: false, inputs: [], outputType: 'none', })
 
   let exampleData: { [key:string]: any } = {
-    _type: {
-      ...typeDef
-    }
+    _type: typeDef.name
   }
 
   for (let i = 0; i < typeDef.properties.length; i++) {

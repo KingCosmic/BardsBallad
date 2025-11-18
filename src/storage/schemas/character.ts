@@ -12,6 +12,7 @@ const characterSchema = z.object({
 
   // character name
   name: z.string(),
+  slug: z.string(),
 
   // all character data.
   data: z.object({}),

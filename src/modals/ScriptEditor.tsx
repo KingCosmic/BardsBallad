@@ -4,6 +4,7 @@ import ModalFooter from '@components/Modal/Footer';
 import ModalHeader from '@components/Modal/Header';
 
 import { useEffect, useRef, useState } from 'react';
+import { signal } from '@preact/signals-react'
 
 import * as monaco from 'monaco-editor';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
@@ -146,9 +147,51 @@ monaco.languages.setLanguageConfiguration('verse', {
   }
 });
 
-// Register autocomplete provider
+const typeSystem = signal<{
+  variables: Record<string, Type>,
+  functions: Record<string, {
+    returnType: Type,
+    parameters: Array<{ name: string, type: Type }>,
+    description?: string
+  }>
+}>({ variables: {}, functions: {} })
+
+// Helper function to resolve type from a chain like "config.api.url"
+function resolveType(chain: string) {
+  const parts = chain.split('.');
+  let current = typeSystem.value.variables[parts[0]];
+  
+  if (!current) return null;
+  
+  for (let i = 1; i < parts.length; i++) {
+    // Handle array element access (arrays give you their element type)
+    if (current.kind === 'array') {
+      current = current.elementType!
+      // Don't consume the part, as we're just unwrapping the array
+      continue;
+    }
+    
+    // if there's no properties that match this then just return the current
+    if (!current.properties || !current.properties[parts[i]]) {
+      return current;
+    }
+    
+    current = current.properties[parts[i]];
+  }
+  
+  return current;
+}
+
+// Register completion provider
 monaco.languages.registerCompletionItemProvider('verse', {
-  provideCompletionItems: (model: any, position: any) => {
+  provideCompletionItems: (model, position) => {
+    const textUntilPosition = model.getValueInRange({
+      startLineNumber: position.lineNumber,
+      startColumn: 1,
+      endLineNumber: position.lineNumber,
+      endColumn: position.column
+    });
+
     const word = model.getWordUntilPosition(position);
     const range = {
       startLineNumber: position.lineNumber,
@@ -156,169 +199,167 @@ monaco.languages.registerCompletionItemProvider('verse', {
       startColumn: word.startColumn,
       endColumn: word.endColumn
     };
+
+    // Match property access chains: "config.api.headers."
+    // Also handles array access: "users[0]."
+    const chainMatch = textUntilPosition.match(/([\w.]+(?:\[\d+\])?)\.\s*\w*$/);
     
-    const suggestions = [
-      // Keywords
-      {
-        label: 'fn',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'fn ${1:functionName}(${2:params}) -> ${3:ReturnType} {\n\t$0\n}',
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: 'Define a function',
+    if (chainMatch) {
+      // Remove array indices and split into parts
+      const chain = chainMatch[1].replace(/\[\d+\]/g, '');
+      const typeInfo = resolveType(chain);
+      
+      if (typeInfo) {
+        // If it's an array, show element type properties
+        if (typeInfo.kind === 'array' && typeInfo.elementType) {
+          return {
+            suggestions: Object.entries(typeInfo.elementType!.properties ?? {}).map(([key, value]) => ({
+              label: key,
+              kind: monaco.languages.CompletionItemKind.Property,
+              documentation: `Type: ${value.kind}`,
+              detail: value.kind,
+              insertText: key,
+              range: range
+            }))
+          };
+        }
+        
+        // If it's an object, show its properties
+        if (typeInfo.kind === 'object' && typeInfo.properties) {
+          return {
+            suggestions: Object.entries(typeInfo.properties).map(([key, value]) => ({
+              label: key,
+              kind: monaco.languages.CompletionItemKind.Property,
+              documentation: `Type: ${value.kind}`,
+              detail: value.kind === 'array' ? `${value.elementType?.name}[]` : value.name,
+              insertText: key,
+              range: range
+            }))
+          };
+        }
+        
+        // If it's an array of primitives, show array methods
+        if (typeInfo.kind === 'array') {
+          return {
+            suggestions: [
+              {
+                label: 'length',
+                kind: monaco.languages.CompletionItemKind.Property,
+                documentation: 'Array length',
+                detail: 'number',
+                insertText: 'length',
+                range: range
+              },
+              {
+                label: 'push',
+                kind: monaco.languages.CompletionItemKind.Method,
+                documentation: 'Add element to array',
+                insertText: 'push(${1})',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range: range
+              }
+            ]
+          };
+        }
+      }
+    }
+
+    // Root-level completions (no dot access)
+    const suggestions = Object.entries(typeSystem.value.variables).map(([name, info]) => {
+      let kind = monaco.languages.CompletionItemKind.Variable;
+      let detail: string = info.kind;
+      
+      if (info.kind === 'array') {
+        kind = monaco.languages.CompletionItemKind.Variable;
+        detail = `${info.elementType}[]`;
+      }
+      
+      return {
+        label: name,
+        kind: kind,
+        documentation: `Type: ${detail}`,
+        detail: detail,
+        insertText: name,
         range: range
-      },
-      {
-        label: 'if',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'if (${1:condition}) {\n\t$0\n}',
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: 'If statement',
-        range: range
-      },
-      {
-        label: 'else',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'else {\n\t$0\n}',
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: 'Else statement',
-        range: range
-      },
-      {
-        label: 'while',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'while (${1:condition}) {\n\t$0\n}',
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: 'While loop',
-        range: range
-      },
-      {
-        label: 'const',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'const ${1:name}: ${2:type} = ${3:value}',
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: 'Constant declaration',
-        range: range
-      },
-      {
-        label: 'let',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'let ${1:name}: ${2:type} = ${3:value}',
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: 'Variable declaration',
-        range: range
-      },
-      {
-        label: 'return',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'return ${1:value}',
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: 'Return statement',
-        range: range
-      },
-      // Types
-      {
-        label: 'string',
-        kind: monaco.languages.CompletionItemKind.TypeParameter,
-        insertText: 'string',
-        documentation: 'String type',
-        range: range
-      },
-      {
-        label: 'number',
-        kind: monaco.languages.CompletionItemKind.TypeParameter,
-        insertText: 'number',
-        documentation: 'Number type',
-        range: range
-      },
-      {
-        label: 'bool',
-        kind: monaco.languages.CompletionItemKind.TypeParameter,
-        insertText: 'bool',
-        documentation: 'Boolean type',
-        range: range
-      },
-      {
-        label: 'array',
-        kind: monaco.languages.CompletionItemKind.TypeParameter,
-        insertText: 'array',
-        documentation: 'Array type',
-        range: range
-      },
-      {
-        label: 'null',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'null',
-        documentation: 'Null value',
-        range: range
-      },
-      {
-        label: 'interface',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'interface ${1:Name} {\n\t$0\n}',
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: 'Interface definition',
-        range: range
-      },
-      // Common patterns
-      {
-        label: 'true',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'true',
-        documentation: 'Boolean true',
-        range: range
-      },
-      {
-        label: 'false',
-        kind: monaco.languages.CompletionItemKind.Keyword,
-        insertText: 'false',
-        documentation: 'Boolean false',
-        range: range
-      },
-    ];
-    
-    return { suggestions: suggestions };
-  }
+      };
+    });
+
+    // Add function completions to root-level suggestions
+    const functionSuggestions = Object.entries(typeSystem.value.functions).map(([name, info]) => ({
+      label: name,
+      kind: monaco.languages.CompletionItemKind.Function,
+      documentation: info.description || `Returns ${info.returnType.kind}`,
+      detail: `${info.returnType.kind} ${name}(${info.parameters.map(p => `${p.name}: ${p.type.kind}`).join(', ')})`,
+      insertText: `${name}(${info.parameters.map((p, i) => `\${${i + 1}:${p.name}}`).join(', ')})`,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      range: range
+    }));
+
+    return { suggestions: [...suggestions, ...functionSuggestions] };
+  },
+
+  // IMPORTANT: Trigger on dot character!
+  triggerCharacters: ['.']
 });
 
-// Register hover provider for documentation
+// Hover provider for nested access
 monaco.languages.registerHoverProvider('verse', {
-  provideHover: (model: any, position: any) => {
+  provideHover: (model, position) => {
     const word = model.getWordAtPosition(position);
-    if (!word) return null;
-    
-    const hoverDocs: Record<string, string> = {
-      'fn': 'Define a function with optional parameters and return type',
-      'if': 'Conditional statement',
-      'else': 'Alternative branch for if statement',
-      'while': 'Loop while condition is true',
-      'const': 'Declare a constant (immutable) variable',
-      'let': 'Declare a mutable variable',
-      'return': 'Return a value from a function',
-      'string': 'Text data type',
-      'number': 'Numeric data type',
-      'bool': 'Boolean data type (true/false)',
-      'array': 'Collection data type',
-      'null': 'Represents absence of value',
-      'interface': 'Define a structural type',
-    };
-    
-    const doc = hoverDocs[word.word];
-    if (doc) {
+    if (!word) return;
+
+    // Check if it's a function
+    const funcInfo = typeSystem.value.functions[word.word];
+    if (funcInfo) {
+      const params = funcInfo.parameters.map(p => `${p.name}: ${p.type.kind}`).join(', ');
       return {
-        range: new monaco.Range(
-          position.lineNumber,
-          word.startColumn,
-          position.lineNumber,
-          word.endColumn
-        ),
         contents: [
-          { value: `**${word.word}**` },
-          { value: doc }
+          { value: `**function ${word.word}**(${params}): \`${funcInfo.returnType.kind}\`` },
+          { value: funcInfo.description || 'No description available' }
         ]
       };
     }
+
+    // Get the full line to extract the chain
+    const line = model.getLineContent(position.lineNumber);
+    const beforeWord = line.substring(0, position.column - 1);
     
-    return null;
+    // Extract the full chain up to current position
+    const chainMatch = beforeWord.match(/([\w.]+(?:\[\d+\])?)$/);
+    
+    if (chainMatch) {
+      const chain = chainMatch[1].replace(/\[\d+\]/g, '');
+      const typeInfo = resolveType(chain);
+      
+      if (typeInfo) {
+        let typeDisplay: string = typeInfo.kind;
+        if (typeInfo.kind === 'array' && typeInfo.elementType) {
+          typeDisplay = `${typeInfo.elementType}[]`;
+        }
+        
+        return {
+          contents: [
+            { value: `**Type**: \`${typeDisplay}\`` },
+            { value: 'No description available' }
+          ]
+        };
+      }
+    }
+    
+    // Fallback to root-level variables
+    const varInfo = typeSystem.value.variables[word.word];
+    if (varInfo) {
+      let typeDisplay: string = varInfo.kind;
+      if (varInfo.kind === 'array' && varInfo.elementType) {
+        typeDisplay = `${varInfo.elementType}[]`;
+      }
+      
+      return {
+        contents: [
+          { value: `**${word.word}**: \`${typeDisplay}\`` }
+        ]
+      };
+    }
   }
 });
 
@@ -347,6 +388,13 @@ interface Global {
   isArray: boolean;
 }
 
+interface FunctionDefinition {
+  name: string;
+  returnType: string;
+  parameters: Array<{ name: string, type: string, isArray?: boolean }>;
+  description?: string;
+}
+
 interface Props {
   id: number,
   types: SystemType[],
@@ -354,6 +402,7 @@ interface Props {
   code: Script,
   onSave(result: { result: Script, returnType: string }): void,
   globals: Global[]
+  functions?: FunctionDefinition[]
 }
 
 function parseType(type: string) {
@@ -389,7 +438,7 @@ function compareTypes(typeA: string, typeB: string) {
   return false
 }
 
-function typeToCompilerType(compiledTypes: Map<string, Type>, types: SystemType[], type: TypeData): Type {
+function typeToCompilerType(compiledTypes: Record<string, Type>, types: SystemType[], type: TypeData): Type {
   
   let t:Type;
   switch (type.type) {
@@ -412,7 +461,7 @@ function typeToCompilerType(compiledTypes: Map<string, Type>, types: SystemType[
   return type.isArray ? VerseScriptCompiler.createArrayType(t!) : t!
 }
 
-function createCompilerType(compiledTypes: Map<string, Type>, types: SystemType[], name: string, properties: {
+function createCompilerType(compiledTypes: Record<string, Type>, types: SystemType[], name: string, properties: {
   key: string;
   typeData: {
     type: string;
@@ -431,14 +480,14 @@ function createCompilerType(compiledTypes: Map<string, Type>, types: SystemType[
   })
 
   const type = VerseScriptCompiler.createObjectType(name, props)
-  compiledTypes.set(name, type)
+  compiledTypes[name] = type
 
   return type
 }
 
 export default function ScriptEditor({ id, types, code, expectedType, onSave, globals }: Props) {
 
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
 	const monacoEl = useRef(null);
@@ -448,9 +497,9 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
   const compiler = useRef<VerseScriptCompiler | null>();
 
   const g: Global[] = [
-    // { name: 'Character', type: 'Character', isArray: false },
-    // { name: 'SystemData', type: 'SystemData', isArray: false },
-    // { name: 'PageData', type: 'PageData', isArray: false },
+    { name: 'character', type: 'CharacterData', isArray: false },
+    { name: 'system', type: 'SystemData', isArray: false },
+    { name: 'page', type: 'PageData', isArray: false },
     ...globals
   ]
 
@@ -472,23 +521,65 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
           padding: { top: 10, bottom: 10 }
 				});
 
-        const compiledTypes = new Map<string, Type>(Object.entries(BUILTIN_TYPES))
+        const compiledTypes: Record<string, Type> = { ...BUILTIN_TYPES }
         for (let t = 0; t < types.length; t++) {
           const type = types[t]
-          if (compiledTypes.has(type.name)) continue
+          if (compiledTypes[type.name]) continue
           createCompilerType(compiledTypes, types, type.name, type.properties)
         }
 
         const context: Record<string, Type> = {}
         g.forEach(global => {
-          const type = compiledTypes.has(global.type) ? compiledTypes.get(global.type)! : BUILTIN_TYPES.unknown
+          const type = compiledTypes[global.type] ?? BUILTIN_TYPES.unknown
           context[global.name] = global.isArray ? VerseScriptCompiler.createArrayType(type) : type
         })
+
+        // In your useEffect where you set up the compiler
+        const functions = {
+          'openModal': {
+            returnType: BUILTIN_TYPES.unknown,
+            parameters: [
+              // type: string, title: string, value: any
+              { name: 'type', type: BUILTIN_TYPES.string },
+              { name: 'title', type: BUILTIN_TYPES.string },
+              { name: 'value', type: BUILTIN_TYPES.unknown }
+            ],
+            description: 'Open a modal of {type} and await its return',
+            isAsync: true
+          },
+          'floor': {
+            returnType: BUILTIN_TYPES.number,
+            parameters: [
+              { name: 'number', type: BUILTIN_TYPES.number }
+            ],
+            description: 'Round a float down to the nearest integer',
+            isAsync: false
+          },
+          'random': {
+            returnType: BUILTIN_TYPES.number,
+            parameters: [
+              { name: 'min', type: BUILTIN_TYPES.number },
+              { name: 'max', type: BUILTIN_TYPES.number }
+            ],
+            description: 'Returns a random number between min and max',
+            isAsync: false
+          }
+          // Add more functions...
+        };
+
+        typeSystem.value = {
+          variables: context,
+          functions
+        }
 
         // register compiler with variables
         compiler.current = new VerseScriptCompiler(context)
 
-        for (const [name, type] of compiledTypes) {
+        for (const [name, func] of Object.entries(functions)) {
+          compiler.current!.registerFunction(name, func.parameters.map(p => p.type), func.returnType, func.isAsync);
+        }
+
+        for (const [name, type] of Object.entries(compiledTypes)) {
           compiler.current!.registerType(name, type)
         }
 
@@ -497,6 +588,8 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
           
           try {
             const result = compiler.current!.compile(code);
+            console.log(compareTypes(result.returnType!, expectedType))
+            console.log(result)
             setResult({
               isCorrect: result.success ? compareTypes(result.returnType!, expectedType) : false,
               source: code,
@@ -639,6 +732,7 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
         <div className='flex justify-end items-center w-full'>
           <Button color='primary' onClick={() => {
             onSave({ result, returnType })
+            closeModal(id)
           }}>Save Script</Button>
         </div>
       </ModalFooter>

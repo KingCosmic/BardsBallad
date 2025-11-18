@@ -14,7 +14,7 @@ import { getReturnTypeOfBlueprint } from '@utils/Blueprints/getReturnTypeOfBluep
 import ScriptEditor from '@modals/ScriptEditor'
 import { useVersionEdits } from '@hooks/useVersionEdits'
 import { editorState } from '@state/editor'
-import { SystemData } from '@storage/schemas/system'
+import { SystemData, SystemType } from '@storage/schemas/system'
 
 export function SelectSettings() {
   const { id, actions: { setProp },
@@ -47,7 +47,10 @@ export function SelectSettings() {
   const editor = editorState.useValue()
   const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
-  const types = useMemo(() => versionEdits?.data.types ?? [], [versionEdits])
+  const types: SystemType[] = useMemo(() => [
+    versionEdits?.data.defaultCharacterData._type,
+    ...(versionEdits?.data.types ?? [])
+  ], [versionEdits])
 
   return (
     <AccordionGroup>

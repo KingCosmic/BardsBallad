@@ -13,7 +13,7 @@ import globalStyles from '@designer/styles'
 import ScriptEditor from '@modals/ScriptEditor'
 import { editorState } from '@state/editor'
 import { useVersionEdits } from '@hooks/useVersionEdits'
-import { SystemData } from '@storage/schemas/system'
+import { SystemData, SystemType } from '@storage/schemas/system'
 
 export default function TextSettings() {
   const { id, actions: { setProp },
@@ -55,7 +55,10 @@ export default function TextSettings() {
   const editor = editorState.useValue()
   const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
-  const types = useMemo(() => versionEdits?.data.types ?? [], [versionEdits])
+  const types: SystemType[] = useMemo(() => [
+    versionEdits?.data.defaultCharacterData._type,
+    ...(versionEdits?.data.types ?? [])
+  ], [versionEdits])
   
   return (
     <AccordionGroup>
