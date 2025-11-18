@@ -19,7 +19,7 @@ const SubscriptionConfirmation: React.FC = () => {
       <h1>Subscription Successful!</h1>
       <p>Thank you for subscribing to Bard's Ballad. Your subscription was processed successfully.</p>
       <p>We hope you enjoy all the premium features and content!</p>
-      <button 
+      <button
         onClick={handleGoBack} 
         style={{
           marginTop: '1rem',

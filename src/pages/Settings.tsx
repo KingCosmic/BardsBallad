@@ -67,12 +67,20 @@ const tabs = [
               </Button>
             </div>
 
-            {!user.discord_id && (
+            {!user.discord_id ? (
               <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-indigo-500 border'>
                 <p className='text-lg'>Discord Integration</p>
                 <p className='mb-4'>Link your Discord account to access additional features</p>
                 <Button color='primary' onClick={getLoginLink}>
                   Connect Discord Account
+                </Button>
+              </div>
+            ) : (
+              <div className='flex flex-col w-full bg-neutral-800 p-4 rounded-lg border-indigo-500 border'>
+                <p className='text-lg'>Discord Integration</p>
+                <p className='mb-4'>Discord linked!</p>
+                <Button color='danger' onClick={getLoginLink}>
+                  Disonnect
                 </Button>
               </div>
             )}

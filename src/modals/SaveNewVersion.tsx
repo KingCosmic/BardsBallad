@@ -11,6 +11,8 @@ import createSubscription from '@storage/methods/subscriptions/createSubscriptio
 import { VersionedResource } from '@storage/schemas/versionedResource';
 import { useNavigate } from 'react-router';
 import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource';
+import storeHashes from '@storage/methods/hashes/storeHashes';
+import generateTypeHash from '@utils/generateTypeHash';
 
 type Props = {
   id: number;
@@ -49,6 +51,8 @@ const SaveNewVersion: React.FC<Props> = ({ id, original, edits, edits_id }) => {
             deleteVersionedResource(newVersion.local_id, true)
             return addToast(`Error creating subscription to new version, cleaning up...`, 'error')
           }
+
+          storeHashes(newVersion.local_id, newVersion.data.types.map(generateTypeHash))
 
           // I'm not entirely sure how this would happen?
           // possibly a user unsubs from the original but then the ui *shouldn't* allow a user to get into this editing scenario.

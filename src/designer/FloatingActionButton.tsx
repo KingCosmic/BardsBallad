@@ -1,23 +1,29 @@
 import { useNode, UserComponentConfig } from '@craftjs/core'
-import { BlueprintData } from '@/types/blueprint'
 import { openModal } from '@state/modals'
 import Divider from '@components/Divider'
 import { getDefaultNodes } from '@blueprints/utils'
 import EditButtonModal from '@modals/EditButton'
 
-import {  useCallback, useState } from 'react'
+import {  useCallback, useMemo, useState } from 'react'
 
-import BlueprintProcessor, { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
+import { BlueprintProcessorState } from '@utils/Blueprints/processBlueprint'
 
 import { useLocalData } from './renderer/Context'
 import FloatingActionButton from '@components/FloatingActionButton'
 import Checkbox from '@components/inputs/Checkbox'
-import BlueprintEditor from '@modals/BlueprintEditor'
+import ScriptEditor from '@modals/ScriptEditor'
+import { Script } from '@/types/script'
+import runCode from '@utils/verse/runCode'
+import { useLocalState } from './hooks/useLocalState'
+import { useVersionEdits } from '@hooks/useVersionEdits'
+import { editorState } from '@state/editor'
+import { SystemData, SystemType } from '@storage/schemas/system'
+import { useScriptRunner } from '@components/ScriptRunnerContext'
 
 type Button = {
   name: string;
   icon: string;
-  blueprint: BlueprintData;
+  script: Script;
 }
 
 type FABProps = {
@@ -27,7 +33,7 @@ type FABProps = {
 
   isList?: boolean;
   buttons?: Button[];
-  blueprint?: BlueprintData;
+  script?: Script;
 
   // Local state this component will pass to its children.
   local?: any;
@@ -35,45 +41,68 @@ type FABProps = {
   calculateLocalState?: any;
 }
 
-function FAB({ buttons }: FABProps) {
+function FAB({ buttons, isList }: FABProps) {
   const { connectors: { connect, drag } } = useNode()
+
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     // @ts-ignore
-    <FloatingActionButton ref={ref => connect(drag(ref!))} buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => {} }))} isOpen={true} />
+    <FloatingActionButton ref={ref => connect(drag(ref!))} buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => {} }))} isOpen={isOpen} onClick={() => isList ? setIsOpen(!isOpen) : false} />
   )
 }
 
-export function FABPreview({ blueprint, isList, buttons, state, updateState }: FABProps) {
+export function FABPreview({ script, isList, buttons, state, updateState }: FABProps) {
   const localData = useLocalData()
+  const { isReady, runScript } = useScriptRunner()
 
   const [isOpen, setIsOpen] = useState(false)
+
+  const s = useMemo(() => ({
+    ...state,
+    ...localData,
+  }), [localData, state])
 
   const onClick = useCallback(() => {
     if (isList) return setIsOpen(!isOpen)
 
-    const processor = new BlueprintProcessor(blueprint!)
+    if (!script!.isCorrect || !isReady) return
 
-    processor.processBlueprint(localData, state!, updateState!)
-  }, [blueprint, localData, state, updateState, isOpen, isList])
+    runScript(script!.compiled, s, updateState!)
+  }, [script, s, updateState, isOpen, isList, updateState])
 
   return (
     <FloatingActionButton
       isOpen={isOpen}
       onClick={onClick}
-      buttons={buttons?.map(btn => ({ name: btn.name, icon: btn.icon, onClick: () => new BlueprintProcessor(btn.blueprint!).processBlueprint(localData, state!, updateState!) }))}
+      buttons={buttons?.map(btn => ({
+        name: btn.name, icon: btn.icon,
+        onClick: () => {
+          if (!btn.script.isCorrect || !isReady) return
+
+          runScript(btn.script.compiled, s, updateState!)
+        }
+      }))}
     />
   )
 }
 
 function FABSettings() {
-  const { actions: { setProp }, isList, buttons, blueprint } = useNode(node => ({
+  const { id, actions: { setProp }, isList, buttons, script } = useNode(node => ({
     isList: node.data.props.isList,
     buttons: node.data.props.buttons,
-    blueprint: node.data.props.blueprint
+    script: node.data.props.script
   }))
 
-  const [editData, setEditData] = useState<any | null>(null)
+  const localParams = useLocalState(id)
+
+  const editor = editorState.useValue()
+  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
+
+  const types: SystemType[] = useMemo(() => [
+    versionEdits?.data.defaultCharacterData._type,
+    ...(versionEdits?.data.types ?? [])
+  ], [versionEdits])
 
   return (
     <div>
@@ -91,7 +120,7 @@ function FABSettings() {
                   onClick={() => setProp((props: any) => {
                     if (!props.buttons.find((b: Button) => b.name === 'new button'))
 
-                    props.buttons.push({ name: 'new button', icon: '', blueprint: { nodes: getDefaultNodes(), edges: [] } })
+                    props.buttons.push({ name: 'new button', icon: '', script: { compiled: '', source: '', isCorrect: true, returnType: 'null', blueprint: { nodes: getDefaultNodes(), edges: [] } } })
 
                     return props
                   })}
@@ -120,27 +149,36 @@ function FABSettings() {
 
             {
               buttons.map((button: Button) => (
-                <p key={button.name} onClick={() => setEditData(button)}>
+                <p key={button.name} onClick={() => {
+                  openModal('button', ({ id }) => (
+                    <EditButtonModal id={id} data={button} isOpen={true}
+                      types={types}
+                      globals={localParams}
+                      onSave={(newButton) => setProp((props: any) => {
+                      for (let i = 0; i < props.buttons.length; i++) {
+                        if (props.buttons[i].name !== button.name) continue
+
+                        props.buttons[i] = newButton
+                      }
+
+                      return props
+                    })} onDelete={() => setProp((props: any) => props.buttons = props.buttons.filter((b: any) => b.name !== button.name))} />
+                  ))
+                }}>
                   {button.name}
                 </p>
               ))
             }
-
-            <EditButtonModal data={editData} isOpen={editData !== null} requestClose={() => setEditData(null)} onSave={(newButton) => setProp((props: any) => {
-              for (let i = 0; i < props.buttons.length; i++) {
-                if (props.buttons[i].name !== editData!.name) continue
-
-                props.buttons[i] = newButton
-              }
-
-              return props
-            })} onDelete={() => setProp((props: any) => props.buttons = props.buttons.filter((b: any) => b.name !== editData!.name))} />
           </>
         ) : (
-          <p onClick={() => 
-            openModal('blueprint', ({ id }) => (
-              <BlueprintEditor id={id} data={blueprint} onSave={(bp) => setProp((props: any) => props.blueprint = bp)} />
-            ))}>
+          <p onClick={() => {
+            openModal('script', ({ id }) => (
+              <ScriptEditor id={id} code={script}
+                onSave={({ result }) => setProp((props: any) => props.script = result)}
+                globals={localParams} expectedType='null' types={types}
+              />
+            ))
+          }}>
             On Click
           </p>
         )
@@ -153,9 +191,11 @@ const CraftSettings: Partial<UserComponentConfig<FABProps>> = {
   defaultProps: {
     isList: false,
     buttons: [],
-    blueprint: {
-      nodes: getDefaultNodes(),
-      edges: []
+    script: {
+      source: '',
+      compiled: '',
+      blueprint: { nodes: [], edges: [] },
+      isCorrect: false
     },
   },
   related: {

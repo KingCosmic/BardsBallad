@@ -1,8 +1,7 @@
 import { produce } from 'immer';
 import { SystemData } from '@storage/schemas/system';
-import { BlueprintData } from '@/types/blueprint';
 
-export default async (data: SystemData, pageType: 'character' | 'builder' | 'modal', page: string, blueprint: BlueprintData) => {
+export default async (data: SystemData, pageType: 'character' | 'builder' | 'modal', page: string, script: string) => {
   return produce(data, draft => {
     const pages = (pageType === 'character') ? draft.pages : (pageType === 'builder') ? draft.creator : draft.modals
 
@@ -10,6 +9,6 @@ export default async (data: SystemData, pageType: 'character' | 'builder' | 'mod
 
     if (index === -1) return
 
-    pages[index].blueprint = blueprint
+    pages[index].script = script
   })
 }

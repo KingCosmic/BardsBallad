@@ -1,26 +1,41 @@
-import { memo, useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useLocalData } from '@designer/renderer/Context'
-import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { InputProps } from './Editor'
 import globalStyles from '@designer/styles'
 import TextInput from '@components/inputs/TextInput'
+import runCode from '@utils/verse/runCode'
+import { useScriptRunner } from '@components/ScriptRunnerContext'
 
 export default (props: InputProps) => {
   const localData = useLocalData()
+  const { isReady, runScript } = useScriptRunner()
 
-  const value = useMemo(() => {
-    const processor = new BlueprintProcessor(props.getValue!)
+  const [value, setValue] = useState('')
 
-    return processor.processBlueprint(localData, props.state!, props.updateState!)
-  }, [props.getValue, localData, props.state, props.updateState])
+  const state = useMemo(() => ({
+    ...props.state,
+    ...localData,
+  }), [localData, props.state])
+
+  useEffect(() => {
+    async function rc() {
+      if (!props.getValue!.isCorrect || !isReady) return setValue('')
+
+      const output = await runScript<string>(props.getValue!.compiled, state, props.updateState!)
+
+      setValue(output.result ?? '')
+    }
+
+    rc()
+  }, [props.getValue, state, props.updateState])
 
   const onChange = useCallback((value: any) => {
-    const processor = new BlueprintProcessor(props.onChange!)
+    if (!props.onChange!.isCorrect || !isReady) return
 
-    processor.processBlueprint({ ...localData, ['field value']: value }, props.state!, props.updateState!)
-  }, [props.onChange, localData, props.state, props.updateState])
+    runScript(props.onChange!.compiled, { ...state, ['field value']: value }, props.updateState!)
+  }, [props.onChange, state, props.updateState])
 
   return (
     <TextInput

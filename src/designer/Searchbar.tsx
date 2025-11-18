@@ -2,10 +2,19 @@ import { useNode } from '@craftjs/core'
 import { BlueprintData } from '@/types/blueprint'
 import CompSearchbar from '@components/Searchbar'
 import TextInput from '@components/inputs/TextInput';
+import Button from '@components/inputs/Button';
+import { openModal } from '@state/modals';
+import ScriptEditor from '@modals/ScriptEditor';
+import { Script } from '@/types/script';
+import { useLocalState } from './hooks/useLocalState';
+import { useVersionEdits } from '@hooks/useVersionEdits';
+import { editorState } from '@state/editor';
+import { SystemData, SystemType } from '@storage/schemas/system';
+import { useMemo } from 'react';
 
 type SearchbarProps = {
   placeholder: string;
-  blueprint: BlueprintData;
+  script?: Script;
 }
 
 function Searchbar({ placeholder }: SearchbarProps) {
@@ -25,17 +34,36 @@ export function SearchbarPreview() {
 }
 
 function SearchbarSettings() {
-  const { actions: { setProp }, placeholder, blueprint } = useNode(node => ({
+  const { id, actions: { setProp }, placeholder, script } = useNode(node => ({
     placeholder: node.data.props.placeholder,
-    blueprint: node.data.props.blueprint
+    script: node.data.props.script
   }))
+
+  const localParams = useLocalState(id)
+
+  const editor = editorState.useValue()
+  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
+
+  const types: SystemType[] = useMemo(() => [
+    versionEdits?.data.defaultCharacterData._type,
+    ...(versionEdits?.data.types ?? [])
+  ], [versionEdits])
 
   return (
     <>
       <TextInput id='searchbar-placeholder' label='Placeholder' value={placeholder} onChange={val => setProp((props: any) => props.placeholder = val)} isValid errorMessage='' />
+    
+      <Button color='primary' onClick={() => {
+        openModal('script', ({ id }) => (
+          <ScriptEditor id={id} code={script}
+            onSave={({ result }) => setProp((props: any) => props.script = result)}
+            globals={localParams} expectedType='null' types={types}
+          />
+        ))
+      }} />
     </>
   )
-}
+} 
 
 Searchbar.craft = {
   rules: {},

@@ -19,7 +19,7 @@ import NewString from './scripts/strings/string'
 import StringIncludes from './scripts/strings/includes'
 import StringCompare from './scripts/strings/compare'
 import StringConcat from './scripts/strings/concat'
-import numberToString from './scripts/numbers/numberToString'
+import StringLimit from './scripts/strings/limit'
 
 import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
@@ -27,12 +27,15 @@ import createDataFromType from './scripts/object/createDataFromType'
 
 import Enum from './scripts/enums/enum'
 import EnumCompare from './scripts/enums/compare'
+import EnumToString from './scripts/enums/toString'
+
 import number from './scripts/numbers/number'
 import Divide from './scripts/numbers/divide'
 import Subtract from './scripts/numbers/subtract'
 import floor from './scripts/numbers/floor'
 import Add from './scripts/numbers/add'
 import Multiply from './scripts/numbers/multiply'
+import numberToString from './scripts/numbers/numberToString'
 
 import Boolean from './scripts/booleans/boolean'
 import Branch from './scripts/booleans/branch'
@@ -77,6 +80,7 @@ export const nodeScripts: { [key:string]: NodeScript } = {
   string_includes: StringIncludes,
   string_compare: StringCompare,
   string_concat: StringConcat,
+  string_limit: StringLimit,
 
   /* Object Scripts */
   spread_object: SpreadObject,
@@ -93,6 +97,7 @@ export const nodeScripts: { [key:string]: NodeScript } = {
   /* Enum Scripts */
   new_enum: Enum,
   enum_compare: EnumCompare,
+  enum_toString: EnumToString,
 
   /* Boolean Scripts */
   boolean_new: Boolean,

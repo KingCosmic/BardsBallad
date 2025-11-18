@@ -1,10 +1,11 @@
+import { Param } from '@blueprints/utils'
 import { useEditor } from '@craftjs/core'
 
 /**
  * Recursively loop over our parent nodes and check for any state inside of a "local" property.
  * Then read said props and return them in one object.
  */
-export function useLocalState(id: string) {
+export function useLocalState(id: string): Param[] {
   const { query } = useEditor()
 
   return getStateRecursive(query, id)
