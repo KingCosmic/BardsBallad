@@ -6,7 +6,7 @@ type ModalHeaderProps = {
 
 const ModalHeader: React.FC<ModalHeaderProps> = ({ title, onClose }) => {
   return (
-    <div className='flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-neutral-700'>
+    <div className='flex-none flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-neutral-700'>
       <h3 className='text-xl font-semibold text-gray-900 dark:text-white'>
         {title}
       </h3>
