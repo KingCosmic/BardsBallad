@@ -25,9 +25,11 @@ export default async (name: string, slug: string, data: any, system: { local_id:
       user_id,
 
       name,
-      slug,
 
-      data,
+      data: {
+        ...data,
+        _flavor: slug
+      },
 
       system,
 

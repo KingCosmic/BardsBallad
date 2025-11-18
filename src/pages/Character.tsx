@@ -115,7 +115,8 @@ const CharacterPage: React.FC = () => {
   return (
     <ScriptRunnerProvider>
       <div className='flex flex-col h-full w-full'>
-        <Header title={character.name} subtitle={character.slug} hasSidebar />
+        { /* @ts-ignore */ }
+        <Header title={character.name} subtitle={character.data._flavor} hasSidebar />
 
         <div className='lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
 
