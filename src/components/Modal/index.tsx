@@ -10,12 +10,12 @@ type ModalProps = {
 const Modal: React.FC<PropsWithChildren<ModalProps>> = ({ children, isOpen, onClose, className = '' }) => {
   return (
     <div tabIndex={-1} aria-hidden='true'
-      className={`flex bg-black/70 absolute top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-screen max-h-screen`}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 sm:p-6`}
       onClick={onClose}
     >
-      <div className='relative min-w-[32rem] max-w-2xl' onClick={(e) => e.stopPropagation()}>
-        {/* <!-- Modal content --> */}
-        <div className={`relative rounded-lg shadow bg-fantasy-light border border-fantasy-border ${className}`}>
+      <div className='relative w-full max-w-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl max-h-[calc(100vh-4rem)]' onClick={(e) => e.stopPropagation()}>
+        {/* Modal content: make it a column so header/body/footer layout can scroll the body */}
+        <div className={`relative rounded-lg shadow bg-fantasy-light border border-fantasy-border flex flex-col max-h-full overflow-hidden ${className}`}>
           {children}
         </div>
       </div>
