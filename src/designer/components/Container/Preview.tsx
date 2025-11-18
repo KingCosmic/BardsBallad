@@ -23,8 +23,6 @@ export default (props: PropsWithChildren<ContainerProps>) => {
 
   useEffect(() => {
     async function rc() {
-      console.log(props.script.isCorrect, props.isList, isReady)
-      console.log(props.script.source)
       if (!props.script.isCorrect || !props.isList || !isReady) return setItems([])
 
       runScript<any[]>(props.script.compiled, state, props.updateState!).then(output => setItems(output.result ?? []))
@@ -94,15 +92,17 @@ export default (props: PropsWithChildren<ContainerProps>) => {
         marginBottom: globalStyles.spacing[props.marginBottom!],
         marginLeft: globalStyles.spacing[props.marginLeft!],
 
-        paddingTop: globalStyles.spacing[props.paddingTop!],
-        paddingRight: globalStyles.spacing[props.paddingRight!],
-        paddingBottom: globalStyles.spacing[props.paddingBottom!],
-        paddingLeft: globalStyles.spacing[props.paddingLeft!],
+        ...(props.isList ? {} : ({
+          paddingTop: globalStyles.spacing[props.paddingTop!],
+          paddingRight: globalStyles.spacing[props.paddingRight!],
+          paddingBottom: globalStyles.spacing[props.paddingBottom!],
+          paddingLeft: globalStyles.spacing[props.paddingLeft!],
+        })),
 
         // TODO: update this to allow for row lists.
         // TODO: 8 needs to be update to be the gap size in pxs.
         height: props.isList ? `${rowVirtualizer.getTotalSize() + items.length * 8}px` : globalStyles.size[props.height!],
-        width: props.isList ? '100%' : globalStyles.size[props.width!],
+        width: props.isList ? '' : globalStyles.size[props.width!],
         maxHeight: globalStyles.size[props.maxHeight!],
         maxWidth: globalStyles.size[props.maxWidth!],
         minHeight: globalStyles.size[props.minHeight!],
@@ -117,6 +117,11 @@ export default (props: PropsWithChildren<ContainerProps>) => {
             position: 'absolute',
             top: 0,
             left: 0,
+
+            paddingTop: globalStyles.spacing[props.paddingTop!],
+            paddingRight: globalStyles.spacing[props.paddingRight!],
+            paddingBottom: globalStyles.spacing[props.paddingBottom!],
+            paddingLeft: globalStyles.spacing[props.paddingLeft!],
             width: '100%',
             transform: `translateY(${items[0]?.start ?? 8}px)`, // TODO: 8 needs to be converted to the containers margin top / padding top.
             display: props.display,

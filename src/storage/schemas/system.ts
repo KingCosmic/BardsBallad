@@ -39,7 +39,7 @@ export const systemTypeSchema = z.object({
 const actionSchema = z.object({
   name: z.string(),
   description: z.string(),
-  script: z.string()
+  script: z.any()
 })
 
 const systemDataSchema = z.object({

@@ -29,7 +29,7 @@ export default (type: string, title: string, value: any): Promise<ModalResponse>
       break;
     case 'edit_number':
       Comp = ({ id }) => <EditNumberModal id={id} title={title} data={value}
-        onSave={(newNumber) => handleCallback(id, 'save', newNumber)}
+        onSave={(newNumber) => handleCallback(id, 'save', +newNumber)}
       />
       break;
     case 'edit_string':

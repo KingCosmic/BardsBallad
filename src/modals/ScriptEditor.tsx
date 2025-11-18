@@ -588,8 +588,6 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
           
           try {
             const result = compiler.current!.compile(code);
-            console.log(compareTypes(result.returnType!, expectedType))
-            console.log(result)
             setResult({
               isCorrect: result.success ? compareTypes(result.returnType!, expectedType) : false,
               source: code,
