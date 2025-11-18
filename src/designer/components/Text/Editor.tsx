@@ -15,7 +15,7 @@ export interface TextProps {
   updateState?(newState: BlueprintProcessorState): void;
   
   useScriptValue?: boolean;
-  script: Script;
+  script?: Script;
 
   text?: string;
   color?: string;

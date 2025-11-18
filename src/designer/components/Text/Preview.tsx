@@ -22,9 +22,9 @@ export default (props: TextProps) => {
       if (!isReady) return
       if (!props.useScriptValue) return setText(props.text!)
 
-      if (!props.script.isCorrect) return setText('SE')
+      if (!props.script!.isCorrect) return setText('SE')
 
-      runScript<string>(props.script.compiled, state, props.updateState!).then(output => setText(output.result ?? ''));
+      runScript<string>(props.script!.compiled, state, props.updateState!).then(output => setText(output.result ?? ''));
     }
 
     rc()

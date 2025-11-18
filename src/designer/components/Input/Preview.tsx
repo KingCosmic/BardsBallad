@@ -21,9 +21,9 @@ export default (props: InputProps) => {
 
   useEffect(() => {
     async function rc() {
-      if (!props.getValue.isCorrect || !isReady) return setValue('')
+      if (!props.getValue!.isCorrect || !isReady) return setValue('')
 
-      const output = await runScript<string>(props.getValue.compiled, state, props.updateState!)
+      const output = await runScript<string>(props.getValue!.compiled, state, props.updateState!)
 
       setValue(output.result ?? '')
     }
@@ -32,9 +32,9 @@ export default (props: InputProps) => {
   }, [props.getValue, state, props.updateState])
 
   const onChange = useCallback((value: any) => {
-    if (!props.onChange.isCorrect || !isReady) return
+    if (!props.onChange!.isCorrect || !isReady) return
 
-    runScript(props.onChange.compiled, { ...state, ['field value']: value }, props.updateState!)
+    runScript(props.onChange!.compiled, { ...state, ['field value']: value }, props.updateState!)
   }, [props.onChange, state, props.updateState])
 
   return (

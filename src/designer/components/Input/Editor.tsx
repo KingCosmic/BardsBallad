@@ -21,8 +21,8 @@ export type InputProps = {
   minNumber?: number;
   maxNumber?: number;
 
-  getValue: Script;
-  onChange: Script;
+  getValue?: Script;
+  onChange?: Script;
 
   marginTop?: string;
   marginRight?: string;

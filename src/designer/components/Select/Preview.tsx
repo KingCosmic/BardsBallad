@@ -25,9 +25,9 @@ export default (props: SelectProps) => {
     async function rc() {
       if (!props.dynamicOptions || !isReady) return setOptions(props.options!)
 
-      if (!props.optionsScript.isCorrect) return setOptions([])
+      if (!props.optionsScript!.isCorrect) return setOptions([])
       
-      const output = await runScript<any[]>(props.optionsScript.compiled, state, props.updateState!);
+      const output = await runScript<any[]>(props.optionsScript!.compiled, state, props.updateState!);
 
       setOptions(output.result ?? [])
     }

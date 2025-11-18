@@ -33,7 +33,7 @@ type FABProps = {
 
   isList?: boolean;
   buttons?: Button[];
-  script: Script;
+  script?: Script;
 
   // Local state this component will pass to its children.
   local?: any;
@@ -66,9 +66,9 @@ export function FABPreview({ script, isList, buttons, state, updateState }: FABP
   const onClick = useCallback(() => {
     if (isList) return setIsOpen(!isOpen)
 
-    if (!script.isCorrect || !isReady) return
+    if (!script!.isCorrect || !isReady) return
 
-    runScript(script.compiled, s, updateState!)
+    runScript(script!.compiled, s, updateState!)
   }, [script, s, updateState, isOpen, isList, updateState])
 
   return (

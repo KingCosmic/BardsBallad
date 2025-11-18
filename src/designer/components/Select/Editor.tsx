@@ -17,7 +17,7 @@ export type SelectProps = {
   label?: string;
 
   dynamicOptions?: boolean;
-  optionsScript: Script;
+  optionsScript?: Script;
   options?: [];
   onChange?: Script;
 

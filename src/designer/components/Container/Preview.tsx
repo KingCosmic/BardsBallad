@@ -23,9 +23,9 @@ export default (props: PropsWithChildren<ContainerProps>) => {
 
   useEffect(() => {
     async function rc() {
-      if (!props.script.isCorrect || !props.isList || !isReady) return setItems([])
+      if (!props.script!.isCorrect || !props.isList || !isReady) return setItems([])
 
-      runScript<any[]>(props.script.compiled, state, props.updateState!).then(output => setItems(output.result ?? []))
+      runScript<any[]>(props.script!.compiled, state, props.updateState!).then(output => setItems(output.result ?? []))
     }
 
     rc()
@@ -35,9 +35,9 @@ export default (props: PropsWithChildren<ContainerProps>) => {
     async function rc() {
       if (!props.dynamicVisibility || !isReady) return setIsVisible(props.isVisible!)
 
-      if (!props.visibilityScript.isCorrect) return setIsVisible(props.isVisible!)
+      if (!props.visibilityScript!.isCorrect) return setIsVisible(props.isVisible!)
 
-      const output = await runScript<boolean>(props.visibilityScript.compiled, state, props.updateState!)
+      const output = await runScript<boolean>(props.visibilityScript!.compiled, state, props.updateState!)
 
       setIsVisible(output.result ?? props.isVisible!)
     }
@@ -46,9 +46,9 @@ export default (props: PropsWithChildren<ContainerProps>) => {
   }, [state, props.isVisible, props.visibilityScript, props.updateState])
 
   const onClick = useCallback(() => {
-    if (!props.isInteractive || !props.onPress.isCorrect || !isReady) return
+    if (!props.isInteractive || !props.onPress!.isCorrect || !isReady) return
  
-    runScript(props.onPress.compiled, state, props.updateState!)
+    runScript(props.onPress!.compiled, state, props.updateState!)
   }, [state, props.isInteractive, props.onPress, props.updateState])
 
   const backgroundClass = useMemo(() => styles[props.background!] ? styles[props.background!]?.background : '', [props.background])

@@ -14,7 +14,7 @@ import { useMemo } from 'react';
 
 type SearchbarProps = {
   placeholder: string;
-  script: Script;
+  script?: Script;
 }
 
 function Searchbar({ placeholder }: SearchbarProps) {

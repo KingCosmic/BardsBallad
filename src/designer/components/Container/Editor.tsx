@@ -17,16 +17,16 @@ export type ContainerProps = {
   showPlaceholder?: boolean;
 
   dynamicVisibility?: boolean;
-  visibilityScript: Script;
+  visibilityScript?: Script;
   isVisible?: boolean;
 
   isList?: boolean;
   dataName?: string;
-  script: Script;
-  returnType: string;
+  script?: Script;
+  returnType?: string;
 
   isInteractive?: boolean;
-  onPress: Script;
+  onPress?: Script;
 
   background?: string;
   border?: string;
