@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router'
 import ModalManager from './components/ModalManager'
-import { sidebarState, closeSidebar, openSidebar } from './state/sidebar'
+import { sidebarState, closeMainSidebar, openMainSidebar } from './state/sidebar'
 import { authState } from './state/auth'
 import Button from './components/inputs/Button'
 import { closeModal, closeModalByTag, openModal } from './state/modals'
@@ -60,7 +60,7 @@ const bottomItems = [
 ]
 
 const Layout: React.FC = () => {
-  const isOpen = sidebarState.useValue()
+  const isOpen = sidebarState.useValue().main
 
   const auth = authState.useValue()
 
@@ -78,7 +78,7 @@ const Layout: React.FC = () => {
 
       openModal('onboarding', ({ id }) => <WelcomeMessage yes={() => {
           closeModal(id)
-          openSidebar()
+          openMainSidebar()
           setShowOnboarding(true)
         }} no={() => {
           closeModal(id)
@@ -113,11 +113,11 @@ const Layout: React.FC = () => {
         )}
 
         {/* Opacity Overlay when sidebar is open. */}
-        <div onClick={closeSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen-dynamic sm:translate-x-0`} />
+  <div onClick={closeMainSidebar} className={`${isOpen ? '' : '-translate-x-full'} bg-neutral-950 opacity-65 fixed top-0 left-0 z-40 w-screen sm:w-64 h-screen-dynamic sm:translate-x-0`} />
 
         {/* Sidebar */}
         <aside
-          onClick={closeSidebar}
+          onClick={closeMainSidebar}
           className={`${isOpen ? '' : '-translate-x-full'} bg-fantasy-glass backdrop-blur-lg border-r border-fantasy-border shadow-2xl fixed top-0 left-0 z-40 w-64 h-screen-dynamic transition-transform sm:translate-x-0`}
           aria-label='Sidebar'
         >
@@ -145,7 +145,7 @@ const Layout: React.FC = () => {
               <ul className='space-y-2'>
                 {topItems.map((item) => (
                   <li key={item.name}>
-                    <NavLink id={`nav-${item.name}`} to={item.path} onClick={closeSidebar}>
+                    <NavLink id={`nav-${item.name}`} to={item.path} onClick={closeMainSidebar}>
                       {({ isActive, isPending }) => (
                         <div className={`nav-item flex items-center px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 ${isActive ? 'bg-fantasy-accent/20 border-l-4 border-fantasy-accent' : 'hover:bg-fantasy-accent/10 hover:translate-x-1'}`}>
                           <span className='mr-3 text-base'>{item.icon}</span>
@@ -209,7 +209,7 @@ const Layout: React.FC = () => {
                 {/* Actual Navigation buttons */}
                 {bottomItems.map((item) => (
                   <li key={item.name}>
-                    <NavLink id={`nav-${item.name}`} to={item.path} onClick={closeSidebar}>
+                    <NavLink id={`nav-${item.name}`} to={item.path} onClick={closeMainSidebar}>
                       {({ isActive, isPending }) => (
                         <div className={`nav-item flex items-center px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 ${isActive ? 'bg-fantasy-accent/20 border-l-4 border-fantasy-accent' : 'hover:bg-fantasy-accent/10 hover:translate-x-1'}`}>
                           <span className='mr-3 text-base'>{item.icon()}</span>

@@ -2,6 +2,7 @@ import { useScriptRunner } from '@components/ScriptRunnerContext'
 import { Character } from '@storage/schemas/character'
 import { ActionType, SystemData } from '@storage/schemas/system'
 import { useMemo } from 'react'
+import { sidebarState, toggleSecondarySidebar, openSecondarySidebar, closeSecondarySidebar } from '@state/sidebar'
 
 interface Props {
   actions: ActionType[],
@@ -21,12 +22,20 @@ const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateS
     return { character: character.data, system: sys, page: {} }
   }, [character, system])
 
+  const isOpen = sidebarState.useValue().secondary
+
   return (
-    <aside
-      className='bg-fantasy-glass backdrop-blur-lg border-l border-fantasy-border shadow-2xl fixed top-0 right-0 z-40 w-64 h-screen transition-transform translate-x-full lg:-translate-x-0'
-      aria-label='Character Sidebar'
-    >
-      <div className='h-full flex flex-col px-3 py-4 overflow-y-auto'>
+    <>
+      {/* Overlay for small screens when secondary sidebar is open */}
+      {isOpen && (
+        <div onClick={closeSecondarySidebar} className='sm:hidden fixed inset-0 z-30 bg-neutral-950 opacity-65' />
+      )}
+
+      <aside
+        className={`${isOpen ? '' : 'translate-x-full'} bg-fantasy-glass backdrop-blur-lg border-l border-fantasy-border shadow-2xl fixed top-0 right-0 z-40 w-64 h-screen transition-transform lg:translate-x-0`}
+        aria-label='Character Sidebar'
+      >
+        <div className='h-full flex flex-col px-3 py-4 overflow-y-auto'>
         <div className='py-4 mb-4 border-b border-neutral-200 dark:border-neutral-700'>
           <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
             Quick Actions
@@ -46,7 +55,8 @@ const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateS
           ))}
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   )
 }
 
