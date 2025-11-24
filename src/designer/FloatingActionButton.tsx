@@ -19,6 +19,7 @@ import { useVersionEdits } from '@hooks/useVersionEdits'
 import { editorState } from '@state/editor'
 import { SystemData, SystemType } from '@storage/schemas/system'
 import { useScriptRunner } from '@components/ScriptRunnerContext'
+import { useScriptCache } from '@hooks/useScriptCache'
 
 type Button = {
   name: string;
@@ -68,7 +69,7 @@ export function FABPreview({ script, isList, buttons, state, updateState }: FABP
 
     if (!script!.isCorrect || !isReady) return
 
-    runScript(script!.compiled, s, updateState!)
+    runScript(undefined, script!, s, updateState!)
   }, [script, s, updateState, isOpen, isList, updateState])
 
   return (
@@ -80,7 +81,7 @@ export function FABPreview({ script, isList, buttons, state, updateState }: FABP
         onClick: () => {
           if (!btn.script.isCorrect || !isReady) return
 
-          runScript(btn.script.compiled, s, updateState!)
+          runScript(undefined, btn.script, s, updateState!)
         }
       }))}
     />

@@ -22,6 +22,25 @@ import { DataPack } from '@storage/schemas/datapack'
 import { ScriptRunnerProvider, useScriptRunner } from '@components/ScriptRunnerContext'
 import { updateCharacterData } from '@storage/methods/characters'
 import { useScriptTypes } from '@hooks/useScriptTypes'
+import ScriptCacheProvider from '@hooks/useScriptCache'
+
+function unwrapProxy(obj: any): any {
+  if (!obj || typeof obj !== 'object') return obj;
+  
+  // Handle arrays
+  if (Array.isArray(obj)) {
+    return obj.map(item => unwrapProxy(item));
+  }
+  
+  // Handle objects
+  const unwrapped: any = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      unwrapped[key] = unwrapProxy(obj[key]);
+    }
+  }
+  return unwrapped;
+}
 
 const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -46,14 +65,14 @@ const CharacterPage: React.FC = () => {
     return () => setScriptTypes([])
   }, [system])
 
-  const updateState = useCallback((state: any) => {
+  const updateState = useCallback(async (state: any) => {
     // console.log(state)
     if (!character || !system) return
 
     // const index = state.system.pages.findIndex((c: any) => c.name === state.page.name)
 
     if (JSON.stringify(character.data) !== JSON.stringify(state.character)) {
-      updateCharacterData(character.local_id, state.character)
+      await updateCharacterData(character.local_id, unwrapProxy(state.character))
     }
 
     // if (
@@ -113,29 +132,31 @@ const CharacterPage: React.FC = () => {
   if (!system) return <p id='loading-text' className='text-center text-2xl'>loading system data...</p>
 
   return (
-    <ScriptRunnerProvider>
-      <div className='flex flex-col h-full w-full'>
-        { /* @ts-ignore */ }
-        <Header title={character.name} subtitle={character.data._flavor} hasSidebar />
+    <ScriptCacheProvider>
+      <ScriptRunnerProvider>
+        <div className='flex flex-col h-full w-full'>
+          { /* @ts-ignore */ }
+          <Header title={character.name} subtitle={character.data._flavor} hasSidebar />
 
-        <div className='lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
+          <div className='lg:mr-64 flex flex-col flex-grow overflow-hidden xl:grid grid-cols-2'>
 
-          <div className='relative xl:p-4 w-full h-full flex flex-col flex-grow overflow-hidden'>
-            <div className='overflow-y-scroll max-h-full'>
-              <RenderTab className='first-tab-selector' system={system} character={character} updateState={updateState} />
+            <div className='relative xl:p-4 w-full h-full flex flex-col flex-grow overflow-hidden'>
+              <div className='overflow-y-scroll max-h-full'>
+                <RenderTab className='first-tab-selector' system={system} character={character} updateState={updateState} />
+              </div>
+            </div>
+
+            <div className='relative xl:p-4 hidden flex-col xl:flex flex-grow overflow-hidden'>
+              <div className='overflow-y-scroll max-h-full'>
+                <RenderTab className='second-tab-selector' system={system} character={character} updateState={updateState} />
+              </div>
             </div>
           </div>
 
-          <div className='relative xl:p-4 hidden flex-col xl:flex flex-grow overflow-hidden'>
-            <div className='overflow-y-scroll max-h-full'>
-              <RenderTab className='second-tab-selector' system={system} character={character} updateState={updateState} />
-            </div>
-          </div>
+          <CharacterSidebar actions={system.actions} system={system} character={character} updateState={updateState} />
         </div>
-
-        <CharacterSidebar actions={system.actions} system={system} character={character} updateState={updateState} />
-      </div>
-    </ScriptRunnerProvider>
+      </ScriptRunnerProvider>
+    </ScriptCacheProvider>
   )
 }
 
@@ -173,7 +194,7 @@ function RenderPage({ page, character, system, currentTab, updateState }: { page
 
     system.data.forEach(d => sys[d.name] = d.data)
 
-    return { character: character.data, system: sys, page }
+    return JSON.parse(JSON.stringify({ character: character.data, system: sys, page }))
   }, [character, system, page])
 
   if ((currentTab !== page.name)) return <></>

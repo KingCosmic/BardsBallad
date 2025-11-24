@@ -7,6 +7,7 @@ import globalStyles from '@designer/styles'
 import TextInput from '@components/inputs/TextInput'
 import runCode from '@utils/verse/runCode'
 import { useScriptRunner } from '@components/ScriptRunnerContext'
+import { useScriptCache } from '@hooks/useScriptCache'
 
 export default (props: InputProps) => {
   const localData = useLocalData()
@@ -23,7 +24,7 @@ export default (props: InputProps) => {
     async function rc() {
       if (!props.getValue!.isCorrect || !isReady) return setValue('')
 
-      const output = await runScript<string>(props.getValue!.compiled, state, props.updateState!)
+      const output = await runScript<string>(undefined, props.getValue!, state, props.updateState!)
 
       setValue(output.result ?? '')
     }
@@ -34,7 +35,7 @@ export default (props: InputProps) => {
   const onChange = useCallback((value: any) => {
     if (!props.onChange!.isCorrect || !isReady) return
 
-    runScript(props.onChange!.compiled, { ...state, ['field value']: value }, props.updateState!)
+    runScript(undefined, props.onChange!, { ...state, ['field value']: value }, props.updateState!)
   }, [props.onChange, state, props.updateState])
 
   return (

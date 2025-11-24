@@ -8,12 +8,11 @@ import ModalBody from '@components/Modal/Body'
 import ModalFooter from '@components/Modal/Footer'
 import Button from '@components/inputs/Button'
 import TextInput from '@components/inputs/TextInput'
-import Select from '@components/inputs/Select'
+import TypeSelect from '@components/inputs/TypeSelect'
 import Checkbox from '@components/inputs/Checkbox'
 import { closeModal, openModal } from '@state/modals'
 import { Param } from '@blueprints/utils'
 import { editorState } from '@state/editor'
-import { useSystem } from '@hooks/useSystem'
 import { SystemData, type TypeData } from '@storage/schemas/system'
 import { useVersionEdits } from '@hooks/useVersionEdits'
 import EditBlueprintParamModal from './EditBlueprintParam'
@@ -52,21 +51,9 @@ const EditTypeModal: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
       <ModalBody>
         <TextInput id='key' label='key' placeholder='baba yaga' value={key} onChange={setKey} isValid errorMessage='' />
 
-        <Select id='type' label='Type' value={propertyData.type} onChange={type => setPropertyData({ ...propertyData, type })}>
-          <option value='string'>string</option>
-          
-          <option value='number'>number</option>
-          
-          <option value='boolean'>boolean</option>
-          
-          <option value='enum'>enum</option>
+        <TypeSelect id='type' label='Type' types={version?.data.types || []} value={propertyData.type} onChange={type => setPropertyData({ ...propertyData, type, isArray: false })} />
 
-          <option value='blueprint'>blueprint</option>
-
-          {version?.data.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
-        </Select>
-
-        {!['string', 'number', 'boolean', 'enum', 'blueprint'].includes(propertyData.type) && (
+        {!['string', 'number', 'boolean', 'enum', 'script', 'Calculation'].includes(propertyData.type) && (
           <>
             {/* Check the type and see if it has a name property (arrays are required to have them) */}
             <Checkbox id='is-array' label='Is Array?' checked={propertyData.isArray} onChange={val => setPropertyData({ ...propertyData, isArray: val })} />
@@ -125,77 +112,6 @@ const EditTypeModal: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
                       />
                     ))}>
                       <p>{item}</p>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )
-        }
-
-        {
-          (propertyData.type === 'blueprint') && (
-            <div className='mt-4'>
-              <div className='flex flex-col'>
-                <Select id='output-type' label='Output Type' value={propertyData.outputType || 'none'} onChange={outputType => setPropertyData({ ...propertyData, outputType })}>
-                  <option value='none'>none</option>
-
-                  <option value='string'>string</option>
-                  
-                  <option value='number'>number</option>
-                  
-                  <option value='boolean'>boolean</option>
-                  
-                  <option value='enum'>enum</option>
-
-                  <option value='blueprint'>blueprint</option>
-                  {version?.data?.types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
-                </Select>
-
-                <Checkbox id='is-output-an-array' label='Is Array?' checked={propertyData.isOutputAnArray} onChange={isOutputAnArray => setPropertyData({ ...propertyData, isOutputAnArray })} />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p>Inputs</p>
-
-                <div
-                  onClick={() => {
-                    const index = propertyData.inputs?.findIndex(o => o.name === 'New Input')
-
-                    if (index !== -1) return
-
-                    setPropertyData({ ...propertyData, inputs: [ ...(propertyData.inputs || []), { name: 'New Input', type: 'string', isArray: false } ] })
-                  }}
-                >
-                  <p>Add</p>
-                </div>
-              </div>
-
-              <p style={{ height: 1, width: '100%', backgroundColor: 'white', marginTop: 4, marginBottom: 4 }} />
-
-              <div>
-                {propertyData.inputs?.map((param) => {
-                  return (
-                    <div key={param.name}
-                      className='bg-neutral-50 border border-neutral-300 text-neutral-900 p-2.5 dark:bg-neutral-700 dark:border-neutral-600 dark:text-white'
-                      onClick={() =>
-                        openModal('edit-blueprint-param', ({ id }) => (
-                          <EditBlueprintParamModal id={id} data={param} onSave={(value: Param) => {
-                            let newInputs = [ ...propertyData.inputs || [] ]
-                
-                            const index = newInputs.findIndex(p => p.name === param.name)
-                
-                            if (index === -1) return
-                
-                            newInputs[index] = value
-                
-                            setPropertyData({ ...propertyData, inputs: newInputs })
-                          }} onDelete={() => {
-                            const newInputs = propertyData.inputs?.filter(p => p.name !== param.name)
-                            setPropertyData({ ...propertyData, inputs: newInputs })
-                          }} />
-                        ))}>
-                      <p>{param.name} - {param.type}{param.isArray ? '(Array)' : ''}</p>
                     </div>
                   )
                 })}

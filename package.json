@@ -13,7 +13,6 @@
     "screenshots": "node screenshots/grabScreenshots.js"
   },
   "dependencies": {
-    "@bardsballad/verse": "^0.2.2",
     "@craftjs/core": "^0.2.11",
     "@floating-ui/react": "^0.27.8",
     "@ionic/storage": "^4.0.0",
@@ -41,6 +40,7 @@
     "clsx": "^2.1.1",
     "dexie": "^4.0.10",
     "dexie-react-hooks": "^1.1.7",
+    "dot-prop": "^10.1.0",
     "fast-equals": "^5.2.2",
     "flowbite": "^2.5.2",
     "immer": "^10.1.1",

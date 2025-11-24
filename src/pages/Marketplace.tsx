@@ -1,24 +1,18 @@
 import Header from '@components/Header'
 import { closeModal, openModal } from '@state/modals';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MiscStorage } from '@lib/storage';
 import FloatingActionButton from '@components/FloatingActionButton';
 import getVisualTextFromVersionID from '@utils/getVisualTextFromVersionID';
-import createSubscription from '@storage/methods/subscriptions/createSubscription';
-import saveSystem from '@storage/methods/systems/saveSystem';
-import saveVersionedResource from '@storage/methods/versionedresources/saveVersionedResource';
 import { authState } from '@state/auth';
 import { syncState } from '@state/sync';
 import { useToast } from '@hooks/useToast';
 import {getMarketplaceItems} from "@api/getMarketplaceItems";
-import {getSubscriptionData} from "@api/getSubscriptionData";
 import MarketplaceViewModal from '@modals/MarketplaceView';
 import MarketplaceDisclaimer from '@modals/MarketplaceDisclaimer';
 import PublishNewSystem from '@modals/PublishItem';
-import storeHashes from '@storage/methods/hashes/storeHashes';
-import generateTypeHash from '@utils/generateTypeHash';
-import deleteItem from '@utils/items/deleteItem';
-import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource';
+import { hasRole } from '@utils/roles/hasRole';
+import Roles from '@/const/roles';
 
 type MarketplaceItem = {
   id: string,
@@ -71,9 +65,16 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
 const Marketplace: React.FC = () => {
   const [items, setItems] = useState<MarketplaceItem[]>([])
 
-  const { isLoggedIn } = authState.useValue()
+  const { isLoggedIn, user } = authState.useValue()
 
   const { isOnline } = syncState.useValue()
+
+  const isAdmin = useMemo(() => {
+    if (!isLoggedIn) return false
+    if (!user) return false
+
+    if (!hasRole(user.role, Roles.ADMINISTRATOR)) return false
+  }, [isLoggedIn, user])
 
   useEffect(() => {
     if (!isOnline) return setItems([])
@@ -107,7 +108,7 @@ const Marketplace: React.FC = () => {
   if (!isOnline) {
     return (
       <div className='h-full'>
-        <Header title='Marketplace' />
+        <Header title='Marketplace' subtitle='Coming soon: community-made systems, datapacks, & themes.' />
 
         <div className='flex justify-center items-center p-4'>
           <h2 className='text-3xl'>Marketplace is not available while you're offline!</h2>
@@ -118,7 +119,7 @@ const Marketplace: React.FC = () => {
 
   return (
     <div>
-      <Header title='Marketplace' subtitle='Discover amazing systems, themes, and content created by the community' />
+      <Header title='Marketplace' subtitle='Coming soon: community-made systems, datapacks, & themes.' />
 
       <div className='px-4 pb-4'>
         {/* Categories */}
@@ -157,7 +158,7 @@ const Marketplace: React.FC = () => {
         </div>
       </div>
       
-      {isLoggedIn && (
+      {isAdmin && (
         <FloatingActionButton
           onClick={() => openModal('publish-item', ({ id }) => (
             <PublishNewSystem id={id} />
