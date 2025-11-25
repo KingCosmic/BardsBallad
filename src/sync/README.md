@@ -24,7 +24,6 @@ A post request that sends all documents to the server that have been created or 
 
 ### Returns
 - 200 OK: A list of conflicts.
-- 204 No Content: If there are no new documents since the last checkpoint.
 - 401 Unauthorized: If the user is not authenticated.
 - 500 Internal Server Error: If there is an error on the server.
 

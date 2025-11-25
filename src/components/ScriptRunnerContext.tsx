@@ -2,15 +2,18 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react'
 import runCode from '@utils/verse/runCode'
 import Sandbox from '@nyariv/sandboxjs'
+import ScriptCacheProvider, { useScriptCache } from '@hooks/useScriptCache'
+import { Script } from '@/types/script'
 
 interface ScriptResult<T> {
   success: boolean
   error?: string
-  result?: T
+  result?: T,
+  cacheKey: string
 }
 
 interface ScriptRunnerContextType {
-  runScript: <T>(compiled: string, context: Record<string, any>, updateState: (state: any) => void) => Promise<ScriptResult<T>>
+  runScript: <T>(cacheKey: string | undefined, compiled: Script, context: Record<string, any>, updateState: (state: any) => void) => Promise<ScriptResult<T>>
   isReady: boolean
 }
 
@@ -19,6 +22,8 @@ const ScriptRunnerContext = createContext<ScriptRunnerContextType | null>(null)
 export function ScriptRunnerProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false)
   const vmRef = useRef<Sandbox | null>(null)
+
+  const { cache, invalidateCacheByPaths } = useScriptCache() 
 
   useEffect(() => {
     let mounted = true
@@ -46,16 +51,21 @@ export function ScriptRunnerProvider({ children }: { children: React.ReactNode }
 
 
   async function runScript<T>(
-    compiled: string,
+    cacheKey: string | undefined,
+    compiled: Script,
     context: Record<string, any>,
-    updateState: (state: any) => void
-  ): Promise<{ success: boolean, error?: string, result?: T }> {
+    updateState: (state: any) => void,
+  ): Promise<ScriptResult<T>> {
     const vm = vmRef.current
     if (!vm) {
-      return { success: false, error: 'VM not initialized' }
+      return { success: false, error: 'VM not initialized', cacheKey: '' }
     }
 
-    return runCode<T>(vm, compiled, context, updateState)
+    const output = await runCode<T>(cacheKey, vm, compiled, context, updateState, cache)
+
+    invalidateCacheByPaths(output.invalidatedPaths)
+
+    return output
   }
 
   return (

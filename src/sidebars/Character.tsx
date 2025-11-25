@@ -3,6 +3,7 @@ import { Character } from '@storage/schemas/character'
 import { ActionType, SystemData } from '@storage/schemas/system'
 import { useMemo } from 'react'
 import { sidebarState, toggleSecondarySidebar, openSecondarySidebar, closeSecondarySidebar } from '@state/sidebar'
+import { useScriptCache } from '@hooks/useScriptCache'
 
 interface Props {
   actions: ActionType[],
@@ -13,6 +14,7 @@ interface Props {
 
 const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateState }) => {
   const { isReady, runScript } = useScriptRunner()
+  const cache = useScriptCache()
 
   const state = useMemo(() => {
     let sys: Record<string, any> = {}
@@ -46,7 +48,7 @@ const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateS
           {actions?.map(a => (
             <div key={a.name} className='fantasy-card-gradient border border-fantasy-border rounded px-4 py-2 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative'
               onClick={() => {
-                runScript(a.script.compiled, state, updateState)
+                runScript(a.script.compiled, state, updateState, cache)
               }}
             >
               <p className='text-neutral-100'>{a.name}</p>

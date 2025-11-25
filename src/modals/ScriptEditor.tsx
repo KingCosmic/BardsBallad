@@ -13,6 +13,8 @@ import { closeModal } from '@state/modals';
 import { Script } from '@/types/script';
 import { BUILTIN_TYPES, Type, VerseScriptCompiler } from '@bardsballad/verse';
 import { SystemType, TypeData } from '@storage/schemas/system';
+import Sandbox from '@nyariv/sandboxjs';
+import parse from '@nyariv/sandboxjs/dist/node/parser';
 
 // Setup Monaco workers
 self.MonacoEnvironment = {
@@ -503,6 +505,31 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
     ...globals
   ]
 
+  const vmRef = useRef<Sandbox | null>(null)
+  
+  useEffect(() => {
+    let mounted = true
+
+    async function initVM() {
+      try {      
+        if (!mounted) return
+        
+        vmRef.current = new Sandbox()
+      } catch (error) {
+        console.error('Failed to initialize QuickJS:', error)
+      }
+    }
+
+    initVM()
+
+    return () => {
+      mounted = false
+      if (vmRef.current) {
+        vmRef.current = null
+      }
+    }
+  }, [])
+
 	useEffect(() => {
 		if (monacoEl) {
 			setEditor((editor) => {
@@ -547,6 +574,15 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
             description: 'Open a modal of {type} and await its return',
             isAsync: true
           },
+          'getCalculation': {
+            returnType: BUILTIN_TYPES.unknown,
+            parameters: [
+              // type: string, title: string, value: any
+              { name: 'calc', type: BUILTIN_TYPES.unknown },
+            ],
+            description: 'returns the calculated value of a Calculation type',
+            isAsync: true
+          },
           'floor': {
             returnType: BUILTIN_TYPES.number,
             parameters: [
@@ -588,10 +624,19 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
           
           try {
             const result = compiler.current!.compile(code);
+            console.log(result.code)
+            if (!vmRef.current) return
             setResult({
               isCorrect: result.success ? compareTypes(result.returnType!, expectedType) : false,
               source: code,
-              compiled: result.success ? result.code! : result.error!,
+              compiled: result.success ?
+                parse(`
+                  async function rc() {
+                    ${result.code!}
+                  }
+                  return rc()
+                `)
+                : result.error!,
               blueprint: { nodes: [], edges: [] }
             });
             setReturnType(result.success ? result.returnType! : 'unknown')

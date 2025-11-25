@@ -10,21 +10,26 @@ export default (props: TextProps) => {
   const localData = useLocalData()
   const { isReady, runScript } = useScriptRunner()
 
+  const [cacheKey, setCashKey] = useState('')
+
   const [text, setText] = useState('SE')
 
-  const state = useMemo(() => ({
-    ...props.state,
-    ...localData,
-  }), [localData, props.state])
+  const state = useMemo(() =>
+    Object.assign({}, props.state, localData),
+  [localData, props.state])
 
   useEffect(() => {
-    function rc() {
+    async function rc() {
       if (!isReady) return
       if (!props.useScriptValue) return setText(props.text!)
 
       if (!props.script!.isCorrect) return setText('SE')
 
-      runScript<string>(props.script!.compiled, state, props.updateState!).then(output => setText(output.result ?? ''));
+      // console.log(state.info)
+      const output = await runScript<string>(cacheKey, props.script!, state, props.updateState!);
+
+      setText(output.result ?? '')
+      setCashKey(output.cacheKey)
     }
 
     rc()

@@ -47,6 +47,7 @@ export default function ArrayEdit({ title, data, type, types, onAdd, onChange, o
 
                   onChange(`${title}`, newItems)
                 }}
+                
                 data={item}
               />
             ))}
