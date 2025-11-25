@@ -1,17 +1,17 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useLocalData } from '@designer/renderer/Context'
-import BlueprintProcessor from '@utils/Blueprints/processBlueprint'
 
 import { SelectProps } from './Editor'
 import globalStyles from '@designer/styles'
 import Select from '@components/inputs/Select'
-import runCode from '@utils/verse/runCode'
 import { useScriptRunner } from '@components/ScriptRunnerContext'
+import { useScriptCache } from '@hooks/useScriptCache'
 
 export default (props: SelectProps) => {
   const localData = useLocalData()
   const { isReady, runScript } = useScriptRunner()
+  const cache = useScriptCache()
 
   const [value, setValue] = useState('default')
   const [options, setOptions] = useState<any[]>([])
@@ -27,7 +27,7 @@ export default (props: SelectProps) => {
 
       if (!props.optionsScript!.isCorrect) return setOptions([])
       
-      const output = await runScript<any[]>(props.optionsScript!.compiled, state, props.updateState!);
+      const output = await runScript<any[]>(props.optionsScript!, state, props.updateState!, cache);
 
       setOptions(output.result ?? [])
     }
@@ -38,7 +38,7 @@ export default (props: SelectProps) => {
   const onChange = useCallback((value: any) => {
     if (!props.onChange?.isCorrect || !isReady) return
 
-    runScript(props.onChange.compiled, { ...state, ['selectedValue']: value }, props.updateState!)
+    runScript(props.onChange, { ...state, ['selectedValue']: value }, props.updateState!, cache)
   }, [props.onChange, state, props.updateState])
 
   return (

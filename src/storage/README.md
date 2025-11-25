@@ -1,3 +1,4 @@
+# Storage overview
 We moved from rxdb to straight dexiejs for more control over the database.
 
 # Schemas

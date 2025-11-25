@@ -13,42 +13,48 @@ export default (props: PropsWithChildren<ContainerProps>) => {
   const localData = useLocalData()
   const { isReady, runScript } = useScriptRunner()
 
-  const state = useMemo(() => ({
-    ...props.state,
-    ...localData,
-  }), [localData, props.state])
+  const state = useMemo(() =>
+    Object.assign({}, props.state, localData),
+  [localData, props.state])
 
   const [items, setItems] = useState<any[]>([])
   const [isVisible, setIsVisible] = useState(true)
 
+  const [itemCache, setItemCache] = useState('')
   useEffect(() => {
     async function rc() {
       if (!props.script!.isCorrect || !props.isList || !isReady) return setItems([])
 
-      runScript<any[]>(props.script!.compiled, state, props.updateState!).then(output => setItems(output.result ?? []))
+      const output = await runScript<any[]>(itemCache, props.script!, state, props.updateState!)
+
+      setItems(output.result ?? [])
+      setItemCache(output.cacheKey)
     }
 
     rc()
   }, [state, props.script, props.isList, props.updateState])
 
+  const [visibiltiyCache, setVisibiltiyCache] = useState('')
   useEffect(() => {
     async function rc() {
       if (!props.dynamicVisibility || !isReady) return setIsVisible(props.isVisible!)
 
       if (!props.visibilityScript!.isCorrect) return setIsVisible(props.isVisible!)
 
-      const output = await runScript<boolean>(props.visibilityScript!.compiled, state, props.updateState!)
+      const output = await runScript<boolean>(visibiltiyCache, props.visibilityScript!, state, props.updateState!)
 
       setIsVisible(output.result ?? props.isVisible!)
+      setVisibiltiyCache(output.cacheKey)
     }
 
     rc()
   }, [state, props.isVisible, props.visibilityScript, props.updateState])
 
+
   const onClick = useCallback(() => {
     if (!props.isInteractive || !props.onPress!.isCorrect || !isReady) return
  
-    runScript(props.onPress!.compiled, state, props.updateState!)
+    runScript(undefined, props.onPress!, state, props.updateState!)
   }, [state, props.isInteractive, props.onPress, props.updateState])
 
   const backgroundClass = useMemo(() => styles[props.background!] ? styles[props.background!]?.background : '', [props.background])
