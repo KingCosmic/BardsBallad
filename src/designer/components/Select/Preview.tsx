@@ -27,7 +27,7 @@ export default (props: SelectProps) => {
 
       if (!props.optionsScript!.isCorrect) return setOptions([])
       
-      const output = await runScript<any[]>(props.optionsScript!, state, props.updateState!, cache);
+      const output = await runScript<any[]>(undefined, props.optionsScript!, state, props.updateState!);
 
       setOptions(output.result ?? [])
     }
@@ -38,7 +38,7 @@ export default (props: SelectProps) => {
   const onChange = useCallback((value: any) => {
     if (!props.onChange?.isCorrect || !isReady) return
 
-    runScript(props.onChange, { ...state, ['selectedValue']: value }, props.updateState!, cache)
+    runScript(undefined, props.onChange, { ...state, ['selectedValue']: value }, props.updateState!)
   }, [props.onChange, state, props.updateState])
 
   return (
