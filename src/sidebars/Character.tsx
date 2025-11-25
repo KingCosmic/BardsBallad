@@ -48,7 +48,7 @@ const CharacterSidebar: React.FC<Props> = ({ actions, system, character, updateS
           {actions?.map(a => (
             <div key={a.name} className='fantasy-card-gradient border border-fantasy-border rounded px-4 py-2 cursor-pointer transition-all duration-500 backdrop-blur-lg shadow-2xl hover:shadow-fantasy-accent/20 hover:shadow-xl hover:border-fantasy-accent/40 relative'
               onClick={() => {
-                runScript(a.script.compiled, state, updateState, cache)
+                runScript(undefined, a.script.compiled, state, updateState)
               }}
             >
               <p className='text-neutral-100'>{a.name}</p>
