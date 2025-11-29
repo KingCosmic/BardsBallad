@@ -10,13 +10,13 @@ export default function setNestedProperty(obj: { [key:string]: any }, path: stri
 
   // reduce into our target object.
   const target = parts.reduce((o, p) => {
-    // if our object is undefined just return nothing.
+    // if our object is undefined, just return nothing.
     if (!o) return undefined
 
-    // if we're not an array just return the property in the path.
+    // if we're not an array, just return the property in the path.
     if (!Array.isArray(o)) return o[p]
 
-    // we're in an array so it's not as simple as just object[property].
+    // we're in an array, so it's not as simple as just object[property].
 
     o = o.find(item => item.name === p)
 

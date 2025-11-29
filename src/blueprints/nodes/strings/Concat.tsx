@@ -30,7 +30,7 @@ function ConcatString({ id, data: { string1, string2 } }: NodeProps<Node<{ strin
       </p>
 
       <p style={{ textAlign: 'right', marginTop: 5 }}>
-        (string) concated string
+        (string) concatenated string
       </p>
 
       <Handle type='target' id='string1-string' position={Position.Left}

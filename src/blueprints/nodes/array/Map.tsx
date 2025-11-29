@@ -112,7 +112,7 @@ function Map({ id, data: { inputType, mapType } }: NodeProps<Node<{ inputType: s
             <Handle type='source' id='completed-node' position={Position.Right}
               style={{ top: 228, bottom: 'auto' }}
             />
-            <Handle type='source' id={`filterd-${mapType}(Array)`} position={Position.Right}
+            <Handle type='source' id={`filtered-${mapType}(Array)`} position={Position.Right}
               style={{ top: 255, bottom: 'auto' }}
             />
           </>

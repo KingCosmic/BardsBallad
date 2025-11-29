@@ -16,14 +16,14 @@ import { SystemType, TypeData } from '@storage/schemas/system';
 import Sandbox from '@nyariv/sandboxjs';
 import parse from '@nyariv/sandboxjs/dist/node/parser';
 
-// Setup Monaco workers
+// Set up Monaco workers
 self.MonacoEnvironment = {
   getWorker() {
     return new editorWorker()
   },
 };
 
-// Register custom language
+// Register a custom language
 monaco.languages.register({ id: 'verse' });
 
 // Set syntax highlighting
@@ -87,7 +87,7 @@ monaco.languages.setMonarchTokensProvider('verse', {
       [/[;,.]/, 'delimiter'],
       
       // Strings
-      [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
+      [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-terminated string
       [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
       
       // Characters
@@ -173,7 +173,7 @@ function resolveType(chain: string) {
       continue;
     }
     
-    // if there's no properties that match this then just return the current
+    // if there are no properties that match this, then just return the current
     if (!current.properties || !current.properties[parts[i]]) {
       return current;
     }
@@ -326,7 +326,7 @@ monaco.languages.registerHoverProvider('verse', {
     const line = model.getLineContent(position.lineNumber);
     const beforeWord = line.substring(0, position.column - 1);
     
-    // Extract the full chain up to current position
+    // Extract the full chain up to the current position
     const chainMatch = beforeWord.match(/([\w.]+(?:\[\d+\])?)$/);
     
     if (chainMatch) {
@@ -422,7 +422,7 @@ function compareTypes(typeA: string, typeB: string) {
     return true
   }
 
-  // atleast one is type any and they're both arrays.
+  // at least one is typed any, and they're both arrays.
   if ((a.name === 'any' || b.name === 'any') && (a.isArray && b.isArray)) {
     return true
   }
@@ -432,7 +432,7 @@ function compareTypes(typeA: string, typeB: string) {
     return true
   }
 
-  // atleast one is type any and not arrays
+  // at least one is typed any and not arrays
   if ((a.name === 'any' || b.name === 'any') && (!a.isArray && !b.isArray)) {
     return true
   }

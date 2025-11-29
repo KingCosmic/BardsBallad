@@ -9,7 +9,7 @@ export default async function storeMutation(local_id: string, promise: any) {
 
   const data = await promise
   if (!data) {
-    console.warn('No data returned from mutaiton')
+    console.warn('No data returned from mutation')
     return
   }
 

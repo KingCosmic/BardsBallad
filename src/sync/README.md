@@ -32,7 +32,7 @@ A post request that sends all documents to the server that have been created or 
 ```
 
 ## Websockets /{version}/ws
-A websocket connection that allows the client to recieve real-time updates from the server. The server will send out events when documents are created, updated, or deleted. The client can also send events to the server to create, update, or delete documents.
+A websocket connection that allows the client to receive real-time updates from the server. The server will send out events when documents are created, updated, or deleted. The client can also send events to the server to create, update, or delete documents.
 
 ### Returns
 - 200 OK: A websocket connection.

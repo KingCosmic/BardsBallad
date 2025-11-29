@@ -19,7 +19,7 @@ import Roles from '@/const/roles'
 const batchSize = 10
 
 // TODO: We could probably sync based of subscriptions instead of each collection...
-// or atleast pull our stuff to sync from subscriptions and just build out the id's to sync at once instead of multiple for loops and checks.
+// or at least pull our stuff to sync from subscriptions and just build out the id's to sync at once instead of multiple for loops and checks.
 
 const collectionsToSync = [
   {
@@ -108,9 +108,9 @@ async function handlePullUpdates(bulkPut: BulkPut, pull: PullFunction, localDocu
       const remote = new Date(doc.updated_at).getTime()
 
       const doVersionsMatch = (localDocument.version === doc.version)
-      const wasUpdatedLocaly = (local >= remote)
+      const wasUpdatedLocally = (local >= remote)
 
-      return (doVersionsMatch && wasUpdatedLocaly) ? [] : { local: localDocument, remote: doc }
+      return (doVersionsMatch && wasUpdatedLocally) ? [] : { local: localDocument, remote: doc }
     })
 
     const chosen = await handleConflicts(pullConflicts)
@@ -172,12 +172,12 @@ export const sync = async () => {
 
     const isPremium = hasRole(user.role, Roles.PREMIUM)
 
-    // Update synced characters array first.
+    // Update the synced characters array first.
     const synced = await SyncStorage.get<string[]>('synced_characters') || []
 
     await setSyncedCharacters(synced)
 
-    // now that we've updated our synced_characters list, lets sort all the items to sync.
+    // now that we've updated our synced_characters list, let's sort all the items to sync.
     const [subs, chars] = await Promise.all([
       db.subscriptions.toArray(),
       db.characters.toArray()
@@ -213,22 +213,22 @@ export const sync = async () => {
 
       const isSynced = (!!sub.id)
 
-      // if a character we're syncing relies on this version we need to sync it too.
+      // if a character we're syncing relies on this version, we need to sync it too.
       const isReferencedByChar = (pushedCharacterRef !== undefined)
 
       const wasUpdated = updatedSubs.includes(sub.local_id)
 
-      // if we're referenced by a character and not synced this subscription needs to sync.
+      // if we're referenced by a character and not synced, this subscription needs to sync.
       if (!isSynced && isReferencedByChar) {
         subsToPush.push(sub.local_id)
       }
 
-      // if we're not synced and premium this should be pushed anyways.
+      // if we're not synced and premium, this should be pushed anyway.
       if (!sub.id && isPremium) {
         subsToPush.push(sub.local_id)
       }
 
-      // and lastly, if this record was updated it should and we're premium it should be synced.
+      // and lastly, if this record was updated, it should, and we're premium it should be synced.
       if (wasUpdated && isPremium) {
         subsToPush.push(sub.local_id)
       }
@@ -242,8 +242,8 @@ export const sync = async () => {
       // await handlePushingUpdates(coll.bulkPut, coll.push, await coll.get())
     }
   } catch (e) {
-    addToast(`Error occured while syncing. ${e}`, 'error')
-    return console.error(`Error occured while syncing. ${e}`)
+    addToast(`Error occurred while syncing. ${e}`, 'error')
+    return console.error(`Error occurred while syncing. ${e}`)
   }
 
   // TODO: setup websocket connection for real-time updates.

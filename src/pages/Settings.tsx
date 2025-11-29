@@ -80,7 +80,7 @@ const tabs = [
                 <p className='text-lg'>Discord Integration</p>
                 <p className='mb-4'>Discord linked!</p>
                 <Button color='danger' onClick={getLoginLink}>
-                  Disonnect
+                  Disconnect
                 </Button>
               </div>
             )}

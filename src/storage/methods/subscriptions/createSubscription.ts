@@ -1,9 +1,7 @@
 import SubscriptionSchema from '@/storage/schemas/userSubscription'
 import { db } from '@/storage'
 
-import { v4 as uuidv4 } from 'uuid'
 import { authState } from '@state/auth'
-import { AuthStorage } from '@lib/storage'
 import generateLocalId from '@utils/generateLocalId'
 import ensureUniqueness from '@utils/db/ensureIdUniqueness'
 
@@ -21,7 +19,7 @@ export default async (type: Types, resource_id: string, version_id: string, auto
       local_id = await generateLocalId()
     }
 
-    // validate character format.
+    // validate a character format.
     const subscriptionData = {
       local_id,
     

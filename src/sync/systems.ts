@@ -38,10 +38,10 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 
     const pushedCharacterRef = characters.find(c => c.system.local_id === s.local_id && synced.includes(c.local_id))
 
-    // if a character we're syncing relies on this system we need to sync it too.
+    // if a character we're syncing relies on this system, we need to sync it too.
     const referencedByChar = (pushedCharacterRef !== undefined)
 
-    // if this system hasn't been synced and we're a premium user it should be synced.
+    // if this system hasn't been synced, and we're a premium user, it should be synced.
     const notSyncedAndPremium = (!s.id && isPremium)
 
     return (referencedByChar || notSyncedAndPremium)

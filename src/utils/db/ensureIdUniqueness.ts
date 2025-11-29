@@ -1,6 +1,6 @@
 import { db } from '@/storage'
 
-// This functions makes sure a id is unique across all database tables.
+// This functions makes sure an id is unique across all database tables.
 const ensureUniqueness = async (id: string) => {
   const results = await Promise.all(
     db.tables.map(tb => tb.get(id))

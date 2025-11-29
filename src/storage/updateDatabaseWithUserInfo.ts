@@ -11,7 +11,7 @@ export async function updateDatabaseWithUserInfo(user_id: string, device_id: str
     db.versions.toArray()
   ])
 
-  // since our id's are unique across collections we can do this with one map :)
+  // since our ids are unique across collections, we can do this with one map :)
   const idMap = new Map<string, string>()
   
   // These are updated docs (user_id, and local_id are updated. to reflect the user authentication.)
@@ -39,7 +39,7 @@ export async function updateDatabaseWithUserInfo(user_id: string, device_id: str
   systems.forEach((sys) => {
     const [char_device_id, ...old_uuid] = sys.local_id.split('-')
 
-    // if a system lacks a userid it was made locally (or possibly imported from another not signed in account)
+    // if a system lacks a user id it was made locally (or possibly imported from another not signed in an account)
     // but we consider that the same thing here.
     const lacksUserId = (sys.user_id === 'none')
     const subscribedTo = (subscriptions.find(sub => sub.resource_id === sys.local_id))
@@ -66,12 +66,12 @@ export async function updateDatabaseWithUserInfo(user_id: string, device_id: str
   versions.forEach((vers) => {
     const [vers_device_id, ...old_uuid] = vers.local_id.split('-')
 
-    // if a system lacks a userid it was made locally (or possibly imported from another not signed in account)
+    // if a system lacks a user id it was made locally (or possibly imported from another not signed in an account)
     // but we consider that the same thing here.
     const lacksUserId = (vers.user_id === 'none')
     const subscribedTo = (subscriptions.find(sub => sub.version_id === vers.local_id))
 
-    // these are versions that shouldn't be on this system anyways.
+    // these are versions that shouldn't be on this system anyway.
     if (!lacksUserId && !subscribedTo) {
       return
     }
@@ -94,10 +94,10 @@ export async function updateDatabaseWithUserInfo(user_id: string, device_id: str
   subscriptions.forEach((sub) => {
     const [sub_device_id, ...old_uuid] = sub.local_id.split('-')
 
-    // if a subscription lacks a userid it was made locally
+    // if a subscription lacks an userid it was made locally
     const lacksUserId = (sub.user_id === 'none')
 
-    // these are versions that shouldn't be on this system anyways.
+    // these are versions that shouldn't be on this system anyway.
     if (!lacksUserId) {
       return
     }

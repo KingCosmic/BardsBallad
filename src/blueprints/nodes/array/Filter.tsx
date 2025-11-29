@@ -110,7 +110,7 @@ function Filter({ id, data: { inputType } }: NodeProps<Node<{ inputType: string 
             <Handle type='source' id='completed-node' position={Position.Right}
               style={{ top: 228, bottom: 'auto' }}
             />
-            <Handle type='source' id={`filterd-${inputType}(Array)`} position={Position.Right}
+            <Handle type='source' id={`filtered-${inputType}(Array)`} position={Position.Right}
               style={{ top: 255, bottom: 'auto' }}
             />
           </>
