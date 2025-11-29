@@ -9,13 +9,13 @@ export default function getDefFromProperty(obj: { [key:string]: any }, path: str
   if (!property) return undefined;
 
   const parentProperty = segments.reduce((o: { [key:string]: any }, p: string) => {
-    // if our object is undefined just return nothing.
+    // if our object is undefined, just return nothing.
     if (!o) return undefined
 
-    // if we're not an array just return the next property in the path
+    // if we're not an array, just return the next property in the path
     if (!Array.isArray(o)) return o[p]
 
-    // we're in an array so it's not as simple as just object[property].
+    // we're in an array, so it's not as simple as just object[property].
 
     o = o.find(item => item.name === p)
 
@@ -24,8 +24,8 @@ export default function getDefFromProperty(obj: { [key:string]: any }, path: str
 
   if (!parentProperty) return undefined
 
-  // check if property is an object with a _def property.
-  // if not then we need to check parentProperty for the _def property and get the key that matches our property to get it's type.
+  // check if a property is an object with a _def property.
+  // if not, then we need to check parentProperty for the _def property and get the key that matches our property to get its type.
 
   if ((parentProperty[property] && parentProperty[property]._def)) {
     return parentProperty[property]._def

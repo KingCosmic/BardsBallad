@@ -16,7 +16,7 @@ import { editorState } from '@state/editor'
 import { SystemData, type SystemType } from '@storage/schemas/system'
 import { useVersionEdits } from '@hooks/useVersionEdits'
  
-function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: SystemType }>>) {
+function SpreadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: SystemType }>>) {
   const { updateNodeData } = useReactFlow()
   const updateNodeInternals = useUpdateNodeInternals()
 
@@ -93,4 +93,4 @@ function SpeadObject({ id, data: { inputType } }: NodeProps<Node<{ inputType: Sy
   )
 }
  
-export default memo(SpeadObject)
+export default memo(SpreadObject)

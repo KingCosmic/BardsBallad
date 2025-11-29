@@ -18,7 +18,7 @@ import generateTypeHash from '@utils/generateTypeHash'
 const batchSize = 10
 
 // TODO: We could probably sync based of subscriptions instead of each collection...
-// or atleast pull our stuff to sync from subscriptions and just build out the id's to sync at once instead of multiple for loops and checks.
+// or at least pull our stuff to sync from subscriptions and just build out the id's to sync at once instead of multiple for loops and checks.
 
 const collectionsToSync = [
   {
@@ -148,7 +148,7 @@ export const sync = async () => {
 
   if (!isOnline || !isLoggedIn) return
 
-  // Update synced characters array first.
+  // Update the synced characters array first.
   const synced = await SyncStorage.get<string[]>('synced_characters') || []
 
   await setSyncedCharacters(synced)

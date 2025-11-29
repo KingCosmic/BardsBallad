@@ -55,12 +55,12 @@ const SaveNewVersion: React.FC<Props> = ({ id, original, edits, edits_id }) => {
           storeHashes(newVersion.local_id, newVersion.data.types.map(generateTypeHash))
 
           // I'm not entirely sure how this would happen?
-          // possibly a user unsubs from the original but then the ui *shouldn't* allow a user to get into this editing scenario.
+          // possibly a user unsubscribes from the original, but then the ui *shouldn't* allow a user to get into this editing scenario.
           if (!original) {
             addToast(`Error finding original??? Please open a ticket for this :).`, 'error')
           } else {
             // reset the edits back inline with the original
-            // (to allow for some versioning incase they wanted to make edits off this version again.)
+            // (to allow for some versioning in case they wanted to make edits off this version again.)
             await duplicateVersionedResource(original, edits_id, true)
           }
 

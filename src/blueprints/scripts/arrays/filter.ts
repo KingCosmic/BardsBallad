@@ -8,7 +8,7 @@ export default {
     state.set('currentIndex', 0)
     state.set('maxIndex', processor.getParam(node.id, 'input').length - 1)
     state.set('newArray', [])
-    processor.setParam(node.id, 'filterd', [])
+    processor.setParam(node.id, 'filtered', [])
   },
   process: (processor: BlueprintProcessor, node: Node) => {
     const state = processor.nodeState.get(node.id)!
@@ -22,7 +22,7 @@ export default {
       if (filtered) {
         const newArray = [ ...state.get('newArray'), inputArray[currentIndex - 1] ]
         state.set('newArray', newArray)
-        processor.setParam(node.id, 'filterd', newArray)
+        processor.setParam(node.id, 'filtered', newArray)
       }
     }
 

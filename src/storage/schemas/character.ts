@@ -4,7 +4,7 @@ const characterSchema = z.object({
   // server generated id, mostly shows if this data was ever synced to begin with.
   id: z.string({ invalid_type_error: 'id must be a string' }).optional(),
 
-  // local id generate client side
+  // local id is generated client side
   local_id: z.string({ invalid_type_error: 'local_id must be a string' }).max(73, 'local_id must be 73 characters or less'),
 
   // id of the user who created this character
@@ -22,7 +22,7 @@ const characterSchema = z.object({
     version_id: z.string()
   }),
 
-  // a random hash, a quick glance at whether or not update conflicts are happening.
+  // a random hash, a quick glance to see if update conflicts are happening.
   version: z.string().optional(),
 
   datapacks: z.array(z.object({ pack_id: z.string(), version_id: z.string() })),

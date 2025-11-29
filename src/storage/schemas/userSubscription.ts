@@ -12,7 +12,7 @@ const userSubscriptionSchema = z.object({
   version_id: z.string(),
   auto_update: z.boolean().optional().default(true),
 
-  // a random hash, a quick glance at whether or not update conflicts are happening.
+  // a random hash, a quick glance to see if update conflicts are happening.
   version: z.string().optional(),
   
   subscribed_at: z.string().datetime({ offset: true }),
