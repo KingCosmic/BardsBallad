@@ -23,11 +23,6 @@ import {
 import { Separator } from "@/components/ui/separator"
 
 const data = {
-  user: {
-    name: "KingCosmic",
-    email: "cosmic@bardsballad.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: 'Marketplace',
@@ -83,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <Separator />
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

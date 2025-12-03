@@ -83,7 +83,7 @@ export function CharacterSidebar() {
   if (!character || !system) return <></>
 
   return (
-    <Sidebar variant='inset' side='right' collapsible="offcanvas">
+    <Sidebar side='right' collapsible="offcanvas">
       <SidebarHeader>
         <span className="text-base font-semibold">Quick Actions</span>
       </SidebarHeader>

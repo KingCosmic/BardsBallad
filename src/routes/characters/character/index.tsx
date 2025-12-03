@@ -113,7 +113,7 @@ const CharacterPage: React.FC = () => {
 
   return (
     <div className='flex flex-col h-full w-full @container'>
-      <Header title={character.name} subtitle={character.data._flavor as string} />
+      <Header title={character.name} subtitle={character.data._flavor as string} hasSidebar />
 
       <div className='flex flex-col grow overflow-hidden @xl:grid grid-cols-2 p-4 gap-4'>
 

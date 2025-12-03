@@ -24,14 +24,14 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
+  useSidebarProvider,
 } from "@/components/ui/sidebar"
 import { useNavigate } from "react-router"
 import { authState } from "@/state/auth"
 import { useMemo } from "react"
 
 export function NavUser() {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebarProvider('left')
   const { user, isLoggedIn } = authState.useValue()
 
   const navigate = useNavigate()
