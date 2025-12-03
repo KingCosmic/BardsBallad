@@ -14,17 +14,26 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { login } from "@/lib/api/auth/login"
+import { useNavigate } from "react-router"
+import { authState } from "@/state/auth"
 
 export function LoginForm({
   className,
   toggleSignup,
   ...props
 }: React.ComponentProps<"div"> & { toggleSignup(b: boolean): void }) {
+  const navigate = useNavigate()
+
+  const { isLoggedIn } = authState.useValue()
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    navigate('/settings')
+  }, [isLoggedIn])
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
