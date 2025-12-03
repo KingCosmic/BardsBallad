@@ -1,10 +1,21 @@
 import { GalleryVerticalEnd } from "lucide-react"
 import { LoginForm } from "./login"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SignupForm } from "./register"
+import { useNavigate } from "react-router"
+import { authState } from "@/state/auth"
 
 export default function LoginPage() {
   const [isSignup, setSignup] = useState(false)
+
+  const navigate = useNavigate()
+
+  const { isLoggedIn } = authState.useValue()
+
+  useEffect(() => {
+    navigate('/settings')
+  }, [isLoggedIn])
+
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">

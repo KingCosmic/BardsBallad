@@ -38,7 +38,9 @@ export function SignupForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={() => {
+          <form onSubmit={(e) => {
+            e.preventDefault()
+
             register(username, email, password)
           }}>
             <FieldGroup>
