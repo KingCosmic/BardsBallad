@@ -1,41 +1,39 @@
-/// <reference types="vitest" />
+import path from "path"
+import tailwindcss from "@tailwindcss/vite"
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-import legacy from '@vitejs/plugin-legacy'
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-import path from 'path'
+// process is a nodejs global
+const host = process.env.TAURI_DEV_HOST;
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    legacy()
-  ],
+// https://vite.dev/config/
+export default defineConfig(async () => ({
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@api': path.resolve(__dirname, './src/api'),
-      '@blueprints': path.resolve(__dirname, './src/blueprints'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@designer': path.resolve(__dirname, './src/designer'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
-      '@lib': path.resolve(__dirname, './src/lib'),
-      '@modals': path.resolve(__dirname, './src/modals'),
-      '@mutations': path.resolve(__dirname, './src/mutations'),
-      '@pages': path.resolve(__dirname, './src/pages'),
-      '@sidebars': path.resolve(__dirname, './src/sidebars'),
-      '@state': path.resolve(__dirname, './src/state'),
-      '@storage': path.resolve(__dirname, './src/storage'),
-      '@sync': path.resolve(__dirname, './src/sync'),
-      '@tabs': path.resolve(__dirname, './src/tabs'),
-      '@theme': path.resolve(__dirname, './src/theme'),
-      '@types': path.resolve(__dirname, './src/types'),
-      '@utils': path.resolve(__dirname, './src/utils'),
-      '@': path.resolve(__dirname, './src')
-    }
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/setupTests.ts',
-  }
-})
+
+  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
+  //
+  // 1. prevent Vite from obscuring rust errors
+  clearScreen: false,
+  // 2. tauri expects a fixed port, fail if that port is not available
+  server: {
+    port: 1420,
+    strictPort: true,
+    host: host || false,
+    hmr: host
+      ? {
+          protocol: "ws",
+          host,
+          port: 1421,
+        }
+      : undefined,
+    watch: {
+      // 3. tell Vite to ignore watching `src-tauri`
+      ignored: ["**/src-tauri/**"],
+    },
+  },
+}));
