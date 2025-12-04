@@ -2,22 +2,23 @@ import { useParams } from 'react-router'
 
 import { editorState, setTab } from '@/state/editor'
 
-import { Editor as EditorContext } from '@craftjs/core'
-
 import React, { useEffect, useMemo } from 'react'
 import { useVersionResource } from '@/hooks/versions/useVersionResource'
 import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
 import { useSystem } from '@/hooks/systems/useSystem'
 import { SystemData } from '@/db/system/schema'
-import Container from '@/components/designer/components/Container/Editor'
-import EditorSelect from '@/components/designer/components/Select/Editor'
-import FAB from '@/components/designer/FloatingActionButton'
-import Text from '@/components/designer/components/Text/Editor'
-import Input from '@/components/designer/components/Input/Editor'
-import Separator from '@/components/designer/components/Divider'
-import storeMutation from '@/db/version/methods/storeMutation'
 import Header from '@/components/header'
 import getVisualTextFromVersionID from '@/utils/misc/getVisualTextFromVersionID'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import CharacterSchema from './character-schema'
+import SystemDataEditor from './system-data'
+import SystemTypes from './system-types'
+import Functions from './functions'
+import Editor from './editor'
+import { Button } from '@/components/ui/button'
+import { IconDeviceFloppy } from '@tabler/icons-react'
+
+
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -68,15 +69,6 @@ const System: React.FC = () => {
     editorState.set(prev => ({ ...prev, ...newPages }))
   }, [editor, versionEdits])
 
-  const resolver = useMemo(() => ({
-    Container, Text, Select: EditorSelect, TextInput: Input, FAB, DesignerDivider: Separator
-  }), [Container, Text, EditorSelect, Input, FAB, Separator])
-
-  const handleNodeChange = (query: any) => {
-    if (!versionEdits) return
-
-    storeMutation(versionEdits.local_id, updateLexical(versionEdits.local_id, query.serialize()))
-  }
 
   if (!edits_id) return <>id not defined...</>
   if (!original) return <>Loading Original...</>
@@ -84,57 +76,67 @@ const System: React.FC = () => {
   if (!system) return <>Loading System...</>
 
   return (
-    <EditorContext resolver={resolver} onNodesChange={handleNodeChange}>
-      <div className='flex flex-col h-full overflow-y-scroll'>
-        <Header title={system.name} subtitle={`Version: ${getVisualTextFromVersionID(original.local_id)}`}
+    <div className='flex flex-col h-full overflow-y-scroll'>
+      <Header
+        title={system.name}
+        subtitle={`Version: ${getVisualTextFromVersionID(original.local_id)}`}
 
-          // options={[
-          //   {
-          //     onClick: () =>
-          //       openModal('save-new-version', ({ id }) => (
-          //         <SaveNewVersion id={id} original={original} edits={versionEdits} edits_id={edits_id} />
-          //       )),
-          //     Content: () => <p>Save Version</p>
-          //   }
-          // ]}
+        // options={[
+        //   {
+        //     onClick: () =>
+        //       openModal('save-new-version', ({ id }) => (
+        //         <SaveNewVersion id={id} original={original} edits={versionEdits} edits_id={edits_id} />
+        //       )),
+        //     Content: () => <p>Save Version</p>
+        //   }
+        // ]}
 
-          hasSidebar
-        />
+        hasSidebar
+      >
+        <Button size='icon' variant='outline'>
+          <IconDeviceFloppy />
+        </Button>
+      </Header>
 
-        <div className='p-4 sm:mr-64 relative flex flex-col grow'>
-          <Select id='tab-selector' label='' value={editor.tab} onChange={setTab}>
-            <option value='character'>Character Schema</option>
-            <option value='data'>System Data</option>
-            <option value='types'>Data Types</option>
-            <option value='functions'>Blueprints</option>
-            <option value='editor'>Editor UI</option>
-            <option value='creator'>Builder UI</option>
-            <option value='modals'>Modals</option>
-            <option value='actions'>Character Actions</option>
-          </Select>
+      <div className='p-4 relative flex flex-col grow'>
+        <Select value={editor.tab} onValueChange={setTab}>
+          <SelectTrigger className='w-full'>
+            <SelectValue placeholder='Select Tab' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value='character'>Character Schema</SelectItem>
+            <SelectItem value='data'>System Data</SelectItem>
+            <SelectItem value='types'>Data Types</SelectItem>
+            <SelectItem value='functions'>Blueprints</SelectItem>
+            <SelectItem value='editor'>Editor UI</SelectItem>
+            <SelectItem value='creator'>Builder UI</SelectItem>
+            <SelectItem value='modals'>Modals</SelectItem>
+            <SelectItem value='actions'>Character Actions</SelectItem>
+          </SelectContent>
+        </Select>
 
-          {
-            (editor.tab === 'character') ? (
-              <Character editsId={edits_id} versionedResource={versionEdits} />
-            ) : (editor.tab === 'data') ? (
-              <Data editsId={edits_id} versionedResource={versionEdits} />
-            ) : (editor.tab === 'types') ? (
-              <Types editsId={edits_id} versionedResource={versionEdits} />
-            ) : (editor.tab === 'functions') ? (
-              <Functions versionedResource={versionEdits} />
-            ) : (editor.tab === 'editor') ? (
-              <Editor versionedResource={versionEdits} />
-            ) : (editor.tab === 'creator') ? (
-              <Creator versionedResource={versionEdits} />
-            ) : (editor.tab === 'modals') ? (
-              <Modals versionedResource={versionEdits} />
-            ) : (editor.tab === 'actions') && (
-              <ActionsModal editsId={edits_id} versionedResource={versionEdits}  />
-            )
-          }
-        </div>
+        {
+          (editor.tab === 'character') ? (
+            <CharacterSchema editsId={edits_id} versionedResource={versionEdits} />
+          ) : (editor.tab === 'data') ? (
+            <SystemDataEditor editsId={edits_id} versionedResource={versionEdits} />
+          ) : (editor.tab === 'types') ? (
+            <SystemTypes editsId={edits_id} versionedResource={versionEdits} />
+          ) : (editor.tab === 'functions') ? (
+            <Functions versionedResource={versionEdits} />
+          ) : (editor.tab === 'editor') ? (
+            <Editor versionedResource={versionEdits} />
+          ) : null
+          // ) : (editor.tab === 'creator') ? (
+          //   <Creator versionedResource={versionEdits} />
+          // ) : (editor.tab === 'modals') ? (
+          //   <Modals versionedResource={versionEdits} />
+          // ) : (editor.tab === 'actions') && (
+          //   <ActionsModal editsId={edits_id} versionedResource={versionEdits}  />
+          // )
+        }
       </div>
-    </EditorContext>
+    </div>
   )
 }
 

@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { useCallback, useState } from 'react';
 import { closeModal } from '@/state/modals';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
 type Props = {
@@ -38,8 +37,7 @@ const ImportFile: React.FC<Props> = ({ id, title, onSave }) => {
           </DialogDescription>
         </DialogHeader>
         <div>
-          <Label htmlFor="picture">Picture</Label>
-          <Input id="picture" type="file" onChange={handleFileChange} />
+          <Input type="file" onChange={handleFileChange} />
         </div>
         <DialogFooter>
           <Button variant='outline' onClick={requestClose}>

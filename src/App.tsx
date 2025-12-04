@@ -23,6 +23,9 @@ import { ScriptTypesProvider } from './components/providers/script-types'
 import ScriptCacheProvider from './components/providers/script-cache'
 import { ScriptRunnerProvider } from './components/providers/script-runner'
 import Auth from './routes/auth'
+import System from './routes/editors/system'
+import { EditorProvider } from './components/providers/editor-provider'
+
 
 const queryClient = new QueryClient()
 
@@ -62,49 +65,51 @@ const App: React.FC = () => {
         } as React.CSSProperties
       }
     >
-      <BrowserRouter>
-        <ThemeProvider>
-          <QueryClientProvider client={queryClient}>
-            <ScriptTypesProvider>
-              <ScriptCacheProvider>
-                <ScriptRunnerProvider>
-                  <AppSidebar />
-                  <Routes>
-                    <Route path='/' element={<Layout />}>
-                      <Route index element={<Characters />} />
-
-                      <Route path='characters'>
+      <EditorProvider>
+        <BrowserRouter>
+          <ThemeProvider>
+            <QueryClientProvider client={queryClient}>
+              <ScriptTypesProvider>
+                <ScriptCacheProvider>
+                  <ScriptRunnerProvider>
+                    <AppSidebar />
+                    <Routes>
+                      <Route path='/' element={<Layout />}>
                         <Route index element={<Characters />} />
 
-                        <Route path=':id' element={<Character />} />
+                        <Route path='characters'>
+                          <Route index element={<Characters />} />
+
+                          <Route path=':id' element={<Character />} />
+                        </Route>
+
+                        <Route path='marketplace' element={<Marketplace />} />
+
+                        <Route path='library'>
+                          <Route index element={<Library />} />
+
+                          <Route path='system/:id' element={<System />} />
+
+                          {/* <Route path='datapack/:id' element={<DataPack />} /> */}
+                        </Route>
+
+                        <Route path='catacombs' element={<Catacombs />} />
+
+                        <Route path='settings' element={<Settings />} />
+
+                        <Route path='auth' element={<Auth />} />
+
+                        {/* <Route path='subscription-confirmation' element={<SubscriptionConfirmation />} /> */}
                       </Route>
-
-                      <Route path='marketplace' element={<Marketplace />} />
-
-                      <Route path='library'>
-                        <Route index element={<Library />} />
-
-                        {/* <Route path='system/:id' element={<System />} /> */}
-
-                        {/* <Route path='datapack/:id' element={<DataPack />} /> */}
-                      </Route>
-
-                      <Route path='catacombs' element={<Catacombs />} />
-
-                      <Route path='settings' element={<Settings />} />
-
-                      <Route path='auth' element={<Auth />} />
-
-                      {/* <Route path='subscription-confirmation' element={<SubscriptionConfirmation />} /> */}
-                    </Route>
-                  </Routes>
-                  <SecondarySidebar />
-                </ScriptRunnerProvider>
-              </ScriptCacheProvider>
-            </ScriptTypesProvider>
-          </QueryClientProvider>
-        </ThemeProvider>
-      </BrowserRouter>
+                    </Routes>
+                    <SecondarySidebar />
+                  </ScriptRunnerProvider>
+                </ScriptCacheProvider>
+              </ScriptTypesProvider>
+            </QueryClientProvider>
+          </ThemeProvider>
+        </BrowserRouter>
+      </EditorProvider>
     </SidebarProvider>
   )
 }
