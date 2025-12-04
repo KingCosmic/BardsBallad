@@ -17,6 +17,8 @@ import Functions from './functions'
 import Editor from './editor'
 import { Button } from '@/components/ui/button'
 import { IconDeviceFloppy } from '@tabler/icons-react'
+import { openModal } from '@/state/modals'
+import SaveNewVersion from '@/modals/editor/save-new-version'
 
 
 
@@ -80,25 +82,18 @@ const System: React.FC = () => {
       <Header
         title={system.name}
         subtitle={`Version: ${getVisualTextFromVersionID(original.local_id)}`}
-
-        // options={[
-        //   {
-        //     onClick: () =>
-        //       openModal('save-new-version', ({ id }) => (
-        //         <SaveNewVersion id={id} original={original} edits={versionEdits} edits_id={edits_id} />
-        //       )),
-        //     Content: () => <p>Save Version</p>
-        //   }
-        // ]}
-
         hasSidebar
       >
-        <Button size='icon' variant='outline'>
+        <Button size='icon' variant='outline' onClick={() =>
+          openModal('save-new-version', ({ id }) => (
+            <SaveNewVersion id={id} original={original} edits={versionEdits} edits_id={edits_id} />
+          ))
+        }>
           <IconDeviceFloppy />
         </Button>
       </Header>
 
-      <div className='p-4 relative flex flex-col grow'>
+      <div className='p-4 relative flex flex-col grow gap-4'>
         <Select value={editor.tab} onValueChange={setTab}>
           <SelectTrigger className='w-full'>
             <SelectValue placeholder='Select Tab' />

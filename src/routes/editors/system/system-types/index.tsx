@@ -24,7 +24,7 @@ interface Props {
 const SystemTypes: React.FC<Props> = ({ editsId, versionedResource }) => {
 
   return (
-    <>      
+    <>
       {/* TODO: Searchbar */}
       <Accordion
         type='multiple'
@@ -34,14 +34,14 @@ const SystemTypes: React.FC<Props> = ({ editsId, versionedResource }) => {
           <AccordionItem key={type.name} value={type.name}>
             <AccordionTrigger>{type.name}</AccordionTrigger>
             <AccordionContent>
-              <div>
-                <Button color='light' onClick={() => openModal('edit-string', ({ id }) => (
+              <div className='flex gap-2'>
+                <Button variant='outline' onClick={() => openModal('edit-string', ({ id }) => (
                   <EditString id={id} data={type.name}
                     onSave={(data) => storeMutation(editsId, renameSystemType(versionedResource.data as any, type.name, data))}
                   />
                 ))}>Edit Name</Button>
 
-                <Button color='light' onClick={async () => {
+                <Button variant='outline' onClick={async () => {
                   let newProperty: {
                     key: string;
                     typeData: TypeData;
@@ -68,7 +68,7 @@ const SystemTypes: React.FC<Props> = ({ editsId, versionedResource }) => {
                   ))
                 }}>Add Property</Button>
 
-                <Button color='danger' onClick={() => storeMutation(editsId, deleteSystemType(versionedResource.data as any, type.name))}>Delete Type</Button>
+                <Button variant='destructive' onClick={() => storeMutation(editsId, deleteSystemType(versionedResource.data as any, type.name))}>Delete Type</Button>
               </div>
 
               <div className='flex flex-col gap-1 mt-3'>
