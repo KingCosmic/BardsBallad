@@ -1,5 +1,5 @@
 import { useScriptRunner } from '@/components/providers/script-runner'
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import updateCharacterData from '@/db/character/methods/updateCharacterData'
 import { DataPack } from '@/db/datapack/schema'
 import { DataType, SystemData } from '@/db/system/schema'
@@ -93,11 +93,10 @@ export function CharacterSidebar() {
             <SidebarMenu>
               {system.actions.map(a => (
                 <SidebarMenuItem key={a.name}>
-                  <SidebarMenuButton tooltip={a.description} onClick={() => {
+                  <SidebarMenuButton key={a.name} variant='outline' tooltip={a.description} className='flex-col gap-4' onClick={() => {
                     runScript(undefined, a.script.compiled, state, updateState)
                   }}>
-                    <p className='text-neutral-100'>{a.name}</p>
-                  <p className='text-sm text-neutral-300'>{a.description}</p>
+                    {a.name}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

@@ -2,10 +2,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { db } from '@/db'
 import characterSchema, { Character } from '@/db/character/schema'
 import z from 'zod'
+import generateUniqueID from '@/utils/db/generateUniqueID'
 
 export default async (char: Character) => {
   try {
-    let local_id = char.local_id || `${'deviceId'}-${uuidv4()}`
+    let local_id = char.local_id || generateUniqueID()
 
     if (await db.characters.get({ id: char.id || '' }) !== undefined) {
       console.log('Character already exists in the database')
