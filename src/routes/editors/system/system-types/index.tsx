@@ -1,13 +1,14 @@
 import { Accordion, AccordionContent, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import FloatingActionButton from '@/components/ui/fab'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item'
 import addSystemType from '@/db/system/methods/addSystemType'
 import addTypeProperty from '@/db/system/methods/addTypeProperty'
 import deleteSystemType from '@/db/system/methods/deleteSystemType'
 import deleteTypeProperty from '@/db/system/methods/deleteTypeProperty'
 import renameSystemType from '@/db/system/methods/renameSystemType'
 import updateTypeProperty from '@/db/system/methods/updateTypeProperty'
-import { SystemData, SystemType, TypeData } from '@/db/system/schema'
+import { SystemData, TypeData } from '@/db/system/schema'
 import storeMutation from '@/db/version/methods/storeMutation'
 import { VersionedResource } from '@/db/version/schema'
 import EditString from '@/modals/editors/edit-string'
@@ -30,7 +31,7 @@ const SystemTypes: React.FC<Props> = ({ editsId, versionedResource }) => {
         type='multiple'
         className='w-full'
       >
-        {(versionedResource.data as SystemData).types.map((type: SystemType, i: number) => (
+        {(versionedResource.data as SystemData).types.map(type => (
           <AccordionItem key={type.name} value={type.name}>
             <AccordionTrigger>{type.name}</AccordionTrigger>
             <AccordionContent>
@@ -72,24 +73,28 @@ const SystemTypes: React.FC<Props> = ({ editsId, versionedResource }) => {
               </div>
 
               <div className='flex flex-col gap-1 mt-3'>
-                {
-                  type.properties.map((t) => (
-                    <div key={t.key}
-                      className='p-3 border border-neutral-600 dark:bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
-                      onClick={() => openModal('edit-type', ({ id }) => (
+                {type.properties.map(t => (
+                  <Item key={t.key} variant='muted'>
+                    <ItemContent>
+                      <ItemTitle>{t.key}</ItemTitle>
+                      <ItemDescription>
+                        {t.typeData.type} {t.typeData.isArray ? '(Array)' : ''} {t.typeData.options?.join(',')}
+                      </ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                      <Button variant='outline' size='sm' onClick={() =>
+                        openModal('edit-type', ({ id }) => (
                           <EditType id={id} data={{ ...t, typeName: type.name }}
                             onSave={(data) => storeMutation(editsId, updateTypeProperty(versionedResource.data as any, type.name, t.key, data))}
                             onDelete={() => storeMutation(editsId, deleteTypeProperty(versionedResource.data as any, type.name, t.key))}
                           />
                         )
-                      )}
-                    >
-                      <p>
-                        {t.key} - {t.typeData.type} {t.typeData.isArray ? '(Array)' : ''} {t.typeData.options?.join(',')}
-                      </p>
-                    </div>
-                  ))
-                }
+                      )}>
+                        Edit
+                      </Button>
+                    </ItemActions>
+                  </Item>
+                ))}
               </div>
             </AccordionContent>
           </AccordionItem>

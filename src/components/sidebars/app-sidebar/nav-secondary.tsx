@@ -28,17 +28,32 @@ export function NavSecondary({
           </Card>
           <ButtonGroup className='my-2'>
             <ButtonGroup className="hidden sm:flex">
-              <Button variant="outline" size="icon" aria-label="Github">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                aria-label="Github" 
+                onClick={() => window.open('https://github.com/KingCosmic/BardsBallad', '_blank')}
+              >
                 <IconBrandGithub />
               </Button>
             </ButtonGroup>
             <ButtonGroup>
-              <Button variant="outline" size="icon" aria-label="Discord">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                aria-label="Discord" 
+                onClick={() => window.open('https://discord.gg/a5qSfxv', '_blank')}
+              >
                 <IconBrandDiscord />
               </Button>
             </ButtonGroup>
             <ButtonGroup>
-              <Button variant="outline" size="icon" aria-label="Email">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                aria-label="Email" 
+                onClick={() => window.location.href = 'mailto:support@bardsballad.com'}
+              >
                 <IconMail />
               </Button>
             </ButtonGroup>

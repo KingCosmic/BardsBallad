@@ -7,7 +7,7 @@ import { IconPlus } from "@tabler/icons-react"
 import { VariantProps } from "class-variance-authority"
 import { PropsWithChildren } from "react"
 
-export default function FloatingActionButton({ children, ...props }: PropsWithChildren<VariantProps<typeof buttonVariants>> & { onClick(): void }) {
+export default function FloatingActionButton({ children, ...props }: PropsWithChildren<VariantProps<typeof buttonVariants>> & { onClick?(): void }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

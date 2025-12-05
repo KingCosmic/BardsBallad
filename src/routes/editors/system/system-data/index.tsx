@@ -1,5 +1,7 @@
 
+import { Button } from '@/components/ui/button'
 import FloatingActionButton from '@/components/ui/fab'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item'
 import addSystemData from '@/db/system/methods/addSystemData'
 import deleteSystemData from '@/db/system/methods/deleteSystemData'
 import updateSystemData from '@/db/system/methods/updateSystemData'
@@ -21,11 +23,17 @@ const SystemData: React.FC<DataProps> = ({ editsId, versionedResource }) => {
       {/* TODO: Searchbar */}
 
       <div className='flex flex-col gap-1'>
-        {
-          (versionedResource.data as any).data.map((data: DataType) => {
-            return (
-              <div key={data.name} className='mb-4 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700 cursor-pointer'
-                onClick={() => openModal('edit-system-data', ({ id }) => (
+        {(versionedResource.data as any).data.map((data: DataType) => (
+          <Item variant='muted'>
+            <ItemContent>
+              <ItemTitle>{data.name}</ItemTitle>
+              <ItemDescription>
+                {data.typeData.type} {data.typeData.isArray ? '(Array)' : ''}
+              </ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Button variant='outline' size='sm' onClick={() =>
+                openModal('edit-system-data', ({ id }) => (
                   <EditSystemData
                     id={id}
                     types={(versionedResource.data as any).types}
@@ -33,13 +41,13 @@ const SystemData: React.FC<DataProps> = ({ editsId, versionedResource }) => {
                     onSave={(newData) => storeMutation(editsId, updateSystemData(versionedResource.data as any, data.name, newData))}
                     data={data}
                   />
-                ))}
-              >
-                <p>{data.name} - {data.typeData.type} {data.typeData.isArray ? '(Array)' : ''}</p>
-              </div>
-            )
-          })
-        }
+                ))
+              }>
+                Edit
+              </Button>
+            </ItemActions>
+          </Item>
+        ))}
       </div>
 
       <FloatingActionButton onClick={() => storeMutation(editsId, addSystemData(versionedResource.data as any))} />

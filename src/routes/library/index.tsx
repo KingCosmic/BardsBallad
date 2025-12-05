@@ -3,6 +3,12 @@ import { Spinner } from "@/components/ui/spinner"
 import useSubscriptionsWithData from "@/hooks/subscriptions/useSubscriptionsWithData"
 import NoSubscriptions from "./no-subscriptions"
 import SubscriptionCard from "./subscription-card"
+import FloatingActionButton from "@/components/ui/fab"
+import { DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import { openModal } from "@/state/modals"
+import importItem from "@/db/shared/methods/importItem"
+import ImportFile from "@/modals/import-file"
+import CreateSubscription from "@/modals/creation/create-subscription"
 
 
 const Library: React.FC = () => {
@@ -61,23 +67,28 @@ const Library: React.FC = () => {
           </div>
         )}
 
-        {/* <FloatingActionButton isOpen={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} buttons={[
-          { name: 'Create', icon: '', onClick: () =>
-              openModal('create-subscription', ({ id }) => <CreateSubscription id={id} onCreate={() => {}} />)
-          },
-          { name: 'Import', icon: '', onClick: () =>
-              openModal('import-system', ({ id }) => <ImportFile id={id} title='Import System' onSave={async (fileContent: string) => {
-                try {
-                  const parsed = JSON.parse(fileContent)
-                  await importItem(parsed.type, parsed.item, parsed.version)
-                } catch (e) {
-                  console.error(e)
-                }
-              }} />
-            )
-          }
-          ]}
-        /> */}
+        <FloatingActionButton>
+          <DropdownMenuContent side='top' className='w-56' align='start'>
+            <DropdownMenuItem onClick={() => {
+              openModal('create-subscription', CreateSubscription)
+            }}>
+              Create Item
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+              openModal('import-system', ({ id }) => <ImportFile id={id} title='Import Item' onSave={async (fileContent: string) => {
+                  try {
+                    const parsed = JSON.parse(fileContent)
+                    await importItem(parsed.type, parsed.item, parsed.version)
+                  } catch (e) {
+                    console.error(e)
+                  }
+                }} />
+              )
+            }}>
+              Import Item
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </FloatingActionButton>
       </div>
     </div>
   )

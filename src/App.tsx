@@ -17,6 +17,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import Marketplace from './routes/marketplace'
+import MarketplaceInfo from './routes/marketplace/info'
 import Character from './routes/characters/character'
 import SecondarySidebar from './secondary-sidebar'
 import { ScriptTypesProvider } from './components/providers/script-types'
@@ -83,7 +84,11 @@ const App: React.FC = () => {
                           <Route path=':id' element={<Character />} />
                         </Route>
 
-                        <Route path='marketplace' element={<Marketplace />} />
+                        <Route path='marketplace'>
+                          <Route index element={<Marketplace />} />
+                          
+                          <Route path='info/:id' element={<MarketplaceInfo />} />
+                        </Route>
 
                         <Route path='library'>
                           <Route index element={<Library />} />
