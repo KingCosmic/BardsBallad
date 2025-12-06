@@ -1,1 +1,0 @@
-// TODO: rework how enums work, sorta like arrays, and figure this shit out.

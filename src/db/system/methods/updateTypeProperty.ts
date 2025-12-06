@@ -1,0 +1,18 @@
+import { produce } from 'immer';
+import { SystemData, TypeData } from '../schema';
+
+export default async (data: SystemData, typeName: string, oldKey: string, property: { key: string; typeData: TypeData }) => {
+  return produce(data, draft => {
+    for (let t = 0; t < draft.types.length; t++) {
+      const type = draft.types[t]
+
+      if (type.name !== typeName) continue
+
+      const index = type.properties.findIndex(prop => prop.key === oldKey)
+
+      if (index === -1) return
+
+      type.properties[index] = property
+    }
+  })
+}
