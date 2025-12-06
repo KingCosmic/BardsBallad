@@ -44,9 +44,4 @@ export const saveToken = (token: string) => {
   return user
 }
 
-export const logout = () => {
-  localStorage.removeItem('token')
-  authState.set(defaultState)
-}
-
 loadToken()

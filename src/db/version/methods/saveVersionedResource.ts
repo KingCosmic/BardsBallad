@@ -5,7 +5,7 @@ import z from 'zod';
 export default async (vers: VersionedResource): Promise<VersionedResource | null> => {
   try {
     if (await db.versions.get(vers.local_id)) {
-      return null
+      return vers
     }
 
     const result = versionedResourceSchema.safeParse(vers);

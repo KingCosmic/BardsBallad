@@ -50,7 +50,7 @@ export const login = async (username: string, password: string): Promise<{ succe
 
   const user = saveToken(accessToken)
 
-  localStorage.seItem('apiKey', apiKey)
+  localStorage.setItem('apiKey', apiKey)
   localStorage.setItem('deviceId', deviceId)
 
   updateDatabaseWithUserInfo(user.id, deviceId)

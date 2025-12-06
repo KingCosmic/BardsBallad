@@ -22,7 +22,7 @@ const ItemCard: React.FC<{ item: MarketplaceItem }> = ({ item }) => {
       <CardFooter className='flex gap-2'>
         <Button 
           className='grow' 
-          onClick={() => navigate(`/marketplace/info/${item.id}`)}
+          onClick={() => navigate(`/marketplace/info/${item.resource_id}`)}
         >
           <IconDownload /> Get
         </Button>

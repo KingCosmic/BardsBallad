@@ -34,7 +34,6 @@ const PRIVATE_IP_RANGES = {
  * @returns {boolean} True if the hostname is local, false otherwise
  */
 export function isHostnameLocal(): boolean {
-    return false
     const hostname = window.location.hostname;
 
     // Check for localhost explicitly

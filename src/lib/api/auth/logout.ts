@@ -22,11 +22,11 @@ import { authState } from "@/state/auth";
  * database table clearing.
  */
 export const logout = async (): Promise<void> => {
-    localStorage.clear()
+  localStorage.clear()
 
-    authState.set({isLoggedIn: false, user: null, synced_characters: []})
+  authState.set({ isLoggedIn: false, user: null, synced_characters: [] })
 
-    await Promise.all(
-        db.tables.map(table => table.clear())
-    );
+  await Promise.all(
+    db.tables.map(table => table.clear())
+  );
 }

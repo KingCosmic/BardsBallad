@@ -1,52 +1,97 @@
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getVersionsForItem } from '@/lib/api/marketplace/getVersionsForItem';
-import { MarketplaceVersion } from '@/types/marketplace';
+import { MarketplaceItem, MarketplaceVersion } from '@/types/marketplace';
 import getVisualTextFromVersionID from '@/utils/misc/getVisualTextFromVersionID';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import Header from '@/components/header';
+import { getSubscriptionData } from '@/lib/api/marketplace/getSubscriptionData';
+import saveSystem from '@/db/system/methods/saveSystem';
+import saveVersionedResource from '@/db/version/methods/saveVersionedResource';
+import storeHashes from '@/db/typeHashes/methods/storeHashes';
+import createSubscription from '@/db/subscription/methods/createSubscription';
+import generateTypeHash from '@/db/typeHashes/methods/generateTypeHash';
+import { getMarketplaceItemInfo } from '@/lib/api/marketplace/getMarketplaceItemInfo';
 
 const MarketplaceInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // TODO: Fetch the marketplace item data using the id
-  // For now, using placeholder data
-  const data = {
-    id: id || '',
-    name: 'System Name',
-    description: 'System description goes here...',
-    creator_id: '',
-    creator_username: 'Creator',
-    version: '1.0.0',
-    resource_type: 'system',
-    resource_id: id || '',
-    updated_at: '',
-    published_at: '',
-    is_public: true
-  };
+  console.log(id)
 
-  const { isPending, data: versions } = useQuery<MarketplaceVersion[]>({
-    queryKey: ['marketplace-versions', data.resource_id],
-    queryFn: () => getVersionsForItem(data.resource_id),
+  const { isPending: isItemLoading, data } = useQuery<{ item: MarketplaceItem, creator: any, versions: string[] }>({
+    queryKey: ['marketplace-item'],
+    queryFn: () => getMarketplaceItemInfo(id ?? ''),
+  })
+
+  const { item, creator, versions: versionIds } = data ?? { item: undefined, user: undefined, versions: [] }
+
+  const { isPending: isVersionsLoading, data: versions } = useQuery<MarketplaceVersion[]>({
+    queryKey: ['marketplace-versions', item?.resource_id],
+    queryFn: () => getVersionsForItem(item?.resource_id ?? ''),
     initialData: [],
-    enabled: !!data.resource_id
+    enabled: !!item?.resource_id
   });
   
-  const [selectedVersion, setSelectedVersion] = useState<string>(versions[0]?.item_id);
+  const [selectedVersion, setSelectedVersion] = useState<string>(versionIds[0] ?? '');
 
-  const handleGet = () => {
-    // TODO: Implement the get/download functionality
-    console.log('Getting version:', selectedVersion);
-  };
+  useEffect(() => {
+    setSelectedVersion(versionIds[0] ?? '')
+  }, [versionIds])
+
+  const handleGet = async () => {
+    try {
+      const { baseData, versionData } = await getSubscriptionData(selectedVersion)
+
+      if (!baseData || !versionData) {
+        console.log('no data??')
+        return
+      }
+
+      const sys = await saveSystem(baseData)
+
+      if (!sys) {
+        console.log('no sys??')
+        return
+      }
+
+      const vers = await saveVersionedResource(versionData)
+
+      if (!vers) {
+        // TODO: clean up system that we created.
+        console.log('no vers??')
+        return
+      }
+
+      const hashes = await storeHashes(vers.local_id, (vers.data as any).types.map(generateTypeHash))
+      
+      if (!hashes) {
+        // TODO: cleanup the system and version.
+        console.log('no hashes??')
+        return
+      }
+
+      const sub = await createSubscription('system', sys.local_id, vers.local_id, false)
+
+      if (!sub) {
+        // TODO: cleanup both the system and version and hashes we created.
+        console.log('no sub??')
+        return
+      }
+
+      navigate('/library')
+    } catch(e) {
+      console.error(`Error creating subscription: ${e}`)
+    }
+  }
 
   return (
     <div className="flex flex-col h-full">
       <Header 
-        title={data.name}
-        subtitle={`By ${data.creator_username}`}
+        title={item?.name ?? 'Loading...'}
+        subtitle={`By ${creator?.username}`}
       />
       
       <div className="p-4 flex-1 overflow-y-auto">
@@ -55,7 +100,7 @@ const MarketplaceInfo: React.FC = () => {
           <div className="bg-card border rounded-lg p-6">
             <h2 className="text-2xl font-semibold mb-4">About</h2>
             <p className="text-muted-foreground">
-              {data.description}
+              {item?.description}
             </p>
           </div>
 
@@ -65,26 +110,26 @@ const MarketplaceInfo: React.FC = () => {
             <dl className="grid grid-cols-2 gap-4">
               <div>
                 <dt className="text-sm font-medium text-muted-foreground">Type</dt>
-                <dd className="mt-1 capitalize">{data.resource_type}</dd>
+                <dd className="mt-1 capitalize">{item?.resource_type}</dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-muted-foreground">Creator</dt>
-                <dd className="mt-1">{data.creator_username}</dd>
+                <dd className="mt-1">{creator?.username}</dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-muted-foreground">Current Version</dt>
-                <dd className="mt-1">{data.version}</dd>
+                <dd className="mt-1">{getVisualTextFromVersionID(versionIds[0] ?? '')}</dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-muted-foreground">Status</dt>
-                <dd className="mt-1">{data.is_public ? 'Public' : 'Private'}</dd>
+                <dd className="mt-1">{item?.is_public ? 'Public' : 'Private'}</dd>
               </div>
             </dl>
           </div>
 
           {/* Download Section */}
           <div className="bg-card border rounded-lg p-6">
-            <h2 className="text-2xl font-semibold mb-4">Get this {data.resource_type}</h2>
+            <h2 className="text-2xl font-semibold mb-4">Get this {item?.resource_type}</h2>
             <div className="flex items-end gap-4">
               <div className="flex-1">
                 <label className="text-sm font-medium text-muted-foreground mb-2 block">
@@ -92,7 +137,7 @@ const MarketplaceInfo: React.FC = () => {
                 </label>
                 <Select value={selectedVersion} onValueChange={setSelectedVersion}>
                   <SelectTrigger>
-                    <SelectValue placeholder={isPending ? 'Loading versions...' : 'Select Version'} />
+                    <SelectValue placeholder={isVersionsLoading ? 'Loading versions...' : 'Select Version'} />
                   </SelectTrigger>
                   <SelectContent>
                     {versions.map(v => (
@@ -103,7 +148,7 @@ const MarketplaceInfo: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={handleGet} disabled={!selectedVersion || isPending}>
+              <Button onClick={handleGet} disabled={!selectedVersion || isVersionsLoading}>
                 Get
               </Button>
             </div>

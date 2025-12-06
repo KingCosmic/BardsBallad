@@ -13,7 +13,7 @@ export default function LoginPage() {
   const { isLoggedIn } = authState.useValue()
 
   useEffect(() => {
-    navigate('/settings')
+    if (isLoggedIn) navigate('/settings')
   }, [isLoggedIn])
 
   return (

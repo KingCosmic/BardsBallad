@@ -5,7 +5,7 @@ import z from 'zod';
 export default async (sys: Item): Promise<Item | null> => {
   try {
     if (await db.systems.get(sys.local_id)) {
-      return null
+      return sys
     }
 
     const result = SystemSchema.safeParse(sys);
