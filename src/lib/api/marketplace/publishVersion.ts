@@ -20,6 +20,6 @@ export const publishVersion = async (id: string, data: {
 
     return { error: response.data }
   } catch (err) {
-    return { error: 'Error occured during publishing new version' }
+    return { error: 'Error occurred during publishing new version' }
   }
 }

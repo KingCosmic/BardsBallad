@@ -15,7 +15,7 @@ export default async (type: Types, resource_id: string, version_id: string, auto
     
     const local_id = generateUniqueID()
 
-    // validate character format.
+    // validate a character format.
     const subscriptionData = {
       local_id,
     

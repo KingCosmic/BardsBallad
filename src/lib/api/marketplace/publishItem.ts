@@ -26,6 +26,6 @@ export const publishItem = async (data: {
 
     return { error: response.data }
   } catch (err) {
-    return { error: 'Error occured during publish' }
+    return { error: 'Error occurred during publish' }
   }
 }

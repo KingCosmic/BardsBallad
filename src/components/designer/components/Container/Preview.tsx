@@ -33,17 +33,17 @@ export default (props: PropsWithChildren<ContainerProps>) => {
     rc()
   }, [state, props.script, props.isList, props.updateState])
 
-  const [visibiltiyCache, setVisibiltiyCache] = useState('')
+  const [visibilityCache, setVisibilityCache] = useState('')
   useEffect(() => {
     async function rc() {
       if (!props.dynamicVisibility || !isReady) return setIsVisible(props.isVisible!)
 
       if (!props.visibilityScript!.isCorrect) return setIsVisible(props.isVisible!)
 
-      const output = await runScript<boolean>(visibiltiyCache, props.visibilityScript!, state, props.updateState!)
+      const output = await runScript<boolean>(visibilityCache, props.visibilityScript!, state, props.updateState!)
 
       setIsVisible(output.result ?? props.isVisible!)
-      setVisibiltiyCache(output.cacheKey)
+      setVisibilityCache(output.cacheKey)
     }
 
     rc()

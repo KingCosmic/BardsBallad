@@ -22,7 +22,7 @@ const characterSchema = z.object({
     version_id: z.string()
   }),
 
-  // a random hash, a quick glance at whether or not update conflicts are happening.
+  // a random hash, a quick glance to see if update conflicts are happening.
   version: z.string().optional(),
 
   datapacks: z.array(z.object({ pack_id: z.string(), version_id: z.string() })),
