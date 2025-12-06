@@ -94,36 +94,6 @@ export default function TextSettings() {
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value='content'>
-        <AccordionTrigger>Content</AccordionTrigger>
-        <AccordionContent className='flex flex-col gap-4 text-balance'>
-
-          <Checkbox checked={useScriptValue} onCheckedChange={val=> setProp((props: any) => props.useScriptValue = val.valueOf())} />
-          <Label>Use Script Value?</Label>
-
-          {
-            useScriptValue ? (
-              <Button variant='outline' onClick={() => {
-                // provide both the state and the local params passed down by the parent components
-                openModal('script', ({ id }) => (
-                  <ScriptEditor id={id} code={script} expectedType='string'
-                    onSave={({ result }) => setProp((props: any) => props.script = result)}
-                    globals={localParams} types={types}
-                  />
-                ))
-              }}>
-                Edit Script Value
-              </Button>
-            ) : (
-              <div>
-                <Label>Text</Label>
-                <Input placeholder='lorem ipsum' value={text} onChange={val => setProp((props: any) => props.text = val.currentTarget.value)} />
-              </div>
-            )
-          }
-        </AccordionContent>
-      </AccordionItem>
-
       <AccordionItem value='styling'>
         <AccordionTrigger>Styling</AccordionTrigger>
         <AccordionContent>

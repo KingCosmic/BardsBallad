@@ -64,7 +64,7 @@ export function SelectSettings() {
       defaultValue={['data']}
     >
       <AccordionItem value='data'>
-        <AccordionTrigger>Visibility</AccordionTrigger>
+        <AccordionTrigger>Data Input</AccordionTrigger>
         <AccordionContent className='flex flex-col gap-4 text-balance'>
 
           <Label>Type</Label>
@@ -88,7 +88,7 @@ export function SelectSettings() {
             </>
           )}
 
-          <Button color='light' onClick={() => {
+          <Button variant='outline' onClick={() => {
             openModal('script', ({ id }) => (
               <ScriptEditor id={id} code={getValue}
                 onSave={({ result }) => setProp((props: any) => props.getValue = result)}
@@ -99,7 +99,7 @@ export function SelectSettings() {
             Get Value
           </Button>
 
-          <Button color='light' variant='outline' onClick={() => {
+          <Button variant='outline' onClick={() => {
             openModal('script', ({ id }) => (
               <ScriptEditor id={id} code={onChange}
                 onSave={({ result }) => setProp((props: any) => props.onChange = result)}

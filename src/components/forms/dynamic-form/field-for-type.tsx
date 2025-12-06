@@ -164,8 +164,10 @@ export default function FieldForType({
             return (
               <div className='my-2'>
                 <p className='mb-2'>{formatLabel(path)}</p>
-                <Checkbox id='is-manual' checked={!!calc.isManual} onCheckedChange={checked => onChange(`${path}/isManual`, !!checked)} />
-                <Label>Is Manual?</Label>
+                <Field orientation='horizontal'>
+                  <Checkbox id='is-manual' checked={!!calc.isManual} onCheckedChange={checked => onChange(`${path}/isManual`, checked.valueOf())} />
+                  <Label>Is Manual?</Label>
+                </Field>
 
                 <div className='h-2' />
 
