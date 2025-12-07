@@ -20,15 +20,15 @@ export function NavSecondary({
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
-          <Card className="w-full max-w-sm">
+          <Card className='bg-linear-to-br from-primary/40 to-primary/30 border-primary/70 dark:from-primary/20 dark:to-primary/10 dark:border-primary/30'>
             <CardContent>
               <Badge variant="default" className="mb-2">Beta</Badge>
               <p>We're happy you're using the BardsBallad Beta! If you run into any problems please reach out to us through one of the platforms below!</p>
             </CardContent>
           </Card>
-          <ButtonGroup className='my-2'>
+          <ButtonGroup className='mb-2 mt-3'>
             <ButtonGroup className="hidden sm:flex">
-              <Button 
+              <Button
                 variant="outline" 
                 size="icon" 
                 aria-label="Github" 

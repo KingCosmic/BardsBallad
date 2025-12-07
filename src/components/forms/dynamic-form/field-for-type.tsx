@@ -72,7 +72,7 @@ export default function FieldForType({
 
         <Separator />
 
-        <div className='flex flex-col gap-1 mt-3'>
+        <div className='flex flex-col gap-1'>
           {items.map((item, idx) => (
             <div key={idx} className='p-3 border border-neutral-600 dark:bg-neutral-800 hover:bg-neutral-700'>
               <div className='flex items-center justify-between gap-2'>

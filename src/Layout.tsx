@@ -4,7 +4,7 @@ import ModalManager from './components/modal-manager'
 const Layout: React.FC = () => {
 
   return (
-    <div className='w-dvw h-dvh transition-colors overflow-x-hidden fantasy-gradient fantasy-atmospheric text-fantasy-text'>
+    <div className='w-dvw h-dvh transition-colors particleContainer main-gradient atmospheric'>
       {/* Floating particles container */}
       <div className="fixed inset-0 pointer-events-none z-10" id="particleContainer" />
 

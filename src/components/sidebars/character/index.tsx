@@ -1,4 +1,5 @@
 import { useScriptRunner } from '@/components/providers/script-runner'
+import { Separator } from '@/components/ui/separator'
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import updateCharacterData from '@/db/character/methods/updateCharacterData'
 import { DataPack } from '@/db/datapack/schema'
@@ -84,8 +85,8 @@ export function CharacterSidebar() {
 
   return (
     <Sidebar side='right' collapsible="offcanvas">
-      <SidebarHeader>
-        <span className="text-base font-semibold">Quick Actions</span>
+      <SidebarHeader className='h-(--header-height) border-b flex justify-center'>
+        <span className="text-lg font-semibold text-center">Quick Actions</span>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
