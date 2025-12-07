@@ -11,7 +11,7 @@ export default function FloatingActionButton({ children, ...props }: PropsWithCh
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='outline' size='icon' className='absolute bottom-0 right-4' {...props}>
+        <Button variant='outline' size='icon' className='absolute bottom-4 right-4' {...props}>
           <IconPlus />
         </Button>
       </DropdownMenuTrigger>

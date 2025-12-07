@@ -7,32 +7,32 @@ const styles: { colors: Styles, weight: Weight, sizes: Sizes } = {
   'colors': {
     // (Cosmic) I HAVE NO IDEA WHY BUT IF YOU MAKE THIS OPTION 'none' IT WILL NOT WORK, DO NOT MAKE THIS OPTION 'none'
     'base': {
-      text: 'text-neutral-800 dark:text-neutral-200',
-      hover: 'group-hover:text-neutral-700 dark:group-hover:text-neutral-300'
+      text: 'text-bg-foreground',
+      hover: 'hover:text-bg-foreground'
     },
     'light': {
-      text: 'text-neutral-500 dark:text-neutral-400',
-      hover: 'group-hover:text-neutral-400 dark:group-hover:text-neutral-500'
+      text: 'text-muted-foreground',
+      hover: 'hover:text-muted-foreground'
     },
     'primary': {
-      text: 'text-fantasy-accent',
-      hover: 'group-hover:text-fantasy-light'
+      text: 'text-primary',
+      hover: 'hover:text-primary'
     },
     'accent': {
-      text: 'text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300',
-      hover: 'group-hover:text-accent-700 dark:group-hover:text-accent-300'
+      text: 'text-accent',
+      hover: 'hover:text-accent'
     },
     'confirmation': {
-      text: 'text-green-600 dark:text-green-400',
-      hover: 'group-hover:text-green-700 dark:group-hover:text-green-300'
+      text: 'text-success',
+      hover: 'hover:text-success'
     },
     'warning': {
-      text: 'text-orange-600 dark:text-orange-400',
-      hover: 'group-hover:text-orange-700 dark:group-hover:text-orange-300'
+      text: 'text-warning',
+      hover: 'hover:text-warning'
     },
     'danger': {
-      text: 'text-red-600 dark:text-red-400',
-      hover: 'group-hover:text-red-700 dark:group-hover:text-red-300'
+      text: 'text-destruction',
+      hover: 'hover:text-destruction'
     }
   },
   'weight': {

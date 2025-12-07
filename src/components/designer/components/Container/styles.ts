@@ -9,29 +9,29 @@ const styles: Styles = {
     hover: ''
   },
   'light': {
-    background: 'bg-white/10 text-fantasy-text',
-    border: 'border border-white/20',
-    hover: 'cursor-pointer transition-all duration-300 hover:bg-white/20'
+    background: 'bg-muted text-muted-foreground',
+    border: 'border',
+    hover: 'cursor-pointer hover:bg-muted/70'
   },
   'primary': {
-    background: 'bg-white dark:bg-fantasy-accent',
-    border: 'border border-fantasy-border',
-    hover: 'cursor-pointer hover:bg-fantasy-accent-dark'
+    background: 'bg-primary text-primary-foreground',
+    border: 'border',
+    hover: 'cursor-pointer hover:bg-primary/70'
   },
   'accent': {
-    background: 'bg-white dark:bg-sky-800',
-    border: 'border border-sky-200 dark:border-sky-600',
-    hover: 'cursor-pointer hover:bg-sky-100 dark:hover:bg-sky-700'
+    background: 'bg-accent text-accent-foreground',
+    border: 'border',
+    hover: 'cursor-pointer hover:bg-accent/70'
   },
   'confirmation': {
-    background: 'bg-white dark:bg-green-800',
-    border: 'border border-green-200 dark:border-green-600',
-    hover: 'cursor-pointer hover:bg-green-100 dark:hover:bg-green-700'
+    background: 'bg-success text-success-foreground',
+    border: 'border',
+    hover: 'cursor-pointer hover:bg-success/70'
   },
   'warning': {
-    background: 'bg-white dark:bg-orange-800',
-    border: 'border border-orange-200 dark:border-orange-600',
-    hover: 'cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-700'
+    background: 'bg-warning text-warning-foreground',
+    border: 'border',
+    hover: 'cursor-pointer hover:bg-warning/70'
   }
 }
 

@@ -79,8 +79,6 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
   const isOwner =
     (user && itemData.user_id && user.id === itemData.user_id) ||
     (!user && itemData.user_id === 'none');
-  
-  const LatestStatus = 'bg-[#065f46] text-[#10b981]'
 
   return (
     <Card className="w-full max-w-sm">
@@ -90,18 +88,18 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
       <CardContent>
         <div className='mb-4'>
           <div className='flex items-center justify-between mb-3'>
-            <span className='text-sm text-fantasy-text-muted'>Latest: {new Date(subs[0].subscribed_at).toLocaleDateString()} - {new Date(subs[0].subscribed_at).toLocaleTimeString()}</span>
-            <button className='bg-none border-none text-fantasy-accent cursor-pointer text-xs p-0 underline ml-auto' onClick={() => setIsOpen(!isOpen)}>Show all versions</button>
+            <span className='text-sm text-muted-foreground'>Latest: {new Date(subs[0].subscribed_at).toLocaleDateString()} - {new Date(subs[0].subscribed_at).toLocaleTimeString()}</span>
+            <button className='bg-none border-none cursor-pointer text-xs p-0 underline ml-auto' onClick={() => setIsOpen(!isOpen)}>Show all versions</button>
           </div>
           
           <div className={`transition-all overflow-hidden ${isOpen ? 'max-h-60 overflow-y-auto border border-fantasy-border mt-2 rounded-md' : 'max-h-12'}`}>
             {subs.map((sub, i) => (
-              <div key={i} className={`flex items-center justify-between p-2 transition-all border-b border-solid border-fantasy-medium ${isOpen ? 'p-3' : 'h-12'} ${i > 0 ? '' : 'bg-linear-to-r from-green-900 to-transparent'}`}>
+              <div key={i} className={`flex items-center justify-between p-2 transition-all border-b border-solid border-fantasy-medium ${isOpen ? 'p-3' : 'h-12'} ${i > 0 ? '' : 'bg-linear-to-r from-success to-transparent'}`}>
                 <div className='flex flex-col gap-1'>
-                  <div className='text-sm text-neutral-200'>{getVisualTextFromVersionID(sub.version_id)}</div>
-                  <div className='text-xs text-neutral-400'>{new Date(sub.subscribed_at).toLocaleDateString()} - {new Date(sub.subscribed_at).toLocaleTimeString()}</div>
+                  <div className='text-sm'>{getVisualTextFromVersionID(sub.version_id)}</div>
+                  <div className='text-xs text-muted'>{new Date(sub.subscribed_at).toLocaleDateString()} - {new Date(sub.subscribed_at).toLocaleTimeString()}</div>
                 </div>
-                <div className={`px-1 py-2 rounded text-xs font-medium ${i > 0 ? '' : LatestStatus} ${isOpen ? 'hidden' : ''}`}>{i > 0 ? 'Active' : 'Latest'}</div>
+                <div className={`px-1 py-2 rounded text-xs font-medium ${i > 0 ? '' : 'bg-success text-success-foreground'} ${isOpen ? 'hidden' : ''}`}>{i > 0 ? 'Active' : 'Latest'}</div>
                 <div className={`${isOpen ? '' : 'hidden'}`}>
                   <DropdownButton variant='outline' label='⚙️'>
                     <DropdownMenuContent className='w-56' align='start'>

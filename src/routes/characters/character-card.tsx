@@ -12,8 +12,10 @@ import {
 import { DropdownButton } from "@/components/ui/dropdown-button"
 import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import deleteCharacter from "@/db/character/methods/deleteCharacter"
+import renameCharacter from '@/db/character/methods/renameCharacter'
 import { Character } from "@/db/character/schema"
 import ConfirmModal from "@/modals/confirm"
+import EditString from '@/modals/editors/edit-string'
 import { openModal } from "@/state/modals"
 import JSONToFile from "@/utils/object/JSONToFile"
 import { useNavigate } from "react-router"
@@ -34,7 +36,7 @@ export default function CharacterCard({ char }: Props) {
         </CardDescription>
         <CardAction>
           {/* Status Indicator */}
-          <div className={`w-2 h-2 rounded-full shadow-lg bg-red-800`} />
+          <div className={`w-2 h-2 rounded-full shadow-lg bg-warning`} />
         </CardAction>
       </CardHeader>
       <CardContent>
@@ -50,14 +52,14 @@ export default function CharacterCard({ char }: Props) {
               <DropdownMenuItem onClick={() => JSONToFile('character', char, `${char.name}-export`)}>
                 Export
               </DropdownMenuItem>
-              {/* <DropdownMenuItem onClick={() => 
+              <DropdownMenuItem onClick={() => 
                 openModal('edit-string', ({ id }) => (
-                  <EditStringModal
+                  <EditString
                     id={id} title='Rename Character' data={char.name}
                     onSave={(newName) => renameCharacter(char.local_id, newName)} />)
               )}>
                 Rename
-              </DropdownMenuItem> */}
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
