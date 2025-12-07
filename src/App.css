@@ -189,7 +189,7 @@
     z-index: 0;
   }
 
-  .particle {
+  /* .particle {
     position: absolute;
     width: 2px;
     height: 2px;
@@ -197,6 +197,18 @@
     border-radius: 50%;
     animation: float 8s infinite linear;
     transform: translateY(-1vh);
+  } */
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation:
+      emberFloat var(--float-duration) infinite linear,
+      emberFlicker 0.8s infinite ease-in-out alternate;
+    transform: translateY(-10vh);
   }
 
   @keyframes float {
@@ -214,5 +226,33 @@
       transform: translateY(-10px) translateX(100px);
       opacity: 0;
     }
+  }
+
+  @keyframes emberFloat {
+    0% {
+      transform: translateY(100vh) translateX(0) scale(0.6);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    40% {
+      transform: translateY(60vh) translateX(-10px) scale(0.8);
+    }
+    60% {
+      transform: translateY(40vh) translateX(20px) scale(1);
+    }
+    80% {
+      transform: translateY(10vh) translateX(-5px) scale(0.9);
+    }
+    100% {
+      transform: translateY(-10px) translateX(15px) scale(0.5);
+      opacity: 0;
+    }
+  }
+
+  @keyframes emberFlicker {
+    0%{ opacity: 1; }
+    50% { opacity: 0.3; }
   }
 }

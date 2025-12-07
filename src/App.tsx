@@ -36,9 +36,18 @@ const App: React.FC = () => {
     function createParticle() {
       const particle = document.createElement('div');
       particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
+
+      particle.style.transform = `scale(${0.5 + Math.random() * 0.8})`;
+
+      const spawnX = 30 + Math.random() * 40; // between 30% and 70%
+      particle.style.left = spawnX + '%';
+      particle.style.marginLeft = `${(Math.random() - 0.5) * 40}px`; // small horizontal offset
+
       particle.style.animationDelay = Math.random() * 8 + 's';
       particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+
+      particle.style.setProperty('--float-duration', `${4 + Math.random() * 6}s`);
+
       document.getElementById('particleContainer')!.appendChild(particle);
       
       setTimeout(() => {
