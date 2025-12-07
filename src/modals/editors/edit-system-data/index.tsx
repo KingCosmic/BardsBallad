@@ -7,7 +7,7 @@ import generateObject from '@/utils/object/generateObject'
 
 import { type SystemType, type DataType } from '@/db/system/schema'
 import { closeModal } from '@/state/modals'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -58,7 +58,7 @@ function EditSystemData({ id, types, onDelete, onSave, data }: Props) {
         <DialogHeader>
           <DialogTitle>{`Edit ${data.name}`}</DialogTitle>
         </DialogHeader>
-        <div>
+        <DialogBody>
           <Label htmlFor='data-name'>Name</Label>
           <Input id='data-name' value={dataCopy.name} onChange={val => setDataCopy({...dataCopy, name: val.currentTarget.value })} />
 
@@ -94,7 +94,7 @@ function EditSystemData({ id, types, onDelete, onSave, data }: Props) {
             typeData={dataCopy.typeData}
             onChange={(path: string, val: any) => setProperty(path, dataCopy, val)}
           />
-        </div>
+        </DialogBody>
         <DialogFooter>
           <Button variant='destructive' onClick={() => {
             if (onDelete) onDelete()

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import importItem from "@/db/shared/methods/importItem";
 import ImportFile from "@/modals/import-file";
 import { closeModal, openModal } from "@/state/modals";
@@ -39,14 +39,14 @@ export default function NoSystem({ id }: Props) {
             Your destiny is not yet decided..
           </DialogDescription>
         </DialogHeader>
-        <div>
+        <DialogBody>
           <h3>There was an error grabbing a default system, please subscribe to a system from the marketplace or import something!</h3>
-        </div>
+        </DialogBody>
         <DialogFooter>
-          <Button color='primary' variant='outline' onClick={importSystem}>
+          <Button variant='outline' onClick={importSystem}>
             Import
           </Button>
-          <Button color='primary' onClick={goToMarketplace}>
+          <Button onClick={goToMarketplace}>
             Marketplace
           </Button>
         </DialogFooter>

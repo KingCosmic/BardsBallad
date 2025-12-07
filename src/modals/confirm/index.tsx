@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import {Button} from '@/components/ui/button'
 
 import { closeModal } from '@/state/modals'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 type Props = {
   id: number;
@@ -22,12 +22,12 @@ const ConfirmModal: React.FC<Props> = ({ id, title, type, message, onConfirm }) 
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className="p-4">
+        <DialogBody>
           <p className="text-lg font-medium mb-2">{message}</p>
-          <p className="text-sm font-semibold text-red-500">
+          <p className="text-sm font-semibold text-destructive">
             This action cannot be undone.
           </p>
-        </div>
+        </DialogBody>
         <DialogFooter>
           <Button color={type} variant='destructive'
             onClick={() => {

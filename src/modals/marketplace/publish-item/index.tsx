@@ -1,9 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Field } from '@/components/ui/field';
 import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import useSubscriptionsWithData from '@/hooks/subscriptions/useSubscriptionsWithData';
@@ -69,7 +68,7 @@ const PublishItem: React.FC<Props> = ({ id }) => {
             Another realm of the multiverse
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className='min-h-0 max-h-[60dvh]'>
+        <DialogBody>
           {(isLoading || !subscriptions || !selectedItem || !selectedVersion) ? (
             <p>Loading...</p>
           ) : (isPublishing || error) ? (
@@ -141,7 +140,7 @@ const PublishItem: React.FC<Props> = ({ id }) => {
               </Field>
             </div>
           )}
-        </ScrollArea>
+        </DialogBody>
         <DialogFooter>
           <Button variant='outline' onClick={requestClose}>
             Cancel

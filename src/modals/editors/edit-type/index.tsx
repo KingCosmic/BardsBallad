@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SystemData, TypeData } from '@/db/system/schema';
 import { useVersionEdits } from '@/hooks/versions/useVersionEdits';
 import { editorState } from '@/state/editor';
@@ -46,7 +45,7 @@ const EditType: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
         <DialogHeader>
           <DialogTitle>Edit Type Property</DialogTitle>
         </DialogHeader>
-        <ScrollArea className='flex-1 min-h-0 overflow-auto'>
+        <DialogBody>
           <Field>
             <Label>Key</Label>
             <Input placeholder='baba yaga' value={key} onChange={v => setKey(v.currentTarget.value)} />
@@ -124,7 +123,7 @@ const EditType: React.FC<Props> = ({ id, data, onSave, onDelete }) => {
               </div>
             )
           }
-        </ScrollArea>
+        </DialogBody>
         <DialogFooter>
           <Button variant='destructive'
             onClick={() => {

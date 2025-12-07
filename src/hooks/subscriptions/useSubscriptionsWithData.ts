@@ -14,7 +14,7 @@ export interface Grouped {
   hashes: { [local_id: string]: { name: string, hash: string }[] }
 }
 
-const useSubscriptionsWithData = (filters: ('system' | 'theme' | 'datapack')[] = []) => {
+const useSubscriptionsWithData = (filters: ('system' | 'theme' | 'datapack')[] = []): { subscriptions: Grouped[], isLoading: boolean } => {
   const subscriptions = useLiveQuery(async () => {
     const subs = await db.subscriptions.toArray()
 
@@ -76,7 +76,7 @@ const useSubscriptionsWithData = (filters: ('system' | 'theme' | 'datapack')[] =
     )
   }, [])
 
-  return { subscriptions, isLoading: subscriptions === undefined}
+  return { subscriptions: subscriptions ?? [], isLoading: subscriptions === undefined}
 }
 
 export default useSubscriptionsWithData

@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { closeModal } from "@/state/modals";
 import { useCallback, useState } from "react";
 
@@ -25,9 +24,9 @@ export default function EditString({ id, data, title = 'Edit string', onSave, on
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <ScrollArea className='flex-1 min-h-0 overflow-auto'>
+        <DialogBody>
           <Input  placeholder='baba yaga' value={string} onChange={v => setString(v.currentTarget.value)} />
-        </ScrollArea>
+        </DialogBody>
         <DialogFooter>
           <Button variant={onDelete ? 'destructive' : 'outline'}
             onClick={() => {

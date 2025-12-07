@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import createSubscription from '@/db/subscription/methods/createSubscription';
 import generateTypeHash from '@/db/typeHashes/methods/generateTypeHash';
 import storeHashes from '@/db/typeHashes/methods/storeHashes';
@@ -28,10 +28,10 @@ const SaveNewVersion: React.FC<Props> = ({ id, original, edits, edits_id }) => {
         <DialogHeader>
           <DialogTitle>Save New Version</DialogTitle>
         </DialogHeader>
-        <div className='p-4'>
+        <DialogBody>
           <p>All of your changes are saved to a hidden "edits" copy of this version as you make them. This only saves your changes to a new public copy so that characters can use them.</p>
           <p>Are you sure you'd like to save your changes to a new version.</p>
-        </div>
+        </DialogBody>
         <DialogFooter>
           <Button color='light' onClick={requestClose}>
             Close

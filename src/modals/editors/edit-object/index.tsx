@@ -10,8 +10,7 @@ import { closeModal } from '@/state/modals';
 import { type SystemType } from '@/db/system/schema'
 import DynamicForm from '@/components/forms/dynamic-form'
 import { Spinner } from '@/components/ui/spinner';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 type ModalProps = {
   title: string;
@@ -62,17 +61,17 @@ function EditObject({ id, title, onDelete, onSave, data, types, type }: ModalPro
 
   return (
     <Dialog open onOpenChange={() => closeModal(id)}>
-      <DialogContent className="sm:max-w-[425px] flex flex-col">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <ScrollArea className='flex-1 min-h-0 overflow-auto'>
+        <DialogBody>
           {
             (type)
               ? <DynamicForm types={types} value={dataCopy} typeName={type} onChange={(p, v) => setProperty(p, v)} />
               : <DynamicForm types={types} value={dataCopy} typeName={dataCopy._type} onChange={(p, v) => setProperty(p, v)} />
           }
-        </ScrollArea>
+        </DialogBody>
         <DialogFooter>
           <Button variant='destructive'
             onClick={() => {

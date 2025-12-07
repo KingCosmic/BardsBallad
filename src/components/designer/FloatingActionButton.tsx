@@ -54,23 +54,19 @@ export function FABPreview({ script, isList, buttons, state, updateState }: FABP
   const localData = useLocalData()
   const { isReady, runScript } = useScriptRunner()
 
-  const [isOpen, setIsOpen] = useState(false)
-
   const s = useMemo(() => ({
     ...state,
     ...localData,
   }), [localData, state])
 
   const onClick = useCallback(() => {
-    if (isList) return setIsOpen(!isOpen)
-
     if (!script!.isCorrect || !isReady) return
 
     runScript(undefined, script!, s, updateState!)
-  }, [script, s, updateState, isOpen, isList, updateState])
+  }, [script, s, updateState, isList, updateState])
 
   return (
-    <FloatingActionButton onClick={onClick}>
+    <FloatingActionButton onClick={isList ? undefined : onClick}>
       <DropdownMenuContent side='top' className='w-56' align='start'>
         {buttons?.map(btn => (
           <DropdownMenuItem key={btn.name} onClick={() => {
