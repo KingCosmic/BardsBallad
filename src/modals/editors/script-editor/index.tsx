@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { signal } from '@preact/signals-react'
 
 import * as monaco from 'monaco-editor';
@@ -10,10 +10,12 @@ import { BUILTIN_TYPES, Type, VerseScriptCompiler } from '@bardsballad/verse';
 import { SystemType, TypeData } from '@/db/system/schema';
 import Sandbox from '@nyariv/sandboxjs';
 import parse from '@nyariv/sandboxjs/dist/node/parser';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { InfoBar } from './info-bar';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import ScriptSidebar from './sidebar';
 
 // Set up Monaco workers
 self.MonacoEnvironment = {
@@ -488,11 +490,13 @@ function createCompilerType(compiledTypes: Record<string, Type>, types: SystemTy
 
 export default function ScriptEditor({ id, types, code, expectedType, onSave, globals }: Props) {
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
-	const monacoEl = useRef(null);
+	const monacoEl = useRef<HTMLDivElement>(null);
   const compileTimeRef = useRef<any>(null);
   const [result, setResult] = useState<Script>(code);
   const [returnType, setReturnType] = useState('unknown')
   const compiler = useRef<VerseScriptCompiler | null>(null);
+  const [activeTab, setActiveTab] = useState('code');
+  const [mounted, setMounted] = useState(false);
 
   const g: Global[] = [
     { name: 'character', type: 'CharacterData', isArray: false },
@@ -527,7 +531,7 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
   }, [])
 
 	useEffect(() => {
-		if (monacoEl) {
+		if (monacoEl.current && mounted) {
 			setEditor((editor) => {
 				if (editor) return editor;
 
@@ -535,7 +539,7 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
 					value: result.source,
           language: 'verse',
           theme: 'verse-dark',
-          automaticLayout: true,
+          automaticLayout: false,
           fontSize: 14,
           minimap: { enabled: false },
           scrollBeyondLastLine: false,
@@ -658,52 +662,103 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
       // if (compiler.current) compiler.current = null
       editor?.dispose();
     }
-	}, [monacoEl.current]);
+	}, [mounted]);
+
+  // Set mounted flag after first render to trigger editor creation
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Trigger layout update when switching to code tab
+  useLayoutEffect(() => {
+    if (activeTab === 'code' && editor) {
+      // Trigger layout multiple times to ensure it works
+      const layoutEditor = () => editor.layout();
+      
+      layoutEditor();
+      requestAnimationFrame(layoutEditor);
+      setTimeout(layoutEditor, 100);
+    }
+  }, [activeTab, editor]);
 
   return (
     <Dialog open onOpenChange={() => closeModal(id)}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Script Editor</DialogTitle>
-        </DialogHeader>
-        <SidebarProvider>
-          <main className='p-0 h-[60vh] grid grid-rows-[auto_1fr]'>
+      <DialogContent className="sm:max-w-[95vw] h-[90vh] p-0 gap-0">
+        <div className="flex flex-col h-full">
+          <DialogHeader className="px-6 py-4 border-b">
+            <DialogTitle>Script Editor</DialogTitle>
+          </DialogHeader>
+
+          <div className="flex-1 min-h-0 flex flex-col p-6 gap-4">
             <InfoBar result={result} returnType={returnType} expectedType={expectedType} />
 
-            {/* Main Content */}
-            <div className="grid grid-cols-[1fr_auto] min-h-0 overflow-hidden">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+              <TabsList className="w-full justify-start">
+                <TabsTrigger value="code">Code</TabsTrigger>
+                <TabsTrigger value="globals">Globals</TabsTrigger>
+                <TabsTrigger value="documentation">Documentation</TabsTrigger>
+              </TabsList>
               
-              {/* Editor Section */}
-              <div className="grid grid-rows-[auto_1fr] min-h-0">
-                
-                {/* Tabs */}
-                <div className="flex gap-1 px-6 pt-3 bg-slate-800">
-                  <button className="px-4 py-2 bg-slate-900 text-gray-200 text-sm font-medium rounded-t-md">
-                    Code
-                  </button>
-                  <button className="px-4 py-2 text-gray-400 text-sm font-medium rounded-t-md hover:bg-slate-700 hover:text-gray-300 transition-all">
-                    Documentation
-                  </button>
+              <div className="relative flex-1 mt-4 min-h-0">
+                <div className={`absolute inset-0 flex flex-col ${activeTab !== 'code' ? 'hidden' : ''}`}>
+                  <div className="bg-slate-900 rounded-lg overflow-hidden flex-1 border border-slate-800">
+                    <div id='editor' ref={monacoEl} className='w-full h-full' />
+                  </div>
                 </div>
-
-                {/* Code Editor */}
-                <div className="bg-slate-900 overflow-y-auto font-mono text-sm leading-relaxed">
-                  <div id='editor' ref={monacoEl} className='w-full h-full' />
+                
+                <div className={`absolute inset-0 ${activeTab !== 'globals' ? 'hidden' : ''}`}>
+                  <ScrollArea className="h-full rounded-lg border border-slate-800">
+                    <div className="p-6 space-y-6">
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2">Global Variables</h3>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Available variables in your script context
+                        </p>
+                        <Separator className="mb-4" />
+                      </div>
+                      
+                      <div className="space-y-4">
+                        {g.map((global, index) => (
+                          <div key={index} className="p-4 rounded-lg border bg-card">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-semibold font-mono text-primary">
+                                {global.name}
+                              </span>
+                              <Badge variant="secondary" className="text-xs font-mono">
+                                {global.type}{global.isArray ? '[]' : ''}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              No description available
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </ScrollArea>
+                </div>
+                
+                <div className={`absolute inset-0 ${activeTab !== 'documentation' ? 'hidden' : ''}`}>
+                  <div className="bg-slate-900 rounded-lg p-6 h-full overflow-auto border border-slate-800">
+                    <h3 className="text-lg font-semibold mb-4">Documentation</h3>
+                    <p className="text-muted-foreground">
+                      Documentation for the Verse scripting language and available functions will appear here.
+                    </p>
+                  </div>
                 </div>
               </div>
+            </Tabs>
+          </div>
 
-              <ScriptSidebar globals={g} />
-            </div>
-          </main>
-        </SidebarProvider>
-        <DialogFooter>
-          <Button color='primary' onClick={() => {
-            onSave({ result, returnType })
-            closeModal(id)
-          }}>
-            Save
-          </Button>
-        </DialogFooter>
+          <DialogFooter className="px-6 py-4 border-t">
+            <Button onClick={() => {
+              onSave({ result, returnType })
+              closeModal(id)
+            }}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   )

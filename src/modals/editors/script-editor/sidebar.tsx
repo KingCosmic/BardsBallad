@@ -1,4 +1,6 @@
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface Props {
   globals: any[]
@@ -6,21 +8,27 @@ interface Props {
 
 export default function ScriptSidebar({ globals }: Props) {
   return (
-    <Sidebar side='right'>
+    <Sidebar side='right' collapsible='offcanvas' className='h-full min-w-[280px]'>
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel>Global Variables</SidebarGroupLabel>
+          <Separator className="my-2" />
           <SidebarGroupContent>
             <SidebarMenu>
               {globals.map((global, index) => (
-                <SidebarMenuItem key={index}>
-                  <div className="text-primary text-sm font-semibold font-mono mb-1">
-                    {global.name}
-                  </div>
-                  <div className="text-muted text-xs font-mono">
-                    {global.type}{global.isArray ? '[]' : ''}
-                  </div>
-                  <div className="text-[11px] mt-1.5 leading-snug">
-                    coming soon~
+                <SidebarMenuItem key={index} className="py-2">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold font-mono text-primary">
+                        {global.name}
+                      </span>
+                      <Badge variant="secondary" className="text-xs font-mono">
+                        {global.type}{global.isArray ? '[]' : ''}
+                      </Badge>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-snug">
+                      No description available
+                    </p>
                   </div>
                 </SidebarMenuItem>
               ))}

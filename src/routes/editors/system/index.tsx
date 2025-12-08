@@ -19,8 +19,9 @@ import { Button } from '@/components/ui/button'
 import { IconDeviceFloppy } from '@tabler/icons-react'
 import { openModal } from '@/state/modals'
 import SaveNewVersion from '@/modals/editor/save-new-version'
-
-
+import PageContent from '@/components/page-content'
+import ComingSoon from './coming-soon'
+import QuickActions from './quick-actions'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
@@ -93,7 +94,7 @@ const System: React.FC = () => {
         </Button>
       </Header>
 
-      <div className='p-4 relative flex flex-col grow gap-4'>
+      <PageContent>
         <Select value={editor.tab} onValueChange={setTab}>
           <SelectTrigger className='w-full'>
             <SelectValue placeholder='Select Tab' />
@@ -106,7 +107,7 @@ const System: React.FC = () => {
             <SelectItem value='editor'>Editor UI</SelectItem>
             <SelectItem value='creator'>Builder UI</SelectItem>
             <SelectItem value='modals'>Modals</SelectItem>
-            <SelectItem value='actions'>Character Actions</SelectItem>
+            <SelectItem value='actions'>Quick Actions</SelectItem>
           </SelectContent>
         </Select>
 
@@ -121,16 +122,15 @@ const System: React.FC = () => {
             <Functions versionedResource={versionEdits} />
           ) : (editor.tab === 'editor') ? (
             <Editor versionedResource={versionEdits} />
-          ) : null
-          // ) : (editor.tab === 'creator') ? (
-          //   <Creator versionedResource={versionEdits} />
-          // ) : (editor.tab === 'modals') ? (
-          //   <Modals versionedResource={versionEdits} />
-          // ) : (editor.tab === 'actions') && (
-          //   <ActionsModal editsId={edits_id} versionedResource={versionEdits}  />
-          // )
+          ) : (editor.tab === 'creator') ? (
+            <ComingSoon />
+          ) : (editor.tab === 'modals') ? (
+            <ComingSoon />
+          ) : (editor.tab === 'actions') && (
+            <QuickActions editsId={edits_id} versionedResource={versionEdits}  />
+          )
         }
-      </div>
+      </PageContent>
     </div>
   )
 }

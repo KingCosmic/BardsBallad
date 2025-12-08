@@ -95,7 +95,7 @@ export function CharacterSidebar() {
               {system.actions.map(a => (
                 <SidebarMenuItem key={a.name}>
                   <SidebarMenuButton key={a.name} variant='outline' tooltip={a.description} className='flex-col gap-4' onClick={() => {
-                    runScript(undefined, a.script.compiled, state, updateState)
+                    runScript(undefined, a.script, state, updateState)
                   }}>
                     {a.name}
                   </SidebarMenuButton>
