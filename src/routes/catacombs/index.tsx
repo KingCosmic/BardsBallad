@@ -1,4 +1,4 @@
-import Header from '@/components/header'
+import Header from '@/components/n-header'
 import { useDeletedCharacters } from '@/hooks/characters/useDeletedCharacters'
 import { useDeletedSubscriptions } from '@/hooks/subscriptions/useDeletedSubscriptions'
 import React from 'react'

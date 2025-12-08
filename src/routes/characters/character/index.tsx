@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'react-router'
 
-import Header from '@/components/header'
+import Header from '@/components/n-header'
 
 import { useCharacter } from '@/hooks/characters/useCharacter'
 
