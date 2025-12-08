@@ -8,7 +8,7 @@ export default (type: 'character' | 'system' | 'datapack' | 'theme', obj: any, f
 
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${filename}.json`;
+  a.download = `${filename}.ballad`;
   a.click();
 
   URL.revokeObjectURL(url);

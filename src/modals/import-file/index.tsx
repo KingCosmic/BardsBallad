@@ -37,7 +37,7 @@ const ImportFile: React.FC<Props> = ({ id, title, onSave }) => {
           </DialogDescription>
         </DialogHeader>
         <DialogBody>
-          <Input type="file" onChange={handleFileChange} />
+          <Input type='file' accept='.ballad' onChange={handleFileChange} />
         </DialogBody>
         <DialogFooter>
           <Button variant='outline' onClick={requestClose}>

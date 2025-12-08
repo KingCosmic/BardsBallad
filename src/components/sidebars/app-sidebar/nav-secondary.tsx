@@ -27,7 +27,7 @@ export function NavSecondary({
             </CardContent>
           </Card>
           <ButtonGroup className='mb-2 mt-3'>
-            <ButtonGroup className="hidden sm:flex">
+            <ButtonGroup>
               <Button
                 variant="outline" 
                 size="icon" 
