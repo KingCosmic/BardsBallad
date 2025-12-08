@@ -1,16 +1,20 @@
 import { useNode } from '@craftjs/core'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useLocalState } from '../../hooks/useLocalState'
 import { editorState } from '@/state/editor'
 import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
 import { SystemData, SystemType } from '@/db/system/schema'
 
 export function SelectSettings() {
+  // @ts-ignore
   const { id, actions: { setProp },
+    // @ts-ignore
     label,
+    // @ts-ignore
     dynamicOptions, optionsScript, onChange,
-
+    // @ts-ignore
     marginTop, marginRight, marginBottom, marginLeft,
+    // @ts-ignore
     width, maxWidth, minWidth
   } = useNode(node => ({
     label: node.data.props.label,
@@ -29,13 +33,13 @@ export function SelectSettings() {
     minWidth: node.data.props.minWidth
   }))
 
-  const [openAccordion, setOpenAccordion] = useState(-1)
-
+  // @ts-ignore
   const localParams = useLocalState(id)
 
   const editor = editorState.useValue()
   const versionEdits = useVersionEdits<SystemData>(editor.versionId)
 
+  // @ts-ignore
   const types: SystemType[] = useMemo(() => [
     versionEdits?.data.defaultCharacterData._type,
     ...(versionEdits?.data.types ?? [])

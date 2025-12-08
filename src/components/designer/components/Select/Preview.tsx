@@ -8,7 +8,9 @@ export default (props: SelectProps) => {
   const localData = useLocalData()
   const { isReady, runScript } = useScriptRunner()
 
+  // @ts-ignore
   const [value, setValue] = useState('default')
+  // @ts-ignore
   const [options, setOptions] = useState<any[]>([])
 
   const state = useMemo(() => ({
@@ -30,6 +32,7 @@ export default (props: SelectProps) => {
     rc()
   }, [state, props.dynamicOptions, props.optionsScript, props.updateState])
 
+  // @ts-ignore
   const onChange = useCallback((value: any) => {
     if (!props.onChange?.isCorrect || !isReady) return
 

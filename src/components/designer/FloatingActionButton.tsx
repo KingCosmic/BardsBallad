@@ -95,6 +95,7 @@ export function FABPreview({ script, isList, buttons, state, updateState }: FABP
 }
 
 function FABSettings() {
+  // @ts-ignore
   const { id, actions: { setProp }, isList, buttons, script } = useNode(node => ({
     isList: node.data.props.isList,
     buttons: node.data.props.buttons,

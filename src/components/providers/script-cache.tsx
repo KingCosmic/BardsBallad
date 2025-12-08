@@ -9,7 +9,7 @@ export default function ScriptCacheProvider({ children }: PropsWithChildren) {
   // results persist until explicitly invalidated.
   const cache = useRef<Map<string, any>>(new Map());
 
-  const invalidateCacheByPaths = (changedPaths: string[]) => {
+  const invalidateCacheByPaths = (_changedPaths: string[]) => {
     // for (const [key, val] of Array.from(cache.current.entries())) {
     //   if (!val || !val.dependentPaths) continue
     //   const deps: string[] = val.dependentPaths

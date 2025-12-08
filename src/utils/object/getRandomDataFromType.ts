@@ -1,14 +1,11 @@
-import { getDefaultNodes } from '@blueprints/utils';
+import { SystemType, TypeData } from '@/db/system/schema';
 import generateObject from './generateObject';
-
-import { type SystemType, type TypeData } from '@storage/schemas/system'
 import { Script } from '@/types/script';
 
 const defaultScript: Script = {
   source: '',
   compiled: '',
   isCorrect: true,
-  blueprint: { nodes: [], edges: [] }
 }
 
 export default function getRandomDataFromType(types: SystemType[], options: TypeData): any {

@@ -10,11 +10,12 @@ function Divider() {
   )
 }
 
-export function DividerPreview(props: any) {
+export function DividerPreview(_props: any) {
   return <Separator />
 }
 
 function DividerSettings() {
+  // @ts-ignore
   const { actions: { setProp }, } = useNode(node => ({}))
 
   return (

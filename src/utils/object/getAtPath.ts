@@ -18,7 +18,6 @@ function parsePath(path: string) {
   const segments = [];
   let current = '';
   let inBracket = false;
-  let quote = null;
   
   for (let i = 0; i < path.length; i++) {
     const char = path[i];

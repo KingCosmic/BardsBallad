@@ -22,7 +22,7 @@ const MarketplaceInfo: React.FC = () => {
 
   console.log(id)
 
-  const { isPending: isItemLoading, data } = useQuery<{ item: MarketplaceItem, creator: any, versions: string[] }>({
+  const { isPending: _isItemLoading, data } = useQuery<{ item: MarketplaceItem, creator: any, versions: string[] }>({
     queryKey: ['marketplace-item'],
     queryFn: () => getMarketplaceItemInfo(id ?? ''),
   })
