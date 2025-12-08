@@ -3,7 +3,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router'
 
 import { useEffect } from 'react'
-import Layout from './layout'
+import Layout from './Layout'
 import Characters from './routes/characters'
 import { SidebarProvider } from './components/ui/sidebar'
 import { ThemeProvider } from './components/providers/theme-provider'
