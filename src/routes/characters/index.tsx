@@ -1,6 +1,6 @@
 import React from 'react';
 import NoCharacters from './no-characters';
-import Header from '@/components/n-header';
+import Header from '@/components/header';
 import { useCharacters } from '@/hooks/characters/useCharacters';
 import { Spinner } from '@/components/ui/spinner';
 import CharacterCard from './character-card';

@@ -1,4 +1,4 @@
-import Header from "@/components/n-header"
+import Header from "@/components/header"
 import { Spinner } from "@/components/ui/spinner"
 import useSubscriptionsWithData from "@/hooks/subscriptions/useSubscriptionsWithData"
 import NoSubscriptions from "./no-subscriptions"

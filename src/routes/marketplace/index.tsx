@@ -1,4 +1,4 @@
-import Header from "@/components/n-header"
+import Header from "@/components/header"
 import { MarketplaceItem } from "@/types/marketplace"
 import ItemCard from "./item"
 import { useQuery } from "@tanstack/react-query"

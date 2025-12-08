@@ -4,7 +4,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import General from "./general"
-import Header from "@/components/n-header"
+import Header from "@/components/header"
 import Account from "./account"
 import Developer from "./developer"
 import PageContent from '@/components/page-content'

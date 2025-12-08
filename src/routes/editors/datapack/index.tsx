@@ -1,6 +1,6 @@
 import { useParams } from 'react-router'
 
-import Header from '@/components/n-header'
+import Header from '@/components/header'
 
 import React, { useMemo } from 'react'
 

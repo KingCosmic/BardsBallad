@@ -6,7 +6,7 @@ import getVisualTextFromVersionID from '@/utils/misc/getVisualTextFromVersionID'
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import Header from '@/components/n-header';
+import Header from '@/components/header';
 import { getSubscriptionData } from '@/lib/api/marketplace/getSubscriptionData';
 import saveSystem from '@/db/system/methods/saveSystem';
 import saveVersionedResource from '@/db/version/methods/saveVersionedResource';

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { SignupForm } from "./register"
 import { useNavigate } from "react-router"
 import { authState } from "@/state/auth"
-import Header from '@/components/n-header'
+import Header from '@/components/header'
 import PageContent from '@/components/page-content'
 
 export default function LoginPage() {
