@@ -1,4 +1,5 @@
-import Roles from '@/const/roles'
+
+import Roles from '@/constants/roles'
 import { hasRole } from './hasRole'
 
 export default function roleToString(role: number) {

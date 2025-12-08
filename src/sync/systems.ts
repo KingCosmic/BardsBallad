@@ -1,19 +1,41 @@
+import Roles from '@/constants/roles'
+import { db, Item } from '@/db'
+import { pullUpdatesForSystems } from '@/lib/api/pullUpdatesForSystems'
+import { pushUpdatesForSystems } from '@/lib/api/pushUpdatesForSystems'
+import { hasRole } from '@/utils/roles/hasRole'
 import { jwtDecode } from 'jwt-decode'
-import { AuthStorage, SyncStorage } from '@lib/storage'
-import { db, Item } from '@/storage'
-import {pushUpdatesForSystems} from "@api/pushUpdatesForSystems";
-import {pullUpdatesForSystems} from "@api/pullUpdatesForSystems";
-import Roles from '@/const/roles';
-import { hasRole } from '@utils/roles/hasRole';
 
-const CHECKPOINT = 'system-checkpoint'
+const CHECKPOINT_KEY = 'system-checkpoint'
+
+interface Checkpoint {
+  updated_at: number
+  id: string
+}
+
+const getCheckpoint = (): Checkpoint | null => {
+  const stored = localStorage.getItem(CHECKPOINT_KEY)
+  return stored ? JSON.parse(stored) : null
+}
+
+const setCheckpoint = (checkpoint: { id: number, updated_at: string }) => {
+  // Convert the API checkpoint format to our storage format
+  const storedCheckpoint: Checkpoint = {
+    updated_at: new Date(checkpoint.updated_at).getTime(),
+    id: checkpoint.id.toString()
+  }
+  localStorage.setItem(CHECKPOINT_KEY, JSON.stringify(storedCheckpoint))
+}
+
+const getToken = (): string | null => {
+  return localStorage.getItem('token')
+}
 
 export const pull = async () => {
-  const cp = await SyncStorage.get<any>(CHECKPOINT)
+  const cp = getCheckpoint()
 
   const { checkpoint, documents } = await pullUpdatesForSystems(cp, 20)
 
-  await SyncStorage.set(CHECKPOINT, checkpoint)
+  setCheckpoint(checkpoint)
 
   return documents
 }
@@ -22,29 +44,53 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   const systems = await db.systems.toArray()
   const characters = await db.characters.toArray()
 
-  const user = jwtDecode<{ id: String, role: number }>(await AuthStorage.get('token'))
+  const token = getToken()
+  
+  if (!token) return { conflicts: [], metadata: [] }
+
+  const user = jwtDecode<{ id: string, role: number, synced_characters?: string[] }>(token)
   
   if (!user) return { conflicts: [], metadata: [] }
 
-  const synced = await SyncStorage.get<string[]>('synced_characters') || []
+  const synced = user.synced_characters || []
+  const cp = getCheckpoint()
   
   const isPremium = hasRole(user.role, Roles.PREMIUM)
 
   const systemsToPush = systems.filter(s => {
     const isOwned = (s.user_id === user.id)
 
-    // we only need to worry about syncing systems owned by us.
+    // we only need to worry about syncing systems owned by us
     if (!isOwned) return false
 
-    const pushedCharacterRef = characters.find(c => c.system.local_id === s.local_id && synced.includes(c.local_id))
+    // If no checkpoint exists, use different logic
+    if (!cp) {
+      // Premium users: push all systems
+      if (isPremium) return true
 
-    // if a character we're syncing relies on this system we need to sync it too.
-    const referencedByChar = (pushedCharacterRef !== undefined)
+      // Free users: only push systems attached to synced characters
+      const referencedBySyncedChar = characters.some(c => 
+        c.system.local_id === s.local_id && synced.includes(c.local_id)
+      )
 
-    // if this system hasn't been synced and we're a premium user it should be synced.
-    const notSyncedAndPremium = (!s.id && isPremium)
+      return referencedBySyncedChar
+    }
 
-    return (referencedByChar || notSyncedAndPremium)
+    // Check if system was updated after last checkpoint
+    const systemUpdatedAt = new Date(s.updated_at).getTime()
+    const isUpdatedSinceCheckpoint = systemUpdatedAt > cp.updated_at
+
+    if (!isUpdatedSinceCheckpoint) return false
+
+    // Premium users: push all updated systems
+    if (isPremium) return true
+
+    // Free users: only push updated systems attached to synced characters
+    const referencedBySyncedChar = characters.some(c => 
+      c.system.local_id === s.local_id && synced.includes(c.local_id)
+    )
+
+    return referencedBySyncedChar
   })
 
   return await pushUpdatesForSystems(systemsToPush)
@@ -53,4 +99,3 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
 export const bulkPut = (docs: Item[]) => db.systems.bulkPut(docs)
 
 export const get = () => db.systems.toArray()
-

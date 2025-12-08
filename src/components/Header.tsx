@@ -1,47 +1,39 @@
-import MenuButton from './MenuButton'
-import { openSecondarySidebar } from '@state/sidebar'
+import { Separator } from "@/components/ui/separator"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { PropsWithChildren } from "react"
 
-import { MoreVertical } from 'lucide-react'
-
-type HeaderProps = {
+interface Props {
   title: string
-  subtitle?: string
-  options?: { onClick(): void, Content: React.FC }[]
+  subtitle: string
   hasSidebar?: boolean
 }
 
-const Header: React.FC<HeaderProps> = ({ title, subtitle = '', options, hasSidebar = false }) => {
+export default function Header({ title, subtitle, hasSidebar, children }: PropsWithChildren<Props>) {
   return (
-    <div className={`flex flex-row justify-between mb-8 ${(hasSidebar ? 'lg:w-[calc(100vw-36rem)]' : '')}`}>
-      <div className='flex flex-row justify-between w-full items-center'>
-        <MenuButton />
-
+    <header className="flex bg-sidebar h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+        <SidebarTrigger className="-ml-1" side='left' />
+        <Separator
+          orientation="vertical"
+          className="mx-2 data-[orientation=vertical]:h-4"
+        />
+        <div className='flex-col grow'>
+          <h1 className="text-base font-medium">{title}</h1>
+          <p className='text-sm font-medium text-primary'>{subtitle}</p>
+        </div>
         <div>
-          <h1 className='text-3xl font-light text-fantasy-text mb-2 drop-shadow-lg'>{title}</h1>
-          <p className='text-sm text-fantasy-accent/80'>{subtitle}</p>
+          {children}
         </div>
-
-        <div className='flex flex-row-reverse items-center'>
         {hasSidebar && (
-          <button onClick={openSecondarySidebar} type='button' className='sm:hidden bg-fantasy-glass border border-fantasy-border rounded-lg p-3 backdrop-blur-lg text-fantasy-accent text-lg transition-all duration-300 hover:bg-fantasy-accent/20 hover:scale-105'>
-            <span className='sr-only'>Open Details</span>
-            <MoreVertical />
-          </button>
+          <>
+            <Separator
+              orientation="vertical"
+              className="mx-2 data-[orientation=vertical]:h-4"
+            />
+            <SidebarTrigger className="-mr-1" side='right' />
+          </>
         )}
-  
-        {options?.length && (
-            <ul className='flex flex-row gap-2'>
-              {options?.map(({ Content, onClick }, i) => (
-                <li key={i} onClick={onClick} className='flex justify-center items-center bg-fantasy-dark text-fantasy-text border border-fantasy-border p-4 rounded-lg text-xs font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-fantasy-dark/40 cursor-pointer'>
-                  <Content />
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
       </div>
-    </div>
+    </header>
   )
 }
-
-export default Header

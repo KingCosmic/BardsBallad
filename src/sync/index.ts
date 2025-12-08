@@ -1,23 +1,22 @@
-import { SyncStorage } from '@lib/storage'
-import { openModal } from '@state/modals'
-
 import { get as systemsGet, bulkPut as systemsBulkPut, pull as systemsPull, push as systemsPush } from './systems'
 import { get as versionsGet, bulkPut as versionsBulkPut, pull as versionsPull, push as versionsPush } from './versions'
 import { get as charactersGet, bulkPut as charactersBulkPut, pull as charactersPull, push as charactersPush } from './characters'
 import { get as subscriptionsGet, bulkPut as subscriptionsBulkPut, pull as subscriptionsPull, push as subscriptionsPush } from './subscriptions'
-import { setOnlineState, syncState } from '@state/sync'
-import { authState } from '@state/auth'
-import {setSyncedCharacters} from "@api/setSyncedCharacters";
-import {checkInternetAccess} from "@api/checkInternetAccess";
-import React from 'react'
-import HandleConflicts from '@modals/HandleConflicts'
-import { db } from '@storage/index'
-import storeHashes from '@storage/methods/hashes/storeHashes'
-import generateTypeHash from '@utils/generateTypeHash'
+import { openModal } from '@/state/modals'
+import { createElement } from 'react'
+import { authState } from '@/state/auth'
+import storeHashes from '@/db/typeHashes/methods/storeHashes'
+import generateTypeHash from '@/db/typeHashes/methods/generateTypeHash'
+import { db } from '@/db'
+import { setOnlineState, syncState } from '@/state/sync'
+import { checkInternetAccess } from '@/lib/api/misc/checkInternetAccess'
+import { setSyncedCharacters } from '@/lib/api/characters/setSyncedCharacters'
+import HandleConflicts from '@/modals/sync/handle-conflicts'
+
 
 const batchSize = 10
 
-// TODO: We could probably sync based of subscriptions instead of each collection...
+// TODO: We could probably sync based off subscriptions instead of each collection...
 // or atleast pull our stuff to sync from subscriptions and just build out the id's to sync at once instead of multiple for loops and checks.
 
 const collectionsToSync = [
@@ -61,7 +60,7 @@ async function handleConflicts(conflicts: { local: any, remote: any }[]): Promis
   if (conflicts.length === 0) return []
 
   return new Promise(resolve => {
-    openModal('handle-conflicts', ({ id }) => React.createElement(HandleConflicts, { id, data: conflicts, onSave: resolve }))
+    openModal('handle-conflicts', ({ id }) => createElement(HandleConflicts, { id, data: conflicts, onSave: resolve }))
   })
 }
 
@@ -149,7 +148,7 @@ export const sync = async () => {
   if (!isOnline || !isLoggedIn) return
 
   // Update synced characters array first.
-  const synced = await SyncStorage.get<string[]>('synced_characters') || []
+  const synced = JSON.parse(localStorage.getItem('synced_characters') ?? '[]')
 
   await setSyncedCharacters(synced)
 
@@ -164,7 +163,7 @@ export const sync = async () => {
   // TODO: only generate hashes for new items at some point. but this is a quick hack to make it work.
   const versions = await db.versions.toArray()
   versions.forEach(vers => {
-    storeHashes(vers.local_id, vers.data.types.map(generateTypeHash))
+    storeHashes(vers.local_id, (vers.data as any).types.map(generateTypeHash))
   })
 
   // TODO: setup websocket connection for real-time updates.
