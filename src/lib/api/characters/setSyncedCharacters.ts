@@ -12,10 +12,10 @@ import api from '..'
  * @returns {Promise<object>} A promise that resolves with the server response data after the synchronization is complete.
  */
 export const setSyncedCharacters = async (characters: string[]): Promise<object> => {
-    setSyncedCharacters(characters)
+    localStorage.setItem('synced-characters', JSON.stringify(characters))
     const response = await api.post('/characters/change-synced', {characterIds: characters})
 
-    setSyncedCharacters(characters)
+    localStorage.setItem('synced-characters', JSON.stringify(characters))
 
     return response.data
 }
