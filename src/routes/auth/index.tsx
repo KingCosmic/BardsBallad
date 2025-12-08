@@ -1,4 +1,3 @@
-import { GalleryVerticalEnd } from "lucide-react"
 import { LoginForm } from "./login"
 import { useEffect, useState } from "react"
 import { SignupForm } from "./register"

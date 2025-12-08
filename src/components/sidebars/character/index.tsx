@@ -1,6 +1,5 @@
 import { useScriptRunner } from '@/components/providers/script-runner'
-import { Separator } from '@/components/ui/separator'
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import updateCharacterData from '@/db/character/methods/updateCharacterData'
 import { DataPack } from '@/db/datapack/schema'
 import { DataType, SystemData } from '@/db/system/schema'

@@ -74,7 +74,7 @@ interface Props {
 }
 
 export default function CharacterCreator({ id }: Props) {
-  const { characters, isLoading: loadingCharacters } = useCharacters()
+  const { characters: _c, isLoading: loadingCharacters } = useCharacters()
 
   const { subscriptions, isLoading: loadingSubscriptions } = useSubscriptionsWithData(['theme'])
 

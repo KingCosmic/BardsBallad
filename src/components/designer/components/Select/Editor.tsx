@@ -37,6 +37,7 @@ export type SelectProps = {
 function EditorSelect(props: SelectProps) {
   const { connectors: { connect, drag } } = useNode()
 
+  // @ts-ignore
   const options = useMemo(() => {
     return []
   }, []) as any[]
@@ -45,7 +46,7 @@ function EditorSelect(props: SelectProps) {
     // @ts-ignore
     <div ref={ref => connect(drag(ref!))}>
       <Label>{props.label}</Label>
-      <Select value='' onValueChange={val => {}}>
+      <Select value='' onValueChange={_val => {}}>
         <SelectTrigger className='w-full'>
           <SelectValue placeholder='Select Min Height' />
         </SelectTrigger>

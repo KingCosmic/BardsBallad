@@ -23,7 +23,7 @@ const Marketplace: React.FC = () => {
     return hasRole(user.role, Roles.ADMINISTRATOR)
   }, [isLoggedIn, user])
 
-  const { isPending, data: items } = useQuery<MarketplaceItem[]>({
+  const { isPending: _pending, data: items } = useQuery<MarketplaceItem[]>({
     queryKey: ['marketplace-items'],
     queryFn: () => getMarketplaceItems(),
     initialData: []

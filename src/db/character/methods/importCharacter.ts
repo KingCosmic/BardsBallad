@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
 import { db } from '@/db'
 import characterSchema, { Character } from '@/db/character/schema'
 import z from 'zod'
