@@ -26,11 +26,14 @@ import { ScriptRunnerProvider } from './components/providers/script-runner'
 import Auth from './routes/auth'
 import System from './routes/editors/system'
 import { EditorProvider } from './components/providers/editor-provider'
+import useSync from './hooks/sync/useSync'
 
 
 const queryClient = new QueryClient()
 
 const App: React.FC = () => {
+  useSync()
+
   useEffect(() => {
     // Create floating particles
     function createParticle() {

@@ -1,13 +1,9 @@
-import { IconFolderCode } from "@tabler/icons-react"
-import { ArrowUpRightIcon } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
-  EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
 import { openModal } from "@/state/modals"
@@ -15,11 +11,8 @@ import CharacterCreator from "@/modals/creation/character-creator"
 
 export default function NoCharacters() {
   return (
-    <Empty>
+    <Empty className='absolute top-0 left-0 bottom-0 right-0'>
       <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <IconFolderCode />
-        </EmptyMedia>
         <EmptyTitle>No Adventurers</EmptyTitle>
         <EmptyDescription>
           You haven&apos;t created any Adventurers yet. Get started by creating

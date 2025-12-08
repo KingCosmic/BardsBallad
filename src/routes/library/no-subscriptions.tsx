@@ -15,7 +15,7 @@ import importItem from "@/db/shared/methods/importItem"
 
 export default function NoSubscriptions() {
   return (
-    <Empty>
+    <Empty className='absolute top-0 left-0 bottom-0 right-0'>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <IconFolderCode />

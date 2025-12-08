@@ -11,6 +11,7 @@ import FloatingActionButton from "@/components/ui/fab"
 import { closeModal, openModal } from "@/state/modals"
 import PublishItem from "@/modals/marketplace/publish-item"
 import MarketplaceDisclaimer from "@/modals/marketplace/disclaimer"
+import PageContent from '@/components/page-content'
 
 const Marketplace: React.FC = () => {
   const { isLoggedIn, user } = authState.useValue()
@@ -49,7 +50,7 @@ const Marketplace: React.FC = () => {
     <div>
       <Header title='Marketplace' subtitle='Coming soon: community-made systems, datapacks, & themes.' />
 
-      <div className='relative flex flex-col gap-4 p-4'>
+      <PageContent className='relative flex flex-col gap-4'>
         <div className='flex flex-col gap-4'>
           <h3 className='text-3xl font-semibold mt-4 mb-2'>Featured Systems</h3>
           <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
@@ -74,7 +75,7 @@ const Marketplace: React.FC = () => {
             openModal('publish-item', PublishItem)
           }} />
         )}
-      </div>
+      </PageContent>
     </div>
   )
 }

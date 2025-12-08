@@ -7,13 +7,14 @@ import General from "./general"
 import Header from "@/components/header"
 import Account from "./account"
 import Developer from "./developer"
+import PageContent from '@/components/page-content'
 
 export default function Settings() {
   return (
     <div>
       <Header title='Settings' subtitle='change your fate.' />
 
-      <div className='flex flex-col p-4'>
+      <PageContent>
         <Tabs defaultValue="account">
           <TabsList>
             <TabsTrigger value='account'>Account</TabsTrigger>
@@ -24,7 +25,7 @@ export default function Settings() {
           <General />
           <Developer />
         </Tabs>
-      </div>
+      </PageContent>
     </div>
   )
 }

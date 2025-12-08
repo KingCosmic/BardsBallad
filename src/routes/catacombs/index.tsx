@@ -4,6 +4,7 @@ import { useDeletedSubscriptions } from '@/hooks/subscriptions/useDeletedSubscri
 import React from 'react'
 import GarbageCard from './garbage-card'
 import GarbageCharacter from './garbage-character'
+import PageContent from '@/components/page-content'
 
 const Catacombs: React.FC = () => {
   const { subscriptions, isLoading: isSubscriptionsLoading } = useDeletedSubscriptions()
@@ -13,7 +14,7 @@ const Catacombs: React.FC = () => {
     <div>
       <Header title='The Catacombs' subtitle='Items permanently removed after 7 days' />
 
-      <div className='p-4'>
+      <PageContent className='p-4'>
         {/* TODO: Searchbar */}
 
         {(isSubscriptionsLoading || isCharactersLoading) ? (
@@ -26,7 +27,7 @@ const Catacombs: React.FC = () => {
             </div>
           </h5>
         )}
-      </div>
+      </PageContent>
     </div>
   )
 }

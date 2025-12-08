@@ -9,6 +9,7 @@ import { openModal } from "@/state/modals"
 import importItem from "@/db/shared/methods/importItem"
 import ImportFile from "@/modals/import-file"
 import CreateSubscription from "@/modals/creation/create-subscription"
+import PageContent from '@/components/page-content'
 
 
 const Library: React.FC = () => {
@@ -31,7 +32,7 @@ const Library: React.FC = () => {
     <div>
       <Header title='Your Collection' subtitle='Manage your extra content' />
 
-      <div className='p-4'>
+      <PageContent>
         {/* TODO: Searchbar */}
 
         {subscriptions.length === 0 ? (
@@ -89,7 +90,7 @@ const Library: React.FC = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </FloatingActionButton>
-      </div>
+      </PageContent>
     </div>
   )
 }

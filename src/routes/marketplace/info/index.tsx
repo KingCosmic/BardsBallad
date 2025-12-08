@@ -14,6 +14,7 @@ import storeHashes from '@/db/typeHashes/methods/storeHashes';
 import createSubscription from '@/db/subscription/methods/createSubscription';
 import generateTypeHash from '@/db/typeHashes/methods/generateTypeHash';
 import { getMarketplaceItemInfo } from '@/lib/api/marketplace/getMarketplaceItemInfo';
+import PageContent from '@/components/page-content';
 
 const MarketplaceInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -94,7 +95,7 @@ const MarketplaceInfo: React.FC = () => {
         subtitle={`By ${creator?.username}`}
       />
       
-      <div className="p-4 flex-1 overflow-y-auto">
+      <PageContent>
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Description Section */}
           <div className="bg-card border rounded-lg p-6">
@@ -161,7 +162,7 @@ const MarketplaceInfo: React.FC = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </PageContent>
     </div>
   );
 };

@@ -4,6 +4,9 @@ import { Item, ItemActions, ItemContent, ItemHeader, ItemMedia, ItemTitle } from
 import { TabsContent } from "@/components/ui/tabs";
 import Roles from "@/constants/roles";
 import { logout } from '@/lib/api/auth/logout';
+import getLoginLink from '@/lib/api/discord/getLoginLink';
+import { openBilling } from '@/lib/api/openBilling';
+import { subscribe } from '@/lib/api/subscribe';
 import ConfirmModal from "@/modals/confirm";
 import { authState } from "@/state/auth";
 import { openModal } from "@/state/modals";
@@ -35,8 +38,6 @@ export default function Account() {
       </TabsContent>
     )
   }
-
-  const getLoginLink = () => {}
 
   return (
     <TabsContent value='account' className='flex flex-col gap-4'>
@@ -73,13 +74,13 @@ export default function Account() {
             const isPremium = hasRole(user.role, Roles.PREMIUM)
             const isNormalUser = hasRole(user.role, Roles.FREE) || hasRole(user.role, Roles.PREMIUM)
 
-            // if (isNormalUser && !isPremium) {
-            //   const { data: newUrl } = await subscribe()
-            //   url = newUrl
-            // } else if (isNormalUser && isPremium) {
-            //   const { data: newUrl } = await openBilling()
-            //   url = newUrl
-            // }
+            if (isNormalUser && !isPremium) {
+              const { data: newUrl } = await subscribe()
+              url = newUrl
+            } else if (isNormalUser && isPremium) {
+              const { data: newUrl } = await openBilling()
+              url = newUrl
+            }
 
             window.open(url, '_self')
           }}>

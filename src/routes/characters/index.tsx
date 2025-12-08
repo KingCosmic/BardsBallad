@@ -7,26 +7,27 @@ import CharacterCard from './character-card';
 import { openModal } from '@/state/modals';
 import CharacterCreator from '@/modals/creation/character-creator';
 import { Card, CardContent } from '@/components/ui/card';
+import PageContent from '@/components/page-content';
 
 const Characters: React.FC = () => {
   const { characters, isLoading } = useCharacters();
 
   if (isLoading) return (
-    <div className='grid grid-rows-[auto_1fr_auto] h-dvh'>
+    <div>
       <Header title='Your Adventuring Party' subtitle='Manage your heroes and their epic journeys' />
 
-      <div className='flex min-h-0 items-center justify-center'>
+      <PageContent className='flex items-center justify-center'>
         <Spinner />
         <p className='ml-2'>Loading...</p>
-      </div>
+      </PageContent>
     </div>
   )
 
   return (
-    <div className='grid grid-rows-[auto_1fr_auto] h-dvh'>
+    <div>
       <Header title='Your Adventuring Party' subtitle='Manage your heroes and their epic journeys' />
 
-      <div className="flex min-h-0 flex-col p-4">
+      <PageContent>
         {/* TODO: Searchbar */}
 
         {(characters.length === 0) ? <NoCharacters /> : (
@@ -48,7 +49,7 @@ const Characters: React.FC = () => {
             )}
           </div>
         )}
-      </div>
+      </PageContent>
     </div>
   );
 };
