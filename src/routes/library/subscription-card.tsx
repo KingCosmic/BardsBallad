@@ -5,16 +5,18 @@ import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuS
 import { db, Item } from "@/db";
 import createItem from "@/db/shared/methods/createItem";
 import deleteItem from "@/db/shared/methods/deleteItem";
+import renameItem from '@/db/shared/methods/renameItem';
 import createSubscription from "@/db/subscription/methods/createSubscription";
 import deleteSubscription from "@/db/subscription/methods/deleteSubscription";
-import { Subscription } from "@/db/subscription/schema";
 import generateTypeHash from "@/db/typeHashes/methods/generateTypeHash";
 import storeHashes from "@/db/typeHashes/methods/storeHashes";
 import createVersionedResource from "@/db/version/methods/createVersionedResource";
 import deleteVersionedResource from "@/db/version/methods/deleteVersionedResource";
 import getVersionedResource from "@/db/version/methods/getVersionedResource";
 import { VersionedResource } from "@/db/version/schema";
+import { Grouped } from '@/hooks/subscriptions/useSubscriptionsWithData';
 import ConfirmModal from "@/modals/confirm";
+import EditString from '@/modals/editors/edit-string';
 import { authState } from "@/state/auth";
 import { openModal } from "@/state/modals";
 import getVisualTextFromVersionID from "@/utils/misc/getVisualTextFromVersionID";
@@ -23,8 +25,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 type Props = {
-  itemData: Item;
-  subs: Subscription[];
+  grouped: Grouped;
 }
 
 const forkItem = async (baseData: Item, versionData: VersionedResource) => {
@@ -68,8 +69,10 @@ const forkItem = async (baseData: Item, versionData: VersionedResource) => {
   }
 }
 
-const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
+const SubscriptionCard: React.FC<Props> = ({ grouped }) => {
   let navigate = useNavigate()
+
+  const { subscriptions: subs, item, type } = grouped;
 
   const { user } = authState.useValue();
 
@@ -77,13 +80,13 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
 
   // we are considered the owner if our user id's match or if the subscription doesn't have a user id and server provided id
   const isOwner =
-    (user && itemData.user_id && user.id === itemData.user_id) ||
-    (!user && itemData.user_id === 'none');
+    (user && item.user_id && user.id === item.user_id) ||
+    (!user && item.user_id === 'none');
 
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>{itemData.name}</CardTitle>
+        <CardTitle>{item.name}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className='mb-4'>
@@ -117,7 +120,7 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
                           if (!versionData) return
 
                           // fork
-                          return forkItem(itemData, versionData);
+                          return forkItem(item, versionData);
                         }}>
                           {isOwner ? 'Edit' : 'Fork'}
                         </DropdownMenuItem>
@@ -129,13 +132,21 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
                           JSONToFile(
                             versionData.reference_type,
                             {
-                              item: itemData,
+                              item: item,
                               version: versionData,
                             },
-                            `${itemData.name}-${versionData.local_id}`
+                            `${item.name}-${versionData.local_id}`
                           )
                         }}>
                           Export
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => 
+                          openModal('edit-string', ({ id }) => (
+                            <EditString
+                              id={id} title='Rename Subscription' data={item.name}
+                              onSave={(newName) => renameItem(type, item.local_id, newName)} />)
+                        )}>
+                          Rename
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                       <DropdownMenuSeparator />
@@ -175,7 +186,7 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
               }
 
               // fork
-              return forkItem(itemData, latestVersion);
+              return forkItem(item, latestVersion);
             }}>
             {isOwner ? 'Edit' : 'Fork'}
           </Button>
@@ -190,10 +201,10 @@ const SubscriptionCard: React.FC<Props> = ({ subs, itemData }) => {
                   JSONToFile(
                     latestVersion.reference_type,
                     {
-                      item: itemData,
+                      item: item,
                       version: latestVersion,
                     },
-                    `${itemData.name}-${latestVersion.local_id}`
+                    `${item.name}-${latestVersion.local_id}`
                   )
                 }}>
                   Export

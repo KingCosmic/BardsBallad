@@ -6,18 +6,7 @@ import generateUniqueID from '@/utils/db/generateUniqueID'
 
 export default async (char: Character) => {
   try {
-    let local_id = char.local_id || generateUniqueID()
-
-    if (await db.characters.get({ id: char.id || '' }) !== undefined) {
-      console.log('Character already exists in the database')
-      return
-    }
-
-    let existingCharacter = await db.characters.get({ local_id })
-    if (existingCharacter !== undefined) {
-      console.log('Character already exists in the database')
-      return
-    }
+    let local_id = generateUniqueID()
 
     // check if we have the system this character uses.
     const system = await db.systems.get({ local_id: char.system.local_id })
@@ -28,6 +17,8 @@ export default async (char: Character) => {
 
     const charData = {
       ...char,
+      local_id,
+      id: undefined,
       updated_at: new Date().toISOString()
     }
 

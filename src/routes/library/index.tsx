@@ -43,7 +43,7 @@ const Library: React.FC = () => {
               <h4 className='mb-2 text-xl'>Subscribed Systems</h4>
               <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
                 {subscriptions.filter(sub => sub.type === 'system').map(item => (
-                  <SubscriptionCard key={item.item_id} itemData={item.item} subs={item.subscriptions} />
+                  <SubscriptionCard key={item.item_id} grouped={item} />
                 ))}
               </div>
             </div>
@@ -52,7 +52,7 @@ const Library: React.FC = () => {
               <h4 className='mb-2 text-xl'>Subscribed Datapacks</h4>
               <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
                 {subscriptions.filter(sub => sub.type === 'datapack').map(item => (
-                  <SubscriptionCard key={item.item_id} itemData={item.item} subs={item.subscriptions} />
+                  <SubscriptionCard key={item.item_id} grouped={item} />
                 ))}
               </div>
             </div>
@@ -61,7 +61,7 @@ const Library: React.FC = () => {
               <h4 className='mb-2 text-xl'>Subscribed Themes</h4>
               <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
                 {subscriptions.filter(sub => sub.type === 'theme').map(item => (
-                  <SubscriptionCard key={item.item_id} itemData={item.item} subs={item.subscriptions} />
+                  <SubscriptionCard key={item.item_id} grouped={item} />
                 ))}
               </div>
             </div>
