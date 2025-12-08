@@ -1,7 +1,6 @@
 import { newRidgeState } from 'react-ridge-state'
 
 import { jwtDecode } from 'jwt-decode'
-import { AuthStorage, SyncStorage } from '@lib/storage';
 
 type User = {
   id: string;
@@ -26,8 +25,8 @@ const defaultState: AuthState = {
 
 export const authState = newRidgeState<AuthState>(defaultState)
 
-export const loadToken = async () => {
-  const token = await AuthStorage.get<string>('token')
+export const loadToken = () => {
+  const token = localStorage.getItem('token')
 
   if (token) {
     const user = jwtDecode<User>(token)
@@ -35,8 +34,8 @@ export const loadToken = async () => {
   }
 }
 
-export const saveToken = async (token: string) => {
-  await AuthStorage.set('token', token)
+export const saveToken = (token: string) => {
+  localStorage.setItem('token', token)
 
   const user = jwtDecode<User>(token)
 
@@ -45,15 +44,4 @@ export const saveToken = async (token: string) => {
   return user
 }
 
-export const updateSyncedCharacters = (characters: string[]) => {
-  authState.set((prev) => ({ ...prev, synced_characters: characters }))
-  SyncStorage.set('synced_characters', characters)
-}
-
-export const logout = () => {
-  AuthStorage.remove('token')
-  authState.set(defaultState)
-}
-
 loadToken()
-

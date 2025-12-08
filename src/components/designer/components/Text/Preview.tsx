@@ -1,0 +1,69 @@
+import { useEffect, useMemo, useState } from 'react'
+import { TextProps } from './Editor'
+
+import styles from './styles'
+import { useLocalData } from '../../renderer/Context'
+import { useScriptRunner } from '@/components/providers/script-runner'
+import globalStyles from '../../styles'
+
+export default (props: TextProps) => {
+  const localData = useLocalData()
+  const { isReady, runScript } = useScriptRunner()
+
+  const [cacheKey, setCashKey] = useState('')
+
+  const [text, setText] = useState('SE')
+
+  const state = useMemo(() =>
+    Object.assign({}, props.state, localData),
+  [localData, props.state])
+
+  useEffect(() => {
+    async function rc() {
+      if (!isReady) return
+      if (!props.useScriptValue) return setText(props.text!)
+
+      if (!props.script!.isCorrect) return setText('SE')
+
+      const output = await runScript<string>(cacheKey, props.script!, state, props.updateState!);
+
+      setText(output.result ?? '')
+      setCashKey(output.cacheKey)
+    }
+
+    rc()
+  }, [props.script, state, props.useScriptValue, props.text, props.updateState])
+
+  const colorClass = useMemo(() => styles.colors[props.color!] ? styles.colors[props.color!]?.text : '', [props.color])
+  const weightClass = useMemo(() => styles.weight[props.fontWeight!] ? styles.weight[props.fontWeight!] : '', [props.fontWeight])
+
+  // @ts-ignore
+  return <p
+    style={{
+      // fontSize?: string;
+
+      // fontWeight?: string;
+
+      // @ts-ignore
+      textAlign: props.textAlign!,
+
+      ...styles.sizes[props.fontSize!] || {},
+
+      textDecoration: props.textDecoration,
+      // @ts-ignore
+      textTransform: props.textTransform,
+
+      marginTop: globalStyles.spacing[props.marginTop!],
+      marginRight: globalStyles.spacing[props.marginRight!],
+      marginBottom: globalStyles.spacing[props.marginBottom!],
+      marginLeft: globalStyles.spacing[props.marginLeft!],
+
+      paddingTop: globalStyles.spacing[props.paddingTop!],
+      paddingRight: globalStyles.spacing[props.paddingRight!],
+      paddingBottom: globalStyles.spacing[props.paddingBottom!],
+      paddingLeft: globalStyles.spacing[props.paddingLeft!],
+    }}
+
+    className={`${colorClass} ${weightClass}`}
+  >{text}</p>
+}

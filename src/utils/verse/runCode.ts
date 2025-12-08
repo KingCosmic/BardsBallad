@@ -2,7 +2,7 @@ import Sandbox from '@nyariv/sandboxjs'
 import showModal from './showModal'
 import { Script } from '@/types/script';
 import { createExecContext } from '@nyariv/sandboxjs/dist/node/utils';
-import wrapWithTrackingEnhanced from '@utils/wrapWithTracking';
+import wrapWithTrackingEnhanced from '@/utils/object/wrapWithTracking';
 
 interface ScriptResult<T> {
   success: boolean, error?: string, result?: T, cacheKey: string, invalidatedPaths: string[]

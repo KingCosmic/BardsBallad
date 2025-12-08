@@ -2,66 +2,55 @@ import './App.css'
 
 import { BrowserRouter, Routes, Route } from 'react-router'
 
-import Layout from './Layout'
-import Home from './pages/Home'
-
-import Characters from './pages/Characters'
-import Character from './pages/Character'
-import Library from './pages/Library'
-import System from './pages/System'
-
-import { applyTheme } from './state/settings'
-import Settings from './pages/Settings'
-
-import SubscriptionConfirmation from './pages/SubscriptionConfirmation'
-import Marketplace from './pages/Marketplace'
 import { useEffect } from 'react'
-import DataPack from '@pages/DataPack'
-import { db } from './storage'
-import storeHashes from '@storage/methods/hashes/storeHashes'
-import { sha256 } from 'js-sha256'
-import Garbage from '@pages/Garbage'
-import { deleteCharacter } from '@storage/methods/characters'
-import clearCharacter from '@storage/methods/characters/clearCharacter'
-import deleteItem from '@utils/items/deleteItem'
-import deleteVersionedResource from '@storage/methods/versionedresources/deleteVersionedResource'
-import olderThanDays from '@utils/olderThanDays'
-import generateTypeHash from '@utils/generateTypeHash'
-import useSync from '@hooks/useSync'
+import Layout from './layout'
+import Characters from './routes/characters'
+import { SidebarProvider } from './components/ui/sidebar'
+import { ThemeProvider } from './components/providers/theme-provider'
+import { AppSidebar } from './components/sidebars/app-sidebar'
+import Settings from './routes/settings'
+import Catacombs from './routes/catacombs'
+import Library from './routes/library'
 
-applyTheme()
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import Marketplace from './routes/marketplace'
+import MarketplaceInfo from './routes/marketplace/info'
+import Character from './routes/characters/character'
+import SecondarySidebar from './secondary-sidebar'
+import { ScriptTypesProvider } from './components/providers/script-types'
+import ScriptCacheProvider from './components/providers/script-cache'
+import { ScriptRunnerProvider } from './components/providers/script-runner'
+import Auth from './routes/auth'
+import System from './routes/editors/system'
+import { EditorProvider } from './components/providers/editor-provider'
+import useSync from './hooks/sync/useSync'
 
-// @ts-ignore
-window.generateHashes = async () => {
-  const versions = await db.versions.toArray()
 
-  versions.forEach(vers => {
-    storeHashes(vers.local_id, vers.data.types.map(generateTypeHash))
-  })
-}
+const queryClient = new QueryClient()
 
 const App: React.FC = () => {
   useSync()
-
-  useEffect(() => {
-    const setVH = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-
-    setVH();
-    window.addEventListener('resize', setVH);
-    return () => window.removeEventListener('resize', setVH);
-  }, [])
 
   useEffect(() => {
     // Create floating particles
     function createParticle() {
       const particle = document.createElement('div');
       particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
+
+      particle.style.transform = `scale(${0.5 + Math.random() * 0.8})`;
+
+      const spawnX = 30 + Math.random() * 40; // between 30% and 70%
+      particle.style.left = spawnX + '%';
+      particle.style.marginLeft = `${(Math.random() - 0.5) * 40}px`; // small horizontal offset
+
       particle.style.animationDelay = Math.random() * 8 + 's';
       particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+
+      particle.style.setProperty('--float-duration', `${4 + Math.random() * 6}s`);
+
       document.getElementById('particleContainer')!.appendChild(particle);
       
       setTimeout(() => {
@@ -80,76 +69,65 @@ const App: React.FC = () => {
     return () => clearInterval(interval)
   }, [])
 
-  useEffect(() => {
-    async function clearOldDeletions() {
-      const [characters, subscriptions] = await Promise.all([
-        db.characters.toArray(),
-        db.subscriptions.toArray()
-      ])
-
-      characters.forEach(char => {
-        const isDeleted = char.deleted_at
-        const isCleared = !char.data
-
-        if (!isDeleted || isCleared) return
-
-        const isPastClearDate = olderThanDays(isDeleted, 7)
-
-        if (!isPastClearDate) return
-
-        clearCharacter(char.local_id)
-      })
-
-      subscriptions.forEach(sub => {
-        const isDeleted = sub.deleted_at
-
-        if (!isDeleted) return
-
-        const isPastClearDate = olderThanDays(isDeleted, 7)
-
-        if (!isPastClearDate) return
-
-        // TODO: Check if no other subs rely on this item before deleting it.
-        // deleteItem(sub.resource_type, sub.resource_id)
-        deleteVersionedResource(sub.version_id)
-      })
-    }
-
-    const interval = setInterval(clearOldDeletions, 60000)
-
-    return () => clearInterval(interval)
-  }, [])
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Layout />}>
-          <Route index element={<Home />} />
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 60)",
+          "--header-height": "calc(var(--spacing) * 16)",
+        } as React.CSSProperties
+      }
+    >
+      <EditorProvider>
+        <BrowserRouter>
+          <ThemeProvider>
+            <QueryClientProvider client={queryClient}>
+              <ScriptTypesProvider>
+                <ScriptCacheProvider>
+                  <ScriptRunnerProvider>
+                    <AppSidebar />
+                    <Routes>
+                      <Route path='/' element={<Layout />}>
+                        <Route index element={<Characters />} />
 
-          <Route path='characters'>
-            <Route index element={<Characters />} />
+                        <Route path='characters'>
+                          <Route index element={<Characters />} />
 
-            <Route path=':id' element={<Character />} />
-          </Route>
+                          <Route path=':id' element={<Character />} />
+                        </Route>
 
-          <Route path='marketplace' element={<Marketplace />} />
+                        <Route path='marketplace'>
+                          <Route index element={<Marketplace />} />
+                          
+                          <Route path='info/:id' element={<MarketplaceInfo />} />
+                        </Route>
 
-          <Route path='library'>
-            <Route index element={<Library />} />
+                        <Route path='library'>
+                          <Route index element={<Library />} />
 
-            <Route path='system/:id' element={<System />} />
+                          <Route path='system/:id' element={<System />} />
 
-            <Route path='datapack/:id' element={<DataPack />} />
-          </Route>
+                          {/* <Route path='datapack/:id' element={<DataPack />} /> */}
+                        </Route>
 
-          <Route path='garbage' element={<Garbage />} />
+                        <Route path='catacombs' element={<Catacombs />} />
 
-          <Route path='settings' element={<Settings />} />
+                        <Route path='settings' element={<Settings />} />
 
-          <Route path='subscription-confirmation' element={<SubscriptionConfirmation />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+                        <Route path='auth' element={<Auth />} />
+
+                        {/* <Route path='subscription-confirmation' element={<SubscriptionConfirmation />} /> */}
+                      </Route>
+                    </Routes>
+                    <SecondarySidebar />
+                  </ScriptRunnerProvider>
+                </ScriptCacheProvider>
+              </ScriptTypesProvider>
+            </QueryClientProvider>
+          </ThemeProvider>
+        </BrowserRouter>
+      </EditorProvider>
+    </SidebarProvider>
   )
 }
 
