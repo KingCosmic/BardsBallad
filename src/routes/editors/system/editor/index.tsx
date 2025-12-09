@@ -26,9 +26,8 @@ const EditorTab: React.FC<EditorTabProps> = ({ versionedResource }) => {
 
   useEffect(() => {
     // Set the node change handler with access to versionedResource
-    setOnNodeChange((query) => {
-      const serialized = JSON.stringify(query.serialize())
-      storeMutation(versionedResource.local_id, updateLexical(versionedResource.local_id, serialized))
+    setOnNodeChange((lexical: string) => {
+      storeMutation(versionedResource.local_id, updateLexical(versionedResource.local_id, lexical))
     })
 
     // Clean up when component unmounts
@@ -40,15 +39,16 @@ const EditorTab: React.FC<EditorTabProps> = ({ versionedResource }) => {
   useEffect(() => {
     let lexical = (versionedResource.data as any).pages.find((p: PageData) => p.name === editor.characterPage)?.lexical
 
-    // @ts-ignore
-    console.log(versionedResource.data.pages.map(p => p.name))
-    console.log(editor.characterPage)
-    console.log(lexical)
-
     if (!lexical) lexical = defaultLexical
 
-    actions.deserialize(lz.decompress(lz.decodeBase64(lexical)))
-  }, [versionedResource.data.pages, editor.characterPage])
+    try {
+      actions.deserialize(lz.decompress(lz.decodeBase64(lexical)))
+    } catch (error) {
+      console.error('Error deserializing lexical:', error)
+      // Fallback to default if there's an error
+      actions.deserialize(lz.decompress(lz.decodeBase64(defaultLexical)))
+    }
+  }, [editor.characterPage])
 
   return (
     <div className='mt-3 border-2 border-primary border-dashed rounded-lg dark:border-muted'>

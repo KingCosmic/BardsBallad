@@ -1,5 +1,5 @@
-import { Editor as EditorContext, SerializedNodes } from '@craftjs/core'
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { Editor as EditorContext } from '@craftjs/core'
+import { createContext, useContext, useCallback, ReactNode, useRef } from 'react'
 
 import Container from '@/components/designer/components/Container/Editor'
 import EditorSelect from '@/components/designer/components/Select/Editor'
@@ -8,7 +8,7 @@ import Text from '@/components/designer/components/Text/Editor'
 import Input from '@/components/designer/components/Input/Editor'
 import Separator from '@/components/designer/components/Divider'
 
-type NodeChangeHandler = (query: { serialize: () => SerializedNodes }) => void
+type NodeChangeHandler = (lexical: string) => void
 
 interface EditorProviderContextType {
   setOnNodeChange: (handler: NodeChangeHandler | null) => void
@@ -60,16 +60,16 @@ interface EditorProviderProps {
 }
 
 export function EditorProvider({ children }: EditorProviderProps) {
-  const [onNodeChangeHandler, setOnNodeChangeHandler] = useState<NodeChangeHandler | null>(null)
+  const onNodeChangeHandlerRef = useRef<NodeChangeHandler | null>(null)
 
   const handleNodeChange = useCallback((query: any) => {
-    if (onNodeChangeHandler) {
-      onNodeChangeHandler(query)
+    if (onNodeChangeHandlerRef.current) {
+      onNodeChangeHandlerRef.current(query.serialize())
     }
-  }, [onNodeChangeHandler])
+  }, [])
 
   const setOnNodeChange = useCallback((handler: NodeChangeHandler | null) => {
-    setOnNodeChangeHandler(() => handler)
+    onNodeChangeHandlerRef.current = handler
   }, [])
 
   return (
