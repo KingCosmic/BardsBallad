@@ -10,6 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@automerge/react": "^2.5.1",
     "@bardsballad/verse": "^0.2.5",
     "@craftjs/core": "^0.2.12",
     "@nyariv/sandboxjs": "^0.8.25",
