@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SystemData, TypeData } from '@/db/system/schema';
-import { useVersionEdits } from '@/hooks/versions/useVersionEdits';
 import { editorState } from '@/state/editor';
 import { closeModal, openModal } from '@/state/modals';
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -11,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import TypeSelect from '@/components/ui/type-select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits';
 
 interface Props {
   id: number;

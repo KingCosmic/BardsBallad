@@ -1,8 +1,8 @@
 import { SystemData } from "@/db/system/schema"
-import { useVersionEdits } from "@/hooks/versions/useVersionEdits"
 import { editorState } from "@/state/editor"
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
 import EditorMenu from "./editor"
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
 
 
 function SystemMenu() {

@@ -1,83 +1,81 @@
-import { db, itemSchema } from '@/db'
+import { db } from '@/db'
 import generateUniqueID from '@/utils/db/generateUniqueID'
 import { authState } from '@/state/auth'
-import versionedResourceSchema from '@/db/version/schema'
-import z from 'zod'
+import { Item, itemSchema } from '@/db/shared/schema'
 
-export default async (name: string, type: 'system' | 'datapack', data: any) => {
+import * as automerge from '@automerge/automerge'
+import { characterShadow } from '@/newsync/shadows'
+
+export default async (type: 'system' | 'datapack' | 'character', data: any) => {
   try {
-    const pack_local_id = generateUniqueID()
+    const char_local_id = await generateUniqueID()
 
     const { user } = authState.get()
-    const user_id = (user) ? user.id : 'none'
+    const owner_id = (user) ? user.id : 'none'
 
-    const itemData = {
-      name,
-      local_id: pack_local_id,
-      user_id,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      deleted_at: null
+    console.log(data)
+
+    const itemData: Item = {
+      id: '',
+      local_id: char_local_id,
+      owner_id,
+
+      namespace: `${owner_id}/${char_local_id}`,
+
+      type: 'character',
+
+      lifecycle: 'crdt',
+      doc: automerge.save(automerge.from(data)),
+      snapshot: {},
+      shadow: characterShadow(data),
+
+      version: 0,
+      updated_at: 0,
+      deleted_at: 0,
+      last_change_index: BigInt(0)
     }
 
-    const systemResult = itemSchema.safeParse(itemData);
-    if (!systemResult.success) {
-      console.log('Invalid pack data:', systemResult.error.format());
-      return;
-    }
+    // const systemResult = itemSchema.safeParse(itemData);
+    // if (!systemResult.success) {
+    //   console.log(`Invalid ${type} data:`, systemResult.error.format());
+    //   return;
+    // }
 
-    switch (type) {
-      case 'system':
-        await db.systems.add(itemData)
-        break;
-      case 'datapack':
-        await db.datapacks.add(itemData)
-        break;
-    }
+    await db.docs.add(itemData)
 
-    const version_local_id = generateUniqueID()
+    const subscription_local_id = await generateUniqueID()
 
-    const versData = {
-      data,
-      local_id: version_local_id,
-      reference_id: pack_local_id,
-      reference_type: type,
-      user_id,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      deleted_at: null
-    }
-
-    const versionResult = versionedResourceSchema.safeParse(versData);
-    if (!versionResult.success) {
-      console.log('Invalid Version data:', z.treeifyError(versionResult.error));
-      return;
-    }
-
-    await db.versions.add(versData);
-
-    const subscription_local_id = generateUniqueID()
-
-    const subData = {
+    const subData: Item = {
+      id: '',
       local_id: subscription_local_id,
-    
-      user_id: user_id,
-    
-      resource_type: type,
-      resource_id: pack_local_id,
-      version_id: version_local_id,
-      auto_update: false,
-    
-      subscribed_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      deleted_at: null,
+      owner_id,
+
+      namespace: `${owner_id}/${subscription_local_id}`,
+
+      type: 'subscription',
+
+      lifecycle: 'crdt',
+      doc: {},
+      snapshot: {
+        resource_type: type,
+        resource_id: char_local_id,
+      },
+      shadow: {
+        resource_type: type,
+        resource_id: char_local_id,
+      },
+
+      version: 0,
+      updated_at: 0,
+      deleted_at: 0,
+      last_change_index: BigInt(0)
     }
 
     // now we need to create a subscription for it.
-    await db.subscriptions.add(subData)
+    await db.docs.add(subData)
 
     return subData
   } catch (e) {
-    console.log('Error creating pack or version or creating subscription:', e);
+    console.log(`Error creating :`, e);
   }
 }

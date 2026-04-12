@@ -1,10 +1,12 @@
 import { db } from '@/db'
+import { characterShadow } from '@/newsync/shadows';
+import * as automerge from '@automerge/automerge'
 
-export default async (local_id: string, newData: Record<string, any>) => {
+export default async (local_id: string, newData: any) => {
   try {
-    return await db.characters.update(local_id, {
-      data: newData,
-      updated_at: new Date().toISOString(),
+    return await db.docs.update(local_id, {
+      doc: newData,
+      shadow: characterShadow(automerge.load(newData))
     })
   } catch (e) {
     console.log('Error updating character data:', e);

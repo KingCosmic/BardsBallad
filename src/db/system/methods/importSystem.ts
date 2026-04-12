@@ -1,77 +1,67 @@
-import SystemSchema from '@/db/system/schema'
-import { db, Item } from '@/db'
+import { db } from '@/db'
 import { authState } from '@/state/auth'
-import versionedResourceSchema, { VersionedResource } from '@/db/version/schema'
-import z from 'zod'
 import generateUniqueID from '@/utils/db/generateUniqueID'
-import deleteItem from '@/db/shared/methods/deleteItem'
 import storeHashes from '@/db/typeHashes/methods/storeHashes'
+import { Item, itemSchema } from '@/db/shared/schema'
 
-export default async (sys: Item, version: VersionedResource) => {
+import * as automerge from '@automerge/automerge'
+
+export default async (sys: Item) => {
   try {
-    const system_local_id = generateUniqueID()
+    const system_local_id = await generateUniqueID()
 
     const { user } = authState.get()
-    const user_id = (user) ? user.id : 'none'
+    const owner_id = (user) ? user.id : 'none'
 
-    const sysData = {
+    const sysData: Item = {
       ...sys,
       local_id: system_local_id,
-      user_id,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      deleted_at: null
+      owner_id
     }
 
-    const systemResult = SystemSchema.safeParse(sysData);
-    if (!systemResult.success) {
-      console.log('Invalid system data:', systemResult.error.format());
-      return;
-    }
+    // const systemResult = itemSchema.safeParse(sysData);
+    // if (!systemResult.success) {
+    //   console.log('Invalid system data:', systemResult.error.format());
+    //   return;
+    // }
 
-    await db.systems.add(sysData);
-
-    const version_local_id = generateUniqueID()
-
-    const versData = {
-      ...version,
-      local_id: version_local_id,
-      reference_id: system_local_id,
-      user_id,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      deleted_at: null
-    }
-
-    const versionResult = versionedResourceSchema.safeParse(versData);
-    if (!versionResult.success) {
-      // since the version didn't pass, we should delete the system we created.
-      deleteItem('system', system_local_id, true)
-      console.log('Invalid Version data:', z.treeifyError(versionResult.error));
-      return;
-    }
-
-    await db.versions.add(versData);
+    await db.docs.add(sysData);
 
     // @ts-ignore
-    storeHashes(versData.local_id, versData.data.types)
+    // storeHashes(versData.local_id, versData.data.types)
 
-    const subscription_local_id = generateUniqueID()
+    const subscription_local_id = await generateUniqueID()
 
     // now we need to create a subscription for it.
-    await db.subscriptions.add({
+    await db.docs.add({
+      type: 'subscription',
+
+      id: '',
       local_id: subscription_local_id,
     
-      user_id: user_id,
-    
-      resource_type: 'system',
-      resource_id: system_local_id,
-      version_id: version_local_id,
-      auto_update: false,
-    
-      subscribed_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      deleted_at: null,
+      owner_id: owner_id,
+
+      namespace: owner_id,
+
+      lifecycle: 'crdt',
+
+      doc: automerge.from({
+        subscribed_at: new Date().toISOString(),
+        resource_type: 'system',
+        resource_id: system_local_id,
+      }),
+      snapshot: {},
+
+      shadow: {
+        resource_type: 'system',
+        resource_id: system_local_id,
+      },
+
+      version: 0,
+      updated_at: 0,
+      deleted_at: 0,
+      
+      last_change_index: BigInt(0)
     })
   } catch (e) {
     console.log('Error importing system or version or creating subscription:', e);

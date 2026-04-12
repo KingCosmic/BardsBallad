@@ -14,7 +14,7 @@ const characterSchema = z.object({
   name: z.string(),
 
   // all character data.
-  data: z.looseObject({}),
+  data: z.instanceof(Uint8Array<ArrayBufferLike>), // Uint8Array
 
   // hold the system and version id this character relies on
   system: z.object({
@@ -33,6 +33,7 @@ const characterSchema = z.object({
   deleted_at: z.iso.datetime({ offset: true }).optional(),
 })
 
-export type Character = z.infer<typeof characterSchema>;
+export type CompressedCharacter = z.infer<typeof characterSchema>;
+export type Character = Omit<CompressedCharacter, 'data'> & { data: Record<string, any> }
 
 export default characterSchema

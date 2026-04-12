@@ -1,16 +1,16 @@
 import React from 'react';
 import NoCharacters from './no-characters';
 import Header from '@/components/header';
-import { useCharacters } from '@/hooks/characters/useCharacters';
 import { Spinner } from '@/components/ui/spinner';
 import CharacterCard from './character-card';
 import { openModal } from '@/state/modals';
 import CharacterCreator from '@/modals/creation/character-creator';
 import { Card, CardContent } from '@/components/ui/card';
 import PageContent from '@/components/page-content';
+import useSubscriptionsWithData from '@/db/subscription/hooks/useSubscriptionsWithData';
 
 const Characters: React.FC = () => {
-  const { characters, isLoading } = useCharacters();
+  const { subscriptions: characters, isLoading } = useSubscriptionsWithData(['datapack', 'system', 'theme'])
 
   if (isLoading) return (
     <div>
@@ -45,7 +45,7 @@ const Characters: React.FC = () => {
             
             {/* Heros */}
             {characters && (
-              characters.map(char => <CharacterCard key={char.local_id} char={char} />)
+              characters.map(char => <CharacterCard key={char.local_id} name={char.item.shadow.name} char={char.item} />)
             )}
           </div>
         )}

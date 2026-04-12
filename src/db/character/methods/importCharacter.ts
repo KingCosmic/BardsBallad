@@ -1,7 +1,7 @@
-import { db } from '@/db'
-import characterSchema, { Character } from '@/db/character/schema'
 import z from 'zod'
 import generateUniqueID from '@/utils/db/generateUniqueID'
+import characterSchema, { Character } from '../schema'
+import { db } from '@/db'
 
 export default async (char: Character) => {
   try {

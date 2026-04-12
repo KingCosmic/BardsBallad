@@ -3,9 +3,6 @@ import { useParams } from 'react-router'
 import { editorState, setTab } from '@/state/editor'
 
 import React, { useEffect, useMemo } from 'react'
-import { useVersionResource } from '@/hooks/versions/useVersionResource'
-import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
-import { useSystem } from '@/hooks/systems/useSystem'
 import { SystemData } from '@/db/system/schema'
 import Header from '@/components/header'
 import getVisualTextFromVersionID from '@/utils/misc/getVisualTextFromVersionID'
@@ -22,6 +19,9 @@ import SaveNewVersion from '@/modals/editor/save-new-version'
 import PageContent from '@/components/page-content'
 import ComingSoon from './coming-soon'
 import QuickActions from './quick-actions'
+import { useVersionResource } from '@/db/version/hooks/useVersionResource'
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
+import { useSystem } from '@/db/system/hooks/useSystem'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()

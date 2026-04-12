@@ -5,7 +5,7 @@ import { authState } from '@/state/auth'
 import generateUniqueID from '@/utils/db/generateUniqueID'
 import z from 'zod'
 
-type Types = 'system' | 'theme' | 'datapack'
+type Types = 'system' | 'theme' | 'datapack' | 'character'
 
 export default async (type: Types, resource_id: string, version_id: string, auto_update: boolean) => {
   try {
@@ -13,7 +13,7 @@ export default async (type: Types, resource_id: string, version_id: string, auto
     
     const user_id = user?.id || 'none'
     
-    const local_id = generateUniqueID()
+    const local_id = await generateUniqueID()
 
     // validate a character format.
     const subscriptionData = {
@@ -26,7 +26,7 @@ export default async (type: Types, resource_id: string, version_id: string, auto
       version_id: version_id,
       auto_update: auto_update,
     
-      subscribed_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       deleted_at: null,
     }

@@ -4,24 +4,27 @@ import { useParams } from 'react-router'
 
 import Header from '@/components/header'
 
-import { useCharacter } from '@/hooks/characters/useCharacter'
-
 import { DataType, SystemData } from '@/db/system/schema'
 import { DataPack } from '@/db/datapack/schema'
 
 import getVersionedResource from '@/db/version/methods/getVersionedResource'
 import updateCharacterData from '@/db/character/methods/updateCharacterData'
 
-import unwrapProxy from '@/utils/object/unwrapProxy'
 import RenderTab from './render-tab'
 import { Spinner } from '@/components/ui/spinner'
 import { useScriptTypes } from '@/components/providers/script-types'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useCharacter } from '@/db/character/hooks/useCharacter'
+import { applyChangesToAutomerge, ChangesMap } from '@/utils/object/wrapWithTracking'
+import getDoc from '@/db/shared/methods/getDoc'
+import { parse, stringify } from '@/lib/bjson'
+
+import * as automerge from '@automerge/automerge'
 
 const CharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
-  const character = useCharacter(id)
+  const character = useCharacter(id ?? '')
 
   const [system, setSystem] = useState<SystemData | null>(null)
 
@@ -48,14 +51,20 @@ const CharacterPage: React.FC = () => {
 
     system.data.forEach(d => sys[d.name] = d.data)
 
-    return JSON.parse(JSON.stringify({ character: character.data, system: sys }))
+    const cData = automerge.load(character.doc)
+    console.log(character)
+
+    return parse(stringify({ character: cData, system: sys }))
   }, [character, system])
 
-  const updateState = useCallback(async (state: any) => {
-    if (!character || !system) return
+  const updateState = useCallback(async (changes: ChangesMap) => {
+    if (!character || !system || !id) return
 
-    if (JSON.stringify(character.data) !== JSON.stringify(state.character)) {
-      await updateCharacterData(character.local_id, unwrapProxy(state.character))
+    if (changes.has('character')) {
+      await updateCharacterData(
+        id,
+        applyChangesToAutomerge(character, changes.get('character')!)
+      )
     }
   }, [character, system])
 
@@ -63,25 +72,25 @@ const CharacterPage: React.FC = () => {
     const loadSystem = async () => {
       if (!character) return
 
-      const systemData = await getVersionedResource<SystemData>(character.system.version_id)
+      const systemData = await getDoc<SystemData>(character.shadow.system)
       
       if (!systemData) return
 
-      if (JSON.stringify(system) === JSON.stringify(systemData.data)) return
+      if (stringify(system) === stringify(systemData.snapshot)) return
 
       let datapacks: DataType[] = []
 
-      for (let d = 0; d < character.datapacks.length; d++) {
-        const pack = character.datapacks[d]
+      for (let d = 0; d < character.shadow.datapacks.length; d++) {
+        const pack = character.shadow.datapacks[d]
 
-        const packData = await getVersionedResource<DataPack>(pack.version_id)
+        const packData = await getDoc<DataPack>(pack.version_id)
 
         if (!packData) return
 
-        datapacks = [ ...datapacks, ...packData.data!.packData ]
+        datapacks = [ ...datapacks, ...packData.snapshot!.packData ]
       }
 
-      const combined = systemData.data!.data.map(systemItem => {
+      const combined = systemData.snapshot.data.map((systemItem: any) => {
         // Collect packData from all datapacks that match this system item's name
         const matchingPackData = datapacks
           .flat()
@@ -96,13 +105,14 @@ const CharacterPage: React.FC = () => {
         };
       });
 
-      setSystem({ ...systemData.data!, data: combined })
+      setSystem({ ...systemData.snapshot!, data: combined })
     }
 
     loadSystem()
   }, [character])
 
   if (!character || !system) {
+    console.log(character)
     return (
       <div className='flex gap-2'>
         <Spinner />
@@ -113,7 +123,7 @@ const CharacterPage: React.FC = () => {
 
   return (
     <div className='flex flex-col h-full w-full @container'>
-      <Header title={character.name} subtitle={character.data._flavor as string} hasSidebar />
+      <Header title={'Testing'} subtitle={character.shadow.slug} hasSidebar />
 
       <div className='flex flex-col grow overflow-hidden @xl:grid grid-cols-2 p-4 gap-4'>
 

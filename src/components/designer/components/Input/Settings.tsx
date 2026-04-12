@@ -2,8 +2,6 @@ import { useNode } from '@craftjs/core'
 import { useEffect, useMemo } from 'react'
 import { useLocalState } from '../../hooks/useLocalState'
 import { editorState } from '@/state/editor'
-import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
-import { SystemData, SystemType } from '@/db/system/schema'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { openModal } from '@/state/modals'
@@ -12,6 +10,8 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import globalStyles from '../../styles'
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
+import { SystemData, SystemType } from '@/db/system/schema'
 
 export function SelectSettings() {
   const { id, actions: { setProp },

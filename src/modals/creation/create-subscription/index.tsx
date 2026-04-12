@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DataType, SystemType } from '@/db/system/schema';
 import { VersionedResource } from '@/db/version/schema';
-import useSubscriptionsWithData, { Grouped } from '@/hooks/subscriptions/useSubscriptionsWithData';
 import { closeModal } from '@/state/modals';
 import { Button } from '@/components/ui/button';
 import createWholeSubscription from '@/db/subscription/methods/createWholeSubscription';
@@ -15,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import getVisualTextFromVersionID from '@/utils/misc/getVisualTextFromVersionID';
+import useSubscriptionsWithData, { Grouped } from '@/db/subscription/hooks/useSubscriptionsWithData';
 
 type Props = {
   id: number;

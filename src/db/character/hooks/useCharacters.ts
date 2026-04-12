@@ -2,12 +2,10 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '@/db'
 
 export function useCharacters() {
-  const characters = useLiveQuery(async () => {
-    const chars = await db.characters.toArray()
-
-    // filter out deleted characters
-    return chars.filter(char => !char.deleted_at)
-  }, [])
+  const characters = useLiveQuery(
+    () => db.docs.filter(doc => doc.type === 'character'),
+    []
+  )
 
   return { characters: characters || [], isLoading: (characters === undefined) }
 }

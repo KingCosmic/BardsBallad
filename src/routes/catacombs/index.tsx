@@ -1,10 +1,10 @@
 import Header from '@/components/header'
-import { useDeletedCharacters } from '@/hooks/characters/useDeletedCharacters'
-import { useDeletedSubscriptions } from '@/hooks/subscriptions/useDeletedSubscriptions'
 import React from 'react'
 import GarbageCard from './garbage-card'
 import GarbageCharacter from './garbage-character'
 import PageContent from '@/components/page-content'
+import { useDeletedSubscriptions } from '@/db/subscription/hooks/useDeletedSubscriptions'
+import { useDeletedCharacters } from '@/db/character/hooks/useDeletedCharacters'
 
 const Catacombs: React.FC = () => {
   const { subscriptions, isLoading: isSubscriptionsLoading } = useDeletedSubscriptions()

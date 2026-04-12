@@ -3,6 +3,9 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router'
 
 import { useEffect, lazy, Suspense } from 'react'
+
+import { Purchases } from "@revenuecat/purchases-js";
+
 import Layout from './Layout'
 import Characters from './routes/characters'
 import { SidebarProvider } from './components/ui/sidebar'
@@ -18,7 +21,6 @@ import { ScriptTypesProvider } from './components/providers/script-types'
 import ScriptCacheProvider from './components/providers/script-cache'
 import { ScriptRunnerProvider } from './components/providers/script-runner'
 import { EditorProvider } from './components/providers/editor-provider'
-import useSync from './hooks/sync/useSync'
 
 // Lazy load routes
 const Settings = lazy(() => import('./routes/settings'))
@@ -28,15 +30,18 @@ const Bazaar = lazy(() => import('./routes/marketplace'))
 const BazaarItemInfo = lazy(() => import('./routes/marketplace/info'))
 const Character = lazy(() => import('./routes/characters/character'))
 const Auth = lazy(() => import('./routes/auth'))
-const System = lazy(() => import('./routes/editors/system'))
+// const System = lazy(() => import('./routes/editors/system'))
 const Campaigns = lazy(() => import('./routes/campaigns'))
-
 
 const queryClient = new QueryClient()
 
-const App: React.FC = () => {
-  useSync()
+const appUserId = Purchases.generateRevenueCatAnonymousAppUserId();
+const purchases = Purchases.configure({
+  apiKey: "test_XKCxFWszLjUtQTZJXeultvGMYgI",
+  appUserId: appUserId,
+});
 
+const App: React.FC = () => {
   useEffect(() => {
     // Create floating particles
     function createParticle() {
@@ -111,7 +116,7 @@ const App: React.FC = () => {
                           <Route path='library'>
                             <Route index element={<Library />} />
 
-                            <Route path='system/:id' element={<System />} />
+                            {/* <Route path='system/:id' element={<System />} /> */}
 
                             {/* <Route path='datapack/:id' element={<DataPack />} /> */}
                           </Route>

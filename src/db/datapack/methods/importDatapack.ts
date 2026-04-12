@@ -1,16 +1,17 @@
-import { db, Item, itemSchema } from '@/db'
+import { db } from '@/db'
 import { authState } from '@/state/auth'
 import versionedResourceSchema, { VersionedResource } from '@/db/version/schema'
 import generateUniqueID from '@/utils/db/generateUniqueID'
 import deleteItem from '@/db/shared/methods/deleteItem'
 import storeHashes from '@/db/typeHashes/methods/storeHashes'
+import { Item, itemSchema } from '@/db/shared/schema'
 
 // TODO: since datapacks, systems, and themes are all of type Item. they could probably all use this
 // single function if slightly modified.
 
-export default async (pack: Item, version: VersionedResource) => {
+export default async (pack: Item, version: any) => {
   try {
-    const pack_local_id = generateUniqueID()
+    const pack_local_id = await generateUniqueID()
     const { user } = authState.get()
     const user_id = (user) ? user.id : 'none'
 
@@ -31,7 +32,7 @@ export default async (pack: Item, version: VersionedResource) => {
 
     await db.datapacks.add(packData);
 
-    const version_local_id = generateUniqueID()
+    const version_local_id = await generateUniqueID()
 
     const versData = {
       ...version,
@@ -56,7 +57,7 @@ export default async (pack: Item, version: VersionedResource) => {
     // @ts-ignore
     storeHashes(versData.local_id, versData.data.types)
 
-    let subscription_local_id = generateUniqueID()
+    let subscription_local_id = await generateUniqueID()
 
     // now we need to create a subscription for it.
     await db.subscriptions.add({
@@ -69,7 +70,7 @@ export default async (pack: Item, version: VersionedResource) => {
       version_id: version_local_id,
       auto_update: false,
     
-      subscribed_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       deleted_at: null,
     })

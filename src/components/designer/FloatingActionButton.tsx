@@ -7,8 +7,6 @@ import { Script } from '@/types/script'
 import { useLocalState } from './hooks/useLocalState'
 import { useScriptRunner } from '../providers/script-runner'
 import { editorState } from '@/state/editor'
-import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
-import { SystemData, SystemType } from '@/db/system/schema'
 import { Separator } from '../ui/separator'
 import { Checkbox } from '../ui/checkbox'
 import { Label } from '../ui/label'
@@ -17,6 +15,8 @@ import { openModal } from '@/state/modals'
 import ScriptEditor from '@/modals/editors/script-editor'
 import FloatingActionButton from '../ui/fab'
 import { DropdownMenuContent, DropdownMenuItem } from '../ui/dropdown-menu'
+import { SystemData, SystemType } from '@/db/system/schema'
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
 
 type Button = {
   name: string;

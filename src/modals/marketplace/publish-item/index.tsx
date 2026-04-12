@@ -1,3 +1,4 @@
+import useSubscriptionsWithData from '@/db/subscription/hooks/useSubscriptionsWithData';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -5,7 +6,6 @@ import { Field } from '@/components/ui/field';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import useSubscriptionsWithData from '@/hooks/subscriptions/useSubscriptionsWithData';
 import { getMarketplaceItem } from '@/lib/api/marketplace/getMarketplaceItem';
 import { publishItem } from '@/lib/api/marketplace/publishItem';
 import { publishVersion } from '@/lib/api/marketplace/publishVersion';

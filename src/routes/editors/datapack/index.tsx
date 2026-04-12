@@ -6,16 +6,16 @@ import React, { useMemo } from 'react'
 
 import { DataType } from '@/db/system/schema'
 import { DataPack } from '@/db/datapack/schema'
-import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
 import { openModal } from '@/state/modals'
-import { useVersionResource } from '@/hooks/versions/useVersionResource'
 
 // import SaveNewVersion from '@/modals/SaveNewVersion'
-import { useDatapack } from '@/hooks/datapacks/useDatapack'
 import EditSystemData from '@/modals/editors/edit-system-data'
 import storeMutation from '@/db/version/methods/storeMutation'
 import { produce } from 'immer'
 import { Spinner } from '@/components/ui/spinner'
+import { useVersionResource } from '@/db/version/hooks/useVersionResource'
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
+import { useDatapack } from '@/db/datapack/hooks/useDatapack'
 
 const DataPackEditor: React.FC = () => {
   const { id } = useParams<{ id: string; }>()

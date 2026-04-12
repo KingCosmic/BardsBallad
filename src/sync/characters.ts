@@ -1,6 +1,6 @@
 import Roles from '@/constants/roles'
 import { db } from '@/db'
-import { Character } from '@/db/character/schema'
+import { CompressedCharacter } from '@/db/character/schema'
 import { pullUpdatesForCharacters } from '@/lib/api/characters/pullUpdatesForCharacters'
 import { pushUpdatesForCharacters } from '@/lib/api/characters/pushUpdatesForCharacters'
 import { hasRole } from '@/utils/roles/hasRole'
@@ -78,6 +78,6 @@ export const push = async (): Promise<{ conflicts: any[], metadata: any[] }> => 
   return await pushUpdatesForCharacters(localCharactersToPush)
 }
 
-export const bulkPut = (docs: Character[]) => db.characters.bulkPut(docs)
+export const bulkPut = (docs: CompressedCharacter[]) => db.characters.bulkPut(docs)
 
 export const get = () => db.characters.toArray()

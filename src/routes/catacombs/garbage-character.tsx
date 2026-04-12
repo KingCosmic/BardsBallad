@@ -9,8 +9,6 @@ import { Character } from "@/db/character/schema"
 import reviveCharacter from "@/db/character/methods/reviveCharacter"
 import clearCharacter from "@/db/character/methods/clearCharacter"
 
-
-
 export default ({ char }: { char: Character }) => {
 
   return (
