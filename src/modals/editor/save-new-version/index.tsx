@@ -1,23 +1,26 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Item } from '@/db/shared/schema';
 import createSubscription from '@/db/subscription/methods/createSubscription';
+import { SystemData } from '@/db/system/schema';
 import generateTypeHash from '@/db/typeHashes/methods/generateTypeHash';
 import storeHashes from '@/db/typeHashes/methods/storeHashes';
 import deleteVersionedResource from '@/db/version/methods/deleteVersionedResource';
 import duplicateVersionedResource from '@/db/version/methods/duplicateVersionedResource';
-import { VersionedResource } from '@/db/version/schema';
 import { closeModal } from '@/state/modals';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
+import * as automerge from '@automerge/automerge'
 
 type Props = {
-  id: number;
-  edits: VersionedResource
-  original: VersionedResource
+  id: number
+  edits: Item
+  original: Item
   edits_id: string
+  doc: automerge.next.Doc<SystemData>
 }
 
-const SaveNewVersion: React.FC<Props> = ({ id, original, edits, edits_id }) => {
+const SaveNewVersion: React.FC<Props> = ({ id, original, edits, edits_id, doc }) => {
 
   const requestClose = useCallback(() => closeModal(id), [id])
   let navigate = useNavigate();
@@ -42,21 +45,21 @@ const SaveNewVersion: React.FC<Props> = ({ id, original, edits, edits_id }) => {
               
             if (!newVersion) return
 
-            const newSub = await createSubscription(newVersion.reference_type, newVersion.reference_id, newVersion.local_id, false)
+            const newSub = await createSubscription(newVersion.type, newVersion.local_id, newVersion.local_id, false)
 
             if (!newSub) {
               deleteVersionedResource(newVersion.local_id, true)
               return
             }
 
-            storeHashes(newVersion.local_id, (newVersion.data as any).types.map(generateTypeHash))
+            storeHashes(newVersion.local_id, doc.types.map(generateTypeHash))
 
             // I'm not entirely sure how this would happen?
             // possibly a user unsubs from the original but then the ui *shouldn't* allow a user to get into this editing scenario.
             if (!original) {
             } else {
               // reset the edits back inline with the original
-              // (to allow for some versioning incase they wanted to make edits off this version again.)
+              // (to allow for some versioning incase they wanted to make edits off the original again.)
               await duplicateVersionedResource(original, edits_id, true)
             }
 

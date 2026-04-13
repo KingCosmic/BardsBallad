@@ -1,15 +1,10 @@
-import { SystemData } from "@/db/system/schema"
 import { editorState } from "@/state/editor"
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
 import EditorMenu from "./editor"
-import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
 
 
 function SystemMenu() {
   const editor = editorState.useValue()
-  const versionedResource = useVersionEdits<SystemData>(editor.versionId)
-
-  if (!versionedResource) return <></>
 
   return (
     <Sidebar side='right' collapsible="offcanvas">

@@ -5,9 +5,7 @@ import { authState } from '@/state/auth'
 import generateUniqueID from '@/utils/db/generateUniqueID'
 import z from 'zod'
 
-type Types = 'system' | 'theme' | 'datapack' | 'character'
-
-export default async (type: Types, resource_id: string, version_id: string, auto_update: boolean) => {
+export default async (type: string, resource_id: string, version_id: string, auto_update: boolean) => {
   try {
     const { user } = authState.get()
     
@@ -37,7 +35,7 @@ export default async (type: Types, resource_id: string, version_id: string, auto
       return;
     }
 
-    await db.subscriptions.add(subscriptionData);
+    await db.docs.add(subscriptionData);
     return subscriptionData
   } catch (e) {
     console.log('Error creating subscription:', e);

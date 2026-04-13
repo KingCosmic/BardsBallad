@@ -44,8 +44,8 @@ const Library: React.FC = () => {
             <div className='flex flex-col gap-2'>
               <h4 className='mb-2 text-xl'>Subscribed Systems</h4>
               <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
-                {subscriptions.filter(sub => sub.shadow.resource_type === 'system').map(sub => (
-                  <SubscriptionCard key={sub.local_id} sub={sub} />
+                {subscriptions.filter(sub => sub.type === 'system').map(sub => (
+                  <SubscriptionCard key={sub.local_id} item={sub.item} subscriptionId={sub.sub.local_id} />
                 ))}
               </div>
             </div>
@@ -53,8 +53,8 @@ const Library: React.FC = () => {
             <div className='flex flex-col gap-2'>
               <h4 className='mb-2 text-xl'>Subscribed Datapacks</h4>
               <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
-                {subscriptions.filter(sub => sub.type === 'datapack').map(item => (
-                  <SubscriptionCard key={item.local_id} sub={item} />
+                {subscriptions.filter(sub => sub.type === 'datapack').map(sub => (
+                  <SubscriptionCard key={sub.local_id} item={sub.item} subscriptionId={sub.sub.local_id} />
                 ))}
               </div>
             </div>
@@ -62,8 +62,8 @@ const Library: React.FC = () => {
             <div className='flex flex-col gap-2'>
               <h4 className='mb-2 text-xl'>Subscribed Themes</h4>
               <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
-                {subscriptions.filter(sub => sub.type === 'theme').map(item => (
-                  <SubscriptionCard key={item.local_id} sub={item} />
+                {subscriptions.filter(sub => sub.type === 'theme').map(sub => (
+                  <SubscriptionCard key={sub.local_id} item={sub.item} subscriptionId={sub.sub.local_id} />
                 ))}
               </div>
             </div>

@@ -1,19 +1,19 @@
 import React from 'react'
 
 import { produce } from 'immer'
-import { VersionedResource } from '@/db/version/schema'
 import storeMutation from '@/db/version/methods/storeMutation'
-import { SystemType, TypeData } from '@/db/system/schema'
+import { SystemData, SystemType, TypeData } from '@/db/system/schema'
 import { openModal } from '@/state/modals'
 import EditSystemData from '@/modals/editors/edit-system-data'
 import setDefaultCharacterData from '@/db/system/methods/setDefaultCharacterData'
+import * as automerge from '@automerge/automerge'
 
 interface Props {
   editsId: string
-  versionedResource: VersionedResource
+  doc: automerge.next.Doc<SystemData>
 }
 
-const CharacterSchema: React.FC<Props> = ({ editsId, versionedResource }) => {
+const CharacterSchema: React.FC<Props> = ({ editsId, doc }) => {
   return (
     <>
       {/* TODO: Searchbar */}
@@ -26,10 +26,10 @@ const CharacterSchema: React.FC<Props> = ({ editsId, versionedResource }) => {
           className="fantasy-add-gradient border-2 border-dashed border-fantasy-accent/30 rounded-2xl p-6 text-center cursor-pointer transition-all duration-300 flex flex-col justify-center items-center hover:border-fantasy-accent/60 hover:fantasy-add-gradient hover:-translate-y-1"
           onClick={() => {
             const newCopy = {
-              ...versionedResource.data.defaultCharacterData as any,
+              ...doc.defaultCharacterData as any,
               newKey: 'new value',
               _type: {
-                name: (versionedResource.data.defaultCharacterData as any)._type.name || '',
+                name: (doc.defaultCharacterData as any)._type.name || '',
                 properties: [
                   {
                     key: 'newKey',
@@ -39,21 +39,21 @@ const CharacterSchema: React.FC<Props> = ({ editsId, versionedResource }) => {
                       isArray: false
                     }
                   },
-                  ...(versionedResource.data.defaultCharacterData as any)._type.properties || []
+                  ...(doc.defaultCharacterData as any)._type.properties || []
                 ]
               }
             }
 
-            storeMutation(editsId, setDefaultCharacterData(versionedResource.data as any, newCopy))
+            storeMutation(editsId, setDefaultCharacterData(doc, newCopy))
           }}
         >
           <div className="text-fantasy-accent/80 text-base font-medium">Create New Property</div>
         </div>
 
         {
-          ((versionedResource.data.defaultCharacterData as any)._type as SystemType).properties.map((prop) => {
+          ((doc.defaultCharacterData as any)._type as SystemType).properties.map((prop) => {
             const key = prop.key
-            const data = (versionedResource.data.defaultCharacterData as any)[key]
+            const data = (doc.defaultCharacterData as any)[key]
 
             const def = prop.typeData
 
@@ -66,22 +66,22 @@ const CharacterSchema: React.FC<Props> = ({ editsId, versionedResource }) => {
 
                   return (
                     <EditSystemData id={id}
-                      types={(versionedResource.data as any).types}
+                      types={doc.types}
                       onDelete={() => {
-                        const newCopy = produce(versionedResource.data.defaultCharacterData, (draft: any) => {
+                        const newCopy = produce(doc.defaultCharacterData, (draft: any) => {
                           delete draft[editData.name || '']
 
                           draft._type.properties = draft._type.properties.filter((prop: any) => prop.key !== editData?.name)
                         }) as Record<string, any>
 
-                        storeMutation(editsId, setDefaultCharacterData(versionedResource.data as any, newCopy))
+                        storeMutation(editsId, setDefaultCharacterData(doc, newCopy))
                       }}
                       onSave={(newData) => {
                         const key = newData.name
                         const typeData = newData.typeData
                         const value = newData.data
 
-                        const newCopy = produce(versionedResource.data.defaultCharacterData, (draft: any) => {
+                        const newCopy = produce(doc.defaultCharacterData, (draft: any) => {
                           delete draft[editData?.name || '']
 
                           draft[key] = value
@@ -96,7 +96,7 @@ const CharacterSchema: React.FC<Props> = ({ editsId, versionedResource }) => {
                           }
                         }) as Record<string, any>
 
-                        storeMutation(editsId, setDefaultCharacterData(versionedResource.data as any, newCopy))
+                        storeMutation(editsId, setDefaultCharacterData(doc, newCopy))
                       }}
                       data={editData}
                     />

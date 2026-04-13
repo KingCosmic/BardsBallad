@@ -3,7 +3,6 @@ import { useParams } from 'react-router'
 import { editorState, setTab } from '@/state/editor'
 
 import React, { useEffect, useMemo } from 'react'
-import { SystemData } from '@/db/system/schema'
 import Header from '@/components/header'
 import getVisualTextFromVersionID from '@/utils/misc/getVisualTextFromVersionID'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -19,30 +18,31 @@ import SaveNewVersion from '@/modals/editor/save-new-version'
 import PageContent from '@/components/page-content'
 import ComingSoon from './coming-soon'
 import QuickActions from './quick-actions'
-import { useVersionResource } from '@/db/version/hooks/useVersionResource'
-import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
 import { useSystem } from '@/db/system/hooks/useSystem'
+import { useDoc } from '@/db/shared/hooks/useDoc'
+import { useAutomergeDoc } from '@/lib/automerge/useAutomergeDoc'
+import { SystemData } from '@/db/system/schema'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
-  const edits_id = useMemo(() => id ? `${id}|edits` : undefined, [id])
+  const edits_id = useMemo(() => id ? `${id}|edits` : '', [id])
 
-  const original = useVersionResource<SystemData>(id)
-  const versionEdits = useVersionEdits<SystemData>(edits_id)
-  const system = useSystem(versionEdits?.reference_id)
+  const original = useDoc(id!)
+  const edit_item = useDoc(edits_id)
+  const { doc, change, save } = useAutomergeDoc<SystemData>(edit_item?.doc)
 
   const editor = editorState.useValue()
 
   useEffect(() => {
     if (!edits_id || (edits_id === editor.versionId)) return
 
-    const defaultCharPage = versionEdits?.data.pages[0].name || ''
-    const defaultBuilderPage = versionEdits?.data.creator[0].name || ''
-    const defaultModal = versionEdits?.data.modals[0].name || ''
+    const defaultCharPage = doc?.pages[0].name || ''
+    const defaultBuilderPage = doc?.creator[0].name || ''
+    const defaultModal = doc?.modals[0].name || ''
 
     editorState.set((prev) => ({ ...prev, versionId: edits_id, characterPage: defaultCharPage, creatorPage: defaultBuilderPage, modalsPage: defaultModal }))
-  }, [edits_id, editor, versionEdits])
+  }, [edits_id, editor, doc])
 
   useEffect(() => {
     let changed = false
@@ -52,42 +52,40 @@ const System: React.FC = () => {
       modalsPage: editor.modalsPage
     }
 
-    if (!versionEdits?.data.pages.find(p => p.name === editor.characterPage)) {
-      newPages.characterPage = versionEdits?.data.pages[0]?.name || ''
+    if (!doc?.pages.find(p => p.name === editor.characterPage)) {
+      newPages.characterPage = doc?.pages[0]?.name || ''
       changed = true
     }
 
-    if (!versionEdits?.data.creator.find(p => p.name === editor.creatorPage)) {
-      newPages.creatorPage = versionEdits?.data.creator[0]?.name || ''
+    if (!doc?.creator.find(p => p.name === editor.creatorPage)) {
+      newPages.creatorPage = doc?.creator[0]?.name || ''
       changed = true
     }
 
-    if (!versionEdits?.data.modals.find(p => p.name === editor.modalsPage)) {
-      newPages.modalsPage = versionEdits?.data.modals[0]?.name || ''
+    if (!doc?.modals.find(p => p.name === editor.modalsPage)) {
+      newPages.modalsPage = doc?.modals[0]?.name || ''
       changed = true
     }
 
     if (!changed) return
 
     editorState.set(prev => ({ ...prev, ...newPages }))
-  }, [editor, versionEdits])
-
+  }, [editor, doc])
 
   if (!edits_id) return <>id not defined...</>
   if (!original) return <>Loading Original...</>
-  if (!versionEdits) return <>Loading Edits...</>
-  if (!system) return <>Loading System...</>
+  if (!doc) return <>Loading Edits...</>
 
   return (
     <div className='flex flex-col h-full overflow-y-scroll'>
       <Header
-        title={system.name}
+        title={doc.name}
         subtitle={`Version: ${getVisualTextFromVersionID(original.local_id)}`}
         hasSidebar
       >
         <Button size='icon' variant='outline' onClick={() =>
           openModal('save-new-version', ({ id }) => (
-            <SaveNewVersion id={id} original={original} edits={versionEdits} edits_id={edits_id} />
+            <SaveNewVersion id={id} original={original} edits={edit_item!} edits_id={edits_id} doc={doc} />
           ))
         }>
           <IconDeviceFloppy />
@@ -113,21 +111,21 @@ const System: React.FC = () => {
 
         {
           (editor.tab === 'character') ? (
-            <CharacterSchema editsId={edits_id} versionedResource={versionEdits} />
+            <CharacterSchema editsId={edits_id} doc={doc} />
           ) : (editor.tab === 'data') ? (
-            <SystemDataEditor editsId={edits_id} versionedResource={versionEdits} />
+            <SystemDataEditor editsId={edits_id} doc={doc} />
           ) : (editor.tab === 'types') ? (
-            <SystemTypes editsId={edits_id} versionedResource={versionEdits} />
+            <SystemTypes editsId={edits_id} doc={doc} />
           ) : (editor.tab === 'functions') ? (
-            <Functions versionedResource={versionEdits} />
+            <Functions editsId={edits_id} doc={doc} />
           ) : (editor.tab === 'editor') ? (
-            <Editor versionedResource={versionEdits} />
+            <Editor editsId={edits_id} doc={doc} />
           ) : (editor.tab === 'creator') ? (
             <ComingSoon />
           ) : (editor.tab === 'modals') ? (
             <ComingSoon />
           ) : (editor.tab === 'actions') && (
-            <QuickActions editsId={edits_id} versionedResource={versionEdits}  />
+            <QuickActions editsId={edits_id} doc={doc}  />
           )
         }
       </PageContent>

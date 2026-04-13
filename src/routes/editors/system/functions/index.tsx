@@ -1,11 +1,13 @@
-import { VersionedResource } from "@/db/version/schema";
 import React from "react";
+import * as automerge from '@automerge/automerge'
+import { SystemData } from '@/db/system/schema';
 
-type FunctionsProps = {
-  versionedResource: VersionedResource
+interface Props {
+  editsId: string
+  doc: automerge.next.Doc<SystemData>
 }
 
-const Functions: React.FC<FunctionsProps> = ({ }) => {
+const Functions: React.FC<Props> = ({ }) => {
   return (
     <>
       <p>TODO</p>

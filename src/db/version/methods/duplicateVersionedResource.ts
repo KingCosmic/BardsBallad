@@ -1,15 +1,15 @@
-import { VersionedResource } from '@/db/version/schema'
 import { db } from '@/db'
 import generateUniqueID from '@/utils/db/generateUniqueID'
 import { authState } from '@/state/auth'
+import { Item } from '@/db/shared/schema'
 
-export default async (oldResource: VersionedResource, new_id?: string, overwriteIfExists: boolean = false) => {
+export default async (oldResource: Item, new_id?: string, overwriteIfExists: boolean = false) => {
   try {
     const { user } = authState.get()
 
     const user_id = (user) ? user.id : 'none'
 
-    const local_id = new_id ?? generateUniqueID()
+    const local_id = new_id ?? await generateUniqueID()
 
     const versionData = {
       ...oldResource,
@@ -20,7 +20,7 @@ export default async (oldResource: VersionedResource, new_id?: string, overwrite
       updated_at: new Date().toISOString()
     }
 
-    await db.versions.put(versionData);
+    await db.docs.put(versionData);
     return versionData
   } catch (e) {
     console.log('Error creating versioned resource:', e);
