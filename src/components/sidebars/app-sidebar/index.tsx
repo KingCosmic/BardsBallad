@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   IconDashboard,
   IconLibrary,
+  IconMap,
   IconShoppingCart,
   IconTrash,
 } from "@tabler/icons-react"
@@ -18,13 +19,19 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const data = {
   navMain: [
     {
-      title: 'Marketplace',
-      url: '/marketplace',
+      title: 'Bazaar',
+      url: '/bazaar',
       icon: IconShoppingCart,
+    },
+    {
+      title: 'Campaigns',
+      url: '/campaigns',
+      icon: IconMap
     },
     {
       title: 'Adventurers',
@@ -61,8 +68,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary className="mt-auto" />
+        <ScrollArea className='h-full'>
+          <NavMain items={data.navMain} />
+          <NavSecondary className="mt-auto" />
+        </ScrollArea>
       </SidebarContent>
       <Separator />
       <SidebarFooter>

@@ -14,25 +14,15 @@ const characterSchema = z.object({
   name: z.string(),
 
   // all character data.
-  data: z.looseObject({}),
+  data: z.instanceof(Uint8Array<ArrayBufferLike>), // Uint8Array
 
   // hold the system and version id this character relies on
-  system: z.object({
-    local_id: z.string(),
-    version_id: z.string()
-  }),
-
-  // a random hash, a quick glance to see if update conflicts are happening.
-  version: z.string().optional(),
+  system: z.string(),
 
   datapacks: z.array(z.object({ pack_id: z.string(), version_id: z.string() })),
-
-  // some time stamps to keep track of actions.
-  created_at: z.iso.datetime({ offset: true }),
-  updated_at: z.iso.datetime({ offset: true }),
-  deleted_at: z.iso.datetime({ offset: true }).optional(),
 })
 
-export type Character = z.infer<typeof characterSchema>;
+export type CompressedCharacter = z.infer<typeof characterSchema>;
+export type Character = Omit<CompressedCharacter, 'data'> & { data: Record<string, any> }
 
 export default characterSchema

@@ -31,7 +31,7 @@ export default function NoSubscriptions() {
             openModal('import-system', ({ id }) => <ImportFile id={id} title='Import Item' onSave={async (fileContent: string) => {
               try {
                 const parsed = JSON.parse(fileContent)
-                await importItem(parsed.type, parsed.item, parsed.version)
+                await importItem(parsed)
               } catch (e) {
                 console.error(e)
               }

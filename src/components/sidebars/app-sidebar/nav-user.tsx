@@ -1,7 +1,6 @@
-"use client"
+'use client'
 
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
   IconSettings,
@@ -11,6 +10,7 @@ import {
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
 } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -27,69 +27,66 @@ import {
   useSidebarProvider,
 } from "@/components/ui/sidebar"
 import { useNavigate } from "react-router"
-import { authState } from "@/state/auth"
-import { useMemo } from "react"
+import { Show, SignInButton, useAuth, useUser } from '@clerk/react-router'
 
 export function NavUser() {
   const { isMobile } = useSidebarProvider('left')
-  const { user, isLoggedIn } = authState.useValue()
-
   const navigate = useNavigate()
 
-  const { username, email } = useMemo(() => ({
-    username: user ? user.username : 'Guest',
-    email: user ? user.email : 'Signup / Login'
-  }), [user, isLoggedIn])
+  const { user } = useUser()
 
+  const { signOut } = useAuth()
+  
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        <Show when="signed-out">
+          <SignInButton />
+        </Show>
+        <Show when="signed-in">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <Avatar className="h-8 w-8 rounded-lg grayscale">
+                  <AvatarImage src={user?.imageUrl} alt={user?.username!} />
+                  <AvatarFallback className="rounded-lg">{user?.username![0]}</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">{user?.username}</span>
+                  <span className="text-muted-foreground truncate text-xs">
+                    {user?.primaryEmailAddress?.toString()}
+                  </span>
+                </div>
+                <IconDotsVertical className="ml-auto size-4" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+              side={isMobile ? "bottom" : "right"}
+              align="end"
+              sideOffset={4}
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
-                <AvatarFallback className="rounded-lg">{username[0]}</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{username}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {email}
-                </span>
-              </div>
-              <IconDotsVertical className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                Account
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => navigate('/account')}>
+                  <IconUserCircle />
+                  Account
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/settings')}>
+                  <IconSettings />
+                  Settings
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => signOut()}>
+                <IconLogout />
+                Log out
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/settings')}>
-                <IconSettings />
-                Settings
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <IconLogout />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </Show>
       </SidebarMenuItem>
     </SidebarMenu>
   )

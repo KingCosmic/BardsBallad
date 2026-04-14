@@ -11,18 +11,19 @@ import JSONToFile from "@/utils/object/JSONToFile"
 import ConfirmModal from "@/modals/confirm"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Item } from '@/db/shared/schema'
 
-export default ({ sub }: { sub: Subscription }) => {
-  const item = useLiveQuery(() => getItem(sub.resource_type, sub.resource_id), [sub])
+export default ({ sub }: { sub: Item }) => {
+  const item = useLiveQuery(() => getItem(sub.shadow.resource_type, sub.shadow.resource_id), [sub])
 
   if (!item) return <p>loading</p>
 
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>{item.name}</CardTitle>
+        <CardTitle>{item.shadow.name}</CardTitle>
         <CardDescription>
-          {sub.resource_type} | {getVisualTextFromVersionID(sub.version_id)}
+          {sub.shadow.resource_type} | {getVisualTextFromVersionID(sub.shadow.version_id)}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -30,12 +31,12 @@ export default ({ sub }: { sub: Subscription }) => {
       </CardContent>
       <CardFooter className='flex gap-2'>
         <Button className='grow' onClick={() => reviveSubscription(sub.local_id)}>
-          Revive {sub.resource_type}
+          Revive {sub.shadow.resource_type}
         </Button>
         <DropdownButton variant='outline' label='⚙️'>
           <DropdownMenuContent className='w-56' align='start'>
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => JSONToFile(sub.resource_type, item, `${item.name}-export`)}>
+              <DropdownMenuItem onClick={() => JSONToFile(item, `${item.shadow.name}-export`)}>
                 Export
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -44,9 +45,9 @@ export default ({ sub }: { sub: Subscription }) => {
               <DropdownMenuItem onClick={() => {
                 openModal('confirm', ({ id }) => (
                   <ConfirmModal
-                    id={id} title={`Force Delete ${sub.resource_type}`}
+                    id={id} title={`Force Delete ${sub.shadow.resource_type}`}
                     type='danger'
-                    message={`Are you sure you want to force delete this ${sub.resource_type}?`}
+                    message={`Are you sure you want to force delete this ${sub.shadow.resource_type}?`}
                     onConfirm={() => clearSubscription(sub.local_id)} />
                 ))
               }}>

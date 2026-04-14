@@ -3,8 +3,6 @@ import { useMemo } from 'react'
 import styles from './styles'
 import { useLocalState } from '../../hooks/useLocalState'
 import { editorState } from '@/state/editor'
-import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
-import { SystemData, SystemType } from '@/db/system/schema'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
@@ -14,6 +12,8 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import globalStyles from '../../styles'
 import ScriptEditor from '@/modals/editors/script-editor'
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
+import { SystemData, SystemType } from '@/db/system/schema'
 
 export function ContainerSettings() {
   const { id, actions: { setProp },

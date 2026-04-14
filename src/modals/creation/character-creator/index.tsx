@@ -13,48 +13,51 @@ import { Input } from "@/components/ui/input"
 import { closeModal } from "@/state/modals"
 import NoSystem from "./no-system"
 import z from "zod"
-import { useCharacters } from "@/hooks/characters/useCharacters"
 import { useMemo } from "react"
 import { useAppForm } from "@/hooks/useForm"
 import { FieldGroup, FieldLabel, Field } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
-import useSubscriptionsWithData, { Grouped } from "@/hooks/subscriptions/useSubscriptionsWithData"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import getVisualTextFromVersionID from "@/utils/misc/getVisualTextFromVersionID"
-import createCharacter from "@/db/character/methods/createCharacter"
 import { MultiSelect } from '@/components/ui/multi-select'
+import useSubscriptionsWithData, { Grouped } from '@/db/subscription/hooks/useSubscriptionsWithData'
+import { useCharacters } from '@/db/character/hooks/useCharacters'
+import createCharacter from '@/db/character/methods/createCharacter'
+import { Item } from '@/db/shared/schema'
 
-const filterDatapacks = (systemID: string, subs: Grouped[]) => {
-  const sys = subs.find(s => (s.type === 'system' && s.item_id === systemID))
+const filterDatapacks = (systemID: string, subs: Item[]) => {
+  const sys = subs.find(s => (s.type === 'system' && s.local_id === systemID))
 
   if (!sys) return []
 
-  const datapacks = subs.filter(sub => (sub.type === 'datapack'))
+  return []
 
-  const packs = datapacks.map(dp => {
-    const compatibleVersions = dp.versions.filter(v => {
-      const sysHashTypes = sys.hashes[v.local_id]
+  // const datapacks = subs.filter(sub => (sub.type === 'datapack'))
 
-      const hashTypes = dp.hashes[v.local_id]
+  // const packs = datapacks.map(dp => {
+  //   const compatibleVersions = dp.versions.filter(v => {
+  //     const sysHashTypes = sys.hashes[v.local_id]
 
-      for (let h = 0; h < hashTypes.length; h++) {
-        const hashType = hashTypes[h]
-        const sysHash = sysHashTypes.find(h => h.name === hashType.name)
+  //     const hashTypes = dp.hashes[v.local_id]
 
-        if (!sysHash) return false
+  //     for (let h = 0; h < hashTypes.length; h++) {
+  //       const hashType = hashTypes[h]
+  //       const sysHash = sysHashTypes.find(h => h.name === hashType.name)
 
-        if (hashType.hash !== sysHash.hash) return false
-      }
+  //       if (!sysHash) return false
 
-      return true
-    })
+  //       if (hashType.hash !== sysHash.hash) return false
+  //     }
 
-    return {
-      label: dp.item.name, value: getVisualTextFromVersionID(compatibleVersions[0].local_id ?? '')
-    }
-  })
+  //     return true
+  //   })
 
-  return packs
+  //   return {
+  //     label: dp.item.shadow.name, value: getVisualTextFromVersionID(compatibleVersions[0].local_id ?? '')
+  //   }
+  // })
+
+  // return packs
 }
 
 // Define the form schema
@@ -62,7 +65,6 @@ const characterFormSchema = z.object({
   name: z.string().min(1, 'Character name is required'),
   slug: z.string(),
   systemId: z.string().min(1, 'System is required'),
-  versionId: z.string().min(1, 'System version is required'),
   activePacks: z.array(z.any()),
   characterData: z.any(),
 })
@@ -77,15 +79,14 @@ export default function CharacterCreator({ id }: Props) {
   const { characters: _c, isLoading: loadingCharacters } = useCharacters()
 
   const { subscriptions, isLoading: loadingSubscriptions } = useSubscriptionsWithData(['theme'])
-
-  const systems = useMemo(() => (subscriptions || []).filter(sub => sub.type === 'system'), [subscriptions])
+  
+  const grouped = useMemo(() => (subscriptions || []).filter(sub => sub.type === 'system'), [subscriptions])
 
   const form = useAppForm({
     defaultValues: {
       name: '',
       slug: '',
-      systemId: systems[0]?.item_id ?? '',
-      versionId: systems[0]?.versions[0]?.local_id ?? '',
+      systemId: grouped[0]?.local_id ?? '',
       activePacks: [],
       characterData: {}
     } as CharacterFormData,
@@ -94,15 +95,14 @@ export default function CharacterCreator({ id }: Props) {
       onChange: characterFormSchema,
     },
     onSubmit: async ({ value }) => {
-      const system = systems.find(sys => sys.item_id === value.systemId)
+      const system = grouped.find(sys => sys.local_id === value.systemId)
+
       if (!system) return
-      const version = system.versions.find(vers => vers.local_id === value.versionId)
-      if (!version) return
 
       await createCharacter(
         value.name, value.slug,
-        structuredClone(version.data.defaultCharacterData),
-        { local_id: value.systemId, version_id: value.versionId },
+        structuredClone(system.item.snapshot!.defaultCharacterData),
+        value.systemId,
         []
         // activePacks.map(pack => ({ pack_id: pack.reference_id, version_id: pack.local_id }))
       )
@@ -132,7 +132,7 @@ export default function CharacterCreator({ id }: Props) {
     )
   }
 
-  if (systems.length === 0) {
+  if (grouped.length === 0) {
     return <NoSystem id={id} />
   }
 
@@ -211,9 +211,9 @@ export default function CharacterCreator({ id }: Props) {
                         <SelectValue placeholder='Select a TTRPG System' />
                       </SelectTrigger>
                       <SelectContent>
-                        {systems.map(sys => (
-                          <SelectItem key={sys.item_id} value={sys.item_id}>
-                            {sys.item.name}
+                        {grouped.map(sys => (
+                          <SelectItem key={sys.local_id} value={sys.local_id}>
+                            {sys.item.shadow.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -226,7 +226,7 @@ export default function CharacterCreator({ id }: Props) {
                   </Field>
                 )}
               />
-              <form.AppField
+              {/* <form.AppField
                 name='versionId'
                 children={(field) => (
                   <Field>
@@ -252,9 +252,9 @@ export default function CharacterCreator({ id }: Props) {
                     )}
                   </Field>
                 )}
-              />
+              /> */}
 
-              <form.AppField
+              {/* <form.AppField
                 name='activePacks'
                 children={(field) => (
                   <Field>
@@ -274,7 +274,7 @@ export default function CharacterCreator({ id }: Props) {
                     )}
                   </Field>
                 )}
-              />
+              /> */}
             </FieldGroup>
           </form>
         </DialogBody>

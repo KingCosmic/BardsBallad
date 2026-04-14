@@ -1,11 +1,12 @@
-import { db, Item, itemSchema } from '@/db'
+import { db } from '@/db'
 import { authState } from '@/state/auth'
 import z from 'zod'
 import generateUniqueID from '@/utils/db/generateUniqueID'
+import { Item, itemSchema } from '@/db/shared/schema'
 
 export default async (sys: Item) => {
   try {
-    const local_id = generateUniqueID()
+    const local_id = await generateUniqueID()
 
     const { user } = authState.get()
     const user_id = (user) ? user.id : 'none'
@@ -26,7 +27,7 @@ export default async (sys: Item) => {
       return;
     }
 
-    await db.datapacks.add(packData);
+    await db.docs.add(packData);
     return packData
   } catch (e) {
     console.log('Error creating datapack:', e);

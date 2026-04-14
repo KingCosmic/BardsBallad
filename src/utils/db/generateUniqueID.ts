@@ -1,9 +1,9 @@
 import ensureUniqueness from "./ensureUniqueID"
 import generateLocalID from "./generateLocalID"
 
-export default () => {
+export default async () => {
   let id = generateLocalID()
-  while (!ensureUniqueness(id)) {
+  while (!await ensureUniqueness(id)) {
     id = generateLocalID()
   }
 

@@ -1,4 +1,4 @@
-import { Item } from '@/db'
+import { Item } from '@/db/shared/schema'
 import api from '.'
 
 /**

@@ -1,6 +1,7 @@
+import { Item } from '@/db/shared/schema';
 
-export default (type: 'character' | 'system' | 'datapack' | 'theme', obj: any, filename: string) => {
-  const blob = new Blob([JSON.stringify({ type, ...obj }, null, 2)], {
+export default (obj: Item, filename: string) => {
+  const blob = new Blob([JSON.stringify({ ...obj }, null, 2)], {
     type: 'application/json',
   });
 

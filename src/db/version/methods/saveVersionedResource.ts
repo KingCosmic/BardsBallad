@@ -4,7 +4,7 @@ import z from 'zod';
 
 export default async (vers: VersionedResource): Promise<VersionedResource | null> => {
   try {
-    if (await db.versions.get(vers.local_id)) {
+    if (await db.docs.get(vers.local_id)) {
       return vers
     }
 
@@ -14,7 +14,8 @@ export default async (vers: VersionedResource): Promise<VersionedResource | null
       return null
     }
 
-    await db.versions.add(vers);
+    {/* @ts-expect-error */}
+    await db.docs.add(vers);
     return vers
   } catch (e) {
     console.log('Error saving version:', e);

@@ -6,6 +6,6 @@ export default async (type: 'system' | 'theme' | 'datapack', local_id: string, n
     case 'system':
       return await renameSystem(local_id, newName)
     case 'datapack':
-      return await renameDatapack(local_id, newName)
+      return await renameDatapack(local_id)
   }
 }

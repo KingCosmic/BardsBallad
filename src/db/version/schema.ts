@@ -7,7 +7,7 @@ const versionSchema = z.object({
 
   data: z.looseObject({}), // make schemas for each data type, and still do processing on import and upload to verify.
   reference_id: z.string({ error: 'reference_id must be a string' }),
-  reference_type: z.enum(['system', 'datapack']),
+  reference_type: z.enum(['system', 'datapack', 'character']),
 
   // a random hash, a quick glance at whether or not update conflicts are happening.
   version: z.string().optional(),

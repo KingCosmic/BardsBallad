@@ -2,11 +2,9 @@ import { db } from '@/db'
 
 export default async (local_id: string, force: boolean = false) => {
   try {
-    if (force) return await db.datapacks.delete(local_id)
+    if (force) return await db.docs.delete(local_id)
 
-    return await db.datapacks.update(local_id, {
-      updated_at: new Date().toISOString(),
-    })
+    return await db.docs.update(local_id, {})
   } catch (e) {
     console.log('Error deleting datapack:', e);
   }

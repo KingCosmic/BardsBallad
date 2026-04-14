@@ -1,4 +1,7 @@
 
+import deleteCharacter from '@/db/character/methods/deleteCharacter'
+import renameCharacter from '@/db/character/methods/renameCharacter'
+import { Character } from '@/db/character/schema'
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -11,28 +14,33 @@ import {
 } from "@/components/ui/card"
 import { DropdownButton } from "@/components/ui/dropdown-button"
 import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
-import deleteCharacter from "@/db/character/methods/deleteCharacter"
-import renameCharacter from '@/db/character/methods/renameCharacter'
-import { Character } from "@/db/character/schema"
+
 import ConfirmModal from "@/modals/confirm"
 import EditString from '@/modals/editors/edit-string'
 import { openModal } from "@/state/modals"
 import JSONToFile from "@/utils/object/JSONToFile"
 import { useNavigate } from "react-router"
 
+import * as automerge from '@automerge/automerge'
+import { useMemo } from 'react'
+import { Item } from '@/db/shared/schema'
+
 interface Props {
-  char: Character
+  name: string
+  char: Item
 }
 
-export default function CharacterCard({ char }: Props) {
+export default function CharacterCard({ name, char }: Props) {
   const navigate = useNavigate()
+
+  const data: any = useMemo(() => automerge.load(char.doc), [char])
 
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>{char.name}</CardTitle>
+        <CardTitle>{name}</CardTitle>
         <CardDescription>
-          {char.data._flavor as string}
+          {data._flavor as string}
         </CardDescription>
         <CardAction>
           {/* Status Indicator */}
@@ -49,13 +57,13 @@ export default function CharacterCard({ char }: Props) {
         <DropdownButton variant='outline' label='⚙️'>
           <DropdownMenuContent className='w-56' align='start'>
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => JSONToFile('character', { item: char }, `${char.name}-export`)}>
+              <DropdownMenuItem onClick={() => JSONToFile(char, `${data.name}-export`)}>
                 Export
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => 
                 openModal('edit-string', ({ id }) => (
                   <EditString
-                    id={id} title='Rename Character' data={char.name}
+                    id={id} title='Rename Character' data={char.shadow.name}
                     onSave={(newName) => renameCharacter(char.local_id, newName)} />)
               )}>
                 Rename

@@ -1,7 +1,7 @@
 import { db } from '@/db'
 
 export default async function storeMutation(local_id: string, promise: any) {
-  const doc = await db.versions.get(local_id)
+  const doc = await db.docs.get(local_id)
   if (!doc) {
     console.warn('No doc found for ID:', local_id)
     return
@@ -14,7 +14,8 @@ export default async function storeMutation(local_id: string, promise: any) {
   }
 
   try {
-    return await db.versions.update(local_id, {
+    return await db.docs.update(local_id, {
+      // @ts-expect-error
       data: data,
     })
   } catch (err: any) {
