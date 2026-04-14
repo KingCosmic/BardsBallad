@@ -5,25 +5,25 @@ import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/co
 import addSystemData from '@/db/system/methods/addSystemData'
 import deleteSystemData from '@/db/system/methods/deleteSystemData'
 import updateSystemData from '@/db/system/methods/updateSystemData'
-import { DataType } from '@/db/system/schema'
+import { DataType, SystemData } from '@/db/system/schema'
 import storeMutation from '@/db/version/methods/storeMutation'
-import { VersionedResource } from '@/db/version/schema'
 import EditSystemData from '@/modals/editors/edit-system-data'
 import { openModal } from '@/state/modals'
 import React from 'react'
+import * as automerge from '@automerge/automerge'
 
-type DataProps = {
+interface Props {
   editsId: string
-  versionedResource: VersionedResource
+  doc: automerge.next.Doc<SystemData>
 }
 
-const SystemData: React.FC<DataProps> = ({ editsId, versionedResource }) => {
+const SystemDataTab: React.FC<Props> = ({ editsId, doc }) => {
   return (
     <>
       {/* TODO: Searchbar */}
 
       <div className='flex flex-col gap-1'>
-        {(versionedResource.data as any).data.map((data: DataType) => (
+        {doc.data.map((data: DataType) => (
           <Item variant='muted'>
             <ItemContent>
               <ItemTitle>{data.name}</ItemTitle>
@@ -36,9 +36,9 @@ const SystemData: React.FC<DataProps> = ({ editsId, versionedResource }) => {
                 openModal('edit-system-data', ({ id }) => (
                   <EditSystemData
                     id={id}
-                    types={(versionedResource.data as any).types}
-                    onDelete={() => storeMutation(editsId, deleteSystemData(versionedResource.data as any, data.name))}
-                    onSave={(newData) => storeMutation(editsId, updateSystemData(versionedResource.data as any, data.name, newData))}
+                    types={doc.types}
+                    onDelete={() => storeMutation(editsId, deleteSystemData(doc, data.name))}
+                    onSave={(newData) => storeMutation(editsId, updateSystemData(doc, data.name, newData))}
                     data={data}
                   />
                 ))
@@ -50,9 +50,9 @@ const SystemData: React.FC<DataProps> = ({ editsId, versionedResource }) => {
         ))}
       </div>
 
-      <FloatingActionButton onClick={() => storeMutation(editsId, addSystemData(versionedResource.data as any))} />
+      <FloatingActionButton onClick={() => storeMutation(editsId, addSystemData(doc))} />
     </>
   )
 }
 
-export default SystemData
+export default SystemDataTab

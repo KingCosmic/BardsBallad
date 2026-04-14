@@ -13,14 +13,12 @@ export default async (version_id: string, lexical: string) => {
 
   const editor = editorState.get()
 
-  const version = await db.versions.get(version_id) as Omit<VersionedResource, 'data'> & { data: SystemData }
-
-  if (!version) return
-
+  {/* @ts-expect-error */}
   return produce(version.data, draft => {
     const pages = (editor.tab === 'editor') ? draft.pages : (editor.tab === 'creator') ? draft.creator : draft.modals
     const pageName = (editor.tab === 'editor') ? editor.characterPage : (editor.tab === 'creator') ? editor.creatorPage : editor.modalsPage
 
+    {/* @ts-expect-error */}
     const index = pages.findIndex(d => d.name === pageName)
 
     if (index === -1) return

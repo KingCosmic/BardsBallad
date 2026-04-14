@@ -1,13 +1,12 @@
 import { checkInternetAccess } from '@/lib/api/misc/checkInternetAccess'
 import { authState } from '@/state/auth'
 import { setOnlineState } from '@/state/sync'
-import { sync } from '@/sync'
 import { useCallback, useEffect, useRef } from 'react'
 
 const syncTimer = 30 * 1000
 
 export default () => {
-  const syncRef = useRef<NodeJS.Timeout | null>(null)
+  const syncRef = useRef<any | null>(null)
   const startedRef = useRef(false)
   const mountedRef = useRef(false)
 
@@ -22,7 +21,7 @@ export default () => {
       setOnlineState(isOnline)
 
       if (isOnline && isLoggedIn) {
-        await sync()
+        // await sync()
       }
     } catch (e) {
       console.error('Error in sync', e)

@@ -1,13 +1,15 @@
-import { useScriptRunner } from '@/components/providers/script-runner'
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
+import { useCharacter } from '@/db/character/hooks/useCharacter'
 import updateCharacterData from '@/db/character/methods/updateCharacterData'
 import { DataPack } from '@/db/datapack/schema'
 import { DataType, SystemData } from '@/db/system/schema'
 import getVersionedResource from '@/db/version/methods/getVersionedResource'
-import { useCharacter } from '@/hooks/characters/useCharacter'
+import { useScriptRunner } from '@/components/providers/script-runner'
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import unwrapProxy from '@/utils/object/unwrapProxy'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
+import { useAutomergeDoc } from '@/lib/automerge/useAutomergeDoc'
+import { Character } from '@/db/character/schema'
 
 
 export function CharacterSidebar() {
@@ -15,7 +17,8 @@ export function CharacterSidebar() {
 
   const { id } = useParams<{ id: string; }>()
 
-  const character = useCharacter(id)
+  const character = useCharacter(id!)
+  const { doc } = useAutomergeDoc<Character>(character?.doc)
 
   const [system, setSystem] = useState<SystemData | null>(null)
 
@@ -26,22 +29,22 @@ export function CharacterSidebar() {
 
     system.data.forEach(d => sys[d.name] = d.data)
 
-    return JSON.parse(JSON.stringify({ character: character.data, system: sys }))
+    return JSON.parse(JSON.stringify({ character: doc, system: sys }))
   }, [character, system])
 
   const updateState = useCallback(async (state: any) => {
     if (!character || !system) return
 
-    if (JSON.stringify(character.data) !== JSON.stringify(state.character)) {
+    if (JSON.stringify(doc) !== JSON.stringify(state.character)) {
       await updateCharacterData(character.local_id, unwrapProxy(state.character))
     }
   }, [character, system])
 
   useEffect(() => {
     const loadSystem = async () => {
-      if (!character) return
+      if (!character || !doc) return
 
-      const systemData = await getVersionedResource<SystemData>(character.system.version_id)
+      const systemData = await getVersionedResource<SystemData>(doc.system)
       
       if (!systemData) return
 
@@ -49,8 +52,8 @@ export function CharacterSidebar() {
 
       let datapacks: DataType[] = []
 
-      for (let d = 0; d < character.datapacks.length; d++) {
-        const pack = character.datapacks[d]
+      for (let d = 0; d < doc.datapacks.length; d++) {
+        const pack = doc.datapacks[d]
 
         const packData = await getVersionedResource<DataPack>(pack.version_id)
 

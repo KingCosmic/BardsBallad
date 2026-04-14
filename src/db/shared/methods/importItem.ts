@@ -1,13 +1,12 @@
-import { Item } from '@/db'
 import importDatapack from '@/db/datapack/methods/importDatapack'
 import importSystem from '@/db/system/methods/importSystem'
-import { VersionedResource } from '@/db/version/schema'
+import { Item } from '../schema'
 
-export default async (type: 'system' | 'datapack' , item: Item, version: VersionedResource) => {
-  switch (type) {
+export default async (item: Item) => {
+  switch (item.type) {
     case 'system':
-      return await importSystem(item, version)
+      return await importSystem(item)
     case 'datapack':
-      return await importDatapack(item, version)
+      return await importDatapack(item, null)
   }
 }

@@ -2,8 +2,8 @@ import { useNode } from '@craftjs/core'
 import { useMemo } from 'react'
 import { useLocalState } from '../../hooks/useLocalState'
 import { editorState } from '@/state/editor'
-import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
-import { SystemData, SystemType } from '@/db/system/schema'
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
+import { SystemData } from '@/db/system/schema'
 
 export function SelectSettings() {
   // @ts-ignore

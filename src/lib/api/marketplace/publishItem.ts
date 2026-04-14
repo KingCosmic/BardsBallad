@@ -1,6 +1,6 @@
 import api from '@/lib/api';
-import { Item } from '@/db';
 import { VersionedResource } from '@/db/version/schema';
+import { Item } from '@/db/shared/schema';
 
 /**
  * Asynchronously publishes an item to the marketplace by sending the provided data to the API.

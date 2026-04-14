@@ -19,13 +19,6 @@ import {
   SidebarMenuItem,
   SidebarMenuButton
 } from '@/components/ui/sidebar'
-import addPage from '@/db/system/methods/addPage'
-import addPageState from '@/db/system/methods/addPageState'
-import deletePage from '@/db/system/methods/deletePage'
-import renamePage from '@/db/system/methods/renamePage'
-import { SystemData } from '@/db/system/schema'
-import storeMutation from '@/db/version/methods/storeMutation'
-import { useVersionEdits } from '@/hooks/versions/useVersionEdits'
 import EditString from '@/modals/editors/edit-string'
 import { editorState, setCharacterPage } from '@/state/editor'
 import { openModal } from '@/state/modals'
@@ -39,6 +32,10 @@ import Container from '@/components/designer/components/Container/Editor'
 import Text from '@/components/designer/components/Text/Editor'
 import DesignerDivider from '@/components/designer/components/Divider'
 import FAB from '@/components/designer/FloatingActionButton'
+import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
+import { addPage, deletePage, renamePage, addPageState } from '@/db/system/methods'
+import { SystemData } from '@/db/system/schema'
+import storeMutation from '@/db/version/methods/storeMutation'
 
 
 function EditorMenu() {
