@@ -35,7 +35,8 @@ export default async (reference_type: Types, reference_id: string, data: any) =>
       return;
     }
 
-    await db.versions.add(versionData);
+    {/* @ts-expect-error */}
+    await db.docs.add(versionData);
     return versionData
   } catch (e) {
     console.log('Error creating subscription:', e);

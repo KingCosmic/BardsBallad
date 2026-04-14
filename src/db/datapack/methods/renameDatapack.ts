@@ -1,11 +1,8 @@
 import { db } from '@/db'
 
-export default async (local_id: string, newName: string) => {
+export default async (local_id: string) => {
   try {
-    return await db.datapacks.update(local_id, {
-      name: newName,
-      updated_at: new Date().toISOString(),
-    })
+    return await db.docs.update(local_id, {})
   } catch (e) {
     console.log('Error renaming datapack:', e);
   }

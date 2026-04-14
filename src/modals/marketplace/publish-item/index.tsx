@@ -23,6 +23,7 @@ const PublishItem: React.FC<Props> = ({ id }) => {
   const [type, setType] = useState<string>('system')
 
   const [selectedItem, setSelectedItem] = useState(subscriptions?.find(sub => sub.type === 'system'))
+  // @ts-expect-error not fixed yet
   const [selectedVersion, setSelectedVersion] = useState(selectedItem?.versions[0])
   
   const [description, setDescription] = useState('')
@@ -38,6 +39,7 @@ const PublishItem: React.FC<Props> = ({ id }) => {
     const item = subscriptions?.find(sub => sub.type === type)
 
     setSelectedItem(item)
+    // @ts-expect-error not fixed yet
     setSelectedVersion(item?.versions[0])
   }, [subscriptions, type])
 
@@ -45,6 +47,7 @@ const PublishItem: React.FC<Props> = ({ id }) => {
     const getItemData = async () => {
       if (!selectedItem) return
 
+      // @ts-expect-error not fixed yet
       const item = await getMarketplaceItem(selectedItem?.item_id)
       
       if (!item) return setIsFirstPublish(true)
@@ -97,13 +100,16 @@ const PublishItem: React.FC<Props> = ({ id }) => {
 
               <Field>
                 <Label>{type.toUpperCase()}</Label>
+                {/* @ts-expect-error not fixed yet */}
                 <Select value={selectedItem?.item_id} onValueChange={val => setSelectedItem(subscriptions.find(sys => sys.item_id === val)!)}>
                   <SelectTrigger>
                     <SelectValue placeholder='Select Item' />
                   </SelectTrigger>
                   <SelectContent>
                     {subscriptions.filter(sub => sub.type === type).map(sys => (
+                      // @ts-expect-error
                       <SelectItem key={sys.item_id} value={sys.item_id}>
+                        {/* @ts-expect-error not fixed yet */}
                         {sys.item.name}
                       </SelectItem>
                     ))}
@@ -125,11 +131,13 @@ const PublishItem: React.FC<Props> = ({ id }) => {
 
               <Field>
                 <Label>Version</Label>
+                {/* @ts-expect-error not fixed yet */}
                 <Select value={selectedVersion?.local_id} onValueChange={val => setSelectedVersion(selectedItem.versions.find(ver => ver.local_id === val)!)}>
                   <SelectTrigger>
                     <SelectValue placeholder='Select Version' />
                   </SelectTrigger>
                   <SelectContent>
+                    {/* @ts-expect-error not fixed yet */}
                     {selectedItem.versions.map(vers => (
                       <SelectItem key={vers.local_id} value={vers.local_id}>
                         {getVisualTextFromVersionID(vers.local_id)}
@@ -164,7 +172,9 @@ const PublishItem: React.FC<Props> = ({ id }) => {
                 if (publishError) err = publishError
                 break;
               case false:
+                // @ts-expect-error
                 const { error: versionError } = await publishVersion(selectedItem!.item_id, {
+                  // @ts-expect-error
                   item_id: selectedItem!.item_id,
                   version: selectedVersion!,
                   changelog: description

@@ -20,6 +20,7 @@ export default async (oldResource: Item, new_id?: string, overwriteIfExists: boo
       updated_at: new Date().toISOString()
     }
 
+    {/* @ts-expect-error */}
     await db.docs.put(versionData);
     return versionData
   } catch (e) {

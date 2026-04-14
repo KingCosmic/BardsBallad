@@ -3,7 +3,7 @@ import { db } from '@/db'
 
 export function useVersions() {
   const query = useLiveQuery(async () => {
-    const versions = await db.versions.toArray()
+    const versions = await db.docs.toArray()
 
     // filter out versions
     return versions.filter(vers => {

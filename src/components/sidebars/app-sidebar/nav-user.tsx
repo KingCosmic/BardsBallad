@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
   IconSettings,
@@ -34,7 +33,7 @@ export function NavUser() {
   const { isMobile } = useSidebarProvider('left')
   const navigate = useNavigate()
 
-  const { isLoaded, isSignedIn, user } = useUser()
+  const { user } = useUser()
 
   const { signOut } = useAuth()
   

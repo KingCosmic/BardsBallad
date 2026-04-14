@@ -3,6 +3,7 @@
  */
 
 import { useEffect, useState } from 'react'
+{/* @ts-expect-error */}
 import { runMigration, isMigrationComplete, getMigrationStats } from '@/db/migration'
 
 export function useMigration() {

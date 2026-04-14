@@ -57,7 +57,7 @@ export default function CharacterCard({ name, char }: Props) {
         <DropdownButton variant='outline' label='⚙️'>
           <DropdownMenuContent className='w-56' align='start'>
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => JSONToFile('character', { item: data }, `${data.name}-export`)}>
+              <DropdownMenuItem onClick={() => JSONToFile(char, `${data.name}-export`)}>
                 Export
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => 

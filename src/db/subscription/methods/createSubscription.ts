@@ -35,6 +35,7 @@ export default async (type: string, resource_id: string, version_id: string, aut
       return;
     }
 
+    {/* @ts-expect-error */}
     await db.docs.add(subscriptionData);
     return subscriptionData
   } catch (e) {

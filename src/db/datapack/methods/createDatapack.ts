@@ -27,7 +27,7 @@ export default async (sys: Item) => {
       return;
     }
 
-    await db.datapacks.add(packData);
+    await db.docs.add(packData);
     return packData
   } catch (e) {
     console.log('Error creating datapack:', e);

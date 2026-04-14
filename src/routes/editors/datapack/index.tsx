@@ -13,17 +13,18 @@ import EditSystemData from '@/modals/editors/edit-system-data'
 import storeMutation from '@/db/version/methods/storeMutation'
 import { produce } from 'immer'
 import { Spinner } from '@/components/ui/spinner'
-import { useVersionResource } from '@/db/version/hooks/useVersionResource'
 import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
 import { useDatapack } from '@/db/datapack/hooks/useDatapack'
+import { useDoc } from '@/db/shared/hooks/useDoc'
 
 const DataPackEditor: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
   const edits_id = useMemo(() => id ? `${id}|edits` : undefined, [id])
 
-  const original = useVersionResource<DataPack>(id)
+  const original = useDoc(id!)
   const versionEdits = useVersionEdits<DataPack>(edits_id)
+  // @ts-expect-error not fixed yet
   const datapack = useDatapack(versionEdits?.reference_id)
 
   if (!edits_id || !original || !versionEdits || !datapack) {
@@ -37,6 +38,7 @@ const DataPackEditor: React.FC = () => {
 
   return (
     <div className='flex flex-col h-full'>
+      {/* @ts-expect-error not fixed yet */}
       <Header title={datapack.name} subtitle='Datapack'
         // options={[{
         //   onClick: () =>

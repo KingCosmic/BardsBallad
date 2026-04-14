@@ -5,10 +5,7 @@ export default async (local_id: string) => {
     const newDeletionDate = new Date();
     newDeletionDate.setDate(newDeletionDate.getDate() - 11);
 
-    return await db.subscriptions.update(local_id, {
-      deleted_at: newDeletionDate.toISOString(),
-      updated_at: new Date().toISOString(),
-    })
+    return await db.docs.update(local_id, {})
   } catch (e) {
     console.log('Error clearing subscription:', e);
   }

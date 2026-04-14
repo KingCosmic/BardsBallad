@@ -3,7 +3,7 @@ import { db } from '@/db'
 import { authState } from '@/state/auth'
 
 export function useOurSystems() {
-  const systems = useLiveQuery(() => db.systems.toArray(), [])
+  const systems = useLiveQuery(() => db.docs.toArray(), [])
 
   const { user } = authState.useValue()
 
@@ -11,7 +11,7 @@ export function useOurSystems() {
 
   // filter out deleted systems and systems not owned by us
   const filteredSystems = systems?.filter(sys => {
-    const doWeOwnIt = (sys.user_id === user_id)
+    const doWeOwnIt = (sys.owner_id === user_id)
 
     return doWeOwnIt
   })

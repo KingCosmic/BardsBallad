@@ -24,7 +24,7 @@ export default function NoSystem({ id }: Props) {
     openModal('import-system', ({ id }) => <ImportFile id={id} title='Import System' onSave={async (fileContent: string) => {
       try {
         const parsed = JSON.parse(fileContent)
-        importItem(parsed.type, parsed.item, parsed.version)
+        importItem(parsed.item)
       } catch (e) {
         console.error(e)
       }
