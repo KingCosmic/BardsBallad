@@ -11,6 +11,13 @@ type LegacyNode = {
   props?: Record<string, any>
 }
 
+const createId = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
+
 const isPlainObject = (value: unknown): value is Record<string, any> => {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -109,7 +116,7 @@ export const parseRefrainDocument = (raw: unknown, definitions: BlockDefinition[
       return { type: 'text', props: { text: node.props?.text ?? 'hello world' } }
     })
     .map((block) => ({
-      id: Math.random().toString(36).slice(2),
+      id: createId(),
       type: block.type,
       props: deepMerge(defaultsByType[block.type] ?? {}, block.props),
     }))
