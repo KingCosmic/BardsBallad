@@ -27,7 +27,7 @@ const defaultBlocks = [
   },
 ]
 
-const decodeLexical = (lexical: string) => {
+const parseLexical = (lexical: string) => {
   return JSON.parse(lz.decompress(lz.decodeBase64(lexical)))
 }
 
@@ -51,7 +51,7 @@ const EditorTab: React.FC<Props> = ({ editsId, doc }) => {
     if (!lexical) return defaultBlocks
 
     try {
-      const parsed = decodeLexical(lexical)
+      const parsed = parseLexical(lexical)
       const blocks = parseRefrainDocument(parsed, systemEditorBlockDefinitions)
       return blocks.length > 0 ? blocks : defaultBlocks
     } catch (error) {

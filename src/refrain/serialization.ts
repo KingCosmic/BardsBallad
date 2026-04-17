@@ -113,6 +113,9 @@ export const parseRefrainDocument = (raw: unknown, definitions: BlockDefinition[
       if (resolvedType === 'DesignerDivider') {
         return { type: 'divider', props: {} }
       }
+      if (resolvedType !== 'Text') {
+        console.warn(`Unsupported legacy editor node type "${resolvedType ?? 'unknown'}", mapping to text block`)
+      }
       return { type: 'text', props: { text: node.props?.text ?? 'hello world' } }
     })
     .map((block) => ({

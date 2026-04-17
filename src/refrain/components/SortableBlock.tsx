@@ -45,6 +45,7 @@ export const SortableBlock: React.FC<{
       hover: (item: { id: string }) => {
         if (item.id === block.id) return
         onMove(item.id, block.id)
+        item.id = block.id
       },
     }),
     [block.id, onMove]
