@@ -1,6 +1,5 @@
 import React from 'react'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import { useDrag, useDrop } from 'react-dnd'
 import type { Block } from '../types'
 import { BlockRenderer } from './BlockRenderer'
 
@@ -9,6 +8,7 @@ export const SortableBlock: React.FC<{
   onChange: (updatedProps: Record<string, any>) => void
   selected: boolean
   onSelect: (id: string) => void
+  onMove: (activeId: string, overId: string) => void
   className?: string
   baseClassName?: string
   selectedClassName?: string
@@ -20,6 +20,7 @@ export const SortableBlock: React.FC<{
   onChange,
   selected,
   onSelect,
+  onMove,
   className,
   baseClassName,
   selectedClassName,
@@ -27,23 +28,35 @@ export const SortableBlock: React.FC<{
   handleClassName,
   contentClassName,
 }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: block.id })
+  const [{ isDragging }, dragRef, previewRef] = useDrag(
+    () => ({
+      type: 'REFRAIN_BLOCK',
+      item: { id: block.id },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }),
+    [block.id]
+  )
 
-  const style: React.CSSProperties = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  }
+  const [, dropRef] = useDrop(
+    () => ({
+      accept: 'REFRAIN_BLOCK',
+      hover: (item: { id: string }) => {
+        if (item.id === block.id) return
+        onMove(item.id, block.id)
+      },
+    }),
+    [block.id, onMove]
+  )
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
+      ref={(node) => {
+        previewRef(node)
+        dropRef(node)
+      }}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
       data-selected={selected}
       className={`group flex items-start gap-3 border rounded-xl p-3 bg-slate-950/80 backdrop-blur transition-all duration-150 ${
         baseClassName ?? className ?? ''
@@ -55,9 +68,8 @@ export const SortableBlock: React.FC<{
       onClick={() => onSelect(block.id)}
     >
       <button
+        ref={dragRef}
         className={`mt-0.5 cursor-grab active:cursor-grabbing select-none flex items-center justify-center w-10 h-10 border border-slate-700 bg-slate-900/90 text-slate-100 rounded-lg transition-all duration-150 hover:border-slate-500 hover:bg-slate-800/90 active:scale-95 shadow-sm ${handleClassName ?? ''}`}
-        {...attributes}
-        {...listeners}
         aria-label="Drag handle"
       >
         <span className="text-base leading-none">::</span>

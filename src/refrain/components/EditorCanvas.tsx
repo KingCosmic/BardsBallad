@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react'
-import { DndContext, closestCenter } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import React, { useState } from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import type { BlockType } from '../types'
 import { SortableBlock } from './SortableBlock'
 import { InsertButton } from './InsertButton'
@@ -42,24 +42,15 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
   } = useEditor()
   const [insertIndex, setInsertIndex] = useState<number | null>(null)
 
-  const ids = useMemo(() => blocks.map((b) => b.id), [blocks])
-
   const handleInsert = (index: number, type: BlockType) => {
     insertBlock(index, type)
     setInsertIndex(null)
   }
 
-  const onDragEnd = (event: any) => {
-    const { active, over } = event
-    if (!over || active.id === over.id) return
-    moveBlock(active.id, over.id)
-  }
-
   return (
     <div className={`max-w-4xl mx-auto px-4 my-8 ${className ?? ''}`}>
       <div className="flex flex-col gap-2">
-          <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-            <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+          <DndProvider backend={HTML5Backend}>
               {blocks.map((block, i) => (
                 <React.Fragment key={block.id}>
                   <SortableBlock
@@ -67,6 +58,7 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
                     onChange={(p) => updateBlockProps(block.id, p)}
                     selected={block.id === selectedId}
                     onSelect={(id) => selectBlock(id)}
+                    onMove={moveBlock}
                     baseClassName={blockClassName}
                     selectedClassName={blockSelectedClassName}
                     unselectedClassName={blockUnselectedClassName}
@@ -87,8 +79,7 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
                   )}
                 </React.Fragment>
               ))}
-            </SortableContext>
-          </DndContext>
+          </DndProvider>
 
           {blocks.length === 0 && (
             <InsertButton

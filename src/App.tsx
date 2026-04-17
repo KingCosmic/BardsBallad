@@ -18,7 +18,6 @@ import SecondarySidebar from './secondary-sidebar'
 import { ScriptTypesProvider } from './components/providers/script-types'
 import ScriptCacheProvider from './components/providers/script-cache'
 import { ScriptRunnerProvider } from './components/providers/script-runner'
-import { EditorProvider } from './components/providers/editor-provider'
 
 import { ClerkProvider } from '@clerk/react-router'
 import { isHostnameLocal } from './utils/network/isHostnameLocal'
@@ -91,8 +90,7 @@ const App: React.FC = () => {
         } as React.CSSProperties
       }
     >
-      <EditorProvider>
-        <BrowserRouter>
+      <BrowserRouter>
           <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
             <ThemeProvider>
               <QueryClientProvider client={queryClient}>
@@ -145,7 +143,6 @@ const App: React.FC = () => {
             </ThemeProvider>
           </ClerkProvider>
         </BrowserRouter>
-      </EditorProvider>
     </SidebarProvider>
   )
 }
