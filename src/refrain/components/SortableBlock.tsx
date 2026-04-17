@@ -28,6 +28,8 @@ export const SortableBlock: React.FC<{
   handleClassName,
   contentClassName,
 }) => {
+  const lastMoveRef = React.useRef<string | null>(null)
+
   const [{ isDragging }, dragRef, previewRef] = useDrag(
     () => ({
       type: 'REFRAIN_BLOCK',
@@ -39,13 +41,19 @@ export const SortableBlock: React.FC<{
     [block.id]
   )
 
+  React.useEffect(() => {
+    if (!isDragging) lastMoveRef.current = null
+  }, [isDragging])
+
   const [, dropRef] = useDrop(
     () => ({
       accept: 'REFRAIN_BLOCK',
       hover: (item: { id: string }) => {
         if (item.id === block.id) return
+        const moveKey = `${item.id}->${block.id}`
+        if (lastMoveRef.current === moveKey) return
+        lastMoveRef.current = moveKey
         onMove(item.id, block.id)
-        item.id = block.id
       },
     }),
     [block.id, onMove]

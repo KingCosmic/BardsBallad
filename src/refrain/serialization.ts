@@ -114,7 +114,7 @@ export const parseRefrainDocument = (raw: unknown, definitions: BlockDefinition[
         return { type: 'divider', props: {} }
       }
       if (resolvedType !== 'Text') {
-        console.warn(`Unsupported legacy editor node type "${resolvedType ?? 'unknown'}", mapping to text block`)
+        console.warn(`Unsupported legacy node type "${resolvedType ?? 'unknown'}", defaulting to text block`)
       }
       return { type: 'text', props: { text: node.props?.text ?? 'hello world' } }
     })
