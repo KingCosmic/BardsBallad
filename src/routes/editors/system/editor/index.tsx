@@ -28,7 +28,13 @@ const defaultBlocks = [
 ]
 
 const parseLexical = (lexical: string) => {
-  return JSON.parse(lz.decompress(lz.decodeBase64(lexical)))
+  try {
+    return JSON.parse(lz.decompress(lz.decodeBase64(lexical)))
+  } catch (error) {
+    throw new Error('Invalid lexical payload: failed to decode or parse compressed editor data', {
+      cause: error,
+    })
+  }
 }
 
 const EditorPersistence: React.FC<{ editsId: string }> = ({ editsId }) => {

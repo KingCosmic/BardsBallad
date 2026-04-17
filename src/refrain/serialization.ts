@@ -11,11 +11,14 @@ type LegacyNode = {
   props?: Record<string, any>
 }
 
+let fallbackIdCounter = 0
+
 const createId = () => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID()
   }
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  fallbackIdCounter += 1
+  return `refrain-${Date.now()}-${fallbackIdCounter}`
 }
 
 const isPlainObject = (value: unknown): value is Record<string, any> => {
@@ -114,7 +117,7 @@ export const parseRefrainDocument = (raw: unknown, definitions: BlockDefinition[
         return { type: 'divider', props: {} }
       }
       if (resolvedType !== 'Text') {
-        console.warn(`Unsupported legacy node type "${resolvedType ?? 'unknown'}", defaulting to text block`)
+        console.warn(`Unsupported legacy node type "${resolvedType ?? 'unknown'}", defaulting to text block. Re-save this page after review.`)
       }
       return { type: 'text', props: { text: node.props?.text ?? 'hello world' } }
     })

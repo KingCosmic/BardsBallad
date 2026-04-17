@@ -28,7 +28,7 @@ export const SortableBlock: React.FC<{
   handleClassName,
   contentClassName,
 }) => {
-  const lastMoveRef = React.useRef<string | null>(null)
+  const lastHoverKeyRef = React.useRef<string | null>(null)
 
   const [{ isDragging }, dragRef, previewRef] = useDrag(
     () => ({
@@ -42,7 +42,7 @@ export const SortableBlock: React.FC<{
   )
 
   React.useEffect(() => {
-    if (!isDragging) lastMoveRef.current = null
+    if (!isDragging) lastHoverKeyRef.current = null
   }, [isDragging])
 
   const [, dropRef] = useDrop(
@@ -51,8 +51,8 @@ export const SortableBlock: React.FC<{
       hover: (item: { id: string }) => {
         if (item.id === block.id) return
         const moveKey = `${item.id}->${block.id}`
-        if (lastMoveRef.current === moveKey) return
-        lastMoveRef.current = moveKey
+        if (lastHoverKeyRef.current === moveKey) return
+        lastHoverKeyRef.current = moveKey
         onMove(item.id, block.id)
       },
     }),
