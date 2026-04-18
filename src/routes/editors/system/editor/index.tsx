@@ -1,64 +1,78 @@
-import React, { useEffect } from 'react'
-
-import { Frame, Element, useEditor } from '@craftjs/core'
-
+import React, { useEffect, useMemo } from 'react'
 import lz from 'lzutf8'
+import * as automerge from '@automerge/automerge'
+
 import { editorState } from '@/state/editor'
 import { PageData, SystemData } from '@/db/system/schema'
-import Container from '@/components/designer/components/Container/Editor'
-import Text from '@/components/designer/components/Text/Editor'
-import { useEditorProvider } from '@/components/providers/editor-provider'
 import storeMutation from '@/db/version/methods/storeMutation'
 import updateLexical from '@/db/system/methods/updateLexical'
-
-const defaultLexical = 'eyJST09UIjp7InR5cGXECHJlc29sdmVkTmFtZSI6IkNvbnRhaW5lciJ9LCJpc0NhbnZhcyI6dHJ1ZSwicHJvcHPENXNob3dQbGFjZWhvbGRlcsggZHluYW1pY1Zpc2liaWxpdHkiOmZhbHNlLCJ2yRNCbHVlcHJpbnTESG5vZGVzIjpbeyJpZCI6IjEiLOcAmCJlbnRyeSIsImRhdGHEKnBhcmFtxCtdfSwicG9zaXRpb27EGXgiOjEwMCwiecUIfX0sx0wyykxvdXRwdXTQTcQJbuYA9Wlz5QCzbGXKNGJvb2xlYW4i5AEFQXJyYegAy33SfzI1y39dLCJlZGflANXkAKrKWucBI2lzTGlzdMdN5gCS5wF6bGlzdEl0ZW0iLCJi/wEk/wEk/wEk/wEk9wEk6wCfxzNhbsR96QEf5ADg/wEe8AEebG9jYWzEDMRHSW50ZXJhY3RpdmXpAR9vblByZXPlAnP/AQf/AQf1AQfvAI5kaXNwbOQAyiJmbGV4Isw8InN0YXRpY8R0b3AiOiIwcMQgcmlnaHTJDmJvdHRvbckPbGVmyhzEUURpcmVjx09jb2x1beQCXWFsaWdu5AFXcyI6Im5vcm1hbCIsImp1c3RpZnnkA4xl5AIFImluaXRpxRtnYeUAgMR+b3dzIjowLMdNxgxtYXJnaW5U5gClIsgQUugAqckSQukArckTTOcAseQA+WFkZGluZ8ZHNMoRyEjLE8lJyxTHSsQSaGXHM2F1dG8iLCJ3aWR0aMoPbWF4SMgibm9u5AOAbWF4V8clyBJpbtElaW7PJWJhY2tncm91buQCHW5vIHN0eeUDz2JvcuUEocwUaG92zhPqAf3xBQYsImN1c+UA4nt9LCJoaWRkZW7pAp/oApQiNnk0Si1UMzV1diJdLCJsaW5rZWROxh175AMUTmR2cFBQMVVzMvsFe1RleHTuBXbHZ+kFd3VzZekFP1ZhbHXqAyn/BDL/Ayv/Ayv/BDL4BDLJIccxc3RyaW5n/wVS/wQ0LCJ05AEm5AEtc3RpbmcgdGhlIHdvcmxk5AGqb2xv5AHYYmFz5AHnZm9udFNpesR7xxLEPEHkA3LkBNDkAqXGE0RlY29yYecDm+cCUMQYVHJhbnNmb3LkAt/HF/8DYP8DYPUDYMsRzEjwA2DLFMlK8QK45QJD7gKzcGFy5gRE5Qf5+QLD9QK36wLX/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3/wK3fQ=='
-
-import * as automerge from '@automerge/automerge'
+import { EditorProvider, useEditor } from '@/refrain/context/EditorContext'
+import { BlockRegistryProvider, useBlockRegistry } from '@/refrain/context/BlockRegistryContext'
+import { EditorCanvas } from '@/refrain/components/EditorCanvas'
+import { parseRefrainDocument, exportRefrainDocument } from '@/refrain/serialization'
+import { systemEditorBlockDefinitions } from '@/refrain/system-blocks'
 
 interface Props {
   editsId: string
   doc: automerge.next.Doc<SystemData>
 }
 
+const defaultBlocks = [
+  {
+    id: 'default-text-block',
+    type: 'text',
+    props: {
+      text: 'Testing the world',
+    },
+  },
+]
+
+const parseLexical = (lexical: string) => {
+  try {
+    return JSON.parse(lz.decompress(lz.decodeBase64(lexical)))
+  } catch (error) {
+    throw new Error('Invalid lexical payload: failed to decode or parse compressed editor data', {
+      cause: error,
+    })
+  }
+}
+
+const EditorPersistence: React.FC<{ editsId: string }> = ({ editsId }) => {
+  const { blocks } = useEditor()
+  const { definitions } = useBlockRegistry()
+
+  useEffect(() => {
+    const payload = exportRefrainDocument(blocks, definitions)
+    storeMutation(editsId, updateLexical(editsId, JSON.stringify(payload)))
+  }, [blocks, definitions, editsId])
+
+  return <EditorCanvas />
+}
+
 const EditorTab: React.FC<Props> = ({ editsId, doc }) => {
   const editor = editorState.useValue()
-  const { setOnNodeChange } = useEditorProvider()
 
-  const { actions } = useEditor()
-
-  useEffect(() => {
-    // Set the node change handler with access to versionedResource
-    setOnNodeChange((lexical: string) => {
-      storeMutation(editsId, updateLexical(editsId, lexical))
-    })
-
-    // Clean up when component unmounts
-    return () => {
-      setOnNodeChange(null)
-    }
-  }, [editsId, setOnNodeChange])
-
-  useEffect(() => {
-    let lexical = doc.pages.find((p: PageData) => p.name === editor.characterPage)?.lexical
-
-    if (!lexical) lexical = defaultLexical
+  const initialBlocks = useMemo(() => {
+    const lexical = doc.pages.find((p: PageData) => p.name === editor.characterPage)?.lexical
+    if (!lexical) return defaultBlocks
 
     try {
-      actions.deserialize(lz.decompress(lz.decodeBase64(lexical)))
+      const parsed = parseLexical(lexical)
+      const blocks = parseRefrainDocument(parsed, systemEditorBlockDefinitions)
+      return blocks.length > 0 ? blocks : defaultBlocks
     } catch (error) {
-      console.error('Error deserializing lexical:', error)
-      // Fallback to default if there's an error
-      actions.deserialize(lz.decompress(lz.decodeBase64(defaultLexical)))
+      console.error('Error parsing lexical payload:', error)
+      return defaultBlocks
     }
-  }, [editor.characterPage])
+  }, [doc, editor.characterPage])
 
   return (
-    <div className='mt-3 border-2 border-primary border-dashed rounded-lg dark:border-muted'>
-      <Frame>
-        <Element is={Container} canvas>
-          <Text text='Testing the world' />
-        </Element>
-      </Frame>
+    <div className='mt-3 border-2 border-primary border-dashed rounded-lg dark:border-muted min-h-[20rem]'>
+      <BlockRegistryProvider definitions={systemEditorBlockDefinitions}>
+        <EditorProvider initialBlocks={initialBlocks}>
+          <EditorPersistence editsId={editsId} />
+        </EditorProvider>
+      </BlockRegistryProvider>
     </div>
   )
 }
