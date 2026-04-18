@@ -3,9 +3,6 @@ import React from 'react'
 import GarbageCard from './garbage-card'
 import PageContent from '@/components/page-content'
 import { useDeletedSubscriptions } from '@/db/subscription/hooks/useDeletedSubscriptions'
-import { db } from '@/db'
-import { liveQuery } from 'dexie'
-import { useLiveQuery } from 'dexie-react-hooks'
 
 const Catacombs: React.FC = () => {
   const { subscriptions, isLoading: isSubscriptionsLoading } = useDeletedSubscriptions()
