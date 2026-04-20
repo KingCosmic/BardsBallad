@@ -7,6 +7,7 @@ export type BlockDefinition = {
   defaultProps: () => Record<string, any>
   Render: React.FC<{ props: Record<string, any>; onChange: (props: Record<string, any>) => void }>
   Settings?: React.FC<{ props: Record<string, any>; onChange: (props: Record<string, any>) => void }>
+  Preview?: React.FC<{ props: Record<string, any>; state: any; updateState: (changes: any) => void }>
 }
 
 export type BlockRegistryValue = {

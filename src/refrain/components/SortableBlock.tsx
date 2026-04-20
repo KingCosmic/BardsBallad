@@ -2,6 +2,7 @@ import React from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import type { Block } from '../types'
 import { BlockRenderer } from './BlockRenderer'
+import { useEditor } from '../context/EditorContext'
 
 export const SortableBlock: React.FC<{
   block: Block
@@ -9,11 +10,6 @@ export const SortableBlock: React.FC<{
   selected: boolean
   onSelect: (id: string) => void
   onMove: (activeId: string, overId: string) => void
-  className?: string
-  baseClassName?: string
-  selectedClassName?: string
-  unselectedClassName?: string
-  handleClassName?: string
   contentClassName?: string
 }> = ({
   block,
@@ -21,13 +17,9 @@ export const SortableBlock: React.FC<{
   selected,
   onSelect,
   onMove,
-  className,
-  baseClassName,
-  selectedClassName,
-  unselectedClassName,
-  handleClassName,
   contentClassName,
 }) => {
+  const { deleteBlock } = useEditor()
   const lastHoverKeyRef = React.useRef<string | null>(null)
 
   const [{ isDragging }, dragRef, previewRef] = useDrag(
@@ -61,30 +53,56 @@ export const SortableBlock: React.FC<{
 
   return (
     <div
-      ref={(node) => {
-        previewRef(node)
-        dropRef(node)
-      }}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-      data-selected={selected}
-      className={`group flex items-start gap-3 border rounded-xl p-3 bg-slate-950/80 backdrop-blur transition-all duration-150 ${
-        baseClassName ?? className ?? ''
-      } ${
-        selected
-          ? selectedClassName ?? 'border-indigo-400/70 ring-2 ring-indigo-500/30 shadow-[0_10px_40px_rgba(99,102,241,0.15)]'
-          : unselectedClassName ?? 'border-slate-800/80 hover:border-slate-600/80 hover:shadow-[0_10px_30px_rgba(15,23,42,0.35)]'
-      }`}
-      onClick={() => onSelect(block.id)}
+      ref={(node) => { previewRef(node); dropRef(node) }}
+      style={{ opacity: isDragging ? 0.3 : 1, position: 'relative' }}
+      className='group/block'
+      onClick={(e) => { e.stopPropagation(); onSelect(block.id) }}
     >
-      <button
-        ref={dragRef}
-        className={`mt-0.5 cursor-grab active:cursor-grabbing select-none flex items-center justify-center w-10 h-10 border border-slate-700 bg-slate-900/90 text-slate-100 rounded-lg transition-all duration-150 hover:border-slate-500 hover:bg-slate-800/90 active:scale-95 shadow-sm ${handleClassName ?? ''}`}
-        aria-label="Drag handle"
-      >
-        <span className="text-base leading-none">::</span>
-      </button>
-      <div className={`flex-1 ${contentClassName ?? ''}`}>
+      {/* Block content renders naturally — no wrapper styling */}
+      <div className={contentClassName ?? ''}>
         <BlockRenderer block={block} onChange={onChange} />
+      </div>
+
+      {/* Selection / hover ring overlay — doesn't affect layout */}
+      <div
+        className={`pointer-events-none absolute inset-0 rounded transition-all duration-100 ${
+          selected
+            ? 'ring-2 ring-inset ring-indigo-400/80'
+            : 'group-hover/block:ring-1 group-hover/block:ring-inset group-hover/block:ring-slate-400/40'
+        }`}
+      />
+
+      {/* Floating toolbar — appears above the block on hover/select */}
+      <div
+        className={`absolute -top-6 right-0 flex items-center gap-1 transition-opacity duration-100 z-20 ${
+          selected ? 'opacity-100' : 'opacity-0 group-hover/block:opacity-100'
+        }`}
+      >
+        <span className='text-[10px] text-muted-foreground bg-background/90 px-1.5 py-0.5 rounded-sm border border-border capitalize'>
+          {block.type}
+        </span>
+        <button
+          ref={dragRef}
+          title='Drag to reorder'
+          className='cursor-grab active:cursor-grabbing w-5 h-5 flex items-center justify-center rounded bg-background/90 border border-border text-muted-foreground hover:text-foreground transition-colors'
+          onClick={(e) => e.stopPropagation()}
+        >
+          <svg width='10' height='10' viewBox='0 0 10 10' fill='currentColor'>
+            <circle cx='2.5' cy='2.5' r='1' />
+            <circle cx='7.5' cy='2.5' r='1' />
+            <circle cx='2.5' cy='5' r='1' />
+            <circle cx='7.5' cy='5' r='1' />
+            <circle cx='2.5' cy='7.5' r='1' />
+            <circle cx='7.5' cy='7.5' r='1' />
+          </svg>
+        </button>
+        <button
+          title='Delete block'
+          className='w-5 h-5 flex items-center justify-center rounded bg-background/90 border border-border text-muted-foreground hover:text-destructive transition-colors text-xs'
+          onClick={(e) => { e.stopPropagation(); deleteBlock(block.id) }}
+        >
+          ×
+        </button>
       </div>
     </div>
   )

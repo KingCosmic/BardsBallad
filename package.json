@@ -13,7 +13,6 @@
     "@automerge/automerge": "^3.2.1",
     "@bardsballad/verse": "^0.3.0",
     "@clerk/react-router": "^3.0.12",
-    "@craftjs/core": "^0.2.12",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",

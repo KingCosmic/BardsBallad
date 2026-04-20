@@ -1,35 +1,17 @@
-import type { BlockDefinition } from './context/BlockRegistryContext'
-import { Separator } from '@/components/ui/separator'
-import { Input } from '@/components/ui/input'
+import { textBlockDefinition } from './blocks/text'
+import { dividerBlockDefinition } from './blocks/divider'
+import { containerBlockDefinition } from './blocks/container'
+import { inputBlockDefinition } from './blocks/input'
+import { selectBlockDefinition } from './blocks/select'
+import { fabBlockDefinition } from './blocks/fab'
 
-const TextBlock: BlockDefinition['Render'] = ({ props, onChange }) => {
-  const value = typeof props.text === 'string' ? props.text : ''
+export { textBlockDefinition, dividerBlockDefinition, containerBlockDefinition, inputBlockDefinition, selectBlockDefinition, fabBlockDefinition }
 
-  return (
-    <div className="space-y-2">
-      <Input value={value} onChange={(event) => onChange({ ...props, text: event.target.value })} />
-      <p>{value || ' '}</p>
-    </div>
-  )
-}
-
-const DividerBlock: BlockDefinition['Render'] = () => {
-  return <Separator />
-}
-
-export const systemEditorBlockDefinitions: BlockDefinition[] = [
-  {
-    type: 'text',
-    label: 'Text',
-    defaultProps: () => ({
-      text: 'hello world',
-    }),
-    Render: TextBlock,
-  },
-  {
-    type: 'divider',
-    label: 'Divider',
-    defaultProps: () => ({}),
-    Render: DividerBlock,
-  },
+export const systemEditorBlockDefinitions = [
+  containerBlockDefinition,
+  textBlockDefinition,
+  dividerBlockDefinition,
+  inputBlockDefinition,
+  selectBlockDefinition,
+  fabBlockDefinition,
 ]

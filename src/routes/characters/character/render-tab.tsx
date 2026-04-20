@@ -1,4 +1,4 @@
-import RenderPage from "@/components/designer/render-page"
+import RenderRefrainPage from "@/refrain/components/RenderRefrainPage"
 import { useScriptRunner } from "@/components/providers/script-runner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
@@ -34,7 +34,7 @@ export default memo(({ system, state, updateState }: Props) => {
       </Select>
       
       {
-        system.pages.map(page => <RenderPage key={page.name} page={page} currentTab={tab} state={state} updateState={updateState} />)
+        system.pages.map(page => <RenderRefrainPage key={page.name} page={page} currentTab={tab} state={state} updateState={updateState} />)
       }
     </>
   )

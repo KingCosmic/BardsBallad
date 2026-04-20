@@ -4,7 +4,7 @@ import { authState } from '@/state/auth'
 import { Item, itemSchema } from '@/db/shared/schema'
 
 import * as automerge from '@automerge/automerge'
-import { characterShadow } from '@/newsync/shadows'
+import { characterShadow, datapackShadow, systemShadow } from '@/newsync/shadows'
 
 export default async (type: 'system' | 'datapack' | 'character', data: any) => {
   try {
@@ -15,6 +15,11 @@ export default async (type: 'system' | 'datapack' | 'character', data: any) => {
 
     console.log(data)
 
+    const createShadow =
+      type === 'character' ? characterShadow :
+      type === 'system' ? systemShadow :
+      datapackShadow
+
     const itemData: Item = {
       id: '',
       local_id: char_local_id,
@@ -22,12 +27,12 @@ export default async (type: 'system' | 'datapack' | 'character', data: any) => {
 
       namespace: `${owner_id}/${char_local_id}`,
 
-      type: 'character',
+      type,
 
-      lifecycle: 'crdt',
-      doc: automerge.save(automerge.from(data)),
-      snapshot: {},
-      shadow: characterShadow(data),
+      lifecycle: (type === 'character') ? 'crdt' : 'snapshot',
+      doc: (type === 'character') ? automerge.save(automerge.from(data)) : undefined,
+      snapshot: (type !== 'character') ? data : undefined,
+      shadow: createShadow(data),
 
       version: 0,
       updated_at: 0,

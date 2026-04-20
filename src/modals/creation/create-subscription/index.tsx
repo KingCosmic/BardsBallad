@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DataType, SystemType } from '@/db/system/schema';
-import { VersionedResource } from '@/db/version/schema';
 import { closeModal } from '@/state/modals';
 import { Button } from '@/components/ui/button';
 import createWholeSubscription from '@/db/subscription/methods/createWholeSubscription';
@@ -27,23 +26,16 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id }) => {
   const { subscriptions } = useSubscriptionsWithData()
 
   const [system, setSystem] = useState<Grouped | undefined>()
-  const [version, setVersion] = useState<VersionedResource | undefined>()
 
   useEffect(() => {
     const sys = subscriptions?.find(sub => sub.type === 'system')
 
     if (!sys) return console.log('no system.')
 
-    // @ts-expect-error
-    let version = sys.versions[0]
 
-    if (!version) return console.log('no version.')
-
-    // @ts-expect-error
-    if ((sys.item_id === system?.item_id) && (version.local_id === version?.local_id)) return console.log('same version and system')
+    if ((sys.local_id === system?.local_id)) return console.log('same version and system')
 
     setSystem(sys)
-    setVersion(version)
   }, [subscriptions])
 
   const requestClose = useCallback(() => closeModal(id), [id])
@@ -80,51 +72,18 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id }) => {
               <Field>
                 <Label>System</Label>
 
-                {/* @ts-expect-error */}
-                <Select value={system?.item_id} onValueChange={system_id => {
-                  // @ts-expect-error
-                  const sys = subscriptions?.find(s => (s.item_id === system_id) && s.type === 'system')
+  
+                <Select value={system?.local_id} onValueChange={system_id => {
+                  const sys = subscriptions?.find(s => (s.local_id === system_id) && s.type === 'system')
                   if (!sys) return console.log('could not find matching system')
                   setSystem(sys)
-
-                  // @ts-expect-error
-                  const vers = sys.versions[0]
-              
-                  if (!vers) return
-
-                  setVersion(vers)
                 }}>
                   <SelectTrigger>
                     <SelectValue placeholder='Select System' />
                   </SelectTrigger>
                   <SelectContent>
                     {subscriptions?.filter(s => s.type === 'system').map((sys) => (
-                      // @ts-expect-error
-                      <SelectItem key={sys.item_id} value={sys.item_id}>{sys.item.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-
-              <Field>
-                <Label>Version</Label>
-
-                <Select value={version?.local_id} onValueChange={version_id => {
-                  // @ts-expect-error
-                  const vers = system?.versions.find(v => v.local_id === version_id)
-                  if (!vers) return console.log('could not find matching version')
-
-                  setVersion(vers)
-                }}>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select Version' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {/* @ts-expect-error */}
-                    {system?.versions.map((ver) => (
-                      <SelectItem key={ver.local_id} value={ver.local_id}>
-                        {getVisualTextFromVersionID(ver.local_id)}
-                      </SelectItem>
+                      <SelectItem key={sys.local_id} value={sys.local_id}>{sys.item.shadow.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -140,6 +99,7 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id }) => {
             switch (type) {
               case 'system':
                 data = {
+                  name,
                   creator: [],
                   modals: [],
                   pages: [],
@@ -152,25 +112,21 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id }) => {
                   actions: [],
                 }
                 break;
-              case 'datapack':
-                if (!version || !version.data) return console.log('no version data')
-          
-                data = {
-                  types: version.data.types,
-                  packData: (version.data as any).data.map((data: DataType) => ({ ...data, data: data.typeData.isArray ? [] : generateObject(version.data.types as SystemType[], (version.data?.types as SystemType[]).find((t: SystemType) => t.name === data.typeData.type)!) }))
-                }
+              // case 'datapack':
+              //   data = {
+              //     types: version.data.types,
+              //     packData: (version.data as any).data.map((data: DataType) => ({ ...data, data: data.typeData.isArray ? [] : generateObject(version.data.types as SystemType[], (version.data?.types as SystemType[]).find((t: SystemType) => t.name === data.typeData.type)!) }))
+              //   }
 
-                types = (version.data as any).types.map(generateTypeHash)
+              //   types = (version.data as any).types.map(generateTypeHash)
 
-                break;
+              //   break;
             }
 
-            // @ts-expect-error
-            const sub = await createWholeSubscription(name, type as 'system' | 'datapack', data)
+            const sub = await createWholeSubscription(type as 'system' | 'datapack', data)
 
             if (sub && ['datapack', 'system'].includes(type)) {
-              // @ts-expect-error
-              storeHashes(sub.version_id, types)
+              storeHashes(sub.local_id, types)
             }
             requestClose()
           }}>Create</Button>

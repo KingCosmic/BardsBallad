@@ -9,26 +9,18 @@ import { useEditor } from '../context/EditorContext'
 
 type EditorCanvasProps = {
   className?: string
-  blockClassName?: string
-  blockSelectedClassName?: string
-  blockUnselectedClassName?: string
-  blockHandleClassName?: string
-  blockContentClassName?: string
-  insertButtonRowClassName?: string
-  insertButtonClassName?: string
+  innerClassName?: string
+  innerStyle?: React.CSSProperties
+  contentClassName?: string
   insertMenuClassName?: string
   insertMenuButtonClassName?: string
 }
 
 export const EditorCanvas: React.FC<EditorCanvasProps> = ({
   className,
-  blockClassName,
-  blockSelectedClassName,
-  blockUnselectedClassName,
-  blockHandleClassName,
-  blockContentClassName,
-  insertButtonRowClassName,
-  insertButtonClassName,
+  innerClassName,
+  innerStyle,
+  contentClassName,
   insertMenuClassName,
   insertMenuButtonClassName,
 }) => {
@@ -48,8 +40,8 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
   }
 
   return (
-    <div className={`max-w-4xl mx-auto px-4 my-8 ${className ?? ''}`}>
-      <div className="flex flex-col gap-2">
+    <div className={className ?? 'max-w-2xl mx-auto px-6 py-8'}>
+      <div className={`flex flex-col ${innerClassName ?? ''}`} style={innerStyle}>
           <DndProvider backend={HTML5Backend}>
               {blocks.map((block, i) => (
                 <React.Fragment key={block.id}>
@@ -59,17 +51,9 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
                     selected={block.id === selectedId}
                     onSelect={(id) => selectBlock(id)}
                     onMove={moveBlock}
-                    baseClassName={blockClassName}
-                    selectedClassName={blockSelectedClassName}
-                    unselectedClassName={blockUnselectedClassName}
-                    handleClassName={blockHandleClassName}
-                    contentClassName={blockContentClassName}
+                    contentClassName={contentClassName}
                   />
-                  <InsertButton
-                    onOpen={() => setInsertIndex(i + 1)}
-                    rowClassName={insertButtonRowClassName}
-                    buttonClassName={insertButtonClassName}
-                  />
+                  <InsertButton onOpen={() => setInsertIndex(i + 1)} />
                   {insertIndex === i + 1 && (
                     <InsertMenu
                       onSelect={(type) => handleInsert(i + 1, type)}
@@ -82,24 +66,16 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
           </DndProvider>
 
           {blocks.length === 0 && (
-            <InsertButton
-              onOpen={() => setInsertIndex(0)}
-              rowClassName={insertButtonRowClassName}
-              buttonClassName={insertButtonClassName}
-            />
-          )}
-          {insertIndex === (blocks.length === 0 ? 0 : null) && blocks.length === 0 && (
-            <InsertMenu
-              onSelect={(type) => handleInsert(0, type)}
-              className={insertMenuClassName}
-              buttonClassName={insertMenuButtonClassName}
-            />
-          )}
-
-          {blocks.length > 0 && insertIndex === null && (
-            <div className="insert-row">
-              {/* trailing insert row already rendered after each block via InsertButton */}
-            </div>
+            <>
+              <InsertButton onOpen={() => setInsertIndex(0)} />
+              {insertIndex === 0 && (
+                <InsertMenu
+                  onSelect={(type) => handleInsert(0, type)}
+                  className={insertMenuClassName}
+                  buttonClassName={insertMenuButtonClassName}
+                />
+              )}
+            </>
           )}
       </div>
     </div>

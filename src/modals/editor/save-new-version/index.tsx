@@ -29,10 +29,10 @@ const SaveNewVersion: React.FC<Props> = ({ id, original, edits, edits_id, doc })
     <Dialog open onOpenChange={() => closeModal(id)}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Save New Version</DialogTitle>
+          <DialogTitle>Save Changes</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <p>All of your changes are saved to a hidden "edits" copy of this version as you make them. This only saves your changes to a new public copy so that characters can use them.</p>
+          <p>All of your changes are saved to a hidden "edits" copy of this item as you make them. This only saves your changes to a new public copy so that characters can use them.</p>
           <p>Are you sure you'd like to save your changes to a new version.</p>
         </DialogBody>
         <DialogFooter>

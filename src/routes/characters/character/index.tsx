@@ -52,7 +52,6 @@ const CharacterPage: React.FC = () => {
     system.data.forEach(d => sys[d.name] = d.data)
 
     const cData = automerge.load(character.doc)
-    console.log(character)
 
     return parse(stringify({ character: cData, system: sys }))
   }, [character, system])

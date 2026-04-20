@@ -1,5 +1,3 @@
-import * as automerge from '@automerge/automerge'
-
 export function characterShadow(loaded: any) {
   return {
     name: loaded._name,
@@ -9,14 +7,16 @@ export function characterShadow(loaded: any) {
   }
 }
 
-export function systemShadow(doc: automerge.Doc<any>) {
-
+export function systemShadow(loaded: any) {
+  return {
+    name: loaded.name
+  }
 }
 
-export function datapackShadow(doc: automerge.Doc<any>) {
-
+export function datapackShadow(loaded: any) {
+  return {}
 }
 
-export function subShadow(doc: automerge.Doc<any>) {
-
+export function subShadow(loaded: any) {
+  return {}
 }

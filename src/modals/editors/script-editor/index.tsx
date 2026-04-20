@@ -6,10 +6,8 @@ import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 import { Button } from '@/components/ui/button';
 import { closeModal } from '@/state/modals';
 import { Script } from '@/types/script';
-import { BUILTIN_TYPES, Type, VerseScriptCompiler } from '@bardsballad/verse';
+import { BUILTIN_TYPES, JSONCodeGenerator, Lexer, Parser, Type, VerseScriptCompiler } from '@bardsballad/verse';
 import { SystemType, TypeData } from '@/db/system/schema';
-import Sandbox from '@nyariv/sandboxjs';
-import parse from '@nyariv/sandboxjs/dist/node/parser';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -505,31 +503,6 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
     ...globals
   ]
 
-  const vmRef = useRef<Sandbox | null>(null)
-  
-  useEffect(() => {
-    let mounted = true
-
-    async function initVM() {
-      try {      
-        if (!mounted) return
-        
-        vmRef.current = new Sandbox()
-      } catch (error) {
-        console.error('Failed to initialize QuickJS:', error)
-      }
-    }
-
-    initVM()
-
-    return () => {
-      mounted = false
-      if (vmRef.current) {
-        vmRef.current = null
-      }
-    }
-  }, [])
-
 	useEffect(() => {
 		if (monacoEl.current && mounted) {
 			setEditor((editor) => {
@@ -623,22 +596,29 @@ export default function ScriptEditor({ id, types, code, expectedType, onSave, gl
           const code = ed.getValue();
           
           try {
-            const result = compiler.current!.compile(code);
-            console.log(result.code)
-            if (!vmRef.current) return
+            const typeResult = compiler.current!.compile(code);
+
+            if (!typeResult.success) {
+              setResult({
+                isCorrect: false,
+                source: code,
+                compiled: typeResult.error!,
+              });
+              setReturnType('unknown');
+              return;
+            }
+
+            // Generate JSON instruction tree
+            const tokens = new Lexer(code).tokenize();
+            const ast = new Parser(tokens).parse();
+            const instructions = new JSONCodeGenerator().generate(ast);
+
             setResult({
-              isCorrect: result.success ? compareTypes(result.returnType!, expectedType) : false,
+              isCorrect: compareTypes(typeResult.returnType!, expectedType),
               source: code,
-              compiled: result.success ?
-                parse(`
-                  async function rc() {
-                    ${result.code!}
-                  }
-                  return rc()
-                `)
-                : result.error!,
+              compiled: instructions,
             });
-            setReturnType(result.success ? result.returnType! : 'unknown')
+            setReturnType(typeResult.returnType!);
           } catch (error: any) {
             console.error('Compilation error:', error);
           }

@@ -26,17 +26,22 @@ import { useVersionEdits } from '@/db/version/hooks/useVersionEdits'
 import { addPage, deletePage, renamePage, addPageState } from '@/db/system/methods'
 import { SystemData } from '@/db/system/schema'
 import storeMutation from '@/db/version/methods/storeMutation'
+import { useAutomergeDoc } from '@/lib/automerge/useAutomergeDoc'
+import { refrainSelectionState, updateRefrainSelectedProps } from '@/refrain/state/selectionStore'
+import { systemEditorBlockDefinitions } from '@/refrain/system-blocks'
+import updateAutomergeDoc from '@/lib/automerge/updateAutomergeDoc'
 
 function EditorMenu() {
   const editor = editorState.useValue()
-  const versionEdits = useVersionEdits<SystemData>(editor.versionId)
+  const edits = useVersionEdits(editor.versionId)
+  const { doc } = useAutomergeDoc<SystemData>(edits?.doc)
 
   const page = useMemo(
-    () => versionEdits?.data.pages.find((p) => p.name === editor.characterPage),
-    [versionEdits, editor.characterPage]
+    () => doc?.pages.find((p) => p.name === editor.characterPage),
+    [edits, editor.characterPage]
   )
 
-  if (!versionEdits) return <></>
+  if (!edits || !doc) return <></>
 
   return (
     <>
@@ -51,7 +56,7 @@ function EditorMenu() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {versionEdits.data.pages.map((p) => (
+              {doc.pages.map((p) => (
                 <SelectItem key={p.name} value={p.name}>
                   {p.name}
                 </SelectItem>
@@ -62,7 +67,7 @@ function EditorMenu() {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => storeMutation(editor.versionId, addPage(versionEdits.data, 'character'))}
+            onClick={() => updateAutomergeDoc(editor.versionId, addPage(doc, 'character'))}
           >
             <Plus className="h-4 w-4" />
             <span className="sr-only">Add Page</span>
@@ -77,11 +82,11 @@ function EditorMenu() {
               <Button
                 variant="destructive"
                 className="flex-1"
-                disabled={versionEdits.data.pages.length <= 1}
+                disabled={doc.pages.length <= 1}
                 onClick={() => {
-                  storeMutation(
-                    versionEdits.local_id,
-                    deletePage(versionEdits.data, 'character', editor.characterPage)
+                  updateAutomergeDoc(
+                    edits.local_id,
+                    deletePage(doc, 'character', editor.characterPage)
                   )
                 }}
               >
@@ -98,9 +103,9 @@ function EditorMenu() {
                       title="Rename Page"
                       data={editor.characterPage}
                       onSave={async (newName) => {
-                        await storeMutation(
+                        await updateAutomergeDoc(
                           editor.versionId,
-                          renamePage(versionEdits.data, 'character', editor.characterPage, newName)
+                          renamePage(doc, 'character', editor.characterPage, newName)
                         )
                         setCharacterPage(newName)
                       }}
@@ -124,8 +129,8 @@ function EditorMenu() {
               size="icon-sm"
               onClick={() =>
                 storeMutation(
-                  versionEdits.local_id,
-                  addPageState(versionEdits.data, 'character', editor.characterPage, 'newState', {
+                  edits.local_id,
+                  addPageState(doc, 'character', editor.characterPage, 'newState', {
                     type: 'string',
                     isArray: false,
                     useTextArea: false,
@@ -162,8 +167,49 @@ function EditorMenu() {
             )}
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <Separator />
+
+        <BlockSettingsPanel />
       </SidebarContent>
     </>
+  )
+}
+
+function BlockSettingsPanel() {
+  const { selectedType, selectedProps } = refrainSelectionState.useValue()
+
+  const def = useMemo(
+    () => systemEditorBlockDefinitions.find((d) => d.type === selectedType),
+    [selectedType]
+  )
+
+  if (!def) {
+    return (
+      <SidebarGroup>
+        <SidebarGroupLabel>Block Settings</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <p className='text-xs text-muted-foreground text-center py-4'>
+            Select a block to edit its settings
+          </p>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    )
+  }
+
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel>{def.label} Settings</SidebarGroupLabel>
+      <SidebarGroupContent className='space-y-3 px-2'>
+        {def.Settings ? (
+          <def.Settings props={selectedProps} onChange={updateRefrainSelectedProps} />
+        ) : (
+          <p className='text-xs text-muted-foreground text-center py-4'>
+            No settings for this block type
+          </p>
+        )}
+      </SidebarGroupContent>
+    </SidebarGroup>
   )
 }
 

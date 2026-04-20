@@ -1,8 +1,8 @@
-import Sandbox from '@nyariv/sandboxjs'
 import showModal from './showModal'
 import { Script } from '@/types/script';
-import { createExecContext } from '@nyariv/sandboxjs/dist/node/utils';
 import wrapWithTrackingEnhanced from '@/utils/object/wrapWithTracking';
+import { AsyncJsonProcessor } from './asyncJsonProcessor';
+import { Instruction } from '@bardsballad/verse';
 
 export interface ChangeOperation {
   type: 'set' | 'delete' | 'array';
@@ -47,7 +47,7 @@ const getCacheKey = (script: Script, context: any, tracker: Set<string>) => {
 
 // Core execution function without state updates
 const executeScript = async <T>(
-cacheKey: string | undefined, vm: Sandbox, script: Script, context: Record<string, any>, cache: Map<string, any>, tracker: Set<string> = new Set<string>(), invalidatedPaths: string[] = [], changesMap: ChangesMap): Promise<ScriptResult<T>> => {
+cacheKey: string | undefined, script: Script, context: Record<string, any>, cache: Map<string, any>, tracker: Set<string> = new Set<string>(), invalidatedPaths: string[] = [], changesMap: ChangesMap): Promise<ScriptResult<T>> => {
   try {
     const input = wrapWithTrackingEnhanced(Object.assign({}, context, {
       floor: Math.floor,
@@ -74,7 +74,7 @@ cacheKey: string | undefined, vm: Sandbox, script: Script, context: Record<strin
         const calcInvalidatedPaths: string[] = [];
         
         // Recursively call executeScript (not runCode) to avoid state updates
-        const output = await executeScript(undefined, vm, calc.script, context, cache, calcTracker, calcInvalidatedPaths, changesMap);
+        const output = await executeScript(undefined, calc.script, context, cache, calcTracker, calcInvalidatedPaths, changesMap);
         
         // Store with its own dependencies
         cache.set(path, { 
@@ -94,10 +94,12 @@ cacheKey: string | undefined, vm: Sandbox, script: Script, context: Record<strin
       return { success: true, error: undefined, result: cached.result, cacheKey, invalidatedPaths, changesMap }
     }
 
-    if (typeof script.compiled === 'string') return { success: false, error: script.compiled, result: undefined, cacheKey: '', invalidatedPaths, changesMap }
+    if (!Array.isArray(script.compiled)) {
+      return { success: false, error: typeof script.compiled === 'string' ? script.compiled : 'Invalid compiled script', result: undefined, cacheKey: '', invalidatedPaths, changesMap }
+    }
 
-    const exec = createExecContext(vm, JSON.parse(JSON.stringify(script.compiled)), vm.evalContext);
-    const result = await vm.executeTree<any>(exec, [input]).result
+    const processor = new AsyncJsonProcessor(input);
+    const result = await processor.process(script.compiled as Instruction[]);
 
     cacheKey = getCacheKey(script, context, tracker)
 
@@ -114,7 +116,6 @@ cacheKey: string | undefined, vm: Sandbox, script: Script, context: Record<strin
 // Main entry point that handles state updates
 const runCode = async <T>(
   cacheKey: string | undefined,
-  vm: Sandbox,
   script: Script,
   context: Record<string, any>,
   updateState: any = () => {},
@@ -123,7 +124,7 @@ const runCode = async <T>(
   invalidatedPaths: string[] = [],
   changesMap: ChangesMap = new Map()
 ): Promise<ScriptResult<T>> => {
-  const result = await executeScript<T>(cacheKey, vm, script, context, cache, tracker, invalidatedPaths, changesMap);
+  const result = await executeScript<T>(cacheKey, script, context, cache, tracker, invalidatedPaths, changesMap);
   
   await updateState(changesMap);
   

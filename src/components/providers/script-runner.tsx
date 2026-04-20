@@ -1,6 +1,5 @@
 // ScriptRunnerContext.tsx
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react'
-import Sandbox from '@nyariv/sandboxjs'
+import React, { createContext, useContext, useState } from 'react'
 import { Script } from '@/types/script'
 import runCode from '@/utils/verse/runCode'
 import { useScriptCache } from './script-cache'
@@ -20,35 +19,9 @@ interface ScriptRunnerContextType {
 const ScriptRunnerContext = createContext<ScriptRunnerContextType | null>(null)
 
 export function ScriptRunnerProvider({ children }: { children: React.ReactNode }) {
-  const [isReady, setIsReady] = useState(false)
-  const vmRef = useRef<Sandbox | null>(null)
+  const [isReady] = useState(true)
 
   const { cache, invalidateCacheByPaths } = useScriptCache() 
-
-  useEffect(() => {
-    let mounted = true
-
-    async function initVM() {
-      try {      
-        if (!mounted) return
-        
-        vmRef.current = new Sandbox()
-        setIsReady(true)
-      } catch (error) {
-        console.error('Failed to initialize QuickJS:', error)
-      }
-    }
-
-    initVM()
-
-    return () => {
-      mounted = false
-      if (vmRef.current) {
-        vmRef.current = null
-      }
-    }
-  }, [])
-
 
   async function runScript<T>(
     cacheKey: string | undefined,
@@ -56,12 +29,7 @@ export function ScriptRunnerProvider({ children }: { children: React.ReactNode }
     context: Record<string, any>,
     updateState: (state: any) => void,
   ): Promise<ScriptResult<T>> {
-    const vm = vmRef.current
-    if (!vm) {
-      return { success: false, error: 'VM not initialized', cacheKey: '' }
-    }
-
-    const output = await runCode<T>(cacheKey, vm, compiled, context, updateState, cache)
+    const output = await runCode<T>(cacheKey, compiled, context, updateState, cache)
 
     invalidateCacheByPaths(output.invalidatedPaths)
 

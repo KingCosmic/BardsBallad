@@ -2,10 +2,11 @@ import { db } from '@/db'
 import { useEffect, useMemo } from 'react'
 import duplicateVersionedResource from '@/db/version/methods/duplicateVersionedResource'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Item } from '@/db/shared/schema'
+import { Item } from '../schema'
 
-export function useVersionEdits(edit_id: string | undefined): Item | undefined {
+export function useDocEdits(edit_id: string | undefined): Item | undefined {
   const [original_id] = useMemo(() => edit_id?.split('|') || [''], [edit_id])
+
   const query = useLiveQuery(async () => {
     const edits = await db.docs.get(edit_id ?? '')
 
@@ -19,7 +20,7 @@ export function useVersionEdits(edit_id: string | undefined): Item | undefined {
     const getOrCreateEdits = async () => {
       // if we have no edit_id, just return.
       if (!edit_id) return
-      if (!query) return
+      if (!query || !query.hasLooked) return
 
       if (query.hasLooked && query.edits) return
 

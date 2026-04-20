@@ -108,17 +108,47 @@ export const parseRefrainDocument = (raw: unknown, definitions: BlockDefinition[
 
   if (!isPlainObject(raw) || !isPlainObject(raw.ROOT) || !Array.isArray(raw.ROOT.nodes)) return []
 
-  return raw.ROOT.nodes
-    .map((id) => (isPlainObject(raw[id]) ? raw[id] as LegacyNode : null))
+  return convertLegacyNodes(raw.ROOT.nodes, raw, defaultsByType)
+}
+
+const convertLegacyNodes = (
+  nodeIds: string[],
+  allNodes: Record<string, any>,
+  defaultsByType: Record<string, Record<string, any>>
+): Block[] => {
+  return nodeIds
+    .map((id) => (isPlainObject(allNodes[id]) ? allNodes[id] as LegacyNode : null))
     .filter((node): node is LegacyNode => !!node)
     .map((node) => {
       const resolvedType = typeof node.type === 'string' ? node.type : node.type?.resolvedName
+
       if (resolvedType === 'DesignerDivider') {
         return { type: 'divider', props: {} }
       }
-      if (resolvedType !== 'Text') {
-        console.warn(`Unsupported legacy node type "${resolvedType ?? 'unknown'}", defaulting to text block. Re-save this page after review.`)
+
+      if (resolvedType === 'Container') {
+        const childIds: string[] = Array.isArray((node as any).nodes) ? (node as any).nodes : []
+        const children = convertLegacyNodes(childIds, allNodes, defaultsByType)
+        return { type: 'container', props: { ...(node.props ?? {}), children } }
       }
+
+      if (resolvedType === 'Text') {
+        return { type: 'text', props: { text: node.props?.text ?? 'hello world' } }
+      }
+
+      if (resolvedType === 'TextInput') {
+        return { type: 'input', props: node.props ?? {} }
+      }
+
+      if (resolvedType === 'Select') {
+        return { type: 'select', props: node.props ?? {} }
+      }
+
+      if (resolvedType === 'FAB') {
+        return { type: 'fab', props: node.props ?? {} }
+      }
+
+      console.warn(`Unsupported legacy node type "${resolvedType ?? 'unknown'}", defaulting to text block. Re-save this page after review.`)
       return { type: 'text', props: { text: node.props?.text ?? 'hello world' } }
     })
     .map((block) => ({

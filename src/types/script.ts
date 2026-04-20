@@ -1,7 +1,7 @@
-import { IExecutionTree } from '@nyariv/sandboxjs/dist/node/parser';
+import { Instruction } from '@bardsballad/verse';
 
 export interface Script {
   source: string,
-  compiled: string | IExecutionTree,
+  compiled: string | Instruction[],
   isCorrect: boolean
 }

@@ -18,18 +18,18 @@ import SaveNewVersion from '@/modals/editor/save-new-version'
 import PageContent from '@/components/page-content'
 import ComingSoon from './coming-soon'
 import QuickActions from './quick-actions'
-import { useSystem } from '@/db/system/hooks/useSystem'
 import { useDoc } from '@/db/shared/hooks/useDoc'
 import { useAutomergeDoc } from '@/lib/automerge/useAutomergeDoc'
 import { SystemData } from '@/db/system/schema'
+import { useDocEdits } from '@/db/shared/hooks/useDocEdits'
 
 const System: React.FC = () => {
   const { id } = useParams<{ id: string; }>()
 
-  const edits_id = useMemo(() => id ? `${id}|edits` : '', [id])
+  const edits_id = useMemo(() => id ? `${id}|edits` : undefined, [id])
 
   const original = useDoc(id!)
-  const edit_item = useDoc(edits_id)
+  const edit_item = useDocEdits(edits_id)
   const { doc, change, save } = useAutomergeDoc<SystemData>(edit_item?.doc)
 
   const editor = editorState.useValue()
@@ -42,7 +42,7 @@ const System: React.FC = () => {
     const defaultModal = doc?.modals[0].name || ''
 
     editorState.set((prev) => ({ ...prev, versionId: edits_id, characterPage: defaultCharPage, creatorPage: defaultBuilderPage, modalsPage: defaultModal }))
-  }, [edits_id, editor, doc])
+  }, [edits_id, editor.versionId, doc])
 
   useEffect(() => {
     let changed = false
@@ -51,6 +51,8 @@ const System: React.FC = () => {
       creatorPage: editor.creatorPage,
       modalsPage: editor.modalsPage
     }
+
+    if (!edit_item) return
 
     if (!doc?.pages.find(p => p.name === editor.characterPage)) {
       newPages.characterPage = doc?.pages[0]?.name || ''
@@ -70,7 +72,7 @@ const System: React.FC = () => {
     if (!changed) return
 
     editorState.set(prev => ({ ...prev, ...newPages }))
-  }, [editor, doc])
+  }, [edit_item, doc])
 
   if (!edits_id) return <>id not defined...</>
   if (!original) return <>Loading Original...</>
