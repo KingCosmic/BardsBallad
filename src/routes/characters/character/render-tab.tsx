@@ -18,8 +18,7 @@ export default memo(({ system, state, updateState }: Props) => {
 
   useEffect(() => {
     if (system.pages.length === 0) return
-    const firstPage = system.pages[0]?.name
-    if (!firstPage) return
+    const firstPage = system.pages[0].name
     if (system.pages.some(page => page.name === tab)) return
     setTab(firstPage)
   }, [system.pages, tab])
