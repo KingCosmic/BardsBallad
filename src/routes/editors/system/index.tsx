@@ -37,9 +37,9 @@ const System: React.FC = () => {
   useEffect(() => {
     if (!edits_id || (edits_id === editor.versionId)) return
 
-    const defaultCharPage = doc?.pages[0].name || ''
-    const defaultBuilderPage = doc?.creator[0].name || ''
-    const defaultModal = doc?.modals[0].name || ''
+    const defaultCharPage = doc?.pages[0]?.name || ''
+    const defaultBuilderPage = doc?.creator[0]?.name || ''
+    const defaultModal = doc?.modals[0]?.name || ''
 
     editorState.set((prev) => ({ ...prev, versionId: edits_id, characterPage: defaultCharPage, creatorPage: defaultBuilderPage, modalsPage: defaultModal }))
   }, [edits_id, editor.versionId, doc])

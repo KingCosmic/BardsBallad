@@ -3,7 +3,7 @@ import { useScriptRunner } from "@/components/providers/script-runner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
 import { SystemData } from "@/db/system/schema"
-import { memo, useState } from "react"
+import { memo, useEffect, useState } from "react"
 
 interface Props {
   system: SystemData,
@@ -12,11 +12,18 @@ interface Props {
 }
 
 export default memo(({ system, state, updateState }: Props) => {
-  const [tab, setTab] = useState(system.pages[0].name)
+  const initialPage = system.pages[0]?.name ?? ''
+  const [tab, setTab] = useState(initialPage)
 
   const { isReady } = useScriptRunner()
 
+  useEffect(() => {
+    if (system.pages.some(page => page.name === tab)) return
+    setTab(initialPage)
+  }, [initialPage, system.pages, tab])
+
   if (!isReady) return <Spinner />
+  if (system.pages.length === 0) return <p className='text-sm text-muted-foreground mt-2'>No character pages available for this system.</p>
 
   return (
     <>

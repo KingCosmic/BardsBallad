@@ -86,7 +86,7 @@ const EditorTab: React.FC<Props> = ({ editsId, doc }) => {
   useEffect(() => {
     const page = doc.pages.find(p => p.name === editor.characterPage)
 
-    setCharacterPage(page !== undefined ? page.name : (doc.pages[0].name ?? 'none'))
+    setCharacterPage(page !== undefined ? page.name : (doc.pages[0]?.name ?? 'none'))
   }, [doc.pages])
 
   return (

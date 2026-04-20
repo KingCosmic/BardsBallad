@@ -19,6 +19,13 @@ type Props = {
   id: number;
 }
 
+const createDefaultPage = (name: string) => ({
+  name,
+  script: '',
+  lexical: '',
+  state: [],
+})
+
 const CreateSubscriptionModal: React.FC<Props> = ({ id }) => {
   const [name, setName] = useState('')
   const [type, setType] = useState<string>('system')
@@ -100,9 +107,9 @@ const CreateSubscriptionModal: React.FC<Props> = ({ id }) => {
               case 'system':
                 data = {
                   name,
-                  creator: [],
-                  modals: [],
-                  pages: [],
+                  creator: [createDefaultPage('Start')],
+                  modals: [createDefaultPage('Start')],
+                  pages: [createDefaultPage('Info')],
                   version: '',
                   data: [],
                   defaultCharacterData: {
