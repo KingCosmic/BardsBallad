@@ -12,15 +12,17 @@ interface Props {
 }
 
 export default memo(({ system, state, updateState }: Props) => {
-  const initialPage = system.pages[0]?.name ?? ''
-  const [tab, setTab] = useState(initialPage)
+  const [tab, setTab] = useState(system.pages[0]?.name ?? '')
 
   const { isReady } = useScriptRunner()
 
   useEffect(() => {
+    if (system.pages.length === 0) return
+    const firstPage = system.pages[0]?.name
+    if (!firstPage) return
     if (system.pages.some(page => page.name === tab)) return
-    setTab(initialPage)
-  }, [initialPage, system.pages, tab])
+    setTab(firstPage)
+  }, [system.pages, tab])
 
   if (!isReady) return <Spinner />
   if (system.pages.length === 0) return <p className='text-sm text-muted-foreground mt-2'>No character pages available for this system.</p>
