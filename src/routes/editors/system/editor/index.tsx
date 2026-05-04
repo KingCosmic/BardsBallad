@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from 'react'
-import lz from 'lzutf8'
 import * as automerge from '@automerge/automerge'
 
 import { editorState, setCharacterPage } from '@/state/editor'
@@ -29,11 +28,14 @@ const defaultBlocks = [
   },
 ]
 
-const parseLexical = (lexical: string) => {
+const parseLexical = (lexical: unknown) => {
   try {
-    return JSON.parse(lz.decompress(lz.decodeBase64(lexical)))
-  } catch (error) {
-    throw new Error('Invalid lexical payload: failed to decode or parse compressed editor data')
+    if (!lexical) return null
+    if (typeof lexical === 'object') return lexical
+    if (typeof lexical === 'string') return JSON.parse(lexical)
+    return null
+  } catch {
+    return null
   }
 }
 
@@ -52,7 +54,7 @@ const EditorPersistence: React.FC<Props> = ({ editsId, doc }) => {
       const currentDoc = automerge.load<typeof doc>(item.doc)
       const payload = exportRefrainDocument(blocks, definitions)
       await db.docs.update(editsId, {
-        doc: automerge.save(updateLexical(currentDoc as typeof doc, JSON.stringify(payload)))
+        doc: automerge.save(updateLexical(currentDoc as typeof doc, payload))
       })
     }, 300)
     return () => clearTimeout(timer)
@@ -75,6 +77,7 @@ const EditorTab: React.FC<Props> = ({ editsId, doc }) => {
 
     try {
       const parsed = parseLexical(lexical)
+      if (!parsed) return defaultBlocks
       const blocks = parseRefrainDocument(parsed, systemEditorBlockDefinitions)
       return blocks.length > 0 ? blocks : defaultBlocks
     } catch (error) {
@@ -85,9 +88,11 @@ const EditorTab: React.FC<Props> = ({ editsId, doc }) => {
 
   useEffect(() => {
     const page = doc.pages.find(p => p.name === editor.characterPage)
-
-    setCharacterPage(page !== undefined ? page.name : (doc.pages[0].name ?? 'none'))
-  }, [doc.pages])
+    const nextPage = page !== undefined ? page.name : (doc.pages[0]?.name ?? 'none')
+    if (nextPage !== editor.characterPage) {
+      setCharacterPage(nextPage)
+    }
+  }, [doc.pages, editor.characterPage])
 
   return (
     <div className='relative mt-3 rounded-lg overflow-visible bg-background border border-border min-h-80'>

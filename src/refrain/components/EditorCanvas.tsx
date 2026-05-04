@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import type { BlockType } from '../types'
@@ -31,13 +31,14 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
     insertBlock,
     moveBlock,
     updateBlockProps,
+    deleteBlock,
   } = useEditor()
   const [insertIndex, setInsertIndex] = useState<number | null>(null)
 
-  const handleInsert = (index: number, type: BlockType) => {
+  const handleInsert = useCallback((index: number, type: BlockType) => {
     insertBlock(index, type)
     setInsertIndex(null)
-  }
+  }, [insertBlock])
 
   return (
     <div className={className ?? 'max-w-2xl mx-auto px-6 py-8'}>
@@ -47,10 +48,11 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
                 <React.Fragment key={block.id}>
                   <SortableBlock
                     block={block}
-                    onChange={(p) => updateBlockProps(block.id, p)}
                     selected={block.id === selectedId}
-                    onSelect={(id) => selectBlock(id)}
+                    onSelect={selectBlock}
                     onMove={moveBlock}
+                    onUpdateProps={updateBlockProps}
+                    onDelete={deleteBlock}
                     contentClassName={contentClassName}
                   />
                   <InsertButton onOpen={() => setInsertIndex(i + 1)} />

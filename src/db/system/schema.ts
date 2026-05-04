@@ -20,7 +20,7 @@ export const dataTypeSchema = z.object({
 const pageDataSchema = z.object({
   name: z.string(),
   script: z.string(),
-  lexical: z.string(),
+  lexical: z.any(),
   state: z.array(z.object({
     name: z.string(),
     type: typeDataSchema,

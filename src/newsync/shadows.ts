@@ -1,9 +1,9 @@
 export function characterShadow(loaded: any) {
   return {
-    name: loaded._name,
-    slug: loaded._slug,
-    system: loaded._system,
-    datapacks: loaded._datapacks
+    name: loaded.name ?? loaded._name,
+    slug: loaded.slug ?? loaded._slug,
+    system: loaded.system ?? loaded._system,
+    datapacks: loaded.datapacks ?? loaded._datapacks ?? []
   }
 }
 

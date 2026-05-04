@@ -18,6 +18,8 @@ import { useCharacter } from '@/db/character/hooks/useCharacter'
 import { applyChangesToAutomerge, ChangesMap } from '@/utils/object/wrapWithTracking'
 import getDoc from '@/db/shared/methods/getDoc'
 import { parse, stringify } from '@/lib/bjson'
+import resolveCharacter from '@/lib/character/resolveCharacter'
+import { Character } from '@/db/character/schema'
 
 import * as automerge from '@automerge/automerge'
 
@@ -45,15 +47,11 @@ const CharacterPage: React.FC = () => {
   }, [system?.defaultCharacterData._type, system?.data, system?.types])
 
   const state = useMemo(() => {
-    let sys: Record<string, any> = {}
-
     if (!system || !character) return
 
-    system.data.forEach(d => sys[d.name] = d.data)
+    const cData = automerge.load<Character>(character.doc)
 
-    const cData = automerge.load(character.doc)
-
-    return parse(stringify({ character: cData, system: sys }))
+    return resolveCharacter(cData, system)
   }, [character, system])
 
   const updateState = useCallback(async (changes: ChangesMap) => {
@@ -111,7 +109,6 @@ const CharacterPage: React.FC = () => {
   }, [character])
 
   if (!character || !system) {
-    console.log(character)
     return (
       <div className='flex gap-2'>
         <Spinner />
@@ -122,7 +119,7 @@ const CharacterPage: React.FC = () => {
 
   return (
     <div className='flex flex-col h-full w-full @container'>
-      <Header title={'Testing'} subtitle={character.shadow.slug} hasSidebar />
+      <Header title={character.shadow.name} subtitle={character.shadow.slug} hasSidebar />
 
       <div className='flex flex-col grow overflow-hidden @xl:grid grid-cols-2 p-4 gap-4'>
 

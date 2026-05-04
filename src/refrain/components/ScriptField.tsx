@@ -33,7 +33,14 @@ export const ScriptField: React.FC<ScriptFieldProps> = ({
   const types = useMemo(() => {
     if (!doc) return []
     return [
-      doc.defaultCharacterData._type,
+      {
+        ...doc.defaultCharacterData._type,
+        properties: [
+          ...doc.defaultCharacterData._type.properties,
+          { key: 'name', typeData: { type: 'string' } },
+          { key: 'description', typeData: { type: 'string', useTextArea: true } }
+        ]
+      },
       { name: 'SystemData', properties: doc.data.map((d: any) => ({ key: d.name, typeData: d.typeData })) },
       { name: 'PageData', properties: [] },
       ...(doc.types ?? []),

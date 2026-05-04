@@ -137,11 +137,39 @@ const convertLegacyNodes = (
       }
 
       if (resolvedType === 'TextInput') {
-        return { type: 'input', props: node.props ?? {} }
+        return {
+          type: 'item',
+          props: {
+            title: node.props?.label ?? 'Item',
+            description: '',
+            showDescription: false,
+            useTitleScript: false,
+            titleScript: { source: '', compiled: '', isCorrect: false },
+            useDescriptionScript: false,
+            descriptionScript: { source: '', compiled: '', isCorrect: false },
+            showActionButton: false,
+            actionLabel: 'Action',
+            onClick: { source: '', compiled: '', isCorrect: false },
+          },
+        }
       }
 
       if (resolvedType === 'Select') {
-        return { type: 'select', props: node.props ?? {} }
+        return {
+          type: 'item',
+          props: {
+            title: node.props?.label ?? 'Item',
+            description: '',
+            showDescription: false,
+            useTitleScript: false,
+            titleScript: { source: '', compiled: '', isCorrect: false },
+            useDescriptionScript: false,
+            descriptionScript: { source: '', compiled: '', isCorrect: false },
+            showActionButton: false,
+            actionLabel: 'Action',
+            onClick: { source: '', compiled: '', isCorrect: false },
+          },
+        }
       }
 
       if (resolvedType === 'FAB') {

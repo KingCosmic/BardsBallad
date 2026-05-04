@@ -1,13 +1,11 @@
-import SubscriptionSchema from '@/db/subscription/schema'
 import { db } from '@/db'
 
 import { authState } from '@/state/auth'
 import generateUniqueID from '@/utils/db/generateUniqueID'
-import z from 'zod'
 import { Item } from '@/db/shared/schema'
 import { from, save } from '@automerge/automerge'
 
-export default async (type: string, resource_id: string, version_id: string, auto_update: boolean) => {
+export default async (type: string, resource_id: string) => {
   try {
     const { user } = authState.get()
     

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import type { Block, BlockType } from '../types'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useBlockRegistry, resolveBlockDefaults } from './BlockRegistryContext'
@@ -35,9 +35,11 @@ export const EditorProvider: React.FC<{
     [blocks, selectedId]
   )
 
-  const selectBlock = (id: string | null) => setSelectedId(id)
+  const selectBlock = useCallback((id: string | null) => {
+    setSelectedId(id)
+  }, [])
 
-  const insertBlock = (index: number, type: BlockType) => {
+  const insertBlock = useCallback((index: number, type: BlockType) => {
     setBlocks((prev) => {
       const next = [...prev]
       next.splice(index, 0, {
@@ -48,9 +50,9 @@ export const EditorProvider: React.FC<{
       return next
     })
     setSelectedId(null)
-  }
+  }, [registry])
 
-  const moveBlock = (activeId: string, overId: string) => {
+  const moveBlock = useCallback((activeId: string, overId: string) => {
     if (activeId === overId) return
     setBlocks((items) => {
       const oldIndex = items.findIndex((b) => b.id === activeId)
@@ -58,18 +60,18 @@ export const EditorProvider: React.FC<{
       if (oldIndex === -1 || newIndex === -1) return items
       return arrayMove(items, oldIndex, newIndex)
     })
-  }
+  }, [])
 
-  const updateBlockProps = (id: string, props: Record<string, any>) => {
+  const updateBlockProps = useCallback((id: string, props: Record<string, any>) => {
     setBlocks((items) => items.map((b) => (b.id === id ? { ...b, props } : b)))
-  }
+  }, [])
 
-  const deleteBlock = (id: string) => {
+  const deleteBlock = useCallback((id: string) => {
     setBlocks((items) => items.filter((b) => b.id !== id))
     setSelectedId((current) => (current === id ? null : current))
-  }
+  }, [])
 
-  const value: EditorContextValue = {
+  const value: EditorContextValue = useMemo(() => ({
     blocks,
     selectedId,
     selectedBlock,
@@ -78,7 +80,7 @@ export const EditorProvider: React.FC<{
     moveBlock,
     updateBlockProps,
     deleteBlock,
-  }
+  }), [blocks, selectedId, selectedBlock, selectBlock, insertBlock, moveBlock, updateBlockProps, deleteBlock])
 
   return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
 }

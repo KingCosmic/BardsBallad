@@ -1,28 +1,53 @@
-import { z } from 'zod';
+import { z } from "zod"
 
-const characterSchema = z.object({
-  // server generated id, mostly shows if this data was ever synced to begin with.
-  id: z.string({ error: 'id must be a string' }).optional(),
+// simple path string like "data.stats.strength"
+export const PathSchema = z.string().min(1)
 
-  // local id generate client side
-  local_id: z.string({ error: 'local_id must be a string' }).max(73, 'local_id must be 73 characters or less'),
-
-  // id of the user who created this character
-  user_id: z.string({ error: 'user_id must be a string' }),
-
-  // character name
-  name: z.string(),
-
-  // all character data.
-  data: z.instanceof(Uint8Array<ArrayBufferLike>), // Uint8Array
-
-  // hold the system and version id this character relies on
-  system: z.string(),
-
-  datapacks: z.array(z.object({ pack_id: z.string(), version_id: z.string() })),
+export const EffectSchema = z.object({
+  type: z.enum(["add", "set", "push", "push_unique"]),
+  target: PathSchema,
+  value: z.any(),
+  conditions: z.array(z.any())
 })
 
-export type CompressedCharacter = z.infer<typeof characterSchema>;
-export type Character = Omit<CompressedCharacter, 'data'> & { data: Record<string, any> }
+export type Effect = z.infer<typeof EffectSchema>;
+
+export const ProgressionSchema = z
+  .object({
+    level: z.number().int().nonnegative().optional()
+  })
+  .catchall(z.number())
+
+export const SelectionsSchema = z.record(
+  z.string(), // level or step
+  z.record(z.string(), z.string()) // choiceId -> optionId
+)
+
+export const DataSchema = z.object({}).catchall(z.any())
+
+export const OverridesSchema = z.record(PathSchema, z.any())
+
+const characterSchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+
+  progression: ProgressionSchema,
+
+  selections: SelectionsSchema,
+
+  data: DataSchema,
+
+  states: z.array(z.string()),
+
+  overrides: OverridesSchema,
+
+  // hold the system id this character relies on
+  system: z.string(),
+
+  // array of datapack id's this character relies on.
+  datapacks: z.array(z.string()),
+})
+
+export type Character = z.infer<typeof characterSchema>;
 
 export default characterSchema

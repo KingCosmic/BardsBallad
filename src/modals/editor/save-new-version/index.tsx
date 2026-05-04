@@ -11,6 +11,9 @@ import { closeModal } from '@/state/modals';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import * as automerge from '@automerge/automerge'
+import { authState } from '@/state/auth';
+import generateUniqueID from '@/utils/db/generateUniqueID';
+import { db } from '@/db';
 
 type Props = {
   id: number
@@ -41,11 +44,35 @@ const SaveNewVersion: React.FC<Props> = ({ id, original, edits, edits_id, doc })
           </Button>
 
           <Button color='primary' onClick={async () => {
-            const newVersion = await duplicateVersionedResource(edits)
+            let newVersion
+            // TODO: clean this up? it'll need to be used in all editors, it was derived from duplicateVersionedResource
+
+            try {
+              const { user } = authState.get()
+          
+              const owner_id = (user) ? user.id : 'none'
+        
+              const local_id = await generateUniqueID()
+          
+              const versionData: Item = {
+                ...edits,
+                lifecycle: 'snapshot',
+                snapshot: doc,
+                doc: undefined,
+                owner_id,
+                local_id: local_id,
+                id: '',
+              }
+          
+              await db.docs.put(versionData);
+              newVersion = versionData
+            } catch (e) {
+              console.log('Error creating versioned resource:', e);
+            }
               
             if (!newVersion) return
 
-            const newSub = await createSubscription(newVersion.type, newVersion.local_id, newVersion.local_id, false)
+            const newSub = await createSubscription(newVersion.type, newVersion.local_id)
 
             if (!newSub) {
               deleteVersionedResource(newVersion.local_id, true)

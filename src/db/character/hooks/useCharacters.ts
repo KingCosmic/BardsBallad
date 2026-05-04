@@ -3,7 +3,7 @@ import { db } from '@/db'
 
 export function useCharacters() {
   const characters = useLiveQuery(
-    () => db.docs.filter(doc => doc.type === 'character'),
+    () => db.docs.filter(doc => doc.type === 'character' && !doc.deleted_at),
     []
   )
 

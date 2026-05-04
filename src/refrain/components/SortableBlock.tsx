@@ -2,24 +2,24 @@ import React from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import type { Block } from '../types'
 import { BlockRenderer } from './BlockRenderer'
-import { useEditor } from '../context/EditorContext'
 
-export const SortableBlock: React.FC<{
+const SortableBlockImpl: React.FC<{
   block: Block
-  onChange: (updatedProps: Record<string, any>) => void
   selected: boolean
   onSelect: (id: string) => void
   onMove: (activeId: string, overId: string) => void
+  onUpdateProps: (id: string, props: Record<string, any>) => void
+  onDelete: (id: string) => void
   contentClassName?: string
 }> = ({
   block,
-  onChange,
   selected,
   onSelect,
   onMove,
+  onUpdateProps,
+  onDelete,
   contentClassName,
 }) => {
-  const { deleteBlock } = useEditor()
   const lastHoverKeyRef = React.useRef<string | null>(null)
 
   const [{ isDragging }, dragRef, previewRef] = useDrag(
@@ -51,6 +51,19 @@ export const SortableBlock: React.FC<{
     [block.id, onMove]
   )
 
+  const handleChange = React.useCallback(
+    (updatedProps: Record<string, any>) => onUpdateProps(block.id, updatedProps),
+    [onUpdateProps, block.id]
+  )
+
+  const handleDelete = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation()
+      onDelete(block.id)
+    },
+    [onDelete, block.id]
+  )
+
   return (
     <div
       ref={(node) => { previewRef(node); dropRef(node) }}
@@ -60,7 +73,7 @@ export const SortableBlock: React.FC<{
     >
       {/* Block content renders naturally — no wrapper styling */}
       <div className={contentClassName ?? ''}>
-        <BlockRenderer block={block} onChange={onChange} />
+        <BlockRenderer block={block} onChange={handleChange} />
       </div>
 
       {/* Selection / hover ring overlay — doesn't affect layout */}
@@ -99,7 +112,7 @@ export const SortableBlock: React.FC<{
         <button
           title='Delete block'
           className='w-5 h-5 flex items-center justify-center rounded bg-background/90 border border-border text-muted-foreground hover:text-destructive transition-colors text-xs'
-          onClick={(e) => { e.stopPropagation(); deleteBlock(block.id) }}
+          onClick={handleDelete}
         >
           ×
         </button>
@@ -107,3 +120,5 @@ export const SortableBlock: React.FC<{
     </div>
   )
 }
+
+export const SortableBlock = React.memo(SortableBlockImpl)

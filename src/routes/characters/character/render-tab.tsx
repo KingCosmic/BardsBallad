@@ -12,7 +12,8 @@ interface Props {
 }
 
 export default memo(({ system, state, updateState }: Props) => {
-  const [tab, setTab] = useState(system.pages[0].name)
+  console.log(system)
+  const [tab, setTab] = useState(system.pages[0]?.name)
 
   const { isReady } = useScriptRunner()
 

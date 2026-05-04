@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { BlockDefinition } from '../context/BlockRegistryContext'
 import { BlockRegistryProvider, useBlockRegistry } from '../context/BlockRegistryContext'
 import { EditorProvider, useEditor } from '../context/EditorContext'
+import { EditorBridge } from '../components/EditorBridge'
 import { LocalDataProvider, useLocalData } from '../context/LocalDataContext'
 import { useViewerState } from '../context/ViewerContext'
 import { useScriptRunner } from '@/components/providers/script-runner'
@@ -60,10 +61,13 @@ const NestedEditor: React.FC<{
   }, [blocks])
 
   return (
-    <EditorCanvas
-      className='my-0! px-0!'
-      innerStyle={innerStyle}
-    />
+    <>
+      <EditorBridge suppressClear />
+      <EditorCanvas
+        className='my-0! px-0!'
+        innerStyle={innerStyle}
+      />
+    </>
   )
 }
 

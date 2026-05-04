@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import lz from 'lzutf8'
 import type { PageData } from '@/db/system/schema'
 import { BlockRegistryProvider } from '../context/BlockRegistryContext'
 import { ViewerProvider } from '../context/ViewerContext'
@@ -14,9 +13,12 @@ interface Props {
   updateState(state: any): void
 }
 
-const parseLexical = (lexical: string): unknown => {
+const parseLexical = (lexical: unknown): unknown => {
   try {
-    return JSON.parse(lz.decompress(lz.decodeBase64(lexical)))
+    if (!lexical) return null
+    if (typeof lexical === 'object') return lexical
+    if (typeof lexical === 'string') return JSON.parse(lexical)
+    return null
   } catch {
     return null
   }

@@ -23,17 +23,17 @@ export function resetEditor() {
 }
 
 export function setCreatorPage(creatorPage: string) {
-  editorState.set((prev) => ({ ...prev, creatorPage }))
+  editorState.set((prev) => (prev.creatorPage === creatorPage ? prev : { ...prev, creatorPage }))
 }
 
 export function setCharacterPage(characterPage: string) {
-  editorState.set((prev) => ({ ...prev, characterPage }))
+  editorState.set((prev) => (prev.characterPage === characterPage ? prev : { ...prev, characterPage }))
 }
 
 export function setModal(modalsPage: string) {
-  editorState.set((prev) => ({ ...prev, modalsPage }))
+  editorState.set((prev) => (prev.modalsPage === modalsPage ? prev : { ...prev, modalsPage }))
 }
 
 export function setTab(tab: string) {
-  editorState.set((prev) => ({ ...prev, tab }))
+  editorState.set((prev) => (prev.tab === tab ? prev : { ...prev, tab }))
 }

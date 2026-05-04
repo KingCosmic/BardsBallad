@@ -2,9 +2,9 @@ import { db } from '@/db'
 import generateUniqueID from '@/utils/db/generateUniqueID'
 import { authState } from '@/state/auth'
 import { Item } from '@/db/shared/schema'
-import { from, save } from '@automerge/automerge'
+import { from, load, save } from '@automerge/automerge'
 
-export default async (oldResource: Item, new_id?: string, overwriteIfExists: boolean = false) => {
+export default async (oldResource: Item, new_id?: string, overwriteIfExists: boolean = false, targetLifecycle?: string) => {
   try {
     const { user } = authState.get()
 
@@ -12,10 +12,12 @@ export default async (oldResource: Item, new_id?: string, overwriteIfExists: boo
 
     const local_id = new_id ?? await generateUniqueID()
 
+    console.log('new data', ((targetLifecycle ?? oldResource.lifecycle) === 'snapshot') ? save(from(oldResource.snapshot)) : load(oldResource.doc))
+
     const versionData: Item = {
       ...oldResource,
       lifecycle: 'crdt',
-      doc: (oldResource.lifecycle === 'snapshot') ? save(from(oldResource.snapshot)) : oldResource.doc,
+      doc: ((targetLifecycle ?? oldResource.lifecycle) === 'snapshot') ? save(from(oldResource.snapshot)) : oldResource.doc,
       owner_id,
       local_id: overwriteIfExists ? oldResource.local_id : local_id,
       id: overwriteIfExists ? oldResource.id : '',
