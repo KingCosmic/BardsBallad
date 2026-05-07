@@ -1,19 +1,15 @@
-import { Character } from '@/db/character/schema'
-import applyAllEffects from './applyAllEffects'
-import applyOverrides from './applyOverrides'
-import gatherEffects from './gatherEffects'
-import { SystemData } from '@/db/system/schema'
+import { Character } from "@/db/character/schema";
+import applyAllEffects from "./applyAllEffects";
+import applyOverrides from "./applyOverrides";
+import gatherEffects from "./gatherEffects";
+import { SystemData } from "@/db/system/schema";
 
 export default (character: Character, system: SystemData) => {
-  const effects = gatherEffects(character, system)
+  const effects = gatherEffects(character, system);
 
-  const computed = applyAllEffects(character.data, effects, {
-    level: 1,
-    selections: character.selections,
-    states: character.states
-  })
+  const computed = applyAllEffects(character, effects);
 
-  applyOverrides(computed, character.overrides)
+  applyOverrides(computed, character.overrides);
 
-  return computed
-}
+  return computed;
+};
