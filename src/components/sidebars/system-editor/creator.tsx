@@ -154,7 +154,7 @@ function CreatorMenu() {
               <SidebarMenu>
                 {page?.state.map((state) => (
                   <SidebarMenuItem key={state.name}>
-                    <SidebarMenuButton onClick={() => {}}>
+                    <SidebarMenuButton>
                       <span className="truncate">{state.name}</span>
                       <span className="text-xs text-muted-foreground">
                         {state.type.type}

@@ -139,10 +139,9 @@ export default function CharacterCreator({ id }: Props) {
   const [builderStep, setBuilderStep] = useState(0)
 
   // Accumulated character data built up through the creator pages
-  const [builderData, setBuilderData] = useState<Record<string, any>>(() => {
-    const system = grouped.find(sys => sys.local_id === (grouped[0]?.local_id ?? ''))
-    return normalizeBuilderData(system?.item.snapshot?.defaultCharacterData)
-  })
+  const [builderData, setBuilderData] = useState<Record<string, any>>(() =>
+    normalizeBuilderData(grouped[0]?.item.snapshot?.defaultCharacterData)
+  )
 
   // The currently selected system and its creator pages
   const currentSystem = useMemo(
