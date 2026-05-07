@@ -1,6 +1,7 @@
 import { editorState } from "@/state/editor"
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
 import EditorMenu from "./editor"
+import CreatorMenu from "./creator"
 
 
 function SystemMenu() {
@@ -12,6 +13,8 @@ function SystemMenu() {
         {
           (editor.tab === 'editor') ? (
             <EditorMenu />
+          ) : (editor.tab === 'creator') ? (
+            <CreatorMenu />
           ) : (
             <>
               {/* TODO: Implement other tabs with shadcn components */}

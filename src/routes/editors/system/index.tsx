@@ -11,6 +11,7 @@ import SystemDataEditor from './system-data'
 import SystemTypes from './system-types'
 import Functions from './functions'
 import Editor from './editor'
+import Creator from './creator'
 import { Button } from '@/components/ui/button'
 import { IconDeviceFloppy } from '@tabler/icons-react'
 import { openModal } from '@/state/modals'
@@ -123,7 +124,7 @@ const System: React.FC = () => {
           ) : (editor.tab === 'editor') ? (
             <Editor editsId={edits_id} doc={doc} />
           ) : (editor.tab === 'creator') ? (
-            <ComingSoon />
+            <Creator editsId={edits_id} doc={doc} />
           ) : (editor.tab === 'modals') ? (
             <ComingSoon />
           ) : (editor.tab === 'actions') && (
